@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://yevc5esw132y"]
+[gd_scene load_steps=10 format=3 uid="uid://yevc5esw132y"]
 
 [ext_resource type="Texture2D" uid="uid://d2rci7uxpu1d6" path="res://images/character_slot.png" id="1_txgky"]
+[ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="1_uhull"]
 [ext_resource type="Script" path="res://CharacterSlot.gd" id="2_p1ay4"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="2_uiy27"]
 [ext_resource type="Texture2D" uid="uid://bnjygxsayqp0m" path="res://images/locked.png" id="3_nwlhk"]
@@ -18,12 +19,21 @@ atlas = ExtResource("2_uiy27")
 region = Rect2(224, 32, 16, 16)
 
 [node name="Character Select" type="Control"]
+self_modulate = Color(0.268138, 0.268138, 0.268138, 0.576471)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+self_modulate = Color(0.549533, 0.549533, 0.549533, 1)
+offset_right = 1233.0
+offset_bottom = 777.0
+texture = ExtResource("1_uhull")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -103,3 +113,6 @@ offset_left = -0.5
 offset_top = 2.0
 offset_right = 127.5
 offset_bottom = 130.0
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
