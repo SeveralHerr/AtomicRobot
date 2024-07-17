@@ -29,6 +29,7 @@ grow_vertical = 2
 
 [node name="TextureRect" type="TextureRect" parent="."]
 self_modulate = Color(0.549533, 0.549533, 0.549533, 1)
+layout_mode = 0
 offset_right = 1233.0
 offset_bottom = 777.0
 texture = ExtResource("1_uhull")

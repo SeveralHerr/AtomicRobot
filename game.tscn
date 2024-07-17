@@ -1,11 +1,13 @@
-[gd_scene load_steps=13 format=3 uid="uid://c2gtnbb1samgp"]
+[gd_scene load_steps=15 format=3 uid="uid://c2gtnbb1samgp"]
 
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://player.tscn" id="1_6xlws"]
+[ext_resource type="Texture2D" uid="uid://dxgev3icsid34" path="res://images/powerlines.png" id="1_wluxf"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="2_ont8s"]
 [ext_resource type="Texture2D" uid="uid://dx2v6tb4fgatk" path="res://images/background2.png" id="3_qpog4"]
 [ext_resource type="Texture2D" uid="uid://c31r3p5xgnhfu" path="res://images/background1.png" id="4_ikc2c"]
 [ext_resource type="Script" path="res://HiddenCharacterUnlock.gd" id="5_wwurs"]
 [ext_resource type="Script" path="res://UI.gd" id="6_mbagu"]
+[ext_resource type="PackedScene" uid="uid://bukxpahwrlpsq" path="res://scenes/enemy.tscn" id="7_1um8e"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4020m"]
 texture = ExtResource("2_ont8s")
@@ -534,6 +536,25 @@ animations = [{
 
 [node name="Game" type="Node2D"]
 
+[node name="ParallaxBackground2" type="ParallaxBackground" parent="."]
+layer = 5
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground2"]
+top_level = true
+motion_mirroring = Vector2(80, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground2/ParallaxLayer"]
+position = Vector2(40, 72)
+texture = ExtResource("1_wluxf")
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="ParallaxBackground2"]
+top_level = true
+motion_mirroring = Vector2(80, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground2/ParallaxLayer2"]
+position = Vector2(-68, -4)
+texture = ExtResource("1_wluxf")
+
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_y3j1r")
 format = 2
@@ -542,11 +563,13 @@ layer_1/z_index = 1
 layer_1/tile_data = PackedInt32Array(327681, 327680, 2, 327686, 327680, 2, 327688, 327680, 2, 327690, 327680, 2)
 
 [node name="Player" parent="." instance=ExtResource("1_6xlws")]
-position = Vector2(10, 67)
+position = Vector2(81, 15)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(2, 8)
 zoom = Vector2(5, 5)
+limit_bottom = 120
+limit_smoothed = true
 position_smoothing_enabled = true
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
@@ -620,3 +643,6 @@ grow_vertical = 2
 layout_mode = 2
 text = "Menu
 "
+
+[node name="Enemy" parent="." instance=ExtResource("7_1um8e")]
+position = Vector2(134, 88)
