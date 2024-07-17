@@ -1,0 +1,105 @@
+[gd_scene load_steps=9 format=3 uid="uid://yevc5esw132y"]
+
+[ext_resource type="Texture2D" uid="uid://d2rci7uxpu1d6" path="res://images/character_slot.png" id="1_txgky"]
+[ext_resource type="Script" path="res://CharacterSlot.gd" id="2_p1ay4"]
+[ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="2_uiy27"]
+[ext_resource type="Texture2D" uid="uid://bnjygxsayqp0m" path="res://images/locked.png" id="3_nwlhk"]
+[ext_resource type="Script" path="res://Slot2.gd" id="4_v628w"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_jhx57"]
+font_size = 55
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4kqqw"]
+atlas = ExtResource("2_uiy27")
+region = Rect2(192, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o25pe"]
+atlas = ExtResource("2_uiy27")
+region = Rect2(224, 32, 16, 16)
+
+[node name="Character Select" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -236.5
+offset_right = 236.5
+offset_bottom = 112.0
+grow_horizontal = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Panel2" type="Panel" parent="MarginContainer/VBoxContainer"]
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Select a character
+"
+label_settings = SubResource("LabelSettings_jhx57")
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer"]
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Slot1" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+texture = ExtResource("1_txgky")
+script = ExtResource("2_p1ay4")
+
+[node name="Character" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot1"]
+layout_mode = 0
+offset_left = 1.50001
+offset_top = -6.0
+offset_right = 129.5
+offset_bottom = 122.0
+texture = SubResource("AtlasTexture_4kqqw")
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot1"]
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Slot2" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+texture = ExtResource("3_nwlhk")
+script = ExtResource("4_v628w")
+
+[node name="Character" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot2"]
+visible = false
+layout_mode = 0
+offset_left = -2.5
+offset_top = -4.0
+offset_right = 125.5
+offset_bottom = 124.0
+texture = SubResource("AtlasTexture_o25pe")
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot2"]
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 0
+offset_left = -0.5
+offset_top = 2.0
+offset_right = 127.5
+offset_bottom = 130.0
