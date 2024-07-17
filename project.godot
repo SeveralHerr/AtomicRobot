@@ -19,6 +19,11 @@ config/icon="res://icon.svg"
 
 Config="*res://Config.gd"
 
+[display]
+
+window/stretch/mode="viewport"
+window/stretch/aspect="expand"
+
 [input]
 
 ui_left={

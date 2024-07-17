@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://c2gtnbb1samgp"]
+[gd_scene load_steps=13 format=3 uid="uid://c2gtnbb1samgp"]
 
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://player.tscn" id="1_6xlws"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="2_ont8s"]
 [ext_resource type="Texture2D" uid="uid://dx2v6tb4fgatk" path="res://images/background2.png" id="3_qpog4"]
 [ext_resource type="Texture2D" uid="uid://c31r3p5xgnhfu" path="res://images/background1.png" id="4_ikc2c"]
 [ext_resource type="Script" path="res://HiddenCharacterUnlock.gd" id="5_wwurs"]
+[ext_resource type="Script" path="res://UI.gd" id="6_mbagu"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4020m"]
 texture = ExtResource("2_ont8s")
@@ -598,3 +599,24 @@ position = Vector2(47, 38)
 sprite_frames = SubResource("SpriteFrames_kh8jw")
 autoplay = "default"
 frame_progress = 0.80834
+
+[node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource("6_mbagu")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = -324.0
+offset_right = -523.0
+offset_bottom = -293.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="UI/MarginContainer"]
+layout_mode = 2
+text = "Menu
+"

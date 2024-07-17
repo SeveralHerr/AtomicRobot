@@ -9,8 +9,13 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _input(event: InputEvent) -> void:
+	if $Indicator.visible: 
+		if event.is_action_pressed("ui_down"):
+			Config.cody_unlocked = true
+			print("Unlocked Cody")
+			
+			queue_free()
 	pass
 
 func _on_enter(body: Node2D) -> void: 
