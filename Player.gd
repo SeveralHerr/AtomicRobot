@@ -8,6 +8,17 @@ const JUMP_VELOCITY = -300.0
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("Attack"):
+		$DefaultSprite.play("Attack")
+
+		
+		$DefaultSprite.animation_finished.connect(_idle)
+		
+func _idle():
+	$DefaultSprite.animation_finished.disconnect(_idle)
+	$DefaultSprite.play("idle")
+
 func _ready() -> void:
 	if Config.cody_selected: 
 		$CodySprite.show()
