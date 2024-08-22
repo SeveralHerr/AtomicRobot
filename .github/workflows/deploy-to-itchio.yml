@@ -38,7 +38,7 @@ jobs:
     - name: Install Butler
       run: |
         curl -L https://github.com/itchio/butler/archive/refs/tags/v15.21.0.tar.gz | tar xz
-        sudo mv butler /usr/local/bin/
+        sudo mv butler-15.21.0 /usr/local/bin/
 
     - name: Deploy to itch.io
       env:
