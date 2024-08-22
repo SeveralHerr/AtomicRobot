@@ -32,7 +32,7 @@ jobs:
       run: ls ~/.local/share/godot/export_templates/4.3.stable/
 
     - name: Export project
-      run: godot --headless --export-release "Web" "build/index.html"
+      run: godot --headless --export-release "Web" "bin/index.html"
 
 
     - name: Install Butler
