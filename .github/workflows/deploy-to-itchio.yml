@@ -26,6 +26,9 @@ jobs:
         mkdir -p ~/.local/share/godot/export_templates/4.3.stable
         unzip templates.zip -d ~/.local/share/godot/export_templates/4.3.stable
 
+    - name: List Export Template Files
+      run: ls ~/.local/share/godot/export_templates/4.3.stable
+
     - name: Export project
       run: godot --headless --export-release "Web" "build/index.html"
 
