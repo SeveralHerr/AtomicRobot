@@ -1,6 +1,6 @@
 extends TextureRect
 
-const GAME: PackedScene = preload("res://game.tscn")
+const GAME: PackedScene = preload("res://game2.tscn")
 
 
 # Called when the node enters the scene tree for the first time.
