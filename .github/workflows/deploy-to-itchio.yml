@@ -49,4 +49,4 @@ jobs:
         BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
         BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
       run: |
-        butler push build/ several.herr/atomic-robot:html5
+        butler push build/ severalherr/atomic-robot:html5
