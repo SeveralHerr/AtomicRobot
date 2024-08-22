@@ -142,7 +142,7 @@ shape = SubResource("RectangleShape2D_qa0j5")
 
 [node name="DefaultSprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_vt1uo")
-animation = &"Attack"
+animation = &"Walk"
 autoplay = "idle"
 
 [node name="CodySprite" type="AnimatedSprite2D" parent="."]

@@ -37,4 +37,7 @@ func _process(delta: float) -> void:
 		
 	
 func receive_hit() -> void:
+	if Config.player.state_machine.current_state is DeadState: 
+		return
+
 	state_machine.change_state("DeadState")

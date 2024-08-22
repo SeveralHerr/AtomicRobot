@@ -1,0 +1,79 @@
+[gd_scene load_steps=9 format=3 uid="uid://dj5v0xinrjdvu"]
+
+[ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://Tiles/custom_tiles.png" id="1_1fymc"]
+[ext_resource type="Script" path="res://scripts/meter.gd" id="1_24d3b"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wfqmv"]
+atlas = ExtResource("1_1fymc")
+region = Rect2(144, 64, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vdtpf"]
+atlas = ExtResource("1_1fymc")
+region = Rect2(288, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tuchj"]
+atlas = ExtResource("1_1fymc")
+region = Rect2(288, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_riyfk"]
+atlas = ExtResource("1_1fymc")
+region = Rect2(240, 64, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xvoan"]
+atlas = ExtResource("1_1fymc")
+region = Rect2(256, 64, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_t17im"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vdtpf")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tuchj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_riyfk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tuchj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xvoan")
+}],
+"loop": false,
+"name": &"Trigger",
+"speed": 5.0
+}]
+
+[node name="Meter" type="Node2D"]
+script = ExtResource("1_24d3b")
+
+[node name="CoinParticles" type="CPUParticles2D" parent="."]
+visible = false
+position = Vector2(0, -12)
+lifetime = 9.0
+speed_scale = 13.0
+explosiveness = 1.0
+texture = SubResource("AtlasTexture_wfqmv")
+emission_shape = 1
+emission_sphere_radius = 2.0
+spread = 148.66
+gravity = Vector2(0, 0.1)
+initial_velocity_min = 1.0
+initial_velocity_max = 2.0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_t17im")
+animation = &"Trigger"
+autoplay = "Idle"
+frame = 3
+frame_progress = 1.0
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 9.0
