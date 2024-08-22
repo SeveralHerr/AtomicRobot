@@ -38,6 +38,7 @@ func _idle():
 	$DefaultSprite.play("idle")
 
 func _ready() -> void:
+	Config.player = self
 	if Config.cody_selected: 
 		$CodySprite.show()
 		$DefaultSprite.hide()
