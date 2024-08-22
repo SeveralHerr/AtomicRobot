@@ -37,10 +37,10 @@ jobs:
 
     - name: Install Butler
       run: |
-        curl -L https://broth.itch.ovh/butler/linux-amd64/15.21.0/archive-default | tar xz
+        curl -L https://broth.itch.ovh/butler/linux-amd64/15.21.0/archive-default -O butler
         chmod +x butler
         sudo mv butler /usr/local/bin/butler
-
+        
     - name: Deploy to itch.io
       env:
         BUTLER_CREDENTIALS: ${{ secrets.ITCHIOKEY }}
