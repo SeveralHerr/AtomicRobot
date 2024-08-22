@@ -34,6 +34,15 @@ offset_bottom = 141.0
 texture = ExtResource("2_t7qkn")
 expand_mode = 1
 
+[node name="TextureRect2" type="TextureRect" parent="Background"]
+layout_mode = 0
+offset_left = 924.0
+offset_top = 248.0
+offset_right = 1132.0
+offset_bottom = 372.0
+texture = ExtResource("2_t7qkn")
+expand_mode = 1
+
 [node name="Player" type="CharacterBody2D" parent="."]
 position = Vector2(228, 452)
 script = ExtResource("2_yknci")
