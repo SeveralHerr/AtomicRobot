@@ -1,6 +1,8 @@
 extends State
 class_name JumpState
 
+const ACCELERATION = 500.0  # Adjust as needed for smoother acceleration
+
 func enter_state(player: Player) -> void:
 	player.velocity.y = -300.0
 	player.default_sprite.play("Jump")
@@ -8,3 +10,9 @@ func enter_state(player: Player) -> void:
 func update(player: Player, delta: float) -> void:
 	if player.is_on_floor() and player.velocity.y >= -100:
 		player.state_machine.change_state("IdleState")
+		
+	var direction := Input.get_axis("ui_left", "ui_right")
+	if direction:
+		player.velocity.x = move_toward(player.velocity.x, direction * player.SPEED, ACCELERATION * delta)
+	else:
+		player.velocity.x = move_toward(player.velocity.x, 0, player.SPEED)

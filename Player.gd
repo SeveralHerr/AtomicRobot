@@ -3,6 +3,7 @@ class_name Player
 
 @onready var default_sprite: AnimatedSprite2D = $DefaultSprite
 @onready var area_2d: Area2D = $Area2D
+@onready var collision_shape_2d: CollisionShape2D = $Area2D/CollisionShape2D
 
 
 const SPEED = 100.0
