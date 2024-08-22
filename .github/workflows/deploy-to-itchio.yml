@@ -28,9 +28,6 @@ jobs:
         mv ~/.local/share/godot/export_templates/4.3.stable/templates/* ~/.local/share/godot/export_templates/4.3.stable/
         rmdir ~/.local/share/godot/export_templates/4.3.stable/templates
 
-    - name: List Export Template Files
-      run: ls ~/.local/share/godot/export_templates/4.3.stable/
-
     - name: Export project
       run: godot --headless --export-release "Web" "bin/index.html"
 
@@ -49,6 +46,7 @@ jobs:
 
     - name: Deploy to itch.io
       env:
-        BUTLER_CREDENTIALS: ${{ secrets.ITCHIOKEY }}
+        BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
+        BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
       run: |
         butler push build/ several.herr/atomic-robot:html5
