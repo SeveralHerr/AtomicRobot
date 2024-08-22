@@ -1,27 +1,56 @@
-[gd_scene load_steps=10 format=3 uid="uid://csmg52xs05d1e"]
+[gd_scene load_steps=13 format=3 uid="uid://csmg52xs05d1e"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_ncv2v"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_rc65t"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_43tqd"]
-radius = 4.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qa0j5"]
+size = Vector2(14, 28)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ejg2c"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_fxuu5"]
 atlas = ExtResource("1_rc65t")
-region = Rect2(208, 32, 16, 16)
+region = Rect2(336, 16, 16, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_rcgxi"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_n1tp4"]
 atlas = ExtResource("1_rc65t")
-region = Rect2(224, 16, 16, 16)
+region = Rect2(288, 16, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_enojy"]
+atlas = ExtResource("1_rc65t")
+region = Rect2(320, 16, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6bnnw"]
+atlas = ExtResource("1_rc65t")
+region = Rect2(288, 16, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jwr1k"]
+atlas = ExtResource("1_rc65t")
+region = Rect2(304, 16, 16, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_vt1uo"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ejg2c")
+"texture": SubResource("AtlasTexture_fxuu5")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_rcgxi")
+"texture": SubResource("AtlasTexture_n1tp4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_enojy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n1tp4")
+}],
+"loop": true,
+"name": &"Walk",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6bnnw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jwr1k")
 }],
 "loop": true,
 "name": &"idle",
@@ -54,14 +83,14 @@ animations = [{
 script = ExtResource("1_ncv2v")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1, 4)
-shape = SubResource("CircleShape2D_43tqd")
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_qa0j5")
 
 [node name="DefaultSprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_vt1uo")
-animation = &"idle"
+animation = &"Walk"
 autoplay = "idle"
-frame_progress = 0.975585
+frame_progress = 0.0279157
 
 [node name="CodySprite" type="AnimatedSprite2D" parent="."]
 visible = false
