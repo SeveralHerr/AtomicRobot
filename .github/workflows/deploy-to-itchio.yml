@@ -17,7 +17,7 @@ jobs:
       run: |
         wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux.x86_64.zip -O godot.zip
         unzip godot.zip -d godot
-        mv Godot.zip /usr/local/bin/godot
+        mv godot/Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
         chmod +x /usr/local/bin/godot
 
     - name: Export project
