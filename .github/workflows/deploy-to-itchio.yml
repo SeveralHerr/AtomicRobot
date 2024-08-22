@@ -35,10 +35,11 @@ jobs:
       run: godot --headless --export-release "Web" "bin/index.html"
 
 
-    - name: Install Butler
+    - name: Download Butler
       run: |
-        curl -L https://broth.itch.ovh/butler/linux-amd64/15.21.0/archive-default | tar xz
-        sudo mv butler /usr/local/bin/
+        wget https://broth.itch.ovh/butler/linux-amd64/latest/butler -O butler
+        chmod +x butler
+        sudo mv butler /usr/local/bin/butler
 
     - name: Deploy to itch.io
       env:
