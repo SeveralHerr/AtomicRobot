@@ -25,9 +25,11 @@ jobs:
         wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz -O templates.zip
         mkdir -p ~/.local/share/godot/export_templates/4.3.stable
         unzip templates.zip -d ~/.local/share/godot/export_templates/4.3.stable
+        mv ~/.local/share/godot/export_templates/4.3.stable/templates/* ~/.local/share/godot/export_templates/4.3.stable/
+        rmdir ~/.local/share/godot/export_templates/4.3.stable/templates
 
     - name: List Export Template Files
-      run: ls ~/.local/share/godot/export_templates/4.3.stable
+      run: ls ~/.local/share/godot/export_templates/4.3.stable/
 
     - name: Export project
       run: godot --headless --export-release "Web" "build/index.html"
