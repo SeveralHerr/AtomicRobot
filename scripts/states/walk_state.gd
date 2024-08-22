@@ -1,6 +1,8 @@
 extends State
 class_name WalkState
 
+const ACCELERATION = 500.0  # Adjust as needed for smoother acceleration
+
 func enter_state(player: Player) -> void:
 	player.velocity.x = 0
 	player.default_sprite.play("Walk")
@@ -8,7 +10,7 @@ func enter_state(player: Player) -> void:
 func update(player: Player, delta: float) -> void:
 	var direction := Input.get_axis("ui_left", "ui_right")
 	if direction:
-		player.velocity.x = direction * player.SPEED
+		player.velocity.x = move_toward(player.velocity.x, direction * player.SPEED, ACCELERATION * delta)
 		if direction <= -1:
 			player.default_sprite.flip_h = true
 		elif direction >= 1:

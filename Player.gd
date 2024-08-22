@@ -20,11 +20,16 @@ func _ready() -> void:
 	state_machine.add_state("JumpState", JumpState.new())
 	state_machine.add_state("AttackState", AttackState.new())
 	state_machine.add_state("WalkState", WalkState.new())
-
+	state_machine.add_state("DeadState", DeadState.new())
+	
 	state_machine.change_state("IdleState")
 		
-func _physics_process(delta: float) -> void:
+func _process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y += gravity * delta
+
 	state_machine.update(delta)
 	move_and_slide()
+	
+func receive_hit() -> void:
+	state_machine.change_state("DeadState")

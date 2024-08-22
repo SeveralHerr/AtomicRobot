@@ -17,4 +17,4 @@ func _process(delta: float) -> void:
 
 func _hit(body: Node2D) -> void:
 	if body is Player:
-		print("hit")
+		body.receive_hit()
