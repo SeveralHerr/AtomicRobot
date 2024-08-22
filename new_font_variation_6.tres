@@ -1,0 +1,7 @@
+[gd_resource type="FontVariation" load_steps=2 format=3 uid="uid://rdj5e70hecho"]
+
+[ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://AldotheApache.ttf" id="1_xr8on"]
+
+[resource]
+base_font = ExtResource("1_xr8on")
+spacing_glyph = 6

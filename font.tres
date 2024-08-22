@@ -1,0 +1,12 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://dh1tl0vomdyj7"]
+
+[ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://AldotheApache.ttf" id="1_8ijdu"]
+
+[resource]
+font = ExtResource("1_8ijdu")
+font_size = 77
+font_color = Color(0.462745, 0, 0, 1)
+outline_size = 7
+shadow_size = 15
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(0, 0)

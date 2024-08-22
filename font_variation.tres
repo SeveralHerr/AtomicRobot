@@ -1,0 +1,7 @@
+[gd_resource type="FontVariation" load_steps=2 format=3 uid="uid://c51twhsqhlgup"]
+
+[ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://AldotheApache.ttf" id="1_l70c4"]
+
+[resource]
+base_font = ExtResource("1_l70c4")
+spacing_glyph = 2

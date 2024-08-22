@@ -1,0 +1,12 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://dljdi7nrv2efb"]
+
+[ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://font_variation.tres" id="1_7x5gu"]
+
+[resource]
+font = ExtResource("1_7x5gu")
+font_size = 120
+font_color = Color(0.462745, 0, 0, 1)
+outline_size = 8
+shadow_size = 26
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(0, 0)
