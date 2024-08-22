@@ -1,6 +1,7 @@
 extends Node2D
 class_name Crate
 
+const CRATE_DEBRIS = preload("res://scenes/crate_debris.tscn")
 @onready var normal_crate_sprite: Sprite2D = $NormalCrateSprite
 @onready var crack_1_sprite: Sprite2D = $Crack1Sprite
 @onready var crack_2_sprite: Sprite2D = $Crack2Sprite
@@ -23,6 +24,14 @@ func receive_hit() -> void:
 	elif hits == 1:
 		crack_2_sprite.show()
 	elif hits == 2:
+		var instance = CRATE_DEBRIS.instantiate()
+
+		get_tree().root.add_child(instance)
+		instance.position = position
+		
+		
+
+		
 		queue_free()
 	
 	hits += 1

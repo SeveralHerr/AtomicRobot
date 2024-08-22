@@ -3152,8 +3152,8 @@ texture = ExtResource("3_f0i3t")
 
 [resource]
 physics_layer_0/collision_layer = 1
-physics_layer_1/collision_layer = 4
-physics_layer_1/collision_mask = 4
+physics_layer_1/collision_layer = 12
+physics_layer_1/collision_mask = 12
 terrain_set_0/mode = 0
 terrain_set_0/terrain_0/name = "Building Left"
 terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)

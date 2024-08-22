@@ -14,9 +14,10 @@ var elapsed_time: float = 0.0
 
 func _init(new_obj: Node2D) -> void:
 	obj = new_obj
-	original_position = obj.position
+
 
 func apply_shake(_randomStrength: float = 1.0, _duration: float = 1.0):
+	original_position = obj.position
 	shake_strength = _randomStrength
 	shake_duration = _duration
 	elapsed_time = 0.0
