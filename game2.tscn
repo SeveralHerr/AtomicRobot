@@ -141,18 +141,6 @@ position_smoothing_enabled = true
 [node name="Car" parent="." instance=ExtResource("3_23fhp")]
 position = Vector2(1500, 92)
 
-[node name="Crate" parent="." instance=ExtResource("6_kx8su")]
-position = Vector2(159, 19)
-
-[node name="Crate2" parent="." instance=ExtResource("6_kx8su")]
-position = Vector2(175, 19)
-
-[node name="Crate3" parent="." instance=ExtResource("6_kx8su")]
-position = Vector2(159, 3)
-
-[node name="Crate4" parent="." instance=ExtResource("6_kx8su")]
-position = Vector2(175, 3)
-
 [node name="Parallax2D6" type="Parallax2D" parent="."]
 visible = false
 repeat_size = Vector2(440, 0)
@@ -162,3 +150,46 @@ repeat_times = 4
 position = Vector2(13, 142)
 tile_map_data = PackedByteArray("AAACAPb/AQAWAAAAAAACAPf/AQAWAAEAAAADAPb/AQAXAAAAAAADAPf/AQAXAAEAAAAEAPb/AQAYAAAAAAAEAPf/AQAYAAEAAAAFAPb/AQAZAAAAAAAFAPf/AQAZAAEAAAAFAPj/AQAZAAIAAAAFAPn/AQAZAAMAAAAFAPr/AQAZAAQAAAAFAPv/AQAZAAUAAAAFAPz/AQAZAAYAAAAFAP3/AQAZAAcAAAAGAPb/AQAaAAAAAAAGAPf/AQAaAAEAAAAGAP3/AQAaAAcAAAAHAPb/AQAbAAAAAAAHAPf/AQAbAAEAAAAIAPb/AQAcAAAAAAAIAPf/AQAcAAEAAAAJAPb/AQAWAAAAAAAJAPf/AQAWAAEAAAAKAPb/AQAXAAAAAAAKAPf/AQAXAAEAAAALAPb/AQAYAAAAAAALAPf/AQAYAAEAAAAMAPb/AQAZAAAAAAAMAPf/AQAZAAEAAAAMAPj/AQAZAAIAAAAMAPn/AQAZAAMAAAAMAPr/AQAZAAQAAAAMAPv/AQAZAAUAAAAMAPz/AQAZAAYAAAAMAP3/AQAZAAcAAAANAPb/AQAaAAAAAAANAPf/AQAaAAEAAAANAP3/AQAaAAcAAAAOAPb/AQAbAAAAAAAOAPf/AQAbAAEAAAAPAPb/AQAcAAAAAAAPAPf/AQAcAAEAAAD7//b/AQAWAAAAAAD7//f/AQAWAAEAAAD8//b/AQAXAAAAAAD8//f/AQAXAAEAAAD9//b/AQAYAAAAAAD9//f/AQAYAAEAAAD+//b/AQAZAAAAAAD+//f/AQAZAAEAAAD+//j/AQAZAAIAAAD+//n/AQAZAAMAAAD+//r/AQAZAAQAAAD+//v/AQAZAAUAAAD+//z/AQAZAAYAAAD+//3/AQAZAAcAAAD///b/AQAaAAAAAAD///f/AQAaAAEAAAD///3/AQAaAAcAAAAAAPb/AQAbAAAAAAAAAPf/AQAbAAEAAAABAPb/AQAcAAAAAAABAPf/AQAcAAEAAAD0//b/AQAWAAAAAAD0//f/AQAWAAEAAAD1//b/AQAXAAAAAAD1//f/AQAXAAEAAAD2//b/AQAYAAAAAAD2//f/AQAYAAEAAAD3//b/AQAZAAAAAAD3//f/AQAZAAEAAAD3//j/AQAZAAIAAAD3//n/AQAZAAMAAAD3//r/AQAZAAQAAAD3//v/AQAZAAUAAAD3//z/AQAZAAYAAAD3//3/AQAZAAcAAAD4//b/AQAaAAAAAAD4//f/AQAaAAEAAAD4//3/AQAaAAcAAAD5//b/AQAbAAAAAAD5//f/AQAbAAEAAAD6//b/AQAcAAAAAAD6//f/AQAcAAEAAAA=")
 tile_set = ExtResource("1_t7arr")
+
+[node name="Objects" type="Node2D" parent="."]
+
+[node name="Crate" parent="Objects" instance=ExtResource("6_kx8su")]
+position = Vector2(159, 19)
+
+[node name="Crate2" parent="Objects" instance=ExtResource("6_kx8su")]
+position = Vector2(175, 19)
+
+[node name="Crate3" parent="Objects" instance=ExtResource("6_kx8su")]
+position = Vector2(159, 3)
+
+[node name="Crate4" parent="Objects" instance=ExtResource("6_kx8su")]
+position = Vector2(175, 3)
+
+[node name="SewerCrates" type="Node2D" parent="Objects"]
+
+[node name="Crate5" parent="Objects/SewerCrates" instance=ExtResource("6_kx8su")]
+position = Vector2(714, 99)
+
+[node name="Crate6" parent="Objects/SewerCrates" instance=ExtResource("6_kx8su")]
+position = Vector2(730, 99)
+
+[node name="Crate7" parent="Objects/SewerCrates" instance=ExtResource("6_kx8su")]
+position = Vector2(714, 83)
+
+[node name="Crate8" parent="Objects/SewerCrates" instance=ExtResource("6_kx8su")]
+position = Vector2(730, 83)
+
+[node name="Crate9" parent="Objects/SewerCrates" instance=ExtResource("6_kx8su")]
+position = Vector2(714, 67)
+
+[node name="Crate10" parent="Objects/SewerCrates" instance=ExtResource("6_kx8su")]
+position = Vector2(730, 67)
+
+[node name="Crate11" parent="Objects/SewerCrates" instance=ExtResource("6_kx8su")]
+position = Vector2(714, 51)
+
+[node name="Crate13" parent="Objects/SewerCrates" instance=ExtResource("6_kx8su")]
+position = Vector2(746, 99)
+
+[node name="Crate15" parent="Objects/SewerCrates" instance=ExtResource("6_kx8su")]
+position = Vector2(746, 83)

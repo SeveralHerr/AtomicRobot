@@ -1,4 +1,4 @@
-extends Node2D
+extends RigidBody2D
 class_name Crate
 
 const CRATE_DEBRIS = preload("res://scenes/crate_debris.tscn")
@@ -6,6 +6,9 @@ const CRATE_DEBRIS = preload("res://scenes/crate_debris.tscn")
 @onready var crack_1_sprite: Sprite2D = $Crack1Sprite
 @onready var crack_2_sprite: Sprite2D = $Crack2Sprite
 @onready var area_2d: Area2D = $Area2D
+
+
+var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 var hits: int = 0
 var shaker: Shaker
@@ -15,7 +18,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	shaker.process(delta)
-		
+
 		
 func receive_hit() -> void:
 	shaker.apply_shake(2)
@@ -24,15 +27,16 @@ func receive_hit() -> void:
 	elif hits == 1:
 		crack_2_sprite.show()
 	elif hits == 2:
-		var instance = CRATE_DEBRIS.instantiate()
-
-		get_tree().root.add_child(instance)
-		instance.position = position
-		
-		
-
-		
+		_create_debris()		
 		queue_free()
 	
 	hits += 1
 		
+		
+func _create_debris() -> void:
+	var instance = CRATE_DEBRIS.instantiate()
+
+	get_tree().root.add_child(instance)
+	instance.position = position
+	
+	

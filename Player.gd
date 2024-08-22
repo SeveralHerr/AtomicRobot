@@ -32,6 +32,8 @@ func _process(delta: float) -> void:
 
 	state_machine.update(delta)
 	move_and_slide()
+
+		
 	
 func receive_hit() -> void:
 	state_machine.change_state("DeadState")
