@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://cpy1hjrs74exh"]
+[gd_scene load_steps=6 format=3 uid="uid://cpy1hjrs74exh"]
 
 [ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="1_66g6e"]
 [ext_resource type="Script" path="res://startscreen.gd" id="1_672qy"]
 [ext_resource type="Texture2D" uid="uid://54wohi1aav3k" path="res://images/ART-Mobile-logo (1).png" id="2_m84i3"]
+[ext_resource type="Script" path="res://sway.gd" id="3_ox4jd"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_a7nxo"]
 font_size = 55
@@ -21,10 +22,16 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = -2.0
+offset_right = -42.0
+offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(1.1, 1.15)
 texture = ExtResource("1_66g6e")
 expand_mode = 1
+script = ExtResource("3_ox4jd")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
