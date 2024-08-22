@@ -13,13 +13,16 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Godot
-      uses: josephbmanley/setup-godot@v1
-      with:
-        godot-version: 4.3.0  # Update to your version of Godot
+    - name: Download Godot
+      run: |
+        wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux.x86_64.zip -O godot.zip
+        unzip godot.zip -d godot
+        mv godot/Godot_v4.3-stable_linux.x86_64.zip /usr/local/bin/godot
+        chmod +x /usr/local/bin/godot
 
     - name: Export project
       run: godot --export-release "HTML5" "build/index.html"
+
 
     - name: Install Butler
       run: |
