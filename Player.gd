@@ -2,9 +2,11 @@ extends CharacterBody2D
 class_name Player
 
 @onready var default_sprite: AnimatedSprite2D = $DefaultSprite
+@onready var area_2d: Area2D = $Area2D
+
 
 const SPEED = 100.0
-const JUMP_VELOCITY = -300.0
+const JUMP_VELOCITY = -600.0
 var state_machine: StateMachine
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.

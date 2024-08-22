@@ -1,0 +1,48 @@
+[gd_scene load_steps=8 format=3 uid="uid://bsmabxobj7kwp"]
+
+[ext_resource type="Script" path="res://scripts/crate.gd" id="1_kpojm"]
+[ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://Tiles/custom_tiles.png" id="2_lemnb"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vw3tj"]
+atlas = ExtResource("2_lemnb")
+region = Rect2(144, 80, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e1sgn"]
+atlas = ExtResource("2_lemnb")
+region = Rect2(160, 64, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7ef8a"]
+atlas = ExtResource("2_lemnb")
+region = Rect2(176, 64, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6m5t2"]
+atlas = ExtResource("2_lemnb")
+region = Rect2(192, 64, 16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c6n0k"]
+size = Vector2(16, 16)
+
+[node name="Crate" type="Node2D"]
+script = ExtResource("1_kpojm")
+
+[node name="NormalCrateSprite" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_vw3tj")
+
+[node name="Crack1Sprite" type="Sprite2D" parent="."]
+visible = false
+texture = SubResource("AtlasTexture_e1sgn")
+
+[node name="Crack2Sprite" type="Sprite2D" parent="."]
+visible = false
+texture = SubResource("AtlasTexture_7ef8a")
+
+[node name="Sprite2D4" type="Sprite2D" parent="."]
+visible = false
+texture = SubResource("AtlasTexture_6m5t2")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_c6n0k")
