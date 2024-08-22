@@ -22,9 +22,9 @@ jobs:
 
     - name: Download Godot Export Templates
       run: |
-        wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz -O templates.tpz
+        wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz -O templates.zip
         mkdir -p ~/.local/share/godot/export_templates/4.3.stable
-        tar -xf templates.tpz -C ~/.local/share/godot/export_templates/4.3.stable
+        unzip templates.zip -d ~/.local/share/godot/export_templates/4.3.stable
 
     - name: Export project
       run: godot --headless --export-release "Web" "build/index.html"
