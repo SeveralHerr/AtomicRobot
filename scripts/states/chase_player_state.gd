@@ -34,6 +34,9 @@ func update(enemy: Enemy, delta: float) -> void:
 		enemy.velocity.x = 0
 		enemy.animated_sprite_2d.pause()
 		return 
+	if Config.player.state_machine.current_state is DeadState: 
+		enemy.enemy_state_machine.change_state("PatrolState")
+		return
 		
 	dir = (Config.player.position - enemy.position).normalized()
 

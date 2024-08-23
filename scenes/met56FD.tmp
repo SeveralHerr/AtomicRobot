@@ -128,3 +128,6 @@ shape = SubResource("CircleShape2D_xhc3y")
 
 [node name="CoinAudioPlayer" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamOggVorbis_vhpx8")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+debug_enabled = true

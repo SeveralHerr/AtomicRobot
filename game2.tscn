@@ -153,8 +153,20 @@ tile_set = ExtResource("1_t7arr")
 [node name="MeterMaid" parent="." instance=ExtResource("4_c1cju")]
 position = Vector2(485, -11)
 
+[node name="MeterMaid2" parent="." instance=ExtResource("4_c1cju")]
+position = Vector2(446, -235)
+
 [node name="Meter" parent="." instance=ExtResource("3_q6csx")]
-position = Vector2(130, 95)
+position = Vector2(130, 91)
+
+[node name="Meter2" parent="." instance=ExtResource("3_q6csx")]
+position = Vector2(221, 91)
+
+[node name="Meter3" parent="." instance=ExtResource("3_q6csx")]
+position = Vector2(322, 92)
+
+[node name="Meter4" parent="." instance=ExtResource("3_q6csx")]
+position = Vector2(585, 91)
 
 [node name="Objects" type="Node2D" parent="."]
 
