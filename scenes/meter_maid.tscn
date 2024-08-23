@@ -1,7 +1,15 @@
-[gd_scene load_steps=11 format=4 uid="uid://csis0b6hdasqr"]
+[gd_scene load_steps=13 format=4 uid="uid://csis0b6hdasqr"]
 
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_sk1lv"]
 [ext_resource type="Script" path="res://scripts/meter_maid.gd" id="1_wr56e"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m52b6"]
+atlas = ExtResource("1_sk1lv")
+region = Rect2(288, 16, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ht5vs"]
+atlas = ExtResource("1_sk1lv")
+region = Rect2(304, 16, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wrh0y"]
 atlas = ExtResource("1_sk1lv")
@@ -19,6 +27,23 @@ region = Rect2(336, 16, 16, 32)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_m52b6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ht5vs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m52b6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ht5vs")
+}],
+"loop": false,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_wrh0y")
 }, {
 "duration": 1.0,
@@ -31,7 +56,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_wtc2l")
 }],
 "loop": true,
-"name": &"default",
+"name": &"Walk",
 "speed": 5.0
 }]
 
@@ -58,7 +83,8 @@ script = ExtResource("1_wr56e")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_6ep00")
-autoplay = "default"
+animation = &"Walk"
+autoplay = "Walk"
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 0

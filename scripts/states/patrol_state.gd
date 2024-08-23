@@ -6,9 +6,9 @@ var direction: int = -1
 
 func enter_state(new_enemy: Enemy) -> void:
 	enemy = new_enemy
-	enemy.velocity.x = 0
 	if not enemy.range_area_2d.body_entered.is_connected(_target):
 		enemy.range_area_2d.body_entered.connect(_target)
+		
 		
 func exit_state(enemy: Enemy) -> void:
 	if enemy.range_area_2d.body_entered.is_connected(_target):
