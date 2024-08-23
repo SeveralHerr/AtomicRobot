@@ -1,4 +1,5 @@
 extends CharacterBody2D
+class_name Enemy
 
 const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
 
@@ -18,63 +19,29 @@ var target: Node2D = null
 var coins: int = 4
 var node: Node2D
 
+var enemy_state_machine: EnemyStateMachine
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready() -> void:
 	node = Config.player.get_parent()
-	if direction == -1:
-		animated_sprite_2d.flip_h = true
-	elif direction == 1:
-		animated_sprite_2d.flip_h = false
-		
-	range_area_2d.body_entered.connect(_attack)
-	range_area_2d.body_exited.connect(_no_target)
+	enemy_state_machine = EnemyStateMachine.new(self)
+	enemy_state_machine.add_state("PatrolState", PatrolState.new())
+	enemy_state_machine.add_state("ChasePlayerState", ChasePlayerState.new())
+	enemy_state_machine.add_state("FindMeterState", FindMeterState.new())
 	
-	timer.timeout.connect(_create_bullet)
-	
-	#timer.start()
+	enemy_state_machine.change_state("PatrolState")
 
-	pass # Replace with function body.
-	
-func _no_target(body: Node2D) -> void:
-	if target is Meter:
-		return
-	if body is not Player:
-		return
-		
-	target = null
-	timer.stop()
+func _process(delta: float) -> void:
+	if not is_on_floor():
+		velocity.y += 300 * delta
 
-func _attack(body: Node2D) -> void:
-	if target is Meter:
-		return
-	if body is not Player:
-		return
-
-	target = body
-	timer.start()
-
-
-func _create_bullet() -> void:
-	if coins <= 0:
-		target = Config.nearest_meter(position)
-		if target == null:
-			return
-		return	
-		
-	if Config.player.state_machine.current_state is DeadState: 
-		return
-	
-	var instance = COIN_BULLET.instantiate()
-
-	coins -= 1
-	node.call_deferred("add_child", instance)
-	instance.position = position
+	enemy_state_machine.update(delta)
+	move_and_slide()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	#print(ray_cast_2d_right2.is_colliding())
+func _procdess(delta: float) -> void:
+	print(ray_cast_2d_left.is_colliding())
 	if not is_on_floor():
 		velocity.y += 300 * delta
 	if target:
@@ -104,27 +71,22 @@ func _process(delta: float) -> void:
 		elif dir.x >= 1:
 			animated_sprite_2d.flip_h = false
 	else:
-		if not ray_cast_2d_left.is_colliding() or not ray_cast_2d_left2.is_colliding():
-			direction = -1
-			animated_sprite_2d.flip_h = true
-			ray_cast_2d_left.enabled = false
-			ray_cast_2d_left2.enabled = false
-			await get_tree().create_timer(0.3).timeout
-			ray_cast_2d_left.enabled = true			
-			ray_cast_2d_left2.enabled = true
-			
-	
-		elif not ray_cast_2d_right.is_colliding() or  not ray_cast_2d_right2.is_colliding():
+		if not ray_cast_2d_left.is_colliding():
 			direction = 1
 			animated_sprite_2d.flip_h = false
+			ray_cast_2d_left.enabled = false
+			await get_tree().create_timer(0.3).timeout
+			ray_cast_2d_left.enabled = true
+			
+		elif not ray_cast_2d_right.is_colliding():
+			direction = -1
+			animated_sprite_2d.flip_h = true
 			ray_cast_2d_right.enabled = false
-			ray_cast_2d_right2.enabled = false
 			await get_tree().create_timer(0.3).timeout
 			ray_cast_2d_right.enabled = true
 
-			ray_cast_2d_right2.enabled = true
-
-		velocity.x = move_toward(velocity.x, direction * 50, 30 * delta)
+		var t = velocity.x + (direction * 50)
+		velocity.x = move_toward(velocity.x, t, 30 * delta)
 	move_and_slide()
 
 

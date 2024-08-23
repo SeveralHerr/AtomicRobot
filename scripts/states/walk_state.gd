@@ -1,7 +1,7 @@
 extends State
 class_name WalkState
 
-const ACCELERATION = 500.0  # Adjust as needed for smoother acceleration
+const ACCELERATION = 5000.0  # Adjust as needed for smoother acceleration
 
 func enter_state(player: Player) -> void:
 	player.velocity.x = 0

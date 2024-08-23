@@ -68,8 +68,8 @@ position = Vector2(1, 6)
 shape = SubResource("CircleShape2D_xhc3y")
 
 [node name="RayCast2D_Left" type="RayCast2D" parent="."]
-position = Vector2(-18, -14)
-collision_mask = 4
+position = Vector2(-25, -15)
+collision_mask = 14
 
 [node name="RayCast2D_Left2" type="RayCast2D" parent="."]
 position = Vector2(-11, 0)
@@ -78,8 +78,8 @@ target_position = Vector2(9.53674e-07, 15)
 collision_mask = 6
 
 [node name="RayCast2D_Right" type="RayCast2D" parent="."]
-position = Vector2(23, -15)
-collision_mask = 4
+position = Vector2(27, -15)
+collision_mask = 14
 
 [node name="RayCast2D_Right2" type="RayCast2D" parent="."]
 position = Vector2(13, 0)

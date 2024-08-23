@@ -12,7 +12,7 @@ func add_state(name: String, state: State) -> void:
 	states[name] = state
 
 func change_state(name: String) -> void:
-	print(name)
+	#print(name)
 	if current_state:
 		current_state.exit_state(player)
 	current_state = states[name]
