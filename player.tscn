@@ -144,6 +144,7 @@ shape = SubResource("RectangleShape2D_qa0j5")
 sprite_frames = SubResource("SpriteFrames_vt1uo")
 animation = &"Walk"
 autoplay = "idle"
+frame_progress = 0.929717
 
 [node name="CodySprite" type="AnimatedSprite2D" parent="."]
 visible = false
