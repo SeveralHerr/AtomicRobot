@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://csmg52xs05d1e"]
+[gd_scene load_steps=18 format=3 uid="uid://csmg52xs05d1e"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_ncv2v"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_rc65t"]
@@ -13,10 +13,6 @@ region = Rect2(304, 48, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_c4swc"]
 atlas = ExtResource("1_rc65t")
 region = Rect2(336, 48, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_1npsc"]
-atlas = ExtResource("1_rc65t")
-region = Rect2(368, 48, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hfd04"]
 atlas = ExtResource("1_rc65t")
@@ -49,14 +45,11 @@ region = Rect2(304, 16, 16, 32)
 [sub_resource type="SpriteFrames" id="SpriteFrames_vt1uo"]
 animations = [{
 "frames": [{
-"duration": 0.4,
+"duration": 1.2,
 "texture": SubResource("AtlasTexture_fi2y2")
 }, {
-"duration": 0.4,
+"duration": 1.9,
 "texture": SubResource("AtlasTexture_c4swc")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_1npsc")
 }],
 "loop": false,
 "name": &"Attack",
@@ -142,9 +135,10 @@ shape = SubResource("RectangleShape2D_qa0j5")
 
 [node name="DefaultSprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_vt1uo")
-animation = &"Walk"
+animation = &"Attack"
 autoplay = "idle"
-frame_progress = 0.932823
+frame = 1
+frame_progress = 1.0
 
 [node name="CodySprite" type="AnimatedSprite2D" parent="."]
 visible = false
