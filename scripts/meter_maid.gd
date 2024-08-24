@@ -12,6 +12,7 @@ const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
 @onready var range_area_2d: Area2D = $RangeArea2D
 @onready var timer: Timer = $Timer
 @onready var coin_audio_player: AudioStreamPlayer2D = $CoinAudioPlayer
+@onready var navigation_agent_2d: NavigationAgent2D = $NavigationAgent2D
 
 var direction: int = -1
 var speed: int = 50

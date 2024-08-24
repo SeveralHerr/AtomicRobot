@@ -3,63 +3,6 @@
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_sk1lv"]
 [ext_resource type="Script" path="res://scripts/meter_maid.gd" id="1_wr56e"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_m52b6"]
-atlas = ExtResource("1_sk1lv")
-region = Rect2(288, 16, 16, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ht5vs"]
-atlas = ExtResource("1_sk1lv")
-region = Rect2(304, 16, 16, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_wrh0y"]
-atlas = ExtResource("1_sk1lv")
-region = Rect2(288, 16, 16, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_h5s78"]
-atlas = ExtResource("1_sk1lv")
-region = Rect2(320, 16, 16, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_wtc2l"]
-atlas = ExtResource("1_sk1lv")
-region = Rect2(336, 16, 16, 32)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_6ep00"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_m52b6")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ht5vs")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_m52b6")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ht5vs")
-}],
-"loop": false,
-"name": &"Idle",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_wrh0y")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_h5s78")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_wrh0y")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_wtc2l")
-}],
-"loop": true,
-"name": &"Walk",
-"speed": 5.0
-}]
-
 [sub_resource type="CircleShape2D" id="CircleShape2D_xhc3y"]
 radius = 10.2956
 
@@ -76,15 +19,58 @@ packet_sequence = SubResource("OggPacketSequence_k2k1p")
 loop = true
 loop_offset = 5.0
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_tewpd"]
+atlas = ExtResource("1_sk1lv")
+region = Rect2(480, 48, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ky1xm"]
+atlas = ExtResource("1_sk1lv")
+region = Rect2(480, 48, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s8h7x"]
+atlas = ExtResource("1_sk1lv")
+region = Rect2(496, 48, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v1uc5"]
+atlas = ExtResource("1_sk1lv")
+region = Rect2(512, 48, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0u11b"]
+atlas = ExtResource("1_sk1lv")
+region = Rect2(528, 48, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6ep00"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tewpd")
+}],
+"loop": false,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ky1xm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s8h7x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v1uc5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0u11b")
+}],
+"loop": true,
+"name": &"Walk",
+"speed": 5.0
+}]
+
 [node name="MeterMaid" type="CharacterBody2D"]
 collision_layer = 0
 collision_mask = 8
 script = ExtResource("1_wr56e")
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-sprite_frames = SubResource("SpriteFrames_6ep00")
-animation = &"Walk"
-autoplay = "Walk"
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 0
@@ -128,3 +114,13 @@ shape = SubResource("CircleShape2D_xhc3y")
 
 [node name="CoinAudioPlayer" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamOggVorbis_vhpx8")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_6ep00")
+animation = &"Walk"
+autoplay = "Walk"
+frame_progress = 0.236383
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+simplify_path = true
+debug_path_custom_color = Color(1, 0, 1, 1)
