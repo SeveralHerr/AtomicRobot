@@ -112,7 +112,7 @@ stream = SubResource("AudioStreamOggVorbis_vhpx8")
 sprite_frames = SubResource("SpriteFrames_6ep00")
 animation = &"Walk"
 autoplay = "Walk"
-frame_progress = 0.522703
+frame_progress = 0.0729476
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 simplify_path = true
