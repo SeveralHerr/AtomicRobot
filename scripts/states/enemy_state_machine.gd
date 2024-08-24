@@ -7,6 +7,12 @@ var enemy: Enemy
 
 func _init(enemy: Enemy) -> void:
 	self.enemy = enemy
+	
+func _ready() -> void:
+	Globals.player_death.connect(_on_player_death)
+	
+func _on_player_death() -> void:
+	change_state("PatrolState")
 
 func add_state(name: String, state: EnemyState) -> void:
 	states[name] = state
@@ -25,3 +31,7 @@ func handle_input(event: InputEvent) -> void:
 func update(delta: float) -> void:
 	if current_state:
 		current_state.update(enemy, delta)
+		
+func physics_update(delta: float) -> void:
+	if current_state:
+		current_state.physics_update(delta)

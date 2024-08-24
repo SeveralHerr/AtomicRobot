@@ -12,7 +12,7 @@ func _check(body: Node2D) -> void:
 
 func enter_state(new_enemy: Enemy) -> void:
 	enemy = new_enemy
-	meter = Config.nearest_meter(enemy.position)
+	meter = Globals.nearest_meter(enemy.position)
 	stand_still = false
 	
 	enemy.navigation_agent_2d.set_target_position(meter.position)

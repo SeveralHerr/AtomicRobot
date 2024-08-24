@@ -5,6 +5,8 @@ class_name Player
 @onready var area_2d: Area2D = $Area2D
 @onready var collision_shape_2d: CollisionShape2D = $Area2D/CollisionShape2D
 
+var is_dead: bool = false
+
 
 const SPEED = 100.0
 const JUMP_VELOCITY = -600.0
@@ -17,7 +19,7 @@ func _input(event: InputEvent) -> void:
 	state_machine.handle_input(event)
 
 func _ready() -> void:
-	Config.player = self
+	Globals.player = self
 	state_machine = StateMachine.new(self)
 	state_machine.add_state("IdleState", IdleState.new())
 	state_machine.add_state("JumpState", JumpState.new())
@@ -26,6 +28,8 @@ func _ready() -> void:
 	state_machine.add_state("DeadState", DeadState.new())
 	
 	state_machine.change_state("IdleState")
+	
+	
 		
 func _process(delta: float) -> void:
 	if not is_on_floor():
@@ -37,7 +41,7 @@ func _process(delta: float) -> void:
 		
 	
 func receive_hit() -> void:
-	if Config.player.state_machine.current_state is DeadState: 
+	if is_dead:
 		return
 
 	state_machine.change_state("DeadState")

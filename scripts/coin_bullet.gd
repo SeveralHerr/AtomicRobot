@@ -17,12 +17,12 @@ func _ready() -> void:
 	area_2d.body_entered.connect(_hit)
 	coin_audio_player.play()
 	
-	direction = (Config.player.position - position).normalized()
+	direction = (Globals.player.position - position).normalized()
 	await get_tree().create_timer(5).timeout
 	queue_free()
 
 func _hit(body: Node2D) -> void:
 	if body is Player:
 		#print("hit")
-		Config.player.receive_hit()
+		Globals.player.receive_hit()
 	queue_free()

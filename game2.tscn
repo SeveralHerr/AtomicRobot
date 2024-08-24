@@ -180,6 +180,12 @@ position = Vector2(159, 19)
 [node name="Crate2" parent="Objects" instance=ExtResource("6_kx8su")]
 position = Vector2(175, 19)
 
+[node name="Crate5" parent="Objects" instance=ExtResource("6_kx8su")]
+position = Vector2(524, 1)
+
+[node name="Crate6" parent="Objects" instance=ExtResource("6_kx8su")]
+position = Vector2(425, 1)
+
 [node name="Crate3" parent="Objects" instance=ExtResource("6_kx8su")]
 position = Vector2(159, 3)
 

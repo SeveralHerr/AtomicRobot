@@ -12,7 +12,7 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if $Indicator.visible: 
 		if event.is_action_pressed("ui_down"):
-			Config.cody_unlocked = true
+			Globals.cody_unlocked = true
 			print("Unlocked Cody")
 			
 			queue_free()

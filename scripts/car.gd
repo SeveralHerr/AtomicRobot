@@ -15,8 +15,8 @@ func _physics_process(delta: float) -> void:
 	position.x -= delta * 200
 	
 func _process(delta: float) -> void:
-	if position.x <= Config.player.position.x - 2000:
-		position.x = Config.player.position.x +2000
+	if position.x <= Globals.player.position.x - 2000:
+		position.x = Globals.player.position.x +2000
 		
 	shaker.process(delta)
 

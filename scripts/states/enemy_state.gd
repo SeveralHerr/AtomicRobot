@@ -15,3 +15,6 @@ func handle_input(enemy: Enemy, event: InputEvent) -> void:
 
 func update(enemy: Enemy, delta: float) -> void:
 	pass
+	
+func physics_update(delta: float) -> void:
+	pass
