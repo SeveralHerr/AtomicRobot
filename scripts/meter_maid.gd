@@ -35,6 +35,12 @@ func _ready() -> void:
 	enemy_state_machine.add_state("FindMeterState", FindMeterState.new())
 	
 	enemy_state_machine.change_state("PatrolState")
+	Globals.player_death.connect(_on_player_death)
+
+	
+func _on_player_death() -> void:
+	print("Player died, changing state...")
+	enemy_state_machine.change_state("PatrolState")
 
 func _process(delta: float) -> void:
 	if not is_on_floor():

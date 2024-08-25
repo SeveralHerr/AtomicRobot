@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=4 uid="uid://cpybghw0k54ni"]
+[gd_scene load_steps=13 format=4 uid="uid://cpybghw0k54ni"]
 
 [ext_resource type="TileSet" uid="uid://cdnenrt36tsrv" path="res://Tiles/asset_tiles.tres" id="1_t7arr"]
 [ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://Tiles/custom_tiles.png" id="2_78e6q"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://csis0b6hdasqr" path="res://scenes/meter_maid.tscn" id="4_c1cju"]
 [ext_resource type="PackedScene" uid="uid://bsmabxobj7kwp" path="res://scenes/crate.tscn" id="6_kx8su"]
 [ext_resource type="Script" path="res://restart_ui.gd" id="8_camw6"]
+[ext_resource type="AudioStream" uid="uid://dky8clf8g64kv" path="res://sounds/time_for_adventure.mp3" id="9_go3em"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kwxwe"]
 atlas = ExtResource("2_78e6q")
@@ -241,3 +242,9 @@ script = ExtResource("8_camw6")
 layout_mode = 2
 text = "RESTART
 "
+
+[node name="Audio" type="Node" parent="."]
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Audio"]
+stream = ExtResource("9_go3em")
+autoplay = true

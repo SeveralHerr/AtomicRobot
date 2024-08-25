@@ -9,7 +9,7 @@ func enter_state(player: Player) -> void:
 	player.default_sprite.animation_finished.connect(_on_animation_finished)
 
 	
-
+	player.attack_audio_player.play()
 	
 	await player.get_tree().create_timer(0.1).timeout
 	var areas = Globals.player.area_2d.get_overlapping_areas()

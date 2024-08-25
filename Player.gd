@@ -4,6 +4,9 @@ class_name Player
 @onready var default_sprite: AnimatedSprite2D = $DefaultSprite
 @onready var area_2d: Area2D = $Area2D
 @onready var collision_shape_2d: CollisionShape2D = $Area2D/CollisionShape2D
+@onready var jump_audio_player: AudioStreamPlayer2D = $JumpAudioPlayer
+@onready var hurt_audio_player: AudioStreamPlayer2D = $HurtAudioPlayer
+@onready var attack_audio_player: AudioStreamPlayer2D = $AttackAudioPlayer
 
 var is_dead: bool = false
 
@@ -43,5 +46,5 @@ func _process(delta: float) -> void:
 func receive_hit() -> void:
 	if is_dead:
 		return
-
+	hurt_audio_player.play()
 	state_machine.change_state("DeadState")

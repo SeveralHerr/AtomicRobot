@@ -7,12 +7,7 @@ var enemy: Enemy
 
 func _init(enemy: Enemy) -> void:
 	self.enemy = enemy
-	Globals.player_death.connect(_on_player_death)
 
-	
-func _on_player_death() -> void:
-	print("Player died, changing state...")
-	change_state("PatrolState")
 
 func add_state(name: String, state: EnemyState) -> void:
 	states[name] = state

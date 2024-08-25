@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://n5akfit43i"]
+[gd_scene load_steps=6 format=3 uid="uid://n5akfit43i"]
 
 [ext_resource type="Script" path="res://scripts/car.gd" id="1_sparu"]
 [ext_resource type="Texture2D" uid="uid://dr4h2bc6ecmy3" path="res://Tiles/mp_cs_tilemap_all.png" id="1_t1mka"]
+[ext_resource type="AudioStream" uid="uid://ldr7etppdvw1" path="res://sounds/car.ogg" id="3_1d6nu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ibw3s"]
 atlas = ExtResource("1_t1mka")
@@ -21,3 +22,12 @@ texture = SubResource("AtlasTexture_ibw3s")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(-1.5, 8)
 shape = SubResource("RectangleShape2D_hsf1j")
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+position = Vector2(22.5, 5.50001)
+scale = Vector2(19.45, 14.15)
+enable_node_path = NodePath("../AudioStreamPlayer2D")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_1d6nu")
+autoplay = true

@@ -1,7 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://csmg52xs05d1e"]
+[gd_scene load_steps=21 format=3 uid="uid://csmg52xs05d1e"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_ncv2v"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_rc65t"]
+[ext_resource type="AudioStream" uid="uid://cdvwrp2suj31r" path="res://sounds/jump.wav" id="3_73a41"]
+[ext_resource type="AudioStream" uid="uid://cu2ft4k3uwd2u" path="res://sounds/hurt.wav" id="4_mkmka"]
+[ext_resource type="AudioStream" uid="uid://c5gk8xvel2tsp" path="res://sounds/hit3.ogg" id="5_hoc3m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qa0j5"]
 size = Vector2(14, 28)
@@ -45,15 +48,15 @@ region = Rect2(304, 16, 16, 32)
 [sub_resource type="SpriteFrames" id="SpriteFrames_vt1uo"]
 animations = [{
 "frames": [{
-"duration": 1.2,
+"duration": 0.8,
 "texture": SubResource("AtlasTexture_fi2y2")
 }, {
-"duration": 1.9,
+"duration": 1.1,
 "texture": SubResource("AtlasTexture_c4swc")
 }],
 "loop": false,
 "name": &"Attack",
-"speed": 6.0
+"speed": 12.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -135,8 +138,10 @@ shape = SubResource("RectangleShape2D_qa0j5")
 
 [node name="DefaultSprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_vt1uo")
-animation = &"Walk"
+animation = &"Attack"
 autoplay = "idle"
+frame = 1
+frame_progress = 1.0
 
 [node name="CodySprite" type="AnimatedSprite2D" parent="."]
 visible = false
@@ -153,3 +158,12 @@ monitorable = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(6, 0)
 shape = SubResource("CircleShape2D_sv8s5")
+
+[node name="JumpAudioPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_73a41")
+
+[node name="HurtAudioPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_mkmka")
+
+[node name="AttackAudioPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_hoc3m")

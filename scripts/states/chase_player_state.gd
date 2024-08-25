@@ -16,6 +16,8 @@ func enter_state(new_enemy: Enemy) -> void:
 	if not enemy.range_timer.timeout.is_connected(_check_range):
 		enemy.range_timer.timeout.connect(_check_range)
 		
+	ChatBubble.create(enemy, "I'LL GET YOU!")
+		
 	enemy.timer.start()
 
 		
@@ -32,6 +34,7 @@ func _check_range() -> void:
 	
 	print("check range")
 	if not enemy.line_of_sight.is_player_line_of_sight():
+		ChatBubble.create(enemy, "LOST HIM.")
 		enemy.enemy_state_machine.change_state("PatrolState")
 
 func update(enemy: Enemy, delta: float) -> void:

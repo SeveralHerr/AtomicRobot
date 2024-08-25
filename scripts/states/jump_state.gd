@@ -6,6 +6,7 @@ const ACCELERATION = 500.0  # Adjust as needed for smoother acceleration
 func enter_state(player: Player) -> void:
 	player.velocity.y = -350.0
 	player.default_sprite.play("Jump")
+	player.jump_audio_player.play()
 
 func update(player: Player, delta: float) -> void:
 	if player.is_on_floor() and player.velocity.y >= -100:
