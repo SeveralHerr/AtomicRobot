@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3 uid="uid://dqf1ot3uhuul7"]
+
+[ext_resource type="Texture2D" uid="uid://c6qj2s14gh231" path="res://images/chatbubble.png" id="1_ydwr7"]
+[ext_resource type="FontFile" uid="uid://dx3iudetbksmy" path="res://Pixeled.ttf" id="2_300vo"]
+
+[sub_resource type="FontVariation" id="FontVariation_8vsok"]
+base_font = ExtResource("2_300vo")
+spacing_bottom = -4
+baseline_offset = -0.21
+
+[sub_resource type="LabelSettings" id="LabelSettings_ouaqp"]
+line_spacing = 0.0
+font = SubResource("FontVariation_8vsok")
+font_size = 5
+font_color = Color(0, 0, 0.117647, 1)
+shadow_color = Color(0, 0, 0, 0.223529)
+shadow_offset = Vector2(0.5, 1)
+
+[node name="ChatBubble" type="CenterContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="NinePatchRect" type="NinePatchRect" parent="PanelContainer"]
+layout_mode = 2
+texture = ExtResource("1_ydwr7")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "OH NO, I RAN OUT OF QUARTERS"
+label_settings = SubResource("LabelSettings_ouaqp")
+horizontal_alignment = 1
+vertical_alignment = 1

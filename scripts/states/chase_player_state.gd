@@ -18,6 +18,7 @@ func enter_state(new_enemy: Enemy) -> void:
 		enemy.range_timer.timeout.connect(_check_range)
 		
 	enemy.timer.start()
+
 		
 func exit_state(enemy: Enemy) -> void:
 	if enemy.timer.timeout.is_connected(_create_bullet):
@@ -37,7 +38,6 @@ func _check_range() -> void:
 func update(enemy: Enemy, delta: float) -> void:
 	if stand_still:
 		enemy.velocity.x = 0
-		enemy.animated_sprite_2d.pause()
 		return 
 		
 	dir = (Globals.player.position - enemy.position).normalized()
@@ -62,8 +62,6 @@ func _create_bullet() -> void:
 	stand_still = false
 	
 	if Globals.player.is_dead:
-		return
-	elif not enemy.line_of_sight.is_player_line_of_sight():
 		return
 	
 	var instance = enemy.COIN_BULLET.instantiate()

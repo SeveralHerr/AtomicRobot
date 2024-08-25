@@ -3,13 +3,13 @@ class_name Enemy
 
 const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
 
+
 @onready var ray_cast_2d_left: RayCast2D = $RayCast2D_Left
 @onready var ray_cast_2d_right: RayCast2D = $RayCast2D_Right
 @onready var ray_cast_2d_left2: RayCast2D = $RayCast2D_Left2
 @onready var ray_cast_2d_right2: RayCast2D = $RayCast2D_Right2
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 @onready var area_2d: Area2D = $Area2D
-@onready var range_area_2d: Area2D = $RangeArea2D
 @onready var timer: Timer = $Timer
 @onready var coin_audio_player: AudioStreamPlayer2D = $CoinAudioPlayer
 @onready var navigation_agent_2d: NavigationAgent2D = $NavigationAgent2D

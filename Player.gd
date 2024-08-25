@@ -9,7 +9,7 @@ var is_dead: bool = false
 
 
 const SPEED = 100.0
-const JUMP_VELOCITY = -600.0
+const JUMP_VELOCITY = -650.0
 var state_machine: StateMachine
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.

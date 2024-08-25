@@ -2,8 +2,8 @@ extends State
 class_name DeadState
 
 func enter_state(player: Player) -> void:
-	#if Globals.player.state_machine.current_state is DeadState:
-	#	return
+	if player.is_dead:
+		return
 	
 	Globals.player.is_dead = true
 	Globals.player_death.emit()

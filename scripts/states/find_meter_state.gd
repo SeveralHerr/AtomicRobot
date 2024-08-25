@@ -17,6 +17,7 @@ func enter_state(new_enemy: Enemy) -> void:
 	
 	enemy.navigation_agent_2d.set_target_position(meter.position)
 	
+	ChatBubble.create(enemy, "OH NO! I NEED MORE QUARTERS.")
 	
 func exit_state(enemy: Enemy) -> void:
 
@@ -77,10 +78,8 @@ func _delayed_handle_state() -> void:
 	_handle_state()
 
 func _handle_state() -> void:
-	var bodies = enemy.range_area_2d.get_overlapping_bodies()
-	for body in bodies: 
-		if body is Player:
-			enemy.enemy_state_machine.change_state("ChasePlayerState")
-			return
+	if enemy.line_of_sight.is_player_line_of_sight():
+		enemy.enemy_state_machine.change_state("ChasePlayerState")
+		return
 			
 	enemy.enemy_state_machine.change_state("PatrolState")
