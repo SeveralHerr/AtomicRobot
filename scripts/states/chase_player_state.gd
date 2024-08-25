@@ -9,7 +9,6 @@ func enter_state(new_enemy: Enemy) -> void:
 	enemy = new_enemy
 	enemy.velocity.x = 0
 	stand_still = false
-
 		
 	if not enemy.timer.timeout.is_connected(_create_bullet):
 		enemy.timer.timeout.connect(_create_bullet)
@@ -55,17 +54,17 @@ func _create_bullet() -> void:
 		enemy.enemy_state_machine.change_state("FindMeterState")
 		return	
 		
-
-	stand_still = true
-	#enemy.animated_sprite_2d.play("Idle")
-	await enemy.node.get_tree().create_timer(0.5).timeout
-	stand_still = false
 	
-	if Globals.player.is_dead:
-		return
+	stand_still = true
+	enemy.animated_sprite_2d.animation_finished.connect(throw_coin)
+	enemy.animated_sprite_2d.play("ThrowCoin")
+	
+func throw_coin() -> void:
+	stand_still = false
+	enemy.animated_sprite_2d.animation_finished.disconnect(throw_coin)
 	
 	var instance = enemy.COIN_BULLET.instantiate()
-
 	enemy.coins -= 1
 	enemy.node.call_deferred("add_child", instance)
-	instance.position = enemy.position
+	instance.position = enemy.position + enemy.coin_spawn_point.position
+	enemy.animated_sprite_2d.play("Walk")

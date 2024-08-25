@@ -24,7 +24,7 @@ func exit_state(enemy: Enemy) -> void:
 	#enemy.animated_sprite_2d.play("Idle")
 
 	stand_still= false
-	enemy.animated_sprite_2d.play()
+	enemy.animated_sprite_2d.play("Walk")
 	enemy.coin_audio_player.stop()	
 
 func update(enemy: Enemy, delta: float) -> void:
@@ -47,6 +47,7 @@ func update(enemy: Enemy, delta: float) -> void:
 		enemy.navigation_agent_2d.set_target_position(enemy.global_position)
 		
 		enemy.coin_audio_player.play()
+		enemy.animated_sprite_2d.play("ShakeMeter")
 		
 		enemy.velocity.x = 0
 		call_deferred("_delayed_handle_state")

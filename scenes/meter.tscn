@@ -55,6 +55,7 @@ animations = [{
 script = ExtResource("1_24d3b")
 
 [node name="CoinParticles" type="CPUParticles2D" parent="."]
+visible = false
 position = Vector2(0, -12)
 amount = 10
 explosiveness = 1.0

@@ -7,6 +7,11 @@ var cody_selected: bool = false
 var player: Player
 var meters: Array
 
+func reset() -> void:
+	cody_selected = false
+	meters.clear()
+	
+
 func nearest_meter(pos: Vector2) -> Node2D:
 	var lowest_distance = 32323  
 	var nearest_meter: Node2D = null 

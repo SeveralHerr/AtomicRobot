@@ -5,7 +5,7 @@ extends Node2D
 
 var node: Node2D
 # Speed at which the bullet moves
-var bullet_speed: float = 70.0
+var bullet_speed: float = 140.0
 var original_position: Vector2
 var direction
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://csis0b6hdasqr"]
+[gd_scene load_steps=20 format=4 uid="uid://csis0b6hdasqr"]
 
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_sk1lv"]
 [ext_resource type="Script" path="res://scripts/meter_maid.gd" id="1_wr56e"]
@@ -20,6 +20,34 @@ loop_offset = 5.0
 [sub_resource type="AtlasTexture" id="AtlasTexture_tewpd"]
 atlas = ExtResource("1_sk1lv")
 region = Rect2(480, 48, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k3stv"]
+atlas = ExtResource("1_sk1lv")
+region = Rect2(480, 80, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qqmcc"]
+atlas = ExtResource("1_sk1lv")
+region = Rect2(496, 80, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1e06a"]
+atlas = ExtResource("1_sk1lv")
+region = Rect2(512, 80, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_omwc4"]
+atlas = ExtResource("1_sk1lv")
+region = Rect2(528, 80, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5gpr1"]
+atlas = ExtResource("1_sk1lv")
+region = Rect2(480, 112, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1ash"]
+atlas = ExtResource("1_sk1lv")
+region = Rect2(496, 112, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qs4uq"]
+atlas = ExtResource("1_sk1lv")
+region = Rect2(512, 112, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ky1xm"]
 atlas = ExtResource("1_sk1lv")
@@ -45,6 +73,49 @@ animations = [{
 }],
 "loop": false,
 "name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k3stv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qqmcc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1e06a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_omwc4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k3stv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qqmcc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1e06a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_omwc4")
+}],
+"loop": false,
+"name": &"ShakeMeter",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_5gpr1")
+}, {
+"duration": 0.6,
+"texture": SubResource("AtlasTexture_f1ash")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qs4uq")
+}],
+"loop": false,
+"name": &"ThrowCoin",
 "speed": 5.0
 }, {
 "frames": [{
@@ -110,9 +181,8 @@ stream = SubResource("AudioStreamOggVorbis_vhpx8")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_6ep00")
-animation = &"Walk"
+animation = &"ThrowCoin"
 autoplay = "Walk"
-frame_progress = 0.409635
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 simplify_path = true
@@ -124,3 +194,6 @@ script = ExtResource("3_whrlv")
 [node name="RangeTimer" type="Timer" parent="."]
 wait_time = 3.0
 autostart = true
+
+[node name="CoinSpawnPoint" type="Node2D" parent="."]
+position = Vector2(0, 7)

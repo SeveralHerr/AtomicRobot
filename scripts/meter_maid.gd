@@ -3,6 +3,7 @@ class_name Enemy
 
 const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
 
+@onready var coin_spawn_point: Node2D = $CoinSpawnPoint
 
 @onready var ray_cast_2d_left: RayCast2D = $RayCast2D_Left
 @onready var ray_cast_2d_right: RayCast2D = $RayCast2D_Right
@@ -21,7 +22,7 @@ var direction: int = -1
 var speed: int = 50
 var target: Node2D = null
 var coins: int = 4
-var node: Node2D
+var node: Node
 
 var enemy_state_machine: EnemyStateMachine
 
