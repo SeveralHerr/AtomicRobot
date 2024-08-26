@@ -5,6 +5,8 @@ extends Control
 @onready var attack_ui: CenterContainer = $AttackButton
 @onready var jump_button: Button = $JumpButton/Button
 @onready var attack_button: Button = $AttackButton/Button
+@onready var crouch_ui: CenterContainer = $CrouchUI
+@onready var crouch_button: Button = $CrouchUI/Button
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -19,21 +21,21 @@ func _ready() -> void:
 	if not virtual_joystick_2.visible:
 		jump_ui.hide()
 		attack_ui.hide()
+		crouch_button.hide()
 	else:
 		jump_button.pressed.connect(_on_jump)
 		attack_button.pressed.connect(_on_attack)
+		crouch_button.pressed.connect(_on_crouch)
 
 func _on_jump() -> void:
-	var custom_event = InputEventAction.new()
-	custom_event.action = "ui_accept" 
-	custom_event.pressed = true  
-	Input.parse_input_event(custom_event)
+	trigger(true, "ui_accept")
 
 func _on_attack() -> void:
-	var custom_event = InputEventAction.new()
-	custom_event.action = "Attack" 
-	custom_event.pressed = true  
-	Input.parse_input_event(custom_event)
+	trigger(true, "Attack")
+	
+func _on_crouch() -> void:
+	trigger(true, "ui_down")
+	pass
 	
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
@@ -43,14 +45,21 @@ func _input(event: InputEvent) -> void:
 				_on_jump()
 			if attack_button.get_global_rect().has_point(touch_pos):
 				_on_attack()
+			if crouch_button.get_global_rect().has_point(touch_pos):
+				_on_crouch()
 		else:
-			var custom_event = InputEventAction.new()
-			custom_event.action = "ui_accept" 
-			custom_event.pressed = false  
-			Input.parse_input_event(custom_event)
+			trigger(false, "ui_accept")
+			jump_button.release_focus()
 
-			custom_event = InputEventAction.new()
-			custom_event.action = "Attack" 
-			custom_event.pressed = false  
-			Input.parse_input_event(custom_event)
+			trigger(false, "Attack")
+			attack_button.release_focus()
+			
+			trigger(false, "ui_down")
+			crouch_button.release_focus()
+			
+func trigger(status: bool, input_name: String) -> void:
+	var custom_event = InputEventAction.new()
+	custom_event.action = input_name
+	custom_event.pressed = status  
+	Input.parse_input_event(custom_event)
 	

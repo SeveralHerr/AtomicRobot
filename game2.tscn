@@ -344,38 +344,61 @@ offset_top = 16.1667
 offset_right = 115.5
 offset_bottom = 316.167
 scale = Vector2(0.3, 0.3)
-visibility_mode = 1
 
 [node name="JumpButton" type="CenterContainer" parent="UI/UIContainer/MobileUI"]
-custom_minimum_size = Vector2(30, 30)
+custom_minimum_size = Vector2(50, 50)
 layout_mode = 0
-offset_left = 121.667
-offset_top = 53.3333
-offset_right = 161.667
-offset_bottom = 93.3333
+offset_left = 135.167
+offset_top = 49.5
+offset_right = 185.167
+offset_bottom = 99.5
 
 [node name="TextureRect2" type="TextureRect" parent="UI/UIContainer/MobileUI/JumpButton"]
-custom_minimum_size = Vector2(20, 20)
+custom_minimum_size = Vector2(40, 50)
 layout_mode = 2
 texture = ExtResource("18_mxkpc")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="Button" type="Button" parent="UI/UIContainer/MobileUI/JumpButton"]
-custom_minimum_size = Vector2(30, 30)
+custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 theme = SubResource("Theme_l51kk")
 
 [node name="PanelContainer" type="PanelContainer" parent="UI/UIContainer/MobileUI/JumpButton"]
 layout_mode = 2
 
+[node name="CrouchUI" type="CenterContainer" parent="UI/UIContainer/MobileUI"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 0
+offset_left = 112.167
+offset_top = 18.1667
+offset_right = 152.167
+offset_bottom = 58.1667
+
+[node name="TextureRect2" type="TextureRect" parent="UI/UIContainer/MobileUI/CrouchUI"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("18_mxkpc")
+expand_mode = 1
+stretch_mode = 5
+flip_v = true
+
+[node name="Button" type="Button" parent="UI/UIContainer/MobileUI/CrouchUI"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+theme = SubResource("Theme_l51kk")
+
+[node name="PanelContainer" type="PanelContainer" parent="UI/UIContainer/MobileUI/CrouchUI"]
+layout_mode = 2
+
 [node name="AttackButton" type="CenterContainer" parent="UI/UIContainer/MobileUI"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 0
-offset_left = 142.667
-offset_top = 22.0
-offset_right = 182.667
-offset_bottom = 62.0
+offset_left = 149.167
+offset_top = 8.16667
+offset_right = 189.167
+offset_bottom = 48.1667
 
 [node name="TextureRect2" type="TextureRect" parent="UI/UIContainer/MobileUI/AttackButton"]
 custom_minimum_size = Vector2(20, 20)
