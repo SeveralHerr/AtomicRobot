@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=4 uid="uid://cpybghw0k54ni"]
+[gd_scene load_steps=38 format=4 uid="uid://cpybghw0k54ni"]
 
 [ext_resource type="TileSet" uid="uid://cdnenrt36tsrv" path="res://Tiles/asset_tiles.tres" id="1_t7arr"]
 [ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://Tiles/custom_tiles.png" id="2_78e6q"]
@@ -18,8 +18,10 @@
 [ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://AldotheApache.ttf" id="13_qf0uw"]
 [ext_resource type="Script" path="res://scripts/secret_sign.gd" id="13_u2sts"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="14_vji4j"]
+[ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="15_2mtah"]
 [ext_resource type="Script" path="res://scripts/audio.gd" id="15_7bdc4"]
 [ext_resource type="Script" path="res://scripts/spin.gd" id="15_f448e"]
+[ext_resource type="Script" path="res://scripts/mobile_ui.gd" id="15_t8g1g"]
 [ext_resource type="AudioStream" uid="uid://cwpmodnmtuvfe" path="res://sounds/boss.wav" id="17_0i58p"]
 [ext_resource type="AudioStream" uid="uid://b67d36asjuw6b" path="res://sounds/Unlock.wav" id="20_70k3o"]
 
@@ -380,6 +382,21 @@ label_settings = SubResource("LabelSettings_m33t0")
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="MobileUI" type="Control" parent="UI/UIContainer"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("15_t8g1g")
+
+[node name="Virtual Joystick2" parent="UI/UIContainer/MobileUI" instance=ExtResource("15_2mtah")]
+visible = false
+layout_mode = 1
+offset_left = -175.0
+offset_top = -34.3333
+offset_right = 125.0
+offset_bottom = 265.667
+scale = Vector2(0.3, 0.3)
+
 [node name="Audio" type="Node" parent="."]
 script = ExtResource("15_7bdc4")
 
@@ -435,3 +452,5 @@ position = Vector2(81, -18)
 rotation = -1.5708
 shape = SubResource("RectangleShape2D_4mpkg")
 one_way_collision = true
+
+[editable path="UI/UIContainer/MobileUI/Virtual Joystick2"]

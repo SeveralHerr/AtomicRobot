@@ -25,10 +25,7 @@ var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 func _input(event: InputEvent) -> void:
 	state_machine.handle_input(event)
 	
-	if event.is_action("Interact"):
-		Globals.meter_maids_killed += 1
-		Globals.meter_maid_death.emit()
-		default_sprite.play("Crouch")
+
 
 func _ready() -> void:
 	Globals.player = self
