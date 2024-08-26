@@ -44,14 +44,15 @@ func _on_player_death() -> void:
 	enemy_state_machine.change_state("PatrolState")
 
 func _process(delta: float) -> void:
-	if not is_on_floor():
-		velocity.y += 300 * delta
-
 	enemy_state_machine.update(delta)
-	move_and_slide()
+
 	
 func _physics_process(delta: float) -> void:
+	if not is_on_floor():
+		velocity.y += 300 * delta
+		
 	enemy_state_machine.physics_update(delta)
+	move_and_slide()
 	
 func receive_hit(damage: int) -> void:
 	ScreenShake.apply_shake(10)

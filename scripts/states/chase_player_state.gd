@@ -37,7 +37,9 @@ func _check_range() -> void:
 		ChatBubble.create(enemy, "LOST HIM.")
 		enemy.enemy_state_machine.change_state("PatrolState")
 
-func update(enemy: Enemy, delta: float) -> void:
+
+		
+func physics_update(delta: float) -> void:
 	if stand_still:
 		enemy.velocity.x = 0
 		return 
@@ -46,7 +48,7 @@ func update(enemy: Enemy, delta: float) -> void:
 	var dist = enemy.position.distance_to(Globals.player.position)
 	if dist > 8:
 		_update_sprite_direction(enemy)
-		enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)
+		enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)		
 		
 func _update_sprite_direction(enemy: Enemy) -> void:
 	enemy.animated_sprite_2d.flip_h = sign(dir.x) == -1

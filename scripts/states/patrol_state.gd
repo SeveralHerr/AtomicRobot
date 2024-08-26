@@ -27,7 +27,6 @@ func physics_update(delta: float) -> void:
 	if enemy.line_of_sight.is_player_line_of_sight():
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
 
-func update(enemy: Enemy, delta: float) -> void:
 	if not enemy.ray_cast_2d_left.is_colliding():
 		direction = 1
 	elif enemy.ray_cast_2d_left.is_colliding() and enemy.ray_cast_2d_left2.is_colliding() and direction == -1:
