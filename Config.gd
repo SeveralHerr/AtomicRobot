@@ -3,6 +3,7 @@ extends Node
 signal player_death
 signal meter_maid_death
 signal unlocked(name: String, description: String)
+signal boss_fight(status: bool)
 
 const DEFAULT_FRAMES = preload("res://Sprites/default_frames.tres")
 const DEFAULT_NAME: String = "Cody"

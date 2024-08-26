@@ -29,6 +29,7 @@ func _ready() -> void:
 	Globals.player_death.connect(_on_player_death)
 	timer.timeout.connect(_create_bullet)
 
+	Globals.boss_fight.emit(true)
 	
 func _on_player_death() -> void:
 	print("Player died, changing state...")
@@ -66,6 +67,7 @@ func receive_hit(damage: int) -> void:
 	health -= damage
 	
 	if health <= 0: 
+		Globals.boss_fight.emit(false)
 		call_deferred("queue_free")
 	
 	# Calculate knockback direction based on the player's position

@@ -14,6 +14,6 @@ func _process(delta: float) -> void:
 
 
 func _spawn_boss() -> void:
-	if Globals.meter_maids_killed >= 1:
+	if Globals.meter_maids_killed >= 2:
 		var instance = METER_MAID_BOSS.instantiate()
 		add_child(instance)
