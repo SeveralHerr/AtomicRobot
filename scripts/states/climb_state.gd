@@ -5,6 +5,7 @@ const ACCELERATION = 5000.0
 
 func enter_state(player: Player) -> void:
 	player.default_sprite.play("Climb")
+	player.velocity.x = 0
 	player.camera_2d.position_smoothing_enabled = false
 
 func exit_state(player: Player) -> void:

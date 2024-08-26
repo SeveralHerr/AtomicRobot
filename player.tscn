@@ -265,9 +265,10 @@ visible = false
 sprite_frames = SubResource("SpriteFrames_gtu8j")
 animation = &"idle"
 autoplay = "idle"
-frame_progress = 0.952101
+frame_progress = 0.860659
 
 [node name="JumpingStreakSprite" type="AnimatedSprite2D" parent="."]
+visible = false
 position = Vector2(0, 33)
 sprite_frames = SubResource("SpriteFrames_qydoc")
 frame = 2
