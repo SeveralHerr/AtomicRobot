@@ -339,10 +339,10 @@ script = ExtResource("15_t8g1g")
 
 [node name="Virtual Joystick2" parent="UI/UIContainer/MobileUI" instance=ExtResource("15_2mtah")]
 layout_mode = 1
-offset_left = -175.0
-offset_top = -34.3333
-offset_right = 125.0
-offset_bottom = 265.667
+offset_left = -184.5
+offset_top = 16.1667
+offset_right = 115.5
+offset_bottom = 316.167
 scale = Vector2(0.3, 0.3)
 visibility_mode = 1
 
