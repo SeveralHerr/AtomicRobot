@@ -1,7 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://dqf1ot3uhuul7"]
+[gd_scene load_steps=6 format=3 uid="uid://dqf1ot3uhuul7"]
 
 [ext_resource type="Texture2D" uid="uid://c6qj2s14gh231" path="res://images/chatbubble.png" id="1_ydwr7"]
 [ext_resource type="FontFile" uid="uid://dx3iudetbksmy" path="res://Pixeled.ttf" id="2_300vo"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3w7au"]
+texture = ExtResource("1_ydwr7")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
 
 [sub_resource type="FontVariation" id="FontVariation_h5ofh"]
 base_font = ExtResource("2_300vo")
@@ -24,10 +31,11 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-self_modulate = Color(1, 1, 1, 0)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_3w7au")
 
 [node name="NinePatchRect" type="NinePatchRect" parent="PanelContainer"]
+visible = false
 layout_mode = 2
 texture = ExtResource("1_ydwr7")
 patch_margin_left = 10
