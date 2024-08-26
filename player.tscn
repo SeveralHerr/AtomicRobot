@@ -1,10 +1,13 @@
-[gd_scene load_steps=21 format=3 uid="uid://csmg52xs05d1e"]
+[gd_scene load_steps=24 format=3 uid="uid://csmg52xs05d1e"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_ncv2v"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_rc65t"]
 [ext_resource type="AudioStream" uid="uid://cdvwrp2suj31r" path="res://sounds/jump.wav" id="3_73a41"]
 [ext_resource type="AudioStream" uid="uid://cu2ft4k3uwd2u" path="res://sounds/hurt.wav" id="4_mkmka"]
 [ext_resource type="AudioStream" uid="uid://c5gk8xvel2tsp" path="res://sounds/hit3.ogg" id="5_hoc3m"]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_pkmq5"]
+polygon = PackedVector2Array(-4, -10, -4, 14, -3, 14, -3, -10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qa0j5"]
 size = Vector2(14, 28)
@@ -16,6 +19,14 @@ region = Rect2(304, 48, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_c4swc"]
 atlas = ExtResource("1_rc65t")
 region = Rect2(336, 48, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_claop"]
+atlas = ExtResource("1_rc65t")
+region = Rect2(288, 112, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0373m"]
+atlas = ExtResource("1_rc65t")
+region = Rect2(304, 112, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hfd04"]
 atlas = ExtResource("1_rc65t")
@@ -57,6 +68,17 @@ animations = [{
 "loop": false,
 "name": &"Attack",
 "speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_claop")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0373m")
+}],
+"loop": true,
+"name": &"Climb",
+"speed": 3.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -132,16 +154,19 @@ radius = 14.0
 collision_layer = 257
 script = ExtResource("1_ncv2v")
 
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+visible = false
+occluder = SubResource("OccluderPolygon2D_pkmq5")
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 2)
 shape = SubResource("RectangleShape2D_qa0j5")
 
 [node name="DefaultSprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_vt1uo")
-animation = &"Attack"
+animation = &"Climb"
 autoplay = "idle"
-frame = 1
-frame_progress = 1.0
+frame_progress = 0.511423
 
 [node name="CodySprite" type="AnimatedSprite2D" parent="."]
 visible = false

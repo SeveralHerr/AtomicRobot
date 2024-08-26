@@ -5,7 +5,16 @@ signal player_death
 var cody_unlocked: bool = false
 var cody_selected: bool = false
 var player: Player
+var player_last_position
 var meters: Array
+
+var destroyed_nodes = {}
+
+func mark_node_destroyed(node_name: String) -> void:
+	destroyed_nodes[node_name] = true
+
+func is_node_destroyed(node_name: String) -> bool:
+	return destroyed_nodes.get(node_name, false)
 
 func reset() -> void:
 	cody_selected = false

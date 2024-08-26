@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://c2gtnbb1samgp"]
+[gd_scene load_steps=13 format=3 uid="uid://c2gtnbb1samgp"]
 
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://player.tscn" id="1_6xlws"]
 [ext_resource type="Texture2D" uid="uid://dxgev3icsid34" path="res://images/powerlines.png" id="1_wluxf"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://HiddenCharacterUnlock.gd" id="5_wwurs"]
 [ext_resource type="Script" path="res://UI.gd" id="6_mbagu"]
 [ext_resource type="PackedScene" uid="uid://bukxpahwrlpsq" path="res://scenes/enemy.tscn" id="7_1um8e"]
+[ext_resource type="PackedScene" uid="uid://du5vce0l27auc" path="res://scenes/indicator.tscn" id="7_36408"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4020m"]
 texture = ExtResource("2_ont8s")
@@ -188,28 +189,6 @@ sources/0 = SubResource("TileSetAtlasSource_4020m")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_487sw"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_iblpq"]
-atlas = ExtResource("2_ont8s")
-region = Rect2(192, 16, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_8x614"]
-atlas = ExtResource("2_ont8s")
-region = Rect2(208, 16, 16, 16)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_kh8jw"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_iblpq")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_8x614")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
-
 [node name="Game" type="Node2D"]
 
 [node name="ParallaxBackground2" type="ParallaxBackground" parent="."]
@@ -294,11 +273,7 @@ script = ExtResource("5_wwurs")
 position = Vector2(47, 37)
 shape = SubResource("RectangleShape2D_487sw")
 
-[node name="Indicator" type="AnimatedSprite2D" parent="HiddenCharacterUnlock"]
-position = Vector2(47, 38)
-sprite_frames = SubResource("SpriteFrames_kh8jw")
-autoplay = "default"
-frame_progress = 0.80834
+[node name="Indicator" parent="HiddenCharacterUnlock" instance=ExtResource("7_36408")]
 
 [node name="UI" type="CanvasLayer" parent="."]
 script = ExtResource("6_mbagu")

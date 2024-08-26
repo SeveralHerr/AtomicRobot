@@ -7,6 +7,7 @@ class_name Player
 @onready var jump_audio_player: AudioStreamPlayer2D = $JumpAudioPlayer
 @onready var hurt_audio_player: AudioStreamPlayer2D = $HurtAudioPlayer
 @onready var attack_audio_player: AudioStreamPlayer2D = $AttackAudioPlayer
+@onready var camera_2d: Camera2D = $Camera2D
 
 var is_dead: bool = false
 
@@ -29,10 +30,20 @@ func _ready() -> void:
 	state_machine.add_state("AttackState", AttackState.new())
 	state_machine.add_state("WalkState", WalkState.new())
 	state_machine.add_state("DeadState", DeadState.new())
+	state_machine.add_state("ClimbState", ClimbState.new())
 	
 	state_machine.change_state("IdleState")
 	
 	
+func move_player() -> void:
+	camera_2d.position_smoothing_enabled = false
+
+	position = Globals.player_last_position
+
+	await get_tree().create_timer(0.5).timeout
+	camera_2d.position_smoothing_enabled = true
+	camera_2d.position_smoothing_speed = 5
+	Globals.player_last_position = null
 		
 func _process(delta: float) -> void:
 	if not is_on_floor():

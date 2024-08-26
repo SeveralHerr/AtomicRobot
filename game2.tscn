@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://cpybghw0k54ni"]
+[gd_scene load_steps=16 format=4 uid="uid://cpybghw0k54ni"]
 
 [ext_resource type="TileSet" uid="uid://cdnenrt36tsrv" path="res://Tiles/asset_tiles.tres" id="1_t7arr"]
 [ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://Tiles/custom_tiles.png" id="2_78e6q"]
@@ -9,6 +9,8 @@
 [ext_resource type="PackedScene" uid="uid://bsmabxobj7kwp" path="res://scenes/crate.tscn" id="6_kx8su"]
 [ext_resource type="Script" path="res://restart_ui.gd" id="8_camw6"]
 [ext_resource type="AudioStream" uid="uid://dky8clf8g64kv" path="res://sounds/time_for_adventure.mp3" id="9_go3em"]
+[ext_resource type="Script" path="res://scripts/sewer_entrance.gd" id="10_slgu4"]
+[ext_resource type="PackedScene" uid="uid://du5vce0l27auc" path="res://scenes/indicator.tscn" id="11_dg5wu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kwxwe"]
 atlas = ExtResource("2_78e6q")
@@ -31,6 +33,9 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8nnk6"]
+radius = 15.09
 
 [node name="Main" type="Node"]
 
@@ -135,17 +140,6 @@ tile_set = ExtResource("1_t7arr")
 tile_map_data = PackedByteArray("AAARAP7/AAAQAAYAAAARAP3/AAAQAAYAAAASAP3/AAAQAAYAAAATAP3/AAAQAAYAAAAUAP3/AAAQAAYAAAAVAP3/AAAQAAYAAAAWAP3/AAAQAAYAAAAXAP3/AAAQAAYAAAAYAP3/AAAQAAYAAAAZAP3/AAAQAAYAAAAaAP3/AAAQAAYAAAARAP//AAAQAAYAAAARAAAAAAAQAAYAAAARAAEAAAAQAAYAAAARAAIAAAAQAAYAAAARAAMAAAAQAAYAAAAPAAMAAAAQAAYAAAAQAAMAAAAQAAYAAAASAAMAAAAQAAYAAAATAAMAAAAQAAYAAAAUAAMAAAAQAAYAAAAVAAMAAAAQAAYAAAAWAAMAAAAQAAYAAAAXAAMAAAAQAAYAAAAYAAMAAAAQAAYAAAAZAAMAAAAQAAYAAAAaAAMAAAAQAAYAAAAbAAMAAAAQAAYAAAAcAAMAAAAQAAYAAAAdAAMAAAAQAAYAAAAeAAMAAAAQAAYAAAAfAAMAAAAQAAYAAAAgAAMAAAAQAAYAAAAhAAMAAAAQAAYAAAAiAAMAAAAQAAYAAAAjAAMAAAAQAAYAAAAkAAMAAAAQAAYAAAAlAAMAAAAQAAYAAAAmAAMAAAAQAAYAAAAnAAMAAAAQAAYAAAAoAAMAAAAQAAYAAAApAAMAAAAQAAYAAAAqAAMAAAAQAAYAAAArAAMAAAAQAAYAAAAsAAMAAAAQAAYAAAAtAAMAAAAQAAYAAAAuAAMAAAAQAAYAAAAvAAMAAAAQAAYAAAAwAAMAAAAQAAYAAAAxAAMAAAAQAAYAAAAyAAMAAAAQAAYAAAAzAAMAAAAQAAYAAAA0AAMAAAAQAAYAAAA1AAMAAAAQAAYAAAAOAAMAAAAQAAYAAAANAAMAAAAQAAYAAAAMAAMAAAAQAAYAAAALAAMAAAAQAAYAAAAKAAMAAAAQAAYAAAAJAAMAAAAQAAYAAAAIAAMAAAAQAAYAAAAHAAMAAAAQAAYAAAAGAAMAAAAQAAYAAAAFAAMAAAAQAAYAAAAEAAMAAAAQAAYAAAADAAMAAAAQAAYAAAACAAMAAAAQAAYAAAABAAMAAAAQAAYAAAAAAAMAAAAQAAYAAAD//wMAAAAQAAYAAAD+/wMAAAAQAAYAAAD9/wMAAAAQAAYAAAD8/wMAAAAQAAYAAAAbAP3/AAAQAAYAAAAcAP3/AAAQAAYAAAAdAP3/AAAQAAYAAAAeAP3/AAAQAAYAAAAfAP3/AAAQAAYAAAAgAP3/AAAQAAYAAAAhAP3/AAAQAAYAAAAiAP3/AAAQAAYAAAAjAP3/AAAQAAYAAAAkAP3/AAAQAAYAAAAlAP3/AAAQAAYAAAAmAP3/AAAQAAYAAAAnAP3/AAAQAAYAAAAnAP7/AAAQAAYAAAAnAP//AAAQAAYAAAAnAAAAAAAQAAYAAAAnAAEAAAAQAAYAAAAnAAIAAAAQAAYAAAAnAPz/AAAQAAYAAAAnAPv/AAAQAAYAAAAnAPr/AAAQAAYAAAAnAPn/AAAQAAYAAAAnAPj/AAAQAAYAAAAnAPf/AAAQAAYAAAAmAPf/AAAQAAYAAAAlAPf/AAAQAAYAAAAkAPf/AAAQAAYAAAAjAPf/AAAQAAYAAAAiAPf/AAAQAAYAAAAhAPf/AAAQAAYAAAAgAPf/AAAQAAYAAAAfAPf/AAAQAAYAAAAeAPf/AAAQAAYAAAAcAPf/AAAQAAYAAAAdAPf/AAAQAAYAAAAbAPf/AAAQAAYAAAAaAPf/AAAQAAYAAAAZAPf/AAAQAAYAAAAYAPf/AAAQAAYAAAAXAPf/AAAQAAYAAAAWAPf/AAAQAAYAAAAVAPf/AAAQAAYAAAAUAPf/AAAQAAYAAAATAPf/AAAQAAYAAAASAPf/AAAQAAYAAAARAPf/AAAQAAYAAAARAPj/AAAQAAYAAAARAPn/AAAQAAYAAAARAPr/AAAQAAYAAAARAPv/AAAQAAYAAAARAPz/AAAQAAYAAAAaAPz/AAAQAAYAAAAaAPv/AAAQAAYAAAAaAPr/AAAQAAYAAAAbAPr/AAAQAAYAAAAcAPr/AAAQAAYAAAAdAPr/AAAQAAYAAAAeAPr/AAAQAAYAAAAeAPv/AAAQAAYAAAAeAPz/AAAQAAYAAAAbAPT/AAAQAAYAAAAcAPT/AAAQAAYAAAAdAPT/AAAQAAYAAAAeAPT/AAAQAAYAAAAeAPX/AAAQAAYAAAAeAPb/AAAQAAYAAAAaAPT/AAAQAAYAAAAaAPX/AAAQAAYAAAAaAPb/AAAQAAYAAAAaAPL/AAAQAAYAAAAaAPP/AAAQAAYAAAAbAPL/AAAQAAYAAAAcAPL/AAAQAAYAAAAdAPL/AAAQAAYAAAAeAPL/AAAQAAYAAAAeAPP/AAAQAAYAAAATAPb/AAAQAAYAAAATAPX/AAAQAAYAAAATAPT/AAAQAAYAAAATAPP/AAAQAAYAAAASAPb/AAAQAAYAAAASAPX/AAAQAAYAAAASAPT/AAAQAAYAAAASAPP/AAAQAAYAAAASAPL/AAAQAAYAAAASAPH/AAAQAAYAAAASAPD/AAAQAAYAAAASAO//AAAQAAYAAAATAO//AAAQAAYAAAAUAO//AAAQAAYAAAAVAO//AAAQAAYAAAAWAO//AAAQAAYAAAAXAO//AAAQAAYAAAAYAO//AAAQAAYAAAAZAO//AAAQAAYAAAAaAO//AAAQAAYAAAAbAO//AAAQAAYAAAAcAO//AAAQAAYAAAAdAO//AAAQAAYAAAAeAO//AAAQAAYAAAAfAO//AAAQAAYAAAAgAO//AAAQAAYAAAAhAO//AAAQAAYAAAAiAO//AAAQAAYAAAAjAO//AAAQAAYAAAAkAO//AAAQAAYAAAAlAO//AAAQAAYAAAAmAO//AAAQAAYAAAAmAPD/AAAQAAYAAAAmAPH/AAAQAAYAAAAmAPL/AAAQAAYAAAAmAPP/AAAQAAYAAAAmAPT/AAAQAAYAAAAmAPX/AAAQAAYAAAAmAPb/AAAQAAYAAAA=")
 tile_set = ExtResource("1_t7arr")
 
-[node name="Player" parent="." instance=ExtResource("2_v1ia2")]
-position = Vector2(81, 15)
-collision_mask = 3
-
-[node name="Camera2D" type="Camera2D" parent="Player"]
-position = Vector2(2, 8)
-zoom = Vector2(3, 3)
-limit_bottom = 120
-limit_smoothed = true
-position_smoothing_enabled = true
-
 [node name="Parallax2D6" type="Parallax2D" parent="."]
 visible = false
 repeat_size = Vector2(440, 0)
@@ -156,25 +150,29 @@ position = Vector2(13, 142)
 tile_map_data = PackedByteArray("AAACAPb/AQAWAAAAAAACAPf/AQAWAAEAAAADAPb/AQAXAAAAAAADAPf/AQAXAAEAAAAEAPb/AQAYAAAAAAAEAPf/AQAYAAEAAAAFAPb/AQAZAAAAAAAFAPf/AQAZAAEAAAAFAPj/AQAZAAIAAAAFAPn/AQAZAAMAAAAFAPr/AQAZAAQAAAAFAPv/AQAZAAUAAAAFAPz/AQAZAAYAAAAFAP3/AQAZAAcAAAAGAPb/AQAaAAAAAAAGAPf/AQAaAAEAAAAGAP3/AQAaAAcAAAAHAPb/AQAbAAAAAAAHAPf/AQAbAAEAAAAIAPb/AQAcAAAAAAAIAPf/AQAcAAEAAAAJAPb/AQAWAAAAAAAJAPf/AQAWAAEAAAAKAPb/AQAXAAAAAAAKAPf/AQAXAAEAAAALAPb/AQAYAAAAAAALAPf/AQAYAAEAAAAMAPb/AQAZAAAAAAAMAPf/AQAZAAEAAAAMAPj/AQAZAAIAAAAMAPn/AQAZAAMAAAAMAPr/AQAZAAQAAAAMAPv/AQAZAAUAAAAMAPz/AQAZAAYAAAAMAP3/AQAZAAcAAAANAPb/AQAaAAAAAAANAPf/AQAaAAEAAAANAP3/AQAaAAcAAAAOAPb/AQAbAAAAAAAOAPf/AQAbAAEAAAAPAPb/AQAcAAAAAAAPAPf/AQAcAAEAAAD7//b/AQAWAAAAAAD7//f/AQAWAAEAAAD8//b/AQAXAAAAAAD8//f/AQAXAAEAAAD9//b/AQAYAAAAAAD9//f/AQAYAAEAAAD+//b/AQAZAAAAAAD+//f/AQAZAAEAAAD+//j/AQAZAAIAAAD+//n/AQAZAAMAAAD+//r/AQAZAAQAAAD+//v/AQAZAAUAAAD+//z/AQAZAAYAAAD+//3/AQAZAAcAAAD///b/AQAaAAAAAAD///f/AQAaAAEAAAD///3/AQAaAAcAAAAAAPb/AQAbAAAAAAAAAPf/AQAbAAEAAAABAPb/AQAcAAAAAAABAPf/AQAcAAEAAAD0//b/AQAWAAAAAAD0//f/AQAWAAEAAAD1//b/AQAXAAAAAAD1//f/AQAXAAEAAAD2//b/AQAYAAAAAAD2//f/AQAYAAEAAAD3//b/AQAZAAAAAAD3//f/AQAZAAEAAAD3//j/AQAZAAIAAAD3//n/AQAZAAMAAAD3//r/AQAZAAQAAAD3//v/AQAZAAUAAAD3//z/AQAZAAYAAAD3//3/AQAZAAcAAAD4//b/AQAaAAAAAAD4//f/AQAaAAEAAAD4//3/AQAaAAcAAAD5//b/AQAbAAAAAAD5//f/AQAbAAEAAAD6//b/AQAcAAAAAAD6//f/AQAcAAEAAAA=")
 tile_set = ExtResource("1_t7arr")
 
-[node name="MeterMaid" parent="." instance=ExtResource("4_c1cju")]
-position = Vector2(485, -11)
+[node name="Objects" type="Node2D" parent="." groups=["Objects"]]
 
-[node name="MeterMaid2" parent="." instance=ExtResource("4_c1cju")]
-position = Vector2(446, -235)
+[node name="Debris" type="Node2D" parent="Objects" groups=["Debris"]]
 
-[node name="Meter" parent="." instance=ExtResource("3_q6csx")]
-position = Vector2(130, 91)
+[node name="SewerEntrance" type="Node2D" parent="Objects"]
+position = Vector2(722, 103)
+script = ExtResource("10_slgu4")
 
-[node name="Meter2" parent="." instance=ExtResource("3_q6csx")]
-position = Vector2(221, 91)
+[node name="RayCast2D" type="RayCast2D" parent="Objects/SewerEntrance"]
+position = Vector2(-10, -4)
+target_position = Vector2(20, 0)
+collision_mask = 265
+collide_with_areas = true
 
-[node name="Meter3" parent="." instance=ExtResource("3_q6csx")]
-position = Vector2(322, 92)
+[node name="Indicator" parent="Objects/SewerEntrance" instance=ExtResource("11_dg5wu")]
+position = Vector2(0, -6)
 
-[node name="Meter4" parent="." instance=ExtResource("3_q6csx")]
-position = Vector2(585, 91)
+[node name="Area2D" type="Area2D" parent="Objects/SewerEntrance"]
+collision_layer = 0
+collision_mask = 256
 
-[node name="Objects" type="Node2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/SewerEntrance/Area2D"]
+shape = SubResource("CircleShape2D_8nnk6")
 
 [node name="Crate" parent="Objects" instance=ExtResource("6_kx8su")]
 position = Vector2(159, 19)
@@ -217,7 +215,36 @@ position = Vector2(746, 99)
 [node name="Crate15" parent="Objects/SewerCrates" instance=ExtResource("6_kx8su")]
 position = Vector2(746, 83)
 
-[node name="Car" parent="Objects" instance=ExtResource("3_23fhp")]
+[node name="Player" parent="." instance=ExtResource("2_v1ia2")]
+position = Vector2(81, 15)
+collision_mask = 3
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+position = Vector2(2, 8)
+zoom = Vector2(3, 3)
+limit_bottom = 120
+limit_smoothed = true
+position_smoothing_enabled = true
+
+[node name="MeterMaid" parent="." instance=ExtResource("4_c1cju")]
+position = Vector2(485, -11)
+
+[node name="MeterMaid2" parent="." instance=ExtResource("4_c1cju")]
+position = Vector2(446, -235)
+
+[node name="Meter" parent="." instance=ExtResource("3_q6csx")]
+position = Vector2(130, 91)
+
+[node name="Meter2" parent="." instance=ExtResource("3_q6csx")]
+position = Vector2(221, 91)
+
+[node name="Meter3" parent="." instance=ExtResource("3_q6csx")]
+position = Vector2(322, 92)
+
+[node name="Meter4" parent="." instance=ExtResource("3_q6csx")]
+position = Vector2(585, 91)
+
+[node name="Car" parent="." instance=ExtResource("3_23fhp")]
 position = Vector2(1500, 92)
 
 [node name="UI" type="CanvasLayer" parent="."]

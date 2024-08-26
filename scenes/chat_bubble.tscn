@@ -3,14 +3,14 @@
 [ext_resource type="Texture2D" uid="uid://c6qj2s14gh231" path="res://images/chatbubble.png" id="1_ydwr7"]
 [ext_resource type="FontFile" uid="uid://dx3iudetbksmy" path="res://Pixeled.ttf" id="2_300vo"]
 
-[sub_resource type="FontVariation" id="FontVariation_8vsok"]
+[sub_resource type="FontVariation" id="FontVariation_h5ofh"]
 base_font = ExtResource("2_300vo")
 spacing_bottom = -4
 baseline_offset = -0.21
 
 [sub_resource type="LabelSettings" id="LabelSettings_ouaqp"]
 line_spacing = 0.0
-font = SubResource("FontVariation_8vsok")
+font = SubResource("FontVariation_h5ofh")
 font_size = 5
 font_color = Color(0, 0, 0.117647, 1)
 shadow_color = Color(0, 0, 0, 0.223529)

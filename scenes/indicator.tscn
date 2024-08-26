@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://du5vce0l27auc"]
+
+[ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://Tiles/custom_tiles.png" id="1_3xlyi"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j4rrk"]
+atlas = ExtResource("1_3xlyi")
+region = Rect2(208, 80, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mgvnw"]
+atlas = ExtResource("1_3xlyi")
+region = Rect2(224, 80, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_kh8jw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j4rrk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mgvnw")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
+
+[node name="Indicator" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_kh8jw")
+autoplay = "default"
+frame_progress = 0.456913
