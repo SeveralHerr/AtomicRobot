@@ -24,4 +24,6 @@ func handle_input(player: Player, event: InputEvent) -> void:
 		player.state_machine.change_state("JumpState")
 	elif event.is_action_pressed("Attack"):
 		player.state_machine.change_state("AttackState")
+	elif event.is_action("ui_down") and player.is_on_floor():
+		player.state_machine.change_state("CrouchState")
 		

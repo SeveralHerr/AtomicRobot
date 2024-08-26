@@ -9,6 +9,7 @@ class_name Player
 @onready var attack_audio_player: AudioStreamPlayer2D = $AttackAudioPlayer
 @onready var camera_2d: Camera2D = $Camera2D
 @onready var jumping_streak_sprite: AnimatedSprite2D = $JumpingStreakSprite
+@onready var collision_shape_2d_body: CollisionShape2D = $CollisionShape2D
 
 var is_dead: bool = false
 
@@ -35,6 +36,7 @@ func _ready() -> void:
 	state_machine.add_state("WalkState", WalkState.new())
 	state_machine.add_state("DeadState", DeadState.new())
 	state_machine.add_state("ClimbState", ClimbState.new())
+	state_machine.add_state("CrouchState", CrouchState.new())
 	
 	state_machine.change_state("IdleState")
 	jumping_streak_sprite.hide()
