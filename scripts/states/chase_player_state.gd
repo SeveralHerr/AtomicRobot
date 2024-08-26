@@ -43,9 +43,10 @@ func update(enemy: Enemy, delta: float) -> void:
 		return 
 		
 	dir = (Globals.player.position - enemy.position).normalized()
-
-	_update_sprite_direction(enemy)
-	enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)
+	var dist = enemy.position.distance_to(Globals.player.position)
+	if dist > 8:
+		_update_sprite_direction(enemy)
+		enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)
 		
 func _update_sprite_direction(enemy: Enemy) -> void:
 	enemy.animated_sprite_2d.flip_h = sign(dir.x) == -1

@@ -143,3 +143,4 @@ libraries = {
 position = Vector2(4, 27)
 
 [node name="Timer" type="Timer" parent="."]
+wait_time = 5.0

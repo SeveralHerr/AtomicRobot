@@ -26,6 +26,8 @@ func _input(event: InputEvent) -> void:
 	state_machine.handle_input(event)
 	
 	if event.is_action("Interact"):
+		Globals.meter_maids_killed += 1
+		Globals.meter_maid_death.emit()
 		default_sprite.play("Crouch")
 
 func _ready() -> void:
@@ -41,6 +43,11 @@ func _ready() -> void:
 	
 	state_machine.change_state("IdleState")
 	jumping_streak_sprite.hide()
+	print(Globals.selected_character)
+	if Globals.selected_character == "Robot":
+		default_sprite.sprite_frames = Globals.ROBOT_FRAMES
+	elif Globals.selected_character == "Cody":
+		default_sprite.sprite_frames = Globals.DEFAULT_FRAMES
 	
 	
 func move_player() -> void:

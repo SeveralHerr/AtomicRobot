@@ -8,7 +8,7 @@ class_name Bullet
 
 var node: Node2D
 # Speed at which the bullet moves
-var bullet_speed: float = 400.0
+var bullet_speed: float = 200.0
 var original_position: Vector2
 var direction
 var player_only: bool = false

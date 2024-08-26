@@ -24,7 +24,7 @@ var stand_still: bool = false
 
 func _ready() -> void:
 	node = Globals.player.get_parent()
-	position = Globals.player.boss_spawn_position.position
+	position = Globals.player.boss_spawn_position.position + Globals.player.position
 
 	Globals.player_death.connect(_on_player_death)
 	timer.timeout.connect(_create_bullet)
@@ -45,9 +45,13 @@ func _process(delta: float) -> void:
 		return
 
 	dir = (Globals.player.position - position).normalized()
-
+	var dist = position.distance_to(Globals.player.position)
+	if dist > 100:
+		
+		velocity.x = move_toward(velocity.x, dir.x * 50, 2009 * delta)
+	else:
+		velocity.x = 0
 	_update_sprite_direction()
-	velocity.x = move_toward(velocity.x, dir.x * 50, 2009 * delta)
 	move_and_slide()
 		
 func _update_sprite_direction() -> void:
@@ -85,13 +89,18 @@ func _create_bullet() -> void:
 	animated_sprite_2d.play("ThrowCoin")
 	
 func throw_coin() -> void:
-	stand_still = false
 	animated_sprite_2d.animation_finished.disconnect(throw_coin)
-	
-	var instance = COIN_BULLET.instantiate()
+	for i in range(10):
 
-	instance.player_only = true
-	instance.scale = Vector2(4, 4)
-	node.call_deferred("add_child", instance)
-	instance.position = position + coin_spawn_position.position
+
+		
+		var instance = COIN_BULLET.instantiate()
+
+		instance.player_only = true
+		#instance.scale = Vector2(4, 4)
+		node.call_deferred("add_child", instance)
+		instance.position = position + coin_spawn_position.position + Vector2(randomOffset(), randomOffset())
 	animated_sprite_2d.play("Idle")
+	stand_still = false
+func randomOffset() -> int:
+	return randi_range(-14,14)
