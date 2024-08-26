@@ -34,3 +34,23 @@ func _on_attack() -> void:
 	custom_event.action = "Attack" 
 	custom_event.pressed = true  
 	Input.parse_input_event(custom_event)
+	
+func _input(event: InputEvent) -> void:
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			var touch_pos = event.position
+			if jump_button.get_global_rect().has_point(touch_pos):
+				_on_jump()
+			if attack_button.get_global_rect().has_point(touch_pos):
+				_on_attack()
+		else:
+			var custom_event = InputEventAction.new()
+			custom_event.action = "ui_accept" 
+			custom_event.pressed = false  
+			Input.parse_input_event(custom_event)
+
+			custom_event = InputEventAction.new()
+			custom_event.action = "Attack" 
+			custom_event.pressed = false  
+			Input.parse_input_event(custom_event)
+	
