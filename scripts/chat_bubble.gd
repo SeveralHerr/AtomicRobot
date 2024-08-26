@@ -11,6 +11,6 @@ func create(parent: Node, text: String) -> void:
 	instance.show()
 	
 	await parent.get_tree().create_timer(2).timeout
-	if instance:
+	if instance != null:
 		instance.queue_free()
 	

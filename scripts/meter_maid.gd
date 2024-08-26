@@ -16,8 +16,9 @@ const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
 @onready var navigation_agent_2d: NavigationAgent2D = $NavigationAgent2D
 @onready var line_of_sight: LineOfSight = $LineOfSight
 @onready var range_timer: Timer = $RangeTimer
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
-
+var health: int = 3
 var direction: int = -1
 var speed: int = 50
 var target: Node2D = null
@@ -51,3 +52,21 @@ func _process(delta: float) -> void:
 	
 func _physics_process(delta: float) -> void:
 	enemy_state_machine.physics_update(delta)
+	
+func receive_hit(damage: int) -> void:
+	ScreenShake.apply_shake(10)
+	animation_player.play("Hit")
+	health -= damage
+	
+	if health <= 0: 
+		call_deferred("queue_free")
+	
+	# Calculate knockback direction based on the player's position
+	var knockback_direction = (position - Globals.player.position).normalized()
+	
+	# Apply knockback force
+	var knockback_strength = 200.0  # Adjust this value as needed
+	velocity += knockback_direction * knockback_strength
+
+	# Optionally, you could also reset velocity.y to create a more distinct knockback effect
+	velocity.y = -100.0  # Adjust this value as needed for vertical knockback

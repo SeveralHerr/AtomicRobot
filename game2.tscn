@@ -219,7 +219,7 @@ position = Vector2(746, 83)
 position = Vector2(81, 15)
 collision_mask = 3
 
-[node name="Camera2D" type="Camera2D" parent="Player"]
+[node name="Camera2D" type="Camera2D" parent="Player" groups=["Camera"]]
 position = Vector2(2, 8)
 zoom = Vector2(4, 4)
 limit_bottom = 120

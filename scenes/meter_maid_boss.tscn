@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://g2xxh67pdbuw"]
+
+[ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_eun42"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t6vt0"]
+atlas = ExtResource("1_eun42")
+region = Rect2(480, 48, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f4ygu"]
+atlas = ExtResource("1_eun42")
+region = Rect2(496, 48, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uvnql"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t6vt0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f4ygu")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="MeterMaidBoss" type="Node2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_uvnql")
