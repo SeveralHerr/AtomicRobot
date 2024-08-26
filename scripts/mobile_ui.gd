@@ -10,7 +10,7 @@ func _process(delta: float) -> void:
 func is_running_on_mobile() -> bool:
 	return OS.has_feature("mobile")
 
-func _ready() -> void:
+func _readdy() -> void:
 	virtual_joystick_2.hide()
 	if is_running_on_mobile():
 		print("Running on a mobile device")

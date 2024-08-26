@@ -389,7 +389,6 @@ offset_bottom = 40.0
 script = ExtResource("15_t8g1g")
 
 [node name="Virtual Joystick2" parent="UI/UIContainer/MobileUI" instance=ExtResource("15_2mtah")]
-visible = false
 layout_mode = 1
 offset_left = -175.0
 offset_top = -34.3333
