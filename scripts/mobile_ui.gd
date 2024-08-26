@@ -8,11 +8,7 @@ func _process(delta: float) -> void:
 	pass
 
 func is_running_on_mobile() -> bool:
-	if Engine.has_singleton("JavaScript"):
-		var js = Engine.get_singleton("JavaScript")
-		var is_mobile = js.eval("function isMobile() { return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); } isMobile();", true)
-		return is_mobile
-	return false
+	return OS.has_feature("mobile")
 
 func _ready() -> void:
 	virtual_joystick_2.hide()
