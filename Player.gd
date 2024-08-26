@@ -8,6 +8,7 @@ class_name Player
 @onready var hurt_audio_player: AudioStreamPlayer2D = $HurtAudioPlayer
 @onready var attack_audio_player: AudioStreamPlayer2D = $AttackAudioPlayer
 @onready var camera_2d: Camera2D = $Camera2D
+@onready var jumping_streak_sprite: AnimatedSprite2D = $JumpingStreakSprite
 
 var is_dead: bool = false
 
@@ -21,6 +22,9 @@ var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 func _input(event: InputEvent) -> void:
 	state_machine.handle_input(event)
+	
+	if event.is_action("Interact"):
+		default_sprite.play("Crouch")
 
 func _ready() -> void:
 	Globals.player = self
@@ -33,6 +37,7 @@ func _ready() -> void:
 	state_machine.add_state("ClimbState", ClimbState.new())
 	
 	state_machine.change_state("IdleState")
+	jumping_streak_sprite.hide()
 	
 	
 func move_player() -> void:

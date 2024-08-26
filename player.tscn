@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://csmg52xs05d1e"]
+[gd_scene load_steps=35 format=3 uid="uid://csmg52xs05d1e"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_ncv2v"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_rc65t"]
@@ -112,7 +112,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"Crouch",
-"speed": 3.0
+"speed": 8.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -123,7 +123,7 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
-"duration": 0.8,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_l14wc")
 }, {
 "duration": 1.0,
@@ -201,6 +201,35 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_7lllm"]
+atlas = ExtResource("1_rc65t")
+region = Rect2(336, 176, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0y77h"]
+atlas = ExtResource("1_rc65t")
+region = Rect2(352, 176, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_podlq"]
+atlas = ExtResource("1_rc65t")
+region = Rect2(368, 176, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_qydoc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7lllm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0y77h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_podlq")
+}],
+"loop": false,
+"name": &"default",
+"speed": 16.0
+}]
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 257
 script = ExtResource("1_ncv2v")
@@ -241,4 +270,11 @@ visible = false
 sprite_frames = SubResource("SpriteFrames_gtu8j")
 animation = &"idle"
 autoplay = "idle"
-frame_progress = 0.749858
+frame_progress = 0.449648
+
+[node name="JumpingStreakSprite" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(0, 33)
+sprite_frames = SubResource("SpriteFrames_qydoc")
+frame = 2
+frame_progress = 1.0

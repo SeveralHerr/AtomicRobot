@@ -7,6 +7,11 @@ func enter_state(player: Player) -> void:
 	player.velocity.y = -350.0
 	player.default_sprite.play("Jump")
 	player.jump_audio_player.play()
+	player.jumping_streak_sprite.show()
+	player.jumping_streak_sprite.play("default")
+	
+func exit_state(player: Player) -> void:
+	player.jumping_streak_sprite.hide()
 
 func update(player: Player, delta: float) -> void:
 	if player.is_on_floor() and player.velocity.y >= -100:
@@ -17,3 +22,6 @@ func update(player: Player, delta: float) -> void:
 		player.velocity.x = move_toward(player.velocity.x, direction * player.SPEED, ACCELERATION * delta)
 	else:
 		player.velocity.x = move_toward(player.velocity.x, 0, player.SPEED)
+		
+	if player.velocity.y > 0 and player.jumping_streak_sprite.visible:
+		player.jumping_streak_sprite.hide()
