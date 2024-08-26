@@ -20,6 +20,8 @@ func enter_state(player: Player) -> void:
 			parent.receive_hit()
 		elif parent is Enemy:
 			parent.receive_hit(1)
+		elif parent is Boss:
+			parent.receive_hit(1)
 
 func exit_state(player: Player) -> void:
 	_handle_offset(player, -1)

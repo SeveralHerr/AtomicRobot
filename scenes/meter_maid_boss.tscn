@@ -1,6 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://g2xxh67pdbuw"]
+[gd_scene load_steps=16 format=3 uid="uid://g2xxh67pdbuw"]
 
+[ext_resource type="Script" path="res://scripts/boss.gd" id="1_20jyv"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_eun42"]
+
+[sub_resource type="Shader" id="Shader_ianwe"]
+code = "shader_type canvas_item;
+ 
+uniform vec4 flash_color : source_color;
+uniform float flash_value : hint_range(0.0, 1.0, 0.1) = 0;
+ 
+void fragment() {
+    vec4 texture_color = texture(TEXTURE, UV);
+    COLOR = mix(texture_color, flash_color, flash_value);
+    COLOR.a = texture_color.a;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wdnqu"]
+shader = SubResource("Shader_ianwe")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_value = 0.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_t6vt0"]
 atlas = ExtResource("1_eun42")
@@ -9,6 +27,18 @@ region = Rect2(480, 48, 16, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_f4ygu"]
 atlas = ExtResource("1_eun42")
 region = Rect2(496, 48, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sj6l7"]
+atlas = ExtResource("1_eun42")
+region = Rect2(480, 112, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sh0m6"]
+atlas = ExtResource("1_eun42")
+region = Rect2(496, 112, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k7qsc"]
+atlas = ExtResource("1_eun42")
+region = Rect2(512, 112, 16, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_uvnql"]
 animations = [{
@@ -20,12 +50,96 @@ animations = [{
 "texture": SubResource("AtlasTexture_f4ygu")
 }],
 "loop": true,
-"name": &"default",
+"name": &"Idle",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_sj6l7")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_sh0m6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k7qsc")
+}],
+"loop": false,
+"name": &"ThrowCoin",
+"speed": 8.0
 }]
 
-[node name="MeterMaidBoss" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v17ma"]
+size = Vector2(48, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_m7x15"]
+size = Vector2(48, 73)
+
+[sub_resource type="Animation" id="Animation_31qn6"]
+resource_name = "Hit"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:material:shader_parameter/flash_value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.133333, 0.266667, 0.366667),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [1.0, 0.0, 1.0, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_fvlqf"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:material:shader_parameter/flash_value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_mn4xu"]
+_data = {
+"Hit": SubResource("Animation_31qn6"),
+"RESET": SubResource("Animation_fvlqf")
+}
+
+[node name="MeterMaidBoss" type="CharacterBody2D"]
+collision_layer = 512
+collision_mask = 512
+script = ExtResource("1_20jyv")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_wdnqu")
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_uvnql")
+animation = &"ThrowCoin"
+autoplay = "Idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, 60)
+shape = SubResource("RectangleShape2D_v17ma")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 513
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(1, 27.5)
+shape = SubResource("RectangleShape2D_m7x15")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_mn4xu")
+}
+
+[node name="CoinSpawnPosition" type="Node2D" parent="."]
+position = Vector2(4, 27)
+
+[node name="Timer" type="Timer" parent="."]

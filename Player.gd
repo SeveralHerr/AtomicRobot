@@ -10,6 +10,7 @@ class_name Player
 @onready var camera_2d: Camera2D = $Camera2D
 @onready var jumping_streak_sprite: AnimatedSprite2D = $JumpingStreakSprite
 @onready var collision_shape_2d_body: CollisionShape2D = $CollisionShape2D
+@onready var boss_spawn_position: Node2D = $BossSpawnPosition
 
 var is_dead: bool = false
 

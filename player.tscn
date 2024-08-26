@@ -271,3 +271,6 @@ position = Vector2(0, 33)
 sprite_frames = SubResource("SpriteFrames_qydoc")
 frame = 2
 frame_progress = 1.0
+
+[node name="BossSpawnPosition" type="Node2D" parent="."]
+position = Vector2(218, -157)
