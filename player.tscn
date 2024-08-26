@@ -10,7 +10,7 @@
 polygon = PackedVector2Array(-4, -10, -4, 14, -3, 14, -3, -10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qa0j5"]
-size = Vector2(14, 28)
+size = Vector2(14, 23)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_33gaw"]
 atlas = ExtResource("1_rc65t")
@@ -239,13 +239,15 @@ visible = false
 occluder = SubResource("OccluderPolygon2D_pkmq5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 2)
+position = Vector2(0, 4.5)
 shape = SubResource("RectangleShape2D_qa0j5")
 
 [node name="DefaultSprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_vt1uo")
-animation = &"Crouch"
+animation = &"Attack"
 autoplay = "idle"
+frame = 1
+frame_progress = 1.0
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 2
@@ -270,7 +272,7 @@ visible = false
 sprite_frames = SubResource("SpriteFrames_gtu8j")
 animation = &"idle"
 autoplay = "idle"
-frame_progress = 0.449648
+frame_progress = 0.179103
 
 [node name="JumpingStreakSprite" type="AnimatedSprite2D" parent="."]
 visible = false

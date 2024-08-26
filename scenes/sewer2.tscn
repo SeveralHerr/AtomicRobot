@@ -149,7 +149,7 @@ collision_mask = 3
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(2, 8)
-zoom = Vector2(3, 3)
+zoom = Vector2(4, 4)
 limit_bottom = 120
 limit_smoothed = true
 position_smoothing_enabled = true
