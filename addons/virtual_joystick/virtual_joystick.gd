@@ -69,8 +69,17 @@ func _ready() -> void:
 		printerr("The Project Setting 'emulate_mouse_from_touch' should be set to False")
 	if not ProjectSettings.get_setting("input_devices/pointing/emulate_touch_from_mouse"):
 		printerr("The Project Setting 'emulate_touch_from_mouse' should be set to True")
+		
+	if not DisplayServer.is_touchscreen_available() and visibility_mode == Visibility_mode.TOUCHSCREEN_ONLY :
+		hide()
+	
+	if visibility_mode == Visibility_mode.WHEN_TOUCHED:
+		hide()
 	
 func _input(event: InputEvent) -> void:
+	if not visible:
+		return
+	
 	if event is InputEventScreenTouch:
 		if event.pressed:
 			if _is_point_inside_joystick_area(event.position) and _touch_index == -1:
@@ -135,25 +144,19 @@ func _update_joystick(touch_position: Vector2) -> void:
 		output = Vector2.ZERO
 	
 	if use_input_actions:
-		# Release actions
-		if output.x >= 0 and Input.is_action_pressed(action_left):
+		if output.x > 0:
 			Input.action_release(action_left)
-		if output.x <= 0 and Input.is_action_pressed(action_right):
-			Input.action_release(action_right)
-		if output.y >= 0 and Input.is_action_pressed(action_up):
-			Input.action_release(action_up)
-		if output.y <= 0 and Input.is_action_pressed(action_down):
-			Input.action_release(action_down)
-		# Press actions
-		if output.x < 0 and not Input.is_action_pressed(action_left):
-			Input.action_press(action_left, -output.x)
-		if output.x > 0 and not Input.is_action_pressed(action_right):
 			Input.action_press(action_right, output.x)
-		if output.y < 0 and not Input.is_action_pressed(action_up):
-			Input.action_press(action_up, -output.y)
-		if output.y > 0 and not Input.is_action_pressed(action_down):
-			Input.action_press(action_down, output.y)
+		else:
+			Input.action_release(action_right)
+			Input.action_press(action_left, -output.x)
 
+		if output.y > 0:
+			Input.action_release(action_up)
+			Input.action_press(action_down, output.y)
+		else:
+			Input.action_release(action_down)
+			Input.action_press(action_up, -output.y)
 func _reset():
 	is_pressed = false
 	output = Vector2.ZERO

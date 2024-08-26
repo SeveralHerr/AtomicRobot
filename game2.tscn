@@ -395,6 +395,7 @@ offset_top = -34.3333
 offset_right = 125.0
 offset_bottom = 265.667
 scale = Vector2(0.3, 0.3)
+visibility_mode = 1
 
 [node name="Audio" type="Node" parent="."]
 script = ExtResource("15_7bdc4")
