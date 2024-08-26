@@ -57,15 +57,16 @@ func move_player() -> void:
 	camera_2d.position_smoothing_speed = 5
 	Globals.player_last_position = null
 		
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y += gravity * delta
-
-	state_machine.update(delta)
-	move_and_slide()
-
 		
+	state_machine.physics_update(delta)
+	move_and_slide()
 	
+func _process(delta: float) -> void:
+	state_machine.update(delta)
+
 func receive_hit() -> void:
 	if is_dead:
 		return

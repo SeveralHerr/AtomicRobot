@@ -13,3 +13,6 @@ func handle_input(player: Player, event: InputEvent) -> void:
 
 func update(player: Player, delta: float) -> void:
 	pass
+
+func physics_update(player: Player, delta: float) -> void:
+	pass

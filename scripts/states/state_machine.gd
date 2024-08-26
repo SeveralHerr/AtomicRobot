@@ -25,3 +25,7 @@ func handle_input(event: InputEvent) -> void:
 func update(delta: float) -> void:
 	if current_state:
 		current_state.update(player, delta)
+		
+func physics_update(delta: float) -> void:
+	if current_state:
+		current_state.physics_update(player, delta)

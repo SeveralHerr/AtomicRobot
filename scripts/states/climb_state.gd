@@ -13,7 +13,7 @@ func exit_state(player: Player) -> void:
 	player.camera_2d.position_smoothing_speed = 5
 	player.default_sprite.play("Walk")
 
-func update(player: Player, delta: float) -> void:
+func physics_update(player: Player, delta: float) -> void:
 	var direction := Input.get_axis("ui_up", "ui_down")
 	if direction:
 		player.velocity.y = move_toward(player.velocity.y, direction * player.SPEED / 2, ACCELERATION * delta)
@@ -28,5 +28,16 @@ func update(player: Player, delta: float) -> void:
 		player.velocity.x = 0
 		player.default_sprite.pause()
 		
-
 		
+
+func update(player: Player, delta: float) -> void:
+	var direction := Input.get_axis("ui_up", "ui_down")
+	if direction:
+		if not player.default_sprite.is_playing():
+			player.default_sprite.play()
+		
+		if player.is_on_floor() and direction == 1:
+			player.state_machine.change_state("IdleState")
+			
+	else:
+		player.default_sprite.pause()	
