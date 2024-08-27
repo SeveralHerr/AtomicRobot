@@ -27,14 +27,19 @@ func exit_state(enemy: Enemy) -> void:
 	enemy.animated_sprite_2d.play("Walk")
 	enemy.coin_audio_player.stop()	
 
+
 func update(enemy: Enemy, delta: float) -> void:
-	if stand_still:
-		enemy.animated_sprite_2d.pause()
-		return 
-	if enemy.enemy_state_machine.current_state is not FindMeterState:
-		return  
 	if meter == null:
 		_handle_state()
+
+func physics_update(delta: float) -> void:
+	if stand_still:
+			enemy.velocity.x = 0
+			enemy.animated_sprite_2d.pause()
+			return 
+	if enemy.enemy_state_machine.current_state is not FindMeterState:
+		return  
+
 		
 
 	
@@ -43,39 +48,24 @@ func update(enemy: Enemy, delta: float) -> void:
 		stand_still = true
 		enemy.coins += 4
 		meter.play_animation()
-
+		enemy.navigation_agent_2d.set_target_position(enemy.global_position)
+		
 		enemy.coin_audio_player.play()
 		enemy.animated_sprite_2d.play("ShakeMeter")
 		
-
+		enemy.velocity.x = 0
 		call_deferred("_delayed_handle_state")
 
 		return
-
-
-
-	_update_sprite_direction(enemy)
-	
-func physics_update(delta: float) -> void:
-	if stand_still:
-		enemy.velocity.x = 0
 		
-
-	
-	var dist = enemy.position.distance_to(meter.position)
-	if dist < 5 and enemy.coins <= 0:
-		enemy.navigation_agent_2d.set_target_position(enemy.global_position)
-		enemy.velocity.x = 0
-
-		return
-
 	if not enemy.navigation_agent_2d.is_navigation_finished():
 		move_along_path(delta)
 		return
-	
+		
+	dir = (meter.position - enemy.position).normalized()
 
+	_update_sprite_direction(enemy)
 	enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)
-	
 	
 func move_along_path(delta: float) -> void:
 	var target_position = enemy.navigation_agent_2d.get_next_path_position()

@@ -9,12 +9,13 @@ var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 var speed: float = 200.0
 var direction: Vector2
 
-var bounces_remaining: int = 30  # Number of times the bullet can bounce before it is destroyed
 
 func start(_position: Vector2, _direction: Vector2) -> void:
 	position = _position
 	#direction = _direction.normalized()
+	coin_audio_player.play()
 	linear_velocity  = _direction * speed
+	
 
 
 func _process(delta: float) -> void:
