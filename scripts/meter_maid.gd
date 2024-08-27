@@ -34,6 +34,9 @@ func _physics_process(delta: float) -> void:
 	
 func receive_hit(damage: int) -> void:
 	ScreenShake.apply_shake(10)
+	if animation_player.is_playing():
+		animation_player.stop()
+	
 	animation_player.play("Hit")
 	health -= damage
 	

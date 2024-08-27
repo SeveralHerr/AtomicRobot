@@ -16,6 +16,7 @@ func change_state(name: String) -> void:
 	if current_state:
 		current_state.exit_state(player)
 	current_state = states[name]
+	print("Player state: ", name)
 	current_state.enter_state(player)
 
 func handle_input(event: InputEvent) -> void:

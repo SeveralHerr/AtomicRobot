@@ -23,7 +23,7 @@ func physics_update(player: Player, delta: float) -> void:
 	if direction:
 		player.velocity.x = move_toward(player.velocity.x, direction * player.SPEED, ACCELERATION * delta)
 	else:
-		player.velocity.x = move_toward(player.velocity.x, 0, player.SPEED)
+		player.velocity.x = move_toward(player.velocity.x, 0, player.SPEED * delta)
 
 		
 func handle_input(player: Player, event: InputEvent) -> void:

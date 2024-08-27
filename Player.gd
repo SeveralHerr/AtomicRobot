@@ -11,6 +11,7 @@ class_name Player
 @onready var jumping_streak_sprite: AnimatedSprite2D = $JumpingStreakSprite
 @onready var collision_shape_2d_body: CollisionShape2D = $CollisionShape2D
 @onready var boss_spawn_position: Node2D = $BossSpawnPosition
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 var is_dead: bool = false
 
@@ -67,10 +68,24 @@ func _physics_process(delta: float) -> void:
 func _process(delta: float) -> void:
 	state_machine.update(delta)
 
-func receive_hit() -> void:
+func receive_hit(source_position: Vector2) -> void:
 	if is_dead:
 		return
 	hurt_audio_player.play()
+
+	if animation_player.is_playing():
+		animation_player.stop()
+	
+	animation_player.play("Hit")
+	
+	var knockback_direction = (global_position - source_position).normalized()
+	var knockback_strength = 50.0  
+	if state_machine.current_state is WalkState:
+		knockback_strength *= 2
+	velocity += knockback_direction * knockback_strength
+
+	# Optionally, you could also reset velocity.y to create a more distinct knockback effect
+	velocity.y += -10.0 
 	#state_machine.change_state("DeadState")
 	
 func death() -> void:

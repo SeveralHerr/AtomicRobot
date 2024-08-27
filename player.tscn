@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://csmg52xs05d1e"]
+[gd_scene load_steps=23 format=3 uid="uid://csmg52xs05d1e"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_ncv2v"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_rc65t"]
@@ -9,6 +9,23 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qa0j5"]
 size = Vector2(14, 23)
+
+[sub_resource type="Shader" id="Shader_27hpx"]
+code = "shader_type canvas_item;
+ 
+uniform vec4 flash_color : source_color;
+uniform float flash_value : hint_range(0.0, 1.0, 0.1) = 0;
+ 
+void fragment() {
+    vec4 texture_color = texture(TEXTURE, UV);
+    COLOR = mix(texture_color, flash_color, flash_value);
+    COLOR.a = texture_color.a;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mw4su"]
+shader = SubResource("Shader_27hpx")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_value = 0.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_sv8s5"]
 radius = 14.0
@@ -78,6 +95,43 @@ animations = [{
 "speed": 8.0
 }]
 
+[sub_resource type="Animation" id="Animation_r035c"]
+resource_name = "Hit"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DefaultSprite:material:shader_parameter/flash_value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.133333, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [1.0, 0.0, 1.0, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_1qcb3"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DefaultSprite:material:shader_parameter/flash_value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qxslq"]
+_data = {
+"Hit": SubResource("Animation_r035c"),
+"RESET": SubResource("Animation_1qcb3")
+}
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 1281
 collision_mask = 1025
@@ -88,6 +142,7 @@ position = Vector2(0, 4.5)
 shape = SubResource("RectangleShape2D_qa0j5")
 
 [node name="DefaultSprite" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_mw4su")
 sprite_frames = ExtResource("2_wxl44")
 animation = &"idle"
 autoplay = "idle"
@@ -126,3 +181,8 @@ frame_progress = 1.0
 
 [node name="BossSpawnPosition" type="Node2D" parent="."]
 position = Vector2(143, -160)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_qxslq")
+}

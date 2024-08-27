@@ -23,4 +23,4 @@ func _process(delta: float) -> void:
 func _hit(body: Node2D) -> void:
 	if body is Player:
 		shaker.apply_shake(2)
-		body.receive_hit()
+		body.receive_hit(global_position)

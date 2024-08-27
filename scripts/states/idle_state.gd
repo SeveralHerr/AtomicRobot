@@ -13,7 +13,8 @@ func handle_input(player: Player, event: InputEvent) -> void:
 	elif event.is_action("ui_down") and player.is_on_floor():
 		player.state_machine.change_state("CrouchState")
 		
-func update(player: Player, delta: float) -> void:
+func physics_update(player: Player, delta: float) -> void:
+	player.velocity.x = move_toward(player.velocity.x, 0, player.SPEED * delta)
 	var direction := Input.get_axis("ui_left", "ui_right")
 	if direction:
 		player.state_machine.change_state("WalkState")

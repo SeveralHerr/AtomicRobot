@@ -37,7 +37,7 @@ func _hit(body: Node2D) -> void:
 	area_2d.set_collision_mask_value(1, false)
 	area_2d.set_collision_mask_value(9, false)	
 	if body is Player:
-		body.receive_hit()
+		body.receive_hit(global_position)
 
 	
 	await get_tree().create_timer(2).timeout
