@@ -72,4 +72,4 @@ func receive_hit(damage: int) -> void:
 	velocity += knockback_direction * knockback_strength
 
 	# Optionally, you could also reset velocity.y to create a more distinct knockback effect
-	velocity.y = -100.0  # Adjust this value as needed for vertical knockback
+	velocity.y = -10.0  # Adjust this value as needed for vertical knockback
