@@ -23,9 +23,10 @@ func _process(delta: float) -> void:
 func _hit(body: Node2D) -> void:
 	if body is Player:
 		body.receive_hit()
+	set_collision_layer_value(10, false)
 	
 	await get_tree().create_timer(1).timeout
-	set_collision_layer_value(10, false)
+
 
 	freeze_mode = FREEZE_MODE_KINEMATIC
 	freeze = true
