@@ -79,7 +79,8 @@ animations = [{
 }]
 
 [node name="Player" type="CharacterBody2D"]
-collision_layer = 257
+collision_layer = 1281
+collision_mask = 1025
 script = ExtResource("1_ncv2v")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

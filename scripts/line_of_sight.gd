@@ -10,11 +10,12 @@ func is_player_line_of_sight() -> bool:
 
 	if distance > raycast_distance:
 		#enabled = false
+		#print("dist")
 		return false
 
 	#enabled = true
 	target_position = to_player.normalized() * raycast_distance
-	
+	force_raycast_update()
 	if is_colliding():
 		var collider = get_collider()
 
@@ -25,7 +26,7 @@ func is_player_line_of_sight() -> bool:
 			pass
 			# Add your logic for when the player is in sight
 		else:
-			#print("Player is not in sight, something is blocking the view.")
+			#print("Player is not	enemy.line_of_sight.force_raycast_update() in sight, something is blocking the view.")
 			#enabled = false
 			return false
 			pass

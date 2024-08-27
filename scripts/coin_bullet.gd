@@ -10,21 +10,35 @@ var speed: float = 200.0
 var direction: Vector2
 
 
-func start(_position: Vector2, _direction: Vector2) -> void:
+func start(_position: Vector2, _direction: Vector2, is_arc: bool = false) -> void:
 	position = _position
 	#direction = _direction.normalized()
 	coin_audio_player.play()
-	linear_velocity  = _direction * speed
-	
+	if is_arc:
+		#$Sprite2D.scale = Vector2(0.5, 0.5)
+		linear_velocity  = _direction #* 2 #* speed
+
+	else: 
+		linear_velocity  = _direction * speed		
+	#linear_velocity.y -= 300
+
 
 
 func _process(delta: float) -> void:
 	pass
 
 func _hit(body: Node2D) -> void:
+	if body is Bullet or body is Enemy:
+		return
+	set_collision_layer_value(10, false)
+	set_collision_mask_value(9, false)
+	area_2d.set_collision_layer_value(1, false)
+	area_2d.set_collision_layer_value(9, false)	
+	area_2d.set_collision_mask_value(1, false)
+	area_2d.set_collision_mask_value(9, false)	
 	if body is Player:
 		body.receive_hit()
-	set_collision_layer_value(10, false)
+
 	
 	await get_tree().create_timer(2).timeout
 
@@ -35,6 +49,12 @@ func _hit(body: Node2D) -> void:
 
 func _ready() -> void:
 	area_2d.body_entered.connect(_hit)
+	#var tween = get_tree().create_tween().parallel()
+	#tween.set_ease(Tween.EASE_IN)
+	#tween.set_trans(Tween.TRANS_SINE)
+	#tween.tween_property($Sprite2D, "scale", Vector2(1, 1), 0.8)
+
+	#tween.tween_property(self, "linear_velocity",linear_velocity * 2, 0.8)
 	await get_tree().create_timer(15).timeout
 	queue_free()
 

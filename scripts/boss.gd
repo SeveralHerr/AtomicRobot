@@ -100,7 +100,7 @@ func throw_coin() -> void:
 
 		instance.player_only = true
 		#instance.scale = Vector2(4, 4)
-		node.call_deferred("add_child", instance)
+		node.add_child(instance)
 		var pos = position + coin_spawn_position.position
 		instance.start(pos,  (Globals.player.position - pos).normalized())
 	animated_sprite_2d.play("Idle")

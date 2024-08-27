@@ -46,7 +46,7 @@ func physics_update(delta: float) -> void:
 		
 	dir = (Globals.player.position - enemy.position).normalized()
 	var dist = enemy.position.distance_to(Globals.player.position)
-	print(dist)
+
 	if dist > 90:
 		_update_sprite_direction(enemy)
 		enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)		
@@ -67,13 +67,15 @@ func _create_bullet() -> void:
 	enemy.animated_sprite_2d.play("ThrowCoin")
 	
 func throw_coin() -> void:
+
 	stand_still = false
 	enemy.animated_sprite_2d.animation_finished.disconnect(throw_coin)
 	
 	var instance = enemy.COIN_BULLET.instantiate()
 	enemy.coins -= 1
-	enemy.node.call_deferred("add_child", instance)
+	enemy.node.add_child(instance)
 	#instance.position = enemy.position + enemy.coin_spawn_point.positiona
 	var pos = enemy.position + enemy.coin_spawn_point.position
 	instance.start(pos,  (Globals.player.position - pos).normalized())
 	enemy.animated_sprite_2d.play("Walk")
+	enemy.range_timer.start()

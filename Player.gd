@@ -71,4 +71,4 @@ func receive_hit() -> void:
 	if is_dead:
 		return
 	hurt_audio_player.play()
-	state_machine.change_state("DeadState")
+	#state_machine.change_state("DeadState")

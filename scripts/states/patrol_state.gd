@@ -3,7 +3,7 @@ class_name PatrolState
 
 var direction: int = -1
 
-
+var r
 func enter_state(new_enemy: Enemy) -> void:
 	enemy = new_enemy
 	#if not enemy.range_area_2d.body_entered.is_connected(_target):
@@ -24,9 +24,16 @@ func physics_update(delta: float) -> void:
 	if Globals.player.is_dead:
 		return
 	
-	if enemy.line_of_sight.is_player_line_of_sight():
-		enemy.enemy_state_machine.change_state("ChasePlayerState")
-
+	if r == null:
+		return
+	
+	if r.line_of_sight.is_player_line_of_sight():
+		r.enemy_state_machine.change_state("ChasePlayerState")
+		
+	r.velocity.x = move_toward(r.velocity.x, direction * 50, 2009 * delta)
+		
+func update(enemy: Enemy, delta: float) -> void:
+	r = enemy
 	if not enemy.ray_cast_2d_left.is_colliding():
 		direction = 1
 	elif enemy.ray_cast_2d_left.is_colliding() and enemy.ray_cast_2d_left2.is_colliding() and direction == -1:
@@ -39,7 +46,7 @@ func physics_update(delta: float) -> void:
 		
 
 	_update_sprite_direction(enemy)
-	enemy.velocity.x = move_toward(enemy.velocity.x, direction * 50, 2009 * delta)
+
 
 		
 		
