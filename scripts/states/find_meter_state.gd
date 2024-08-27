@@ -15,6 +15,8 @@ func enter_state(new_enemy: Enemy) -> void:
 	meter = Globals.nearest_meter(enemy.position)
 	stand_still = false
 	
+	enemy.animated_sprite_2d.play("Walk")
+	
 	enemy.navigation_agent_2d.set_target_position(meter.position)
 	
 	ChatBubble.create(enemy, "OH NO! I NEED MORE QUARTERS.")
@@ -33,6 +35,7 @@ func update(enemy: Enemy, delta: float) -> void:
 		_handle_state()
 
 func physics_update(delta: float) -> void:
+	_update_sprite_direction(enemy)
 	if stand_still:
 			enemy.velocity.x = 0
 			enemy.animated_sprite_2d.pause()
@@ -64,7 +67,7 @@ func physics_update(delta: float) -> void:
 		
 	dir = (meter.position - enemy.position).normalized()
 
-	_update_sprite_direction(enemy)
+
 	enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)
 	
 func move_along_path(delta: float) -> void:

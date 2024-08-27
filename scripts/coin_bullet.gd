@@ -1,6 +1,7 @@
 extends RigidBody2D
 class_name Bullet
 
+const HIT_FX = preload("res://scenes/hit_fx.tscn")
 @onready var area_2d: Area2D = $Area2D
 @onready var coin_audio_player: AudioStreamPlayer2D = $CoinAudioPlayer
 @onready var ground_area_2d: Area2D = $GroundArea2D
@@ -38,6 +39,10 @@ func _hit(body: Node2D) -> void:
 	area_2d.set_collision_mask_value(9, false)	
 	if body is Player:
 		body.receive_hit(global_position)
+		var instance = HIT_FX.instantiate()
+		body.get_tree().root.add_child(instance)
+		instance.global_position = global_position
+		instance.start()
 
 	
 	await get_tree().create_timer(2).timeout

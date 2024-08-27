@@ -239,7 +239,7 @@ position = Vector2(0, 7)
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_engfn")
 sprite_frames = SubResource("SpriteFrames_6ep00")
-animation = &"Walk"
+animation = &"Idle"
 autoplay = "Walk"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

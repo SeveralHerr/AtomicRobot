@@ -28,6 +28,8 @@ func exit_state(enemy: Enemy) -> void:
 	if enemy.range_timer.timeout.is_connected(_check_range):
 		enemy.range_timer.timeout.disconnect(_check_range)
 		
+
+		
 func _check_range() -> void:
 	if Globals.player.is_dead:
 		return
@@ -46,10 +48,13 @@ func physics_update(delta: float) -> void:
 		
 	dir = (Globals.player.position - enemy.position).normalized()
 	var dist = enemy.position.distance_to(Globals.player.position)
-
+	_update_sprite_direction(enemy)
 	if dist > 90:
-		_update_sprite_direction(enemy)
+		enemy.animated_sprite_2d.play("Walk")
 		enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)		
+	else:
+		enemy.velocity.x = 0
+		enemy.animated_sprite_2d.play("Idle")
 		
 func _update_sprite_direction(enemy: Enemy) -> void:
 	enemy.animated_sprite_2d.flip_h = sign(dir.x) == -1
@@ -77,5 +82,5 @@ func throw_coin() -> void:
 	#instance.position = enemy.position + enemy.coin_spawn_point.positiona
 	var pos = enemy.position + enemy.coin_spawn_point.position
 	instance.start(pos,  (Globals.player.position - pos).normalized())
-	enemy.animated_sprite_2d.play("Walk")
+	enemy.animated_sprite_2d.play("Idle")
 	enemy.range_timer.start()

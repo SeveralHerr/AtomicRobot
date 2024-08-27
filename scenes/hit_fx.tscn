@@ -1,0 +1,46 @@
+[gd_scene load_steps=8 format=3 uid="uid://d1u1epaft6bri"]
+
+[ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_cxefv"]
+[ext_resource type="Script" path="res://scripts/hit_fx.gd" id="2_03tr3"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wlwbb"]
+atlas = ExtResource("1_cxefv")
+region = Rect2(320, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mbvfc"]
+atlas = ExtResource("1_cxefv")
+region = Rect2(336, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_32uq2"]
+atlas = ExtResource("1_cxefv")
+region = Rect2(352, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_63tw5"]
+atlas = ExtResource("1_cxefv")
+region = Rect2(368, 112, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6w88u"]
+animations = [{
+"frames": [{
+"duration": 0.8,
+"texture": SubResource("AtlasTexture_wlwbb")
+}, {
+"duration": 0.8,
+"texture": SubResource("AtlasTexture_mbvfc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_32uq2")
+}, {
+"duration": 1.2,
+"texture": SubResource("AtlasTexture_63tw5")
+}],
+"loop": false,
+"name": &"default",
+"speed": 12.0
+}]
+
+[node name="HitFx" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_6w88u")
+frame = 3
+frame_progress = 1.0
+script = ExtResource("2_03tr3")
