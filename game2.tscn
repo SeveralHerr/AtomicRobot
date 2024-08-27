@@ -344,6 +344,7 @@ offset_top = 16.1667
 offset_right = 115.5
 offset_bottom = 316.167
 scale = Vector2(0.3, 0.3)
+visibility_mode = 1
 
 [node name="JumpButton" type="CenterContainer" parent="UI/UIContainer/MobileUI"]
 custom_minimum_size = Vector2(50, 50)

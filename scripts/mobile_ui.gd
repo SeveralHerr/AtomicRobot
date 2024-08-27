@@ -21,7 +21,7 @@ func _ready() -> void:
 	if not virtual_joystick_2.visible:
 		jump_ui.hide()
 		attack_ui.hide()
-		crouch_button.hide()
+		crouch_ui.hide()
 	else:
 		jump_button.pressed.connect(_on_jump)
 		attack_button.pressed.connect(_on_attack)

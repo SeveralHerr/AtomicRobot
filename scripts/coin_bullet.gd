@@ -1,42 +1,42 @@
-extends Node2D
+extends RigidBody2D
 class_name Bullet
 
 @onready var area_2d: Area2D = $Area2D
 @onready var coin_audio_player: AudioStreamPlayer2D = $CoinAudioPlayer
 @onready var ground_area_2d: Area2D = $GroundArea2D
 
+var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
+var speed: float = 200.0
+var direction: Vector2
 
-var node: Node2D
-# Speed at which the bullet moves
-var bullet_speed: float = 200.0
-var original_position: Vector2
-var direction
-var player_only: bool = false
-var is_on_ground: bool = false
+var bounces_remaining: int = 30  # Number of times the bullet can bounce before it is destroyed
+
+func start(_position: Vector2, _direction: Vector2) -> void:
+	position = _position
+	#direction = _direction.normalized()
+	linear_velocity  = _direction * speed
+
 
 func _process(delta: float) -> void:
-	position +=  direction * bullet_speed * delta
-
-func _ready() -> void:
-
-	area_2d.body_entered.connect(_hit)
-	ground_area_2d.body_entered.connect(_on_ground)
-	coin_audio_player.play()
-	
-	direction = (Globals.player.position - position).normalized()
-	await get_tree().create_timer(15).timeout
-	queue_free()
-	
-func _on_ground(body: Node2D) -> void:
-
-	is_on_ground = true
-	
+	pass
 
 func _hit(body: Node2D) -> void:
 	if body is Player:
-		#print("hit")
-		Globals.player.receive_hit()
-		queue_free()
-	elif not player_only:
-		queue_free()
-		pass
+		body.receive_hit()
+	
+	await get_tree().create_timer(1).timeout
+	set_collision_layer_value(10, false)
+
+	freeze_mode = FREEZE_MODE_KINEMATIC
+	freeze = true
+	pass
+
+func _ready() -> void:
+	area_2d.body_entered.connect(_hit)
+	await get_tree().create_timer(15).timeout
+	queue_free()
+
+func is_off_screen() -> bool:
+	# Optional: Implement logic to detect if the bullet is off-screen
+	# This can help in cleaning up bullets that leave the screen area
+	return false

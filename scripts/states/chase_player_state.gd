@@ -46,7 +46,7 @@ func physics_update(delta: float) -> void:
 		
 	dir = (Globals.player.position - enemy.position).normalized()
 	var dist = enemy.position.distance_to(Globals.player.position)
-	if dist > 8:
+	if dist > 40:
 		_update_sprite_direction(enemy)
 		enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)		
 		
@@ -72,5 +72,7 @@ func throw_coin() -> void:
 	var instance = enemy.COIN_BULLET.instantiate()
 	enemy.coins -= 1
 	enemy.node.call_deferred("add_child", instance)
-	instance.position = enemy.position + enemy.coin_spawn_point.position
+	#instance.position = enemy.position + enemy.coin_spawn_point.positiona
+	var pos = enemy.position + enemy.coin_spawn_point.position
+	instance.start(pos,  (Globals.player.position - pos).normalized())
 	enemy.animated_sprite_2d.play("Walk")
