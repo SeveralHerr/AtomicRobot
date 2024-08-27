@@ -18,7 +18,7 @@ func enter_state(player: Player) -> void:
 		print(parent.name)
 		if parent is Crate:
 			parent.receive_hit()
-		elif parent is Enemy:
+		elif parent is MeterMaid:
 			parent.receive_hit(1)
 		elif parent is Boss:
 			parent.receive_hit(1)

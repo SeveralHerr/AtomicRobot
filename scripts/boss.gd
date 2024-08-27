@@ -36,6 +36,8 @@ func _on_player_death() -> void:
 	#enemy_state_machine.change_state("PatrolState")
 
 func _process(delta: float) -> void:
+	dir = (Globals.player.position - position).normalized()
+	_update_sprite_direction()
 	if not is_on_floor():
 		velocity.y += 300 * delta
 	if is_on_floor() and not landed:
@@ -45,14 +47,14 @@ func _process(delta: float) -> void:
 	if stand_still:
 		return
 
-	dir = (Globals.player.position - position).normalized()
+
 	var dist = position.distance_to(Globals.player.position)
 	if dist > 100:
-		
+		animated_sprite_2d.play("Walk")
 		velocity.x = move_toward(velocity.x, dir.x * 50, 2009 * delta)
 	else:
 		velocity.x = 0
-	_update_sprite_direction()
+
 	move_and_slide()
 		
 func _update_sprite_direction() -> void:
@@ -98,7 +100,7 @@ func throw_coin() -> void:
 		
 		var instance = COIN_BULLET.instantiate()
 
-		instance.player_only = true
+		#instance.player_only = true
 		#instance.scale = Vector2(4, 4)
 		node.add_child(instance)
 		var pos = position + coin_spawn_position.position

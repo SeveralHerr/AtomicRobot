@@ -43,7 +43,7 @@ func _check_range() -> void:
 		
 func physics_update(delta: float) -> void:
 	if stand_still:
-		enemy.velocity.x = 0
+		enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)		
 		return 
 		
 	dir = (Globals.player.position - enemy.position).normalized()
@@ -51,9 +51,17 @@ func physics_update(delta: float) -> void:
 	_update_sprite_direction(enemy)
 	if dist > 90:
 		enemy.animated_sprite_2d.play("Walk")
-		enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)		
+		
+		if not enemy.ray_cast_2d_left.is_colliding():
+			enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
+		elif not enemy.ray_cast_2d_right.is_colliding():
+			enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
+		else:
+
+		
+			enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)		
 	else:
-		enemy.velocity.x = 0
+		enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
 		enemy.animated_sprite_2d.play("Idle")
 		
 func _update_sprite_direction(enemy: Enemy) -> void:
@@ -83,4 +91,4 @@ func throw_coin() -> void:
 	var pos = enemy.position + enemy.coin_spawn_point.position
 	instance.start(pos,  (Globals.player.position - pos).normalized())
 	enemy.animated_sprite_2d.play("Idle")
-	enemy.range_timer.start()
+	_check_range()

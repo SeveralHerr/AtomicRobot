@@ -49,8 +49,8 @@ func receive_hit(damage: int) -> void:
 	var knockback_direction = (position - Globals.player.position).normalized()
 	
 	# Apply knockback force
-	var knockback_strength = 200.0  # Adjust this value as needed
+	var knockback_strength = 300.0  # Adjust this value as needed
 	velocity += knockback_direction * knockback_strength
 
 	# Optionally, you could also reset velocity.y to create a more distinct knockback effect
-	velocity.y = -10.0  # Adjust this value as needed for vertical knockback
+	velocity.y = -50.0  # Adjust this value as needed for vertical knockback

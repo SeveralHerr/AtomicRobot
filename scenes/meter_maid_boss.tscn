@@ -24,10 +24,6 @@ shader_parameter/flash_value = 0.0
 atlas = ExtResource("1_eun42")
 region = Rect2(480, 48, 16, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_f4ygu"]
-atlas = ExtResource("1_eun42")
-region = Rect2(496, 48, 16, 32)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_sj6l7"]
 atlas = ExtResource("1_eun42")
 region = Rect2(480, 112, 16, 32)
@@ -40,14 +36,15 @@ region = Rect2(496, 112, 16, 32)
 atlas = ExtResource("1_eun42")
 region = Rect2(512, 112, 16, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_f4ygu"]
+atlas = ExtResource("1_eun42")
+region = Rect2(496, 48, 16, 32)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_uvnql"]
 animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_t6vt0")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_f4ygu")
 }],
 "loop": true,
 "name": &"Idle",
@@ -66,6 +63,17 @@ animations = [{
 "loop": false,
 "name": &"ThrowCoin",
 "speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t6vt0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f4ygu")
+}],
+"loop": true,
+"name": &"Walk",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v17ma"]
@@ -120,7 +128,7 @@ script = ExtResource("1_20jyv")
 material = SubResource("ShaderMaterial_wdnqu")
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_uvnql")
-animation = &"ThrowCoin"
+animation = &"Idle"
 autoplay = "Idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

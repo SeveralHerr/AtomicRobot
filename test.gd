@@ -11,7 +11,7 @@ var previous_mouse_pos: Vector2
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	var mouse_pos: Vector2 = get_global_mouse_position()
-	line_of_sight.target_position = mouse_pos
+	line_of_sight.target_position = Globals.player.global_position
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		print("click")
 		var space = get_world_2d().direct_space_state
