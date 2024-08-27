@@ -14,6 +14,7 @@ func enter_state(new_enemy: Enemy) -> void:
 	#enemy.line_of_sight.set_collision_mask_value(11, true)
 	#enemy.line_of_sight.set_collision_mask_value(1, false)
 	enemy.timer.wait_time = 1
+	enemy.animated_sprite_2d.play("Idle")
 	if not enemy.timer.timeout.is_connected(throw_coin2):
 		enemy.timer.timeout.connect(throw_coin2)
 		
@@ -22,7 +23,7 @@ func enter_state(new_enemy: Enemy) -> void:
 
 func physics_update( delta: float) -> void:
 
-	dir = (Globals.player.position - enemy.global_position).normalized()
+	dir = (Globals.player.global_position - enemy.global_position).normalized()
 	
 	_update_sprite_direction(enemy)
 
@@ -58,7 +59,7 @@ func throw_coin2() -> void:
 	Globals.player.get_parent().add_child(instance)
 
 	var start_pos = enemy.coin_spawn_point.global_position
-	var target_pos = Globals.player.position
+	var target_pos = Globals.player.global_position
 
 	# Calculate the distance and height difference
 	var distance_x = target_pos.x - start_pos.x
