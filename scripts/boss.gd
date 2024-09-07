@@ -64,7 +64,7 @@ func _update_sprite_direction() -> void:
 
 	
 func receive_hit(damage: int) -> void:
-	ScreenShake.apply_shake(10)
+	#ScreenShake.apply_shake(10)
 	animation_player.play("Hit")
 	health -= damage
 	

@@ -59,8 +59,8 @@ grow_vertical = 2
 layout_mode = 0
 offset_left = -34.0
 offset_top = -2.0
-offset_right = 1199.0
-offset_bottom = 775.0
+offset_right = 1415.0
+offset_bottom = 888.0
 texture = ExtResource("1_uhull")
 expand_mode = 1
 stretch_mode = 5
@@ -252,6 +252,7 @@ stretch_mode = 5
 [node name="Locked" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot3"]
 visible = false
 custom_minimum_size = Vector2(0, 115)
+layout_mode = 0
 offset_left = 5.5
 offset_top = 6.0
 offset_right = 123.5
@@ -303,6 +304,7 @@ stretch_mode = 5
 
 [node name="Locked" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot4"]
 custom_minimum_size = Vector2(0, 115)
+layout_mode = 0
 offset_left = 5.5
 offset_top = 6.0
 offset_right = 123.5
@@ -354,6 +356,7 @@ stretch_mode = 5
 
 [node name="Locked" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot5"]
 custom_minimum_size = Vector2(0, 115)
+layout_mode = 0
 offset_left = 5.5
 offset_top = 6.0
 offset_right = 123.5

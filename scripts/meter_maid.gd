@@ -4,14 +4,15 @@ class_name MeterMaid
 
 
 
-
-
 func _ready() -> void:
 	node = Globals.player.get_parent()
+
 	enemy_state_machine = EnemyStateMachine.new(self)
 	enemy_state_machine.add_state("PatrolState", PatrolState.new())
 	enemy_state_machine.add_state("ChasePlayerState", ChasePlayerState.new())
 	enemy_state_machine.add_state("FindMeterState", FindMeterState.new())
+	#enemy_state_machine.add_state("AttackPlayerState", AttackPlayerState.new())
+	add_child(enemy_state_machine)
 	
 	enemy_state_machine.change_state("PatrolState")
 	Globals.player_death.connect(_on_player_death)
@@ -26,6 +27,8 @@ func _process(delta: float) -> void:
 
 	
 func _physics_process(delta: float) -> void:
+	if enemy_state_machine.enemy == null:
+		return
 	if not is_on_floor():
 		velocity.y += 300 * delta
 		
@@ -33,7 +36,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	
 func receive_hit(damage: int) -> void:
-	ScreenShake.apply_shake(10)
+
 	if animation_player.is_playing():
 		animation_player.stop()
 	

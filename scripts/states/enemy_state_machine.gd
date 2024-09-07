@@ -5,8 +5,8 @@ var states = {}
 var current_state: EnemyState = null
 var enemy: Enemy
 
-func _init(enemy: Enemy) -> void:
-	self.enemy = enemy
+func _init(e: Enemy) -> void:
+	enemy = e
 
 
 func add_state(name: String, state: EnemyState) -> void:
@@ -14,9 +14,13 @@ func add_state(name: String, state: EnemyState) -> void:
 
 func change_state(name: String) -> void:
 	print(name)
+
+	
 	if current_state:
-		current_state.exit_state(enemy)
+		current_state.exit_state(enemy)	
 	current_state = states[name]
+	if current_state.enemy == null: 
+		current_state.enemy = enemy
 	current_state.enter_state(enemy)
 
 func handle_input(event: InputEvent) -> void:

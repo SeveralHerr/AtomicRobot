@@ -27,3 +27,6 @@ var speed: int = 50
 var target: Node2D = null
 var coins: int = 4
 var node: Node
+
+func _update_sprite_direction(direction: float) -> void:
+	animated_sprite_2d.flip_h = sign(direction) == -1
