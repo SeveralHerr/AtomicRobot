@@ -528,7 +528,7 @@ position = Vector2(746, 99)
 position = Vector2(746, 83)
 
 [node name="Player" parent="." instance=ExtResource("2_v1ia2")]
-position = Vector2(81, 15)
+position = Vector2(72, 85)
 collision_mask = 3
 
 [node name="Camera2D" type="Camera2D" parent="Player" groups=["Camera"]]
