@@ -4,6 +4,8 @@ extends Node2D
 
 var shaker: Shaker
 
+var car_damage = 3
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	area_2d.body_entered.connect(_hit)
@@ -23,4 +25,4 @@ func _process(delta: float) -> void:
 func _hit(body: Node2D) -> void:
 	if body is Player:
 		shaker.apply_shake(2)
-		body.receive_hit(global_position)
+		body.receive_hit(global_position, car_damage)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=4 uid="uid://cpybghw0k54ni"]
+[gd_scene load_steps=61 format=4 uid="uid://cpybghw0k54ni"]
 
 [ext_resource type="TileSet" uid="uid://cdnenrt36tsrv" path="res://Tiles/asset_tiles.tres" id="1_t7arr"]
 [ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://Tiles/custom_tiles.png" id="2_78e6q"]
@@ -34,6 +34,8 @@
 [ext_resource type="Texture2D" uid="uid://do55skr27qvfd" path="res://images/arrow_n.png" id="18_mxkpc"]
 [ext_resource type="Texture2D" uid="uid://b3yvdhkilwb4o" path="res://images/tool_sword_b.png" id="19_m5324"]
 [ext_resource type="AudioStream" uid="uid://b67d36asjuw6b" path="res://sounds/Unlock.wav" id="20_70k3o"]
+[ext_resource type="Script" path="res://health_container.gd" id="28_euava"]
+[ext_resource type="Texture2D" uid="uid://c1x8tpfq0wt08" path="res://images/logo.png" id="29_6urlq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kwxwe"]
 atlas = ExtResource("2_78e6q")
@@ -721,6 +723,44 @@ text = "CODY IS NOW PLAYABLE"
 label_settings = SubResource("LabelSettings_m33t0")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="HealthUI" type="Control" parent="UI/UIContainer"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/UIContainer/HealthUI"]
+layout_mode = 0
+offset_left = -190.667
+offset_top = -108.333
+offset_right = -159.667
+offset_bottom = -85.3333
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/UIContainer/HealthUI/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = -2
+script = ExtResource("28_euava")
+
+[node name="HP1" type="TextureRect" parent="UI/UIContainer/HealthUI/CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("29_6urlq")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="HP2" type="TextureRect" parent="UI/UIContainer/HealthUI/CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("29_6urlq")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="HP3" type="TextureRect" parent="UI/UIContainer/HealthUI/CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("29_6urlq")
+expand_mode = 3
+stretch_mode = 5
 
 [node name="Audio" type="Node" parent="."]
 script = ExtResource("15_7bdc4")

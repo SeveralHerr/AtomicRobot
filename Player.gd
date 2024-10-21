@@ -1,6 +1,8 @@
 extends CharacterBody2D
 class_name Player
 
+signal player_health_updated(current_value: int) 
+
 @onready var default_sprite: AnimatedSprite2D = $DefaultSprite
 @onready var area_2d: Area2D = $Area2D
 @onready var collision_shape_2d: CollisionShape2D = $Area2D/CollisionShape2D
@@ -14,7 +16,7 @@ class_name Player
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 var is_dead: bool = false
-
+var health: int = 3
 
 const SPEED = 100.0
 const JUMP_VELOCITY = -650.0
@@ -22,6 +24,15 @@ var state_machine: StateMachine
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
+
+func take_damage(amount: int) -> void:
+	health -= amount
+	print(health)
+	
+	player_health_updated.emit(health) 
+	
+	if health <= 0:
+		death()
 
 func _input(event: InputEvent) -> void:
 	state_machine.handle_input(event)
@@ -68,7 +79,7 @@ func _physics_process(delta: float) -> void:
 func _process(delta: float) -> void:
 	state_machine.update(delta)
 
-func receive_hit(source_position: Vector2) -> void:
+func receive_hit(source_position: Vector2, damage: int) -> void:
 	if is_dead:
 		return
 	hurt_audio_player.play()
@@ -87,6 +98,8 @@ func receive_hit(source_position: Vector2) -> void:
 	# Optionally, you could also reset velocity.y to create a more distinct knockback effect
 	velocity.y += -10.0 
 	#state_machine.change_state("DeadState")
+	
+	take_damage(damage)
 	
 func death() -> void:
 	state_machine.change_state("DeadState")
