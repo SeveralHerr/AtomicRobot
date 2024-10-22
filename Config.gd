@@ -15,8 +15,13 @@ const ROBOT_DESCRIPTION: String = "The official robot"
 
 var selected_character: String
 
+var unlockables = [
+	Unlockable.new("Cody", "CODY IS NOW PLAYABLE", false),
+	Unlockable.new("RYAN", "RYAN IS NOW PLAYABLE", false)
+]
 
 var cody_unlocked: bool = false
+var ryan_unlocked: bool = false
 var cody_selected: bool = false
 var player: Player
 var player_last_position

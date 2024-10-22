@@ -1,0 +1,88 @@
+[gd_scene load_steps=9 format=3 uid="uid://cgu2unw740vuf"]
+
+[ext_resource type="Script" path="res://scripts/notification.gd" id="1_v12kh"]
+[ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://font_variation.tres" id="2_sk3xj"]
+[ext_resource type="FontVariation" uid="uid://rdj5e70hecho" path="res://new_font_variation_6.tres" id="3_yf5sq"]
+[ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://AldotheApache.ttf" id="4_lhfe6"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2wht0"]
+font = ExtResource("2_sk3xj")
+font_size = 30
+font_color = Color(0.462745, 0, 0, 1)
+outline_size = 4
+shadow_size = 11
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_r608p"]
+font = ExtResource("3_yf5sq")
+font_size = 86
+font_color = Color(0.462745, 0, 0, 1)
+outline_size = 10
+shadow_size = 29
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(0, 0)
+
+[sub_resource type="FontVariation" id="FontVariation_yra0j"]
+base_font = ExtResource("4_lhfe6")
+spacing_glyph = 2
+
+[sub_resource type="LabelSettings" id="LabelSettings_m33t0"]
+font = SubResource("FontVariation_yra0j")
+font_size = 20
+shadow_size = 4
+shadow_color = Color(0, 0, 0, 0.337255)
+
+[node name="Notification" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_v12kh")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Panel2" type="Panel" parent="MarginContainer/VBoxContainer"]
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(100, 120)
+layout_mode = 2
+
+[node name="HeaderLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Unlocked
+"
+label_settings = SubResource("LabelSettings_2wht0")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer"]
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="CharacterNameLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Cody"
+label_settings = SubResource("LabelSettings_r608p")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "CODY IS NOW PLAYABLE"
+label_settings = SubResource("LabelSettings_m33t0")
+horizontal_alignment = 1
+vertical_alignment = 1

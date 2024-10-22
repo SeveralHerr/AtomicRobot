@@ -9,4 +9,4 @@ func _ready() -> void:
 
 func _on_enter(body: Node2D) -> void:
 	if body is Player: 
-		body.death()
+		body.take_damage(3)

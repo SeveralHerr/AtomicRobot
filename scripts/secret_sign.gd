@@ -6,11 +6,19 @@ extends Node
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var audio_stream_player_2d: AudioStreamPlayer2D = $AudioStreamPlayer2D
 
+@export var unlock_text: String = ""
+@export var hidden: bool = false
+
+@export var unlockable: Unlockable
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	area_2d.body_entered.connect(_on_enter)
-	area_2d.body_exited.connect(_on_exit)
-	sprite_2d.hide()
+	
+	if hidden:
+		area_2d.body_entered.connect(_on_enter)
+		area_2d.body_exited.connect(_on_exit)
+		sprite_2d.hide()
+		
 	if not Globals.cody_unlocked:
 		secret_area_2d.body_entered.connect(_on_enter_secret)
 	else: 
@@ -41,7 +49,8 @@ func _on_exit(body: Node2D) -> void:
 func _on_enter_secret(body: Node2D) -> void:
 	if body is Player:
 		Globals.cody_unlocked = true
-		Globals.unlocked.emit("Unlocked", "CODY IS NOW PLAYABLE")
+		
+		Globals.unlocked.emit("Unlocked", unlock_text)
 		audio_stream_player_2d.play()
 		sprite_2d.queue_free()
 		secret_area_2d.body_entered.disconnect(_on_enter_secret)

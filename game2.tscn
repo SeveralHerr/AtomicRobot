@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=4 uid="uid://cpybghw0k54ni"]
+[gd_scene load_steps=39 format=4 uid="uid://cpybghw0k54ni"]
 
 [ext_resource type="TileSet" uid="uid://cdnenrt36tsrv" path="res://Tiles/asset_tiles.tres" id="1_t7arr"]
 [ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://Tiles/custom_tiles.png" id="2_78e6q"]
@@ -12,30 +12,17 @@
 [ext_resource type="Shader" path="res://shaders/flash.gdshader" id="5_jcspb"]
 [ext_resource type="PackedScene" uid="uid://bsmabxobj7kwp" path="res://scenes/crate.tscn" id="6_kx8su"]
 [ext_resource type="Texture2D" uid="uid://cl5bejdxbquo2" path="res://Tiles/train.png" id="7_0x21p"]
-[ext_resource type="Script" path="res://restart_ui.gd" id="8_camw6"]
 [ext_resource type="AudioStream" uid="uid://dky8clf8g64kv" path="res://sounds/time_for_adventure.mp3" id="9_go3em"]
 [ext_resource type="AudioStream" uid="uid://bq00o6vyt41bd" path="res://sounds/Train.wav" id="10_iihg1"]
 [ext_resource type="Script" path="res://scripts/sewer_entrance.gd" id="10_slgu4"]
 [ext_resource type="PackedScene" uid="uid://du5vce0l27auc" path="res://scenes/indicator.tscn" id="11_dg5wu"]
-[ext_resource type="Script" path="res://scripts/notification.gd" id="11_nfecv"]
-[ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://font_variation.tres" id="11_pdi35"]
-[ext_resource type="FontVariation" uid="uid://rdj5e70hecho" path="res://new_font_variation_6.tres" id="12_meour"]
-[ext_resource type="StyleBox" uid="uid://vb5n0pdp6vf" path="res://Sprites/mobile_button_normal.tres" id="12_uujj7"]
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="13_gq4oo"]
-[ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://AldotheApache.ttf" id="13_qf0uw"]
-[ext_resource type="Script" path="res://scripts/secret_sign.gd" id="13_u2sts"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="14_vji4j"]
-[ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="15_2mtah"]
 [ext_resource type="Script" path="res://scripts/audio.gd" id="15_7bdc4"]
-[ext_resource type="Script" path="res://scripts/spin.gd" id="15_f448e"]
-[ext_resource type="Script" path="res://scripts/mobile_ui.gd" id="15_t8g1g"]
 [ext_resource type="AudioStream" uid="uid://cwpmodnmtuvfe" path="res://sounds/boss.wav" id="17_0i58p"]
-[ext_resource type="Texture2D" uid="uid://b2y7hrpauia37" path="res://images/mobile_button.png" id="17_0kvo3"]
-[ext_resource type="Texture2D" uid="uid://do55skr27qvfd" path="res://images/arrow_n.png" id="18_mxkpc"]
-[ext_resource type="Texture2D" uid="uid://b3yvdhkilwb4o" path="res://images/tool_sword_b.png" id="19_m5324"]
-[ext_resource type="AudioStream" uid="uid://b67d36asjuw6b" path="res://sounds/Unlock.wav" id="20_70k3o"]
-[ext_resource type="Script" path="res://health_container.gd" id="28_euava"]
-[ext_resource type="Texture2D" uid="uid://c1x8tpfq0wt08" path="res://images/logo.png" id="29_6urlq"]
+[ext_resource type="PackedScene" uid="uid://dv58hcp37fnri" path="res://scenes/ui_container.tscn" id="17_y4b66"]
+[ext_resource type="Script" path="res://scripts/unlockable.gd" id="23_ew0pp"]
+[ext_resource type="PackedScene" uid="uid://b480epd4mubxd" path="res://scenes/secrets.tscn" id="34_1tmfn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kwxwe"]
 atlas = ExtResource("2_78e6q")
@@ -92,54 +79,6 @@ size = Vector2(31, 85)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8nnk6"]
 radius = 15.09
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_43wfq"]
-texture = ExtResource("17_0kvo3")
-
-[sub_resource type="Theme" id="Theme_l51kk"]
-Button/styles/disabled = ExtResource("12_uujj7")
-Button/styles/focus = ExtResource("12_uujj7")
-Button/styles/hover = ExtResource("12_uujj7")
-Button/styles/normal = ExtResource("12_uujj7")
-Button/styles/pressed = SubResource("StyleBoxTexture_43wfq")
-
-[sub_resource type="LabelSettings" id="LabelSettings_2wht0"]
-font = ExtResource("11_pdi35")
-font_size = 30
-font_color = Color(0.462745, 0, 0, 1)
-outline_size = 4
-shadow_size = 11
-shadow_color = Color(0, 0, 0, 1)
-shadow_offset = Vector2(0, 0)
-
-[sub_resource type="LabelSettings" id="LabelSettings_r608p"]
-font = ExtResource("12_meour")
-font_size = 86
-font_color = Color(0.462745, 0, 0, 1)
-outline_size = 10
-shadow_size = 29
-shadow_color = Color(0, 0, 0, 1)
-shadow_offset = Vector2(0, 0)
-
-[sub_resource type="FontVariation" id="FontVariation_yra0j"]
-base_font = ExtResource("13_qf0uw")
-spacing_glyph = 2
-
-[sub_resource type="LabelSettings" id="LabelSettings_m33t0"]
-font = SubResource("FontVariation_yra0j")
-font_size = 20
-shadow_size = 4
-shadow_color = Color(0, 0, 0, 0.337255)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7ucte"]
-size = Vector2(28, 63)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_xl4sf"]
-atlas = ExtResource("14_vji4j")
-region = Rect2(160, 80, 16, 16)
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_vrdj5"]
-radius = 7.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_osvj5"]
 size = Vector2(60, 30)
@@ -563,204 +502,7 @@ position = Vector2(1500, 92)
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="UIContainer" type="Panel" parent="UI"]
-offset_left = 576.0
-offset_top = 324.0
-offset_right = 576.0
-offset_bottom = 324.0
-scale = Vector2(3, 3)
-
-[node name="MobileUI" type="Control" parent="UI/UIContainer"]
-layout_mode = 2
-anchors_preset = 0
-offset_left = -0.5
-offset_top = -0.5
-offset_right = -0.5
-offset_bottom = -0.5
-script = ExtResource("15_t8g1g")
-
-[node name="Virtual Joystick2" parent="UI/UIContainer/MobileUI" instance=ExtResource("15_2mtah")]
-layout_mode = 1
-offset_left = -192.167
-offset_top = 70.5
-offset_right = 107.833
-offset_bottom = 370.5
-scale = Vector2(0.3, 0.3)
-visibility_mode = 1
-
-[node name="JumpButton" type="CenterContainer" parent="UI/UIContainer/MobileUI"]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 0
-offset_left = 171.833
-offset_top = 101.833
-offset_right = 221.833
-offset_bottom = 151.833
-
-[node name="TextureRect2" type="TextureRect" parent="UI/UIContainer/MobileUI/JumpButton"]
-custom_minimum_size = Vector2(40, 50)
-layout_mode = 2
-texture = ExtResource("18_mxkpc")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Button" type="Button" parent="UI/UIContainer/MobileUI/JumpButton"]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-theme = SubResource("Theme_l51kk")
-
-[node name="PanelContainer" type="PanelContainer" parent="UI/UIContainer/MobileUI/JumpButton"]
-layout_mode = 2
-
-[node name="CrouchUI" type="CenterContainer" parent="UI/UIContainer/MobileUI"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 0
-offset_left = 148.833
-offset_top = 70.5
-offset_right = 188.833
-offset_bottom = 110.5
-
-[node name="TextureRect2" type="TextureRect" parent="UI/UIContainer/MobileUI/CrouchUI"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-texture = ExtResource("18_mxkpc")
-expand_mode = 1
-stretch_mode = 5
-flip_v = true
-
-[node name="Button" type="Button" parent="UI/UIContainer/MobileUI/CrouchUI"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-theme = SubResource("Theme_l51kk")
-
-[node name="PanelContainer" type="PanelContainer" parent="UI/UIContainer/MobileUI/CrouchUI"]
-layout_mode = 2
-
-[node name="AttackButton" type="CenterContainer" parent="UI/UIContainer/MobileUI"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 0
-offset_left = 185.833
-offset_top = 60.5
-offset_right = 225.833
-offset_bottom = 100.5
-
-[node name="TextureRect2" type="TextureRect" parent="UI/UIContainer/MobileUI/AttackButton"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-texture = ExtResource("19_m5324")
-expand_mode = 1
-stretch_mode = 5
-flip_h = true
-
-[node name="Button" type="Button" parent="UI/UIContainer/MobileUI/AttackButton"]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-theme = SubResource("Theme_l51kk")
-
-[node name="RestartUI" type="CenterContainer" parent="UI/UIContainer"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("8_camw6")
-
-[node name="Button" type="Button" parent="UI/UIContainer/RestartUI"]
-layout_mode = 2
-text = "RESTART
-"
-
-[node name="Notification" type="Control" parent="UI/UIContainer"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("11_nfecv")
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/UIContainer/Notification"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/UIContainer/Notification/MarginContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="Panel2" type="Panel" parent="UI/UIContainer/Notification/MarginContainer/VBoxContainer"]
-self_modulate = Color(1, 1, 1, 0)
-custom_minimum_size = Vector2(100, 120)
-layout_mode = 2
-
-[node name="HeaderLabel" type="Label" parent="UI/UIContainer/Notification/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Unlocked
-"
-label_settings = SubResource("LabelSettings_2wht0")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Panel" type="Panel" parent="UI/UIContainer/Notification/MarginContainer/VBoxContainer"]
-self_modulate = Color(1, 1, 1, 0)
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-
-[node name="CharacterNameLabel" type="Label" parent="UI/UIContainer/Notification/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-text = "Cody"
-label_settings = SubResource("LabelSettings_r608p")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="DescriptionLabel" type="Label" parent="UI/UIContainer/Notification/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "CODY IS NOW PLAYABLE"
-label_settings = SubResource("LabelSettings_m33t0")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HealthUI" type="Control" parent="UI/UIContainer"]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="CenterContainer" type="CenterContainer" parent="UI/UIContainer/HealthUI"]
-layout_mode = 0
-offset_left = -190.667
-offset_top = -108.333
-offset_right = -159.667
-offset_bottom = -85.3333
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/UIContainer/HealthUI/CenterContainer"]
-layout_mode = 2
-theme_override_constants/separation = -2
-script = ExtResource("28_euava")
-
-[node name="HP1" type="TextureRect" parent="UI/UIContainer/HealthUI/CenterContainer/HBoxContainer"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-texture = ExtResource("29_6urlq")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="HP2" type="TextureRect" parent="UI/UIContainer/HealthUI/CenterContainer/HBoxContainer"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-texture = ExtResource("29_6urlq")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="HP3" type="TextureRect" parent="UI/UIContainer/HealthUI/CenterContainer/HBoxContainer"]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-texture = ExtResource("29_6urlq")
-expand_mode = 3
-stretch_mode = 5
+[node name="UIContainer" parent="UI" instance=ExtResource("17_y4b66")]
 
 [node name="Audio" type="Node" parent="."]
 script = ExtResource("15_7bdc4")
@@ -776,30 +518,14 @@ volume_db = 9.088
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("13_gq4oo")
 
-[node name="SecretSign" type="Node" parent="."]
-script = ExtResource("13_u2sts")
+[node name="SecretSign" parent="." node_paths=PackedStringArray("unlockable") instance=ExtResource("34_1tmfn")]
+unlock_text = "CODY IS UNLOCKED"
+hidden = true
+unlockable = NodePath("RyanUnlockable")
 
-[node name="Area2D" type="Area2D" parent="SecretSign"]
-position = Vector2(59, -26)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SecretSign/Area2D"]
-position = Vector2(22.5, 3)
-rotation = 1.5708
-shape = SubResource("RectangleShape2D_7ucte")
-
-[node name="Sprite2D" type="Sprite2D" parent="SecretSign"]
-self_modulate = Color(1, 1, 1, 0.4)
-position = Vector2(62, -14)
-texture = SubResource("AtlasTexture_xl4sf")
-script = ExtResource("15_f448e")
-
-[node name="Area2D" type="Area2D" parent="SecretSign/Sprite2D"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SecretSign/Sprite2D/Area2D"]
-shape = SubResource("CircleShape2D_vrdj5")
-
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="SecretSign"]
-stream = ExtResource("20_70k3o")
+[node name="RyanUnlockable" type="Node" parent="SecretSign"]
+script = ExtResource("23_ew0pp")
+unlock_text = "RYAN IS NOW PLAYABLE"
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="."]
 position = Vector2(-1, -3)
@@ -824,4 +550,5 @@ one_way_collision = true
 [editable path="Parallax2D/Train/MeterMaid7"]
 [editable path="Parallax2D/Train/MeterMaid8"]
 [editable path="Parallax2D/Train/MeterMaid6"]
+[editable path="UI/UIContainer"]
 [editable path="UI/UIContainer/MobileUI/Virtual Joystick2"]

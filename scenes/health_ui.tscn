@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=3 uid="uid://c37vas4dihnt4"]
+
+[ext_resource type="Script" path="res://health_container.gd" id="1_h6e2a"]
+[ext_resource type="Texture2D" uid="uid://c1x8tpfq0wt08" path="res://images/logo.png" id="2_c8jbx"]
+
+[node name="HealthUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 0
+offset_left = -190.667
+offset_top = -108.333
+offset_right = -159.667
+offset_bottom = -85.3333
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = -2
+script = ExtResource("1_h6e2a")
+
+[node name="HP1" type="TextureRect" parent="CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("2_c8jbx")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="HP2" type="TextureRect" parent="CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("2_c8jbx")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="HP3" type="TextureRect" parent="CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("2_c8jbx")
+expand_mode = 3
+stretch_mode = 5
