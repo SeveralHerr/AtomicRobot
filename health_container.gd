@@ -3,6 +3,7 @@ extends HBoxContainer
 @onready var hp_1: TextureRect = $HP1
 @onready var hp_2: TextureRect = $HP2
 @onready var hp_3: TextureRect = $HP3
+@onready var hp_4: TextureRect = $HP4
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -18,6 +19,9 @@ func _update_health(current_health: int) -> void:
 		print(current_health) 
 	if current_health <= 2:
 		hp_3.hide()
+		print(current_health)
+	if current_health <= 3:
+		hp_4.hide()
 		print(current_health)
 
 

@@ -165,7 +165,6 @@ autoplay = true
 
 [node name="Secret" parent="." instance=ExtResource("9_ddoix")]
 unlock_text = "RYAN IS UNLOCKED"
-hidden = false
 
 [node name="Area2D" parent="Secret" index="0"]
 position = Vector2(159, 39)

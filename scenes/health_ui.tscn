@@ -41,3 +41,10 @@ layout_mode = 2
 texture = ExtResource("2_c8jbx")
 expand_mode = 3
 stretch_mode = 5
+
+[node name="HP4" type="TextureRect" parent="CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("2_c8jbx")
+expand_mode = 3
+stretch_mode = 5

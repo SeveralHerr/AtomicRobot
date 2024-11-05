@@ -16,7 +16,7 @@ signal player_health_updated(current_value: int)
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 var is_dead: bool = false
-var health: int = 3
+var health: int = 4
 
 const SPEED = 100.0
 const JUMP_VELOCITY = -650.0
