@@ -32,7 +32,7 @@ func _hit(body: Node2D) -> void:
 	
 	if body is Bullet or body is Enemy:
 		return
-	print("collision body name:" + body.name)
+
 	set_collision_layer_value(10, false)
 	set_collision_mask_value(9, false)
 	area_2d.set_collision_layer_value(1, false)
