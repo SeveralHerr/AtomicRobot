@@ -9,8 +9,6 @@ extends Node
 @export var unlock_text: String = ""
 @export var hidden: bool = false
 
-@export var unlockable: Unlockable
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	
@@ -19,7 +17,7 @@ func _ready() -> void:
 		area_2d.body_exited.connect(_on_exit)
 		sprite_2d.hide()
 		
-	if not Globals.cody_unlocked:
+	if not Globals.unlockables[0].unlocked:
 		secret_area_2d.body_entered.connect(_on_enter_secret)
 	else: 
 		sprite_2d.queue_free()
@@ -48,7 +46,7 @@ func _on_exit(body: Node2D) -> void:
 	
 func _on_enter_secret(body: Node2D) -> void:
 	if body is Player:
-		Globals.cody_unlocked = true
+		Globals.unlockables[0].unlocked = true
 		
 		Globals.unlocked.emit("Unlocked", unlock_text)
 		audio_stream_player_2d.play()

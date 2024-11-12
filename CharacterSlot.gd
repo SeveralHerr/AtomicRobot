@@ -20,7 +20,7 @@ func _ready() -> void:
 	character_name_label.text = ""
 	character_description_label.text = ""
 	
-	if character == "Cody" and not Globals.cody_unlocked:
+	if character == "Cody" and not Globals.unlockables[0].unlocked:
 		locked.show()
 		character_image.hide()
 		
@@ -37,7 +37,7 @@ func _on_focus() -> void:
 		Globals.selected_character = "Robot"
 		
 	elif character == "Cody":
-		if Globals.cody_unlocked:
+		if Globals.unlockables[0].unlocked:
 			character_name_label.text = Globals.DEFAULT_NAME
 			character_description_label.text = Globals.DEFAULT_DESCRIPTION
 			Globals.selected_character = "Cody"
