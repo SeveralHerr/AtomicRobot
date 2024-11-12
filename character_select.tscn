@@ -210,10 +210,10 @@ expand_mode = 3
 stretch_mode = 5
 
 [node name="Slot3" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-visible = false
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 script = ExtResource("2_p1ay4")
+character = "Ryan"
 
 [node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot3"]
 texture_filter = 1

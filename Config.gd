@@ -6,8 +6,6 @@ signal unlocked(name: String, description: String)
 signal boss_fight(status: bool)
 
 const DEFAULT_FRAMES = preload("res://Sprites/default_frames.tres")
-const DEFAULT_NAME: String = "Cody"
-const DEFAULT_DESCRIPTION: String = "Owner of Atomic Robot Tattoo"
 
 const ROBOT_FRAMES = preload("res://Sprites/robot_frames.tres")
 const ROBOT_NAME: String = "Atomic Robot"
@@ -16,8 +14,8 @@ const ROBOT_DESCRIPTION: String = "The official robot"
 var selected_character: String
 
 var unlockables = [
-	Unlockable.new("Cody", "CODY IS NOW PLAYABLE", false),
-	Unlockable.new("RYAN", "RYAN IS NOW PLAYABLE", false)
+	Unlockable.new("Cody", "CODY IS NOW PLAYABLE", false, "Owner of Atomic Robot Tattoo"),
+	Unlockable.new("RYAN", "RYAN IS NOW PLAYABLE", false, "Employee of Atomic Robot Tatoo")
 ]
 
 var cody_selected: bool = false

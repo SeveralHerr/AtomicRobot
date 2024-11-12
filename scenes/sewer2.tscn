@@ -9,7 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://dky8clf8g64kv" path="res://sounds/time_for_adventure.mp3" id="4_c4w6m"]
 [ext_resource type="FontFile" uid="uid://dx3iudetbksmy" path="res://Pixeled.ttf" id="8_2jc6e"]
 [ext_resource type="PackedScene" uid="uid://b480epd4mubxd" path="res://scenes/secrets.tscn" id="9_ddoix"]
-[ext_resource type="Script" path="res://scripts/unlockable.gd" id="10_k8b4g"]
+[ext_resource type="Script" path="res://scripts/secret_ryan.gd" id="10_cw6px"]
 [ext_resource type="PackedScene" uid="uid://dv58hcp37fnri" path="res://scenes/ui_container.tscn" id="10_kcm8l"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_d3lpd"]
@@ -164,6 +164,7 @@ stream = ExtResource("4_c4w6m")
 autoplay = true
 
 [node name="Secret" parent="." instance=ExtResource("9_ddoix")]
+script = ExtResource("10_cw6px")
 unlock_text = "RYAN IS UNLOCKED"
 
 [node name="Area2D" parent="Secret" index="0"]
@@ -171,10 +172,6 @@ position = Vector2(159, 39)
 
 [node name="Sprite2D" parent="Secret" index="1"]
 position = Vector2(162, 51)
-
-[node name="RyanUnlockable" type="Node" parent="Secret"]
-script = ExtResource("10_k8b4g")
-unlock_text = "CODY IS NOW PLAYABLE"
 
 [node name="UI" type="CanvasLayer" parent="."]
 
