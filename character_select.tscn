@@ -267,6 +267,7 @@ visible = false
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 script = ExtResource("2_p1ay4")
+character = "Robot"
 
 [node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot4"]
 texture_filter = 1
@@ -319,6 +320,7 @@ visible = false
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 script = ExtResource("2_p1ay4")
+character = "Robot"
 
 [node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot5"]
 texture_filter = 1

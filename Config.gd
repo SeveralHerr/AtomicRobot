@@ -5,20 +5,13 @@ signal meter_maid_death
 signal unlocked(name: String, description: String)
 signal boss_fight(status: bool)
 
-const DEFAULT_FRAMES = preload("res://Sprites/default_frames.tres")
+var selected_character: String = "Robot"
+var character_dict = {
+		"Robot": Unlockable.new("Robot", "ROBOT IS NOW PLAYABLE", true, "Atomic Robot Tattoo Mascot", preload("res://Sprites/robot_frames.tres"), ""),
+		"Cody": Unlockable.new("Cody", "CODY IS NOW PLAYABLE", false, "Owner of Atomic Robot Tattoo", preload("res://Sprites/default_frames.tres"), "HINT: If only there was a sign"),
+		"Ryan": Unlockable.new("Ryan", "RYAN IS NOW PLAYABLE", false, "Employee of Atomic Robot Tatoo", preload("res://Sprites/default_frames.tres"), "HINT: TMNT"),
+	}
 
-const ROBOT_FRAMES = preload("res://Sprites/robot_frames.tres")
-const ROBOT_NAME: String = "Atomic Robot"
-const ROBOT_DESCRIPTION: String = "The official robot"
-
-var selected_character: String
-
-var unlockables = [
-	Unlockable.new("Cody", "CODY IS NOW PLAYABLE", false, "Owner of Atomic Robot Tattoo"),
-	Unlockable.new("RYAN", "RYAN IS NOW PLAYABLE", false, "Employee of Atomic Robot Tatoo")
-]
-
-var cody_selected: bool = false
 var player: Player
 var player_last_position
 var meters: Array
@@ -33,7 +26,7 @@ func is_node_destroyed(node_name: String) -> bool:
 	return destroyed_nodes.get(node_name, false)
 
 func reset() -> void:
-	cody_selected = false
+	selected_character = "Robot"
 	meters.clear()
 	meter_maids_killed = 0
 	player_last_position = null

@@ -20,44 +20,24 @@ func _ready() -> void:
 	character_name_label.text = ""
 	character_description_label.text = ""
 	
-	if character == "Cody" and not Globals.unlockables[0].unlocked:
+	var focus_character = Globals.character_dict[character]
+	if !focus_character.unlocked:
 		locked.show()
 		character_image.hide()
-		
-	if character == "Ryan" and not Globals.unlockables[1].unlocked:
-		locked.show()
-		character_image.hide()
-		
 
 	pass # Replace with function body.
 
 func _on_press() -> void:
+	Globals.selected_character = character
 	get_tree().change_scene_to_packed(GAME)
 
 func _on_focus() -> void:
-	if character == "Robot":
-		character_name_label.text = Globals.ROBOT_NAME
-		character_description_label.text = Globals.ROBOT_DESCRIPTION
-		Globals.selected_character = "Robot"
-		
-	elif character == "Cody":
-		if Globals.unlockables[0].unlocked:
-			character_name_label.text = Globals.unlockables[0].name
-			character_description_label.text = Globals.unlockables[0].description
-			Globals.selected_character = "Cody"
-		else: 
-			button.disabled = true
-			character_name_label.text = "Locked"
-			character_description_label.text = "HINT: If only there was a sign"
-	elif character == "Ryan":
-		if Globals.unlockables[1].unlocked:
-			character_name_label.text = Globals.unlockables[1].name
-			character_description_label.text = Globals.unlockables[1].description
-			Globals.selected_character = "Ryan"
-		else: 
-			button.disabled = true
-			character_name_label.text = "Locked"
-			character_description_label.text = "HINT: TMNT"
+	var focus_character = Globals.character_dict[character]
+	var unlocked = focus_character.unlocked
+	button.disabled = !unlocked
+	character_name_label.text = focus_character.name if unlocked else "Locked"
+	character_description_label.text = focus_character.description if unlocked else focus_character.unlock_hint
+
 func _on_focus_exit() -> void:
 	button.disabled = false
 	character_name_label.text = ""

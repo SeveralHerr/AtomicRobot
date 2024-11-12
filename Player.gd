@@ -52,11 +52,9 @@ func _ready() -> void:
 	
 	state_machine.change_state("IdleState")
 	jumping_streak_sprite.hide()
-	print(Globals.selected_character)
-	if Globals.selected_character == "Robot":
-		default_sprite.sprite_frames = Globals.ROBOT_FRAMES
-	elif Globals.selected_character == "Cody":
-		default_sprite.sprite_frames = Globals.DEFAULT_FRAMES
+
+	default_sprite.sprite_frames = Globals.character_dict[Globals.selected_character].sprite_frames 
+
 	
 	
 func move_player() -> void:

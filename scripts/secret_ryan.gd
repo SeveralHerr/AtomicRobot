@@ -12,7 +12,7 @@ extends Node
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	
-	if not Globals.unlockables[1].unlocked:
+	if not Globals.character_dict["Ryan"].unlocked:
 		secret_area_2d.body_entered.connect(_on_enter_secret)
 	else: 
 		sprite_2d.queue_free()
@@ -26,7 +26,7 @@ func _process(delta: float) -> void:
 	
 func _on_enter_secret(body: Node2D) -> void:
 	if body is Player:
-		Globals.unlockables[1].unlocked = true
+		Globals.character_dict["Ryan"].unlocked = true
 		
 		Globals.unlocked.emit("Unlocked", unlock_text)
 		audio_stream_player_2d.play()

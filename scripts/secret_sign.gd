@@ -17,7 +17,7 @@ func _ready() -> void:
 		area_2d.body_exited.connect(_on_exit)
 		sprite_2d.hide()
 		
-	if not Globals.unlockables[0].unlocked:
+	if not Globals.character_dict["Cody"].unlocked:
 		secret_area_2d.body_entered.connect(_on_enter_secret)
 	else: 
 		sprite_2d.queue_free()
@@ -46,7 +46,7 @@ func _on_exit(body: Node2D) -> void:
 	
 func _on_enter_secret(body: Node2D) -> void:
 	if body is Player:
-		Globals.unlockables[0].unlocked = true
+		Globals.character_dict["Cody"].unlocked = true
 		
 		Globals.unlocked.emit("Unlocked", unlock_text)
 		audio_stream_player_2d.play()
