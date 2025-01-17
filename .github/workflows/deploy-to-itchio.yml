@@ -15,14 +15,14 @@ jobs:
 
     - name: Download Godot
       run: |
-        wget https://downloads.godotengine.org/4.3/Godot_v4.3-stable_linux.x86_64.zip -O godot.zip
+        wget https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip -O godot.zip
         unzip godot.zip -d godot
         mv godot/Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
         chmod +x /usr/local/bin/godot
 
     - name: Download Godot Export Templates
       run: |
-        wget https://downloads.godotengine.org/4.3/Godot_v4.3-stable_export_templates.tpz -O templates.zip
+        wget https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz -O templates.zip
         mkdir -p ~/.local/share/godot/export_templates/4.3.stable
         unzip templates.zip -d ~/.local/share/godot/export_templates/4.3.stable
         mv ~/.local/share/godot/export_templates/4.3.stable/templates/* ~/.local/share/godot/export_templates/4.3.stable/
