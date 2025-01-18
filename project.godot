@@ -11,13 +11,13 @@ config_version=5
 [application]
 
 config/name="Atomic Robot"
-run/main_scene="res://startscreen.tscn"
+run/main_scene="res://scenes/startscreen.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Globals="*res://Config.gd"
+Globals="*res://scripts/Config.gd"
 Utils="*res://scripts/Utils.gd"
 ChatBubble="*res://scripts/chat_bubble.gd"
 ScreenShake="*res://scripts/screenshake.gd"

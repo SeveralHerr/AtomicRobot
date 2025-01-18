@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://14s6n0i68f4l"]
 
-[ext_resource type="Texture2D" uid="uid://ytp5sgjti44a" path="res://images/bad_background.png" id="1_rww4y"]
-[ext_resource type="Texture2D" uid="uid://bkjlq7l5lwmqg" path="res://images/bad_player.png" id="2_8m3he"]
-[ext_resource type="Texture2D" uid="uid://dkjfb601u5kw1" path="res://images/cropped-Atomic-Logo.webp" id="2_t7qkn"]
-[ext_resource type="Script" path="res://Player.gd" id="2_yknci"]
+[ext_resource type="Texture2D" uid="uid://ytp5sgjti44a" path="res://images/bad_background.png" id="1_w6eji"]
+[ext_resource type="Texture2D" uid="uid://dkjfb601u5kw1" path="res://images/cropped-Atomic-Logo.webp" id="2_6hd8v"]
+[ext_resource type="Script" path="res://scripts/Player.gd" id="3_krogg"]
+[ext_resource type="Texture2D" uid="uid://bkjlq7l5lwmqg" path="res://images/bad_player.png" id="4_bs4l4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sj2o6"]
 size = Vector2(1711.5, 250.5)
@@ -16,7 +16,7 @@ size = Vector2(36, 32)
 [node name="Background" type="TextureRect" parent="."]
 offset_right = 1649.0
 offset_bottom = 823.0
-texture = ExtResource("1_rww4y")
+texture = ExtResource("1_w6eji")
 expand_mode = 1
 
 [node name="StaticBody2D" type="StaticBody2D" parent="Background"]
@@ -31,7 +31,7 @@ offset_left = 1064.0
 offset_top = 17.0
 offset_right = 1272.0
 offset_bottom = 141.0
-texture = ExtResource("2_t7qkn")
+texture = ExtResource("2_6hd8v")
 expand_mode = 1
 
 [node name="TextureRect2" type="TextureRect" parent="Background"]
@@ -40,15 +40,15 @@ offset_left = 924.0
 offset_top = 248.0
 offset_right = 1132.0
 offset_bottom = 372.0
-texture = ExtResource("2_t7qkn")
+texture = ExtResource("2_6hd8v")
 expand_mode = 1
 
 [node name="Player" type="CharacterBody2D" parent="."]
 position = Vector2(228, 452)
-script = ExtResource("2_yknci")
+script = ExtResource("3_krogg")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player"]
-texture = ExtResource("2_8m3he")
+texture = ExtResource("4_bs4l4")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
 shape = SubResource("RectangleShape2D_erb0y")

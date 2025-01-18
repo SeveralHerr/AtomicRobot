@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=3 uid="uid://cgu2unw740vuf"]
 
 [ext_resource type="Script" path="res://scripts/notification.gd" id="1_v12kh"]
-[ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://font_variation.tres" id="2_sk3xj"]
-[ext_resource type="FontVariation" uid="uid://rdj5e70hecho" path="res://new_font_variation_6.tres" id="3_yf5sq"]
-[ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://AldotheApache.ttf" id="4_lhfe6"]
+[ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="2_sk3xj"]
+[ext_resource type="FontVariation" uid="uid://rdj5e70hecho" path="res://styles/new_font_variation_6.tres" id="3_yf5sq"]
+[ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://styles/AldotheApache.ttf" id="4_lhfe6"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2wht0"]
 font = ExtResource("2_sk3xj")

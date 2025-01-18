@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c37vas4dihnt4"]
 
-[ext_resource type="Script" path="res://health_container.gd" id="1_h6e2a"]
+[ext_resource type="Script" path="res://scripts/health_container.gd" id="1_h6e2a"]
 [ext_resource type="Texture2D" uid="uid://c1x8tpfq0wt08" path="res://images/logo.png" id="2_c8jbx"]
 
 [node name="HealthUI" type="Control"]

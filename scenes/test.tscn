@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=4 uid="uid://ymbolnk2mwqp"]
 
 [ext_resource type="TileSet" uid="uid://cdnenrt36tsrv" path="res://Tiles/asset_tiles.tres" id="1_n37xp"]
-[ext_resource type="Script" path="res://test.gd" id="2_x4xo2"]
+[ext_resource type="Script" path="res://scripts/test.gd" id="2_x4xo2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g3o1p"]
 

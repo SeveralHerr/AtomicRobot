@@ -1,16 +1,16 @@
 [gd_scene load_steps=18 format=3 uid="uid://yevc5esw132y"]
 
 [ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="1_uhull"]
-[ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://font_v2.tres" id="2_m77mk"]
-[ext_resource type="Script" path="res://sway.gd" id="2_oya25"]
-[ext_resource type="Script" path="res://CharacterSlot.gd" id="2_p1ay4"]
+[ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://styles/font_v2.tres" id="2_m77mk"]
+[ext_resource type="Script" path="res://scripts/sway.gd" id="2_oya25"]
+[ext_resource type="Script" path="res://scripts/CharacterSlot.gd" id="2_p1ay4"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="2_uiy27"]
-[ext_resource type="StyleBox" uid="uid://dk41qbtnpvhwg" path="res://button_pressed.tres" id="4_tb1qe"]
-[ext_resource type="StyleBox" uid="uid://dw1id8guf1fky" path="res://Sprites/normal_button.tres" id="5_lbm4d"]
+[ext_resource type="StyleBox" uid="uid://dk41qbtnpvhwg" path="res://styles/button_pressed.tres" id="4_tb1qe"]
+[ext_resource type="StyleBox" uid="uid://dw1id8guf1fky" path="res://sprites/normal_button.tres" id="5_lbm4d"]
 [ext_resource type="Texture2D" uid="uid://ww1jxoogbja4" path="res://images/backdrop.png" id="6_xmudk"]
-[ext_resource type="FontVariation" uid="uid://rdj5e70hecho" path="res://new_font_variation_6.tres" id="8_nymwb"]
+[ext_resource type="FontVariation" uid="uid://rdj5e70hecho" path="res://styles/new_font_variation_6.tres" id="8_nymwb"]
 [ext_resource type="Texture2D" uid="uid://bnjygxsayqp0m" path="res://images/locked.png" id="9_f0ux6"]
-[ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://AldotheApache.ttf" id="9_n5hh7"]
+[ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://styles/AldotheApache.ttf" id="9_n5hh7"]
 
 [sub_resource type="Theme" id="Theme_5l01w"]
 Button/styles/disabled = ExtResource("5_lbm4d")

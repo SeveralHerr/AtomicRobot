@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://dqf1ot3uhuul7"]
 
 [ext_resource type="Texture2D" uid="uid://c6qj2s14gh231" path="res://images/chatbubble.png" id="1_ydwr7"]
-[ext_resource type="FontFile" uid="uid://dx3iudetbksmy" path="res://Pixeled.ttf" id="2_300vo"]
+[ext_resource type="FontFile" uid="uid://dx3iudetbksmy" path="res://styles/Pixeled.ttf" id="2_300vo"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3w7au"]
 texture = ExtResource("1_ydwr7")

@@ -1,6 +1,6 @@
 extends TextureRect
 
-const GAME: PackedScene = preload("res://game2.tscn")
+const GAME: PackedScene = preload("res://scenes/game2.tscn")
 @export var character: String
 var slot_name: String
 var description: String

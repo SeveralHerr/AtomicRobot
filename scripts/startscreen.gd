@@ -1,6 +1,6 @@
 extends Control
 
-const CHARACTER_SELECT: PackedScene = preload("res://character_select.tscn")
+const CHARACTER_SELECT: PackedScene = preload("res://scenes/character_select.tscn")
 var delay: bool = false
 
 func _ready() -> void:

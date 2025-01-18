@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://cpy1hjrs74exh"]
 
-[ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="1_66g6e"]
-[ext_resource type="Script" path="res://startscreen.gd" id="1_672qy"]
-[ext_resource type="Texture2D" uid="uid://54wohi1aav3k" path="res://images/ART-Mobile-logo (1).png" id="2_m84i3"]
-[ext_resource type="Script" path="res://sway.gd" id="3_ox4jd"]
+[ext_resource type="Script" path="res://scripts/startscreen.gd" id="1_kmkkq"]
+[ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="2_nsuis"]
+[ext_resource type="Script" path="res://scripts/sway.gd" id="3_dovlk"]
+[ext_resource type="Texture2D" uid="uid://54wohi1aav3k" path="res://images/ART-Mobile-logo (1).png" id="4_l106y"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_a7nxo"]
 font_size = 55
@@ -15,7 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_672qy")
+script = ExtResource("1_kmkkq")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -29,9 +29,9 @@ offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1.1, 1.15)
-texture = ExtResource("1_66g6e")
+texture = ExtResource("2_nsuis")
 expand_mode = 1
-script = ExtResource("3_ox4jd")
+script = ExtResource("3_dovlk")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -53,7 +53,7 @@ alignment = 1
 
 [node name="TextureRect2" type="TextureRect" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-texture = ExtResource("2_m84i3")
+texture = ExtResource("4_l106y")
 stretch_mode = 5
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
