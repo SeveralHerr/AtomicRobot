@@ -10,7 +10,6 @@
 # Feature list
 
 1. Debug commands (un, etc.)
-1. Use high res Atomic icon, replacing the pixel version
 1. The scene tree is a mess, needs to be refactored
 1. Can jump over car
 1. Get on/of ladder with up/down

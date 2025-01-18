@@ -1,7 +1,7 @@
 extends CenterContainer
 
 @onready var button: Button = $Button
-const STARTSCREEN = "res://startscreen.tscn"
+const STARTSCREEN = "res://scenes/startscreen.tscn"
 
 func _ready() -> void:
 	hide()

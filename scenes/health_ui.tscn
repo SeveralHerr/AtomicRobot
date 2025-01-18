@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://c37vas4dihnt4"]
 
 [ext_resource type="Script" path="res://scripts/health_container.gd" id="1_h6e2a"]
-[ext_resource type="Texture2D" uid="uid://c1x8tpfq0wt08" path="res://images/logo.png" id="2_c8jbx"]
+[ext_resource type="Texture2D" uid="uid://cpmx38d8kqq1w" path="res://images/Logo+Web.png" id="2_irse4"]
 
 [node name="HealthUI" type="Control"]
 layout_mode = 3
@@ -24,27 +24,27 @@ script = ExtResource("1_h6e2a")
 [node name="HP1" type="TextureRect" parent="CenterContainer/HBoxContainer"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-texture = ExtResource("2_c8jbx")
+texture = ExtResource("2_irse4")
 expand_mode = 3
 stretch_mode = 5
 
 [node name="HP2" type="TextureRect" parent="CenterContainer/HBoxContainer"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-texture = ExtResource("2_c8jbx")
+texture = ExtResource("2_irse4")
 expand_mode = 3
 stretch_mode = 5
 
 [node name="HP3" type="TextureRect" parent="CenterContainer/HBoxContainer"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-texture = ExtResource("2_c8jbx")
+texture = ExtResource("2_irse4")
 expand_mode = 3
 stretch_mode = 5
 
 [node name="HP4" type="TextureRect" parent="CenterContainer/HBoxContainer"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-texture = ExtResource("2_c8jbx")
+texture = ExtResource("2_irse4")
 expand_mode = 3
 stretch_mode = 5
