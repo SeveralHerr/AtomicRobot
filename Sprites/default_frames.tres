@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=15 format=3 uid="uid://cwm31kba03p57"]
+[gd_resource type="SpriteFrames" load_steps=14 format=3 uid="uid://cwm31kba03p57"]
 
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_rfesh"]
 
@@ -46,11 +46,9 @@ region = Rect2(304, 16, 16, 32)
 atlas = ExtResource("1_rfesh")
 region = Rect2(336, 16, 16, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_3x1pc"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_h5lwc"]
+atlas = ExtResource("1_rfesh")
 region = Rect2(288, 16, 16, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_f4p80"]
-region = Rect2(304, 16, 16, 32)
 
 [resource]
 animations = [{
@@ -119,10 +117,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_3x1pc")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_f4p80")
+"texture": SubResource("AtlasTexture_h5lwc")
 }],
 "loop": true,
 "name": &"idle",
