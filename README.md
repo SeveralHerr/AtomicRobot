@@ -9,6 +9,7 @@
 
 # Feature list
 
+1. Instro scene where character is revealed and meter maid issuing ticket
 1. Debug commands (un, etc.)
 1. The scene tree is a mess, needs to be refactored
 1. Can jump over car
