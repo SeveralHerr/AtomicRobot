@@ -46,6 +46,7 @@ func receive_hit(damage: int) -> void:
 	if health <= 0: 
 		Globals.meter_maids_killed += 1
 		Globals.meter_maid_death.emit()
+
 		call_deferred("queue_free")
 	
 	# Calculate knockback direction based on the player's position

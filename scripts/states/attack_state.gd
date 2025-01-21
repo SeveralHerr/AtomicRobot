@@ -1,6 +1,8 @@
 extends State
 class_name AttackState
 
+const PLAYER_DAMAGE = 3
+
 func enter_state(player: Player) -> void:
 	player.default_sprite.play("Attack")
 	_handle_offset(player, 1)
@@ -20,9 +22,9 @@ func enter_state(player: Player) -> void:
 		if parent is Crate:
 			parent.receive_hit()
 		elif parent is MeterMaid:
-			parent.receive_hit(1)
+			parent.receive_hit(PLAYER_DAMAGE)
 		elif parent is Boss:
-			parent.receive_hit(1)
+			parent.receive_hit(PLAYER_DAMAGE)
 
 func exit_state(player: Player) -> void:
 	_handle_offset(player, -1)

@@ -16,3 +16,12 @@
 1. can jump off ladder
 1. Handle car / world dropoff
 1. switch character any time
+
+# Final Boss
+
+1. Add end boss, Sioux Falls city council, triggered after all meter maids are gone
+1. New scene - Use sewer2 as example
+1. Place door in level - entry to new scene
+1. Door should be locked until regular boss is killed
+1. Directions to door after regular boss is killed
+1. Open door action: Press up + animation

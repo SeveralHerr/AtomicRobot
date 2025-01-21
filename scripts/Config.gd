@@ -2,6 +2,7 @@ extends Node
 
 signal player_death
 signal meter_maid_death
+signal meter_maid_boss_death
 signal unlocked(name: String, description: String)
 signal boss_fight(status: bool)
 
@@ -16,6 +17,7 @@ var player: Player
 var player_last_position
 var meters: Array
 var meter_maids_killed: int = 0
+var meter_maid_boss_killed: int = 0
 
 var destroyed_nodes = {}
 

@@ -11,6 +11,8 @@ const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
+
+
 var health: int = 3
 var direction: int = -1
 var speed: int = 50
@@ -69,6 +71,9 @@ func receive_hit(damage: int) -> void:
 	health -= damage
 	
 	if health <= 0: 
+		Globals.meter_maid_boss_killed += 1	
+		Globals.meter_maid_boss_death.emit()
+
 		Globals.boss_fight.emit(false)
 		call_deferred("queue_free")
 	
