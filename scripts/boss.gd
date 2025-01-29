@@ -11,7 +11,7 @@ const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
-
+@export var player: Player
 
 var health: int = 3
 var direction: int = -1

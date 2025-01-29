@@ -21,6 +21,9 @@ var meter_maid_boss_killed: int = 0
 
 var destroyed_nodes = {}
 
+#func _ready() -> void:
+	#player = get_tree().get_first_node_in_group("Player")
+
 func mark_node_destroyed(node_name: String) -> void:
 	destroyed_nodes[node_name] = true
 

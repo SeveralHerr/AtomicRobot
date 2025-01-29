@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://b22g4w4b1wvlj"]
+
+[ext_resource type="Texture2D" uid="uid://6cm6r46f8sfw" path="res://images/briefcase.png" id="1_b8a6t"]
+[ext_resource type="Script" path="res://scripts/briefcase.gd" id="2_4t8n2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g015x"]
+size = Vector2(24, 17)
+
+[node name="BriefcaseSprite" type="Sprite2D"]
+texture = ExtResource("1_b8a6t")
+script = ExtResource("2_4t8n2")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_g015x")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

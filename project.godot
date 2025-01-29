@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Globals="*res://scripts/Config.gd"
+Globals="*res://scripts/Globals.gd"
 Utils="*res://scripts/Utils.gd"
 ChatBubble="*res://scripts/chat_bubble.gd"
 ScreenShake="*res://scripts/screenshake.gd"

@@ -101,3 +101,7 @@ func receive_hit(source_position: Vector2, damage: int) -> void:
 	
 func death() -> void:
 	state_machine.change_state("DeadState")
+
+
+func _on_attack_timer_timeout() -> void:
+	pass # Replace with function body.
