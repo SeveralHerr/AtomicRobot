@@ -21,8 +21,10 @@
 # Final Boss
 
 1. Add end boss, Sioux Falls city council, triggered after all meter maids are gone
-1. New scene - Use sewer2 as example
 1. Place door in level - entry to new scene
 1. Door should be locked until regular boss is killed
 1. Directions to door after regular boss is killed
 1. Open door action: Press up + animation
+1. Convert Briefcase to RigidBody2d, use coins as example
+1. Make sure the briefcase hits the floor instead of floating
+1. Boss sweeping attach: Wall of briefcases left to right

@@ -15,5 +15,5 @@ func _on_attack_timer_timeout() -> void:
 	print("attacking")
 	var instance = BRIEFCASE.instantiate()
 	instance.position = Vector2.ZERO
-	#instance.global_position = global_position
+	#instance.global_position = global_positionA
 	add_child(instance)
