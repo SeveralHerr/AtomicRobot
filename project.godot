@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Atomic Robot"
-run/main_scene="res://scenes/city_council_boss.tscn"
+run/main_scene="res://scenes/startscreen.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
