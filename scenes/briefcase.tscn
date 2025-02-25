@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://b22g4w4b1wvlj"]
+[gd_scene load_steps=5 format=3 uid="uid://b22g4w4b1wvlj"]
 
 [ext_resource type="Texture2D" uid="uid://6cm6r46f8sfw" path="res://images/briefcase.png" id="1_b8a6t"]
 [ext_resource type="Script" path="res://scripts/briefcase.gd" id="2_4t8n2"]
@@ -6,15 +6,36 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g015x"]
 size = Vector2(24, 17)
 
-[node name="BriefcaseSprite" type="Sprite2D"]
-texture = ExtResource("1_b8a6t")
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p20th"]
+size = Vector2(26, 24)
+
+[node name="Briefcase" type="RigidBody2D"]
+collision_layer = 0
+collision_mask = 769
+mass = 0.005
+gravity_scale = 0.2
 script = ExtResource("2_4t8n2")
 
-[node name="Area2D" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_g015x")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
 
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_b8a6t")
+
+[node name="DespawnTimer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 257
+collision_mask = 769
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, -2)
+shape = SubResource("RectangleShape2D_p20th")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="DespawnTimer" to="." method="_on_despawn_timer_timeout"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
