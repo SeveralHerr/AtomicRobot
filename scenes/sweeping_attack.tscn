@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://cefy2tj3t2ilw"]
+
+[ext_resource type="Script" path="res://scripts/sweeping_attack.gd" id="1_mfgsq"]
+[ext_resource type="PackedScene" uid="uid://bkxww6mafdpr7" path="res://scenes/briefcase_sweep.tscn" id="2_s75dy"]
+
+[node name="SweepingAttack" type="Node2D"]
+script = ExtResource("1_mfgsq")
+
+[node name="Area2D" parent="." instance=ExtResource("2_s75dy")]
+
+[node name="Area2D2" parent="." instance=ExtResource("2_s75dy")]
+position = Vector2(0, -24)
+
+[node name="Area2D3" parent="." instance=ExtResource("2_s75dy")]
+position = Vector2(0, 24)
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="Area2D2" to="." method="_on_area_2d_2_body_entered"]
+[connection signal="body_entered" from="Area2D3" to="." method="_on_area_2d_3_body_entered"]

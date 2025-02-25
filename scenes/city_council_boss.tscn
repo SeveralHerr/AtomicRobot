@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=4 uid="uid://day6soqy1xc4o"]
+[gd_scene load_steps=13 format=4 uid="uid://day6soqy1xc4o"]
 
 [ext_resource type="TileSet" uid="uid://cdnenrt36tsrv" path="res://Tiles/asset_tiles.tres" id="2_mkyqb"]
 [ext_resource type="PackedScene" uid="uid://du5vce0l27auc" path="res://scenes/indicator.tscn" id="5_ytcne"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="7_l5flg"]
 [ext_resource type="Texture2D" uid="uid://ckrd6hmiufwx5" path="res://images/tmp_citycouncilboss.png" id="8_dlsew"]
 [ext_resource type="AudioStream" uid="uid://dky8clf8g64kv" path="res://sounds/time_for_adventure.mp3" id="8_ly0jr"]
+[ext_resource type="PackedScene" uid="uid://cefy2tj3t2ilw" path="res://scenes/sweeping_attack.tscn" id="9_tkie7"]
 [ext_resource type="PackedScene" uid="uid://dv58hcp37fnri" path="res://scenes/ui_container.tscn" id="11_g5e85"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_w3a7j"]
@@ -116,6 +117,9 @@ autoplay = true
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="UIContainer" parent="UI" instance=ExtResource("11_g5e85")]
+
+[node name="SweepingAttack" parent="." instance=ExtResource("9_tkie7")]
+position = Vector2(26, -9)
 
 [editable path="UI/UIContainer"]
 [editable path="UI/UIContainer/MobileUI/Virtual Joystick2"]
