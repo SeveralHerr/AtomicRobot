@@ -1,6 +1,6 @@
 [gd_scene load_steps=23 format=3 uid="uid://csmg52xs05d1e"]
 
-[ext_resource type="Script" path="res://scripts/Player.gd" id="1_ncv2v"]
+[ext_resource type="Script" uid="uid://b4j6tw0kgdavd" path="res://scripts/Player.gd" id="1_ncv2v"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_rc65t"]
 [ext_resource type="SpriteFrames" uid="uid://dfpnisnlh7i5m" path="res://sprites/robot_frames.tres" id="2_wxl44"]
 [ext_resource type="AudioStream" uid="uid://cdvwrp2suj31r" path="res://sounds/jump.wav" id="3_73a41"]
@@ -128,8 +128,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qxslq"]
 _data = {
-"Hit": SubResource("Animation_r035c"),
-"RESET": SubResource("Animation_1qcb3")
+&"Hit": SubResource("Animation_r035c"),
+&"RESET": SubResource("Animation_1qcb3")
 }
 
 [node name="Player" type="CharacterBody2D"]
@@ -184,5 +184,5 @@ position = Vector2(143, -160)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_qxslq")
+&"": SubResource("AnimationLibrary_qxslq")
 }

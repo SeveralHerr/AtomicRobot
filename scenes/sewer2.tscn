@@ -1,15 +1,15 @@
 [gd_scene load_steps=19 format=4 uid="uid://d3cwihhvawn7a"]
 
 [ext_resource type="TileSet" uid="uid://cdnenrt36tsrv" path="res://Tiles/asset_tiles.tres" id="1_mx3w0"]
-[ext_resource type="Script" path="res://scripts/sewer.gd" id="1_v3wbs"]
+[ext_resource type="Script" uid="uid://bum5mnc5jxreh" path="res://scripts/sewer.gd" id="1_v3wbs"]
 [ext_resource type="Texture2D" uid="uid://c3klbois75lr4" path="res://images/Light.png" id="2_atj5m"]
 [ext_resource type="PackedScene" uid="uid://du5vce0l27auc" path="res://scenes/indicator.tscn" id="3_1d5ir"]
-[ext_resource type="Script" path="res://scripts/ladder.gd" id="3_13c0c"]
+[ext_resource type="Script" uid="uid://c6x6sqb4hdgci" path="res://scripts/ladder.gd" id="3_13c0c"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="3_ktdy1"]
 [ext_resource type="AudioStream" uid="uid://dky8clf8g64kv" path="res://sounds/time_for_adventure.mp3" id="4_c4w6m"]
 [ext_resource type="FontFile" uid="uid://dx3iudetbksmy" path="res://styles/Pixeled.ttf" id="8_2jc6e"]
 [ext_resource type="PackedScene" uid="uid://b480epd4mubxd" path="res://scenes/secrets.tscn" id="9_ddoix"]
-[ext_resource type="Script" path="res://scripts/secret_ryan.gd" id="10_cw6px"]
+[ext_resource type="Script" uid="uid://b5i12aw6bv443" path="res://scripts/secret_ryan.gd" id="10_cw6px"]
 [ext_resource type="PackedScene" uid="uid://dv58hcp37fnri" path="res://scenes/ui_container.tscn" id="10_kcm8l"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_d3lpd"]

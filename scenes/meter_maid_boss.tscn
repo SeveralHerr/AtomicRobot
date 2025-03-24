@@ -1,6 +1,6 @@
 [gd_scene load_steps=16 format=3 uid="uid://g2xxh67pdbuw"]
 
-[ext_resource type="Script" path="res://scripts/boss.gd" id="1_20jyv"]
+[ext_resource type="Script" uid="uid://qcfnf4qy1r5o" path="res://scripts/boss.gd" id="1_20jyv"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_eun42"]
 
 [sub_resource type="Shader" id="Shader_ianwe"]
@@ -115,8 +115,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_mn4xu"]
 _data = {
-"Hit": SubResource("Animation_31qn6"),
-"RESET": SubResource("Animation_fvlqf")
+&"Hit": SubResource("Animation_31qn6"),
+&"RESET": SubResource("Animation_fvlqf")
 }
 
 [node name="MeterMaidBoss" type="CharacterBody2D"]
@@ -144,7 +144,7 @@ shape = SubResource("RectangleShape2D_m7x15")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_mn4xu")
+&"": SubResource("AnimationLibrary_mn4xu")
 }
 
 [node name="CoinSpawnPosition" type="Node2D" parent="."]

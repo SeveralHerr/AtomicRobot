@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://cpy1hjrs74exh"]
 
-[ext_resource type="Script" path="res://scripts/startscreen.gd" id="1_kmkkq"]
+[ext_resource type="Script" uid="uid://b83abuljn111m" path="res://scripts/startscreen.gd" id="1_kmkkq"]
 [ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="2_nsuis"]
-[ext_resource type="Script" path="res://scripts/sway.gd" id="3_dovlk"]
+[ext_resource type="Script" uid="uid://chic8djxflbae" path="res://scripts/sway.gd" id="3_dovlk"]
 [ext_resource type="Texture2D" uid="uid://54wohi1aav3k" path="res://images/ART-Mobile-logo (1).png" id="4_l106y"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_a7nxo"]

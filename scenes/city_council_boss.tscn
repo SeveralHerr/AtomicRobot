@@ -3,7 +3,7 @@
 [ext_resource type="TileSet" uid="uid://cdnenrt36tsrv" path="res://Tiles/asset_tiles.tres" id="2_mkyqb"]
 [ext_resource type="PackedScene" uid="uid://du5vce0l27auc" path="res://scenes/indicator.tscn" id="5_ytcne"]
 [ext_resource type="Texture2D" uid="uid://c3klbois75lr4" path="res://images/Light.png" id="6_kg40n"]
-[ext_resource type="Script" path="res://scenes/citycouncilboss.gd" id="7_8p1qj"]
+[ext_resource type="Script" uid="uid://by0ip1jusbctm" path="res://scenes/citycouncilboss.gd" id="7_8p1qj"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="7_l5flg"]
 [ext_resource type="Texture2D" uid="uid://ckrd6hmiufwx5" path="res://images/tmp_citycouncilboss.png" id="8_dlsew"]
 [ext_resource type="AudioStream" uid="uid://dky8clf8g64kv" path="res://sounds/time_for_adventure.mp3" id="8_ly0jr"]

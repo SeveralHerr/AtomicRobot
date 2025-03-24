@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cefy2tj3t2ilw"]
 
-[ext_resource type="Script" path="res://scripts/sweeping_attack.gd" id="1_mfgsq"]
+[ext_resource type="Script" uid="uid://dq1u6qr0tlm61" path="res://scripts/sweeping_attack.gd" id="1_mfgsq"]
 [ext_resource type="PackedScene" uid="uid://bkxww6mafdpr7" path="res://scenes/briefcase_sweep.tscn" id="2_s75dy"]
 
 [node name="SweepingAttack" type="Node2D"]

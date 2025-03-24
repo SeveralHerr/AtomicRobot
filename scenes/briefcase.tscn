@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://b22g4w4b1wvlj"]
 
 [ext_resource type="Texture2D" uid="uid://6cm6r46f8sfw" path="res://images/briefcase.png" id="1_b8a6t"]
-[ext_resource type="Script" path="res://scripts/briefcase.gd" id="2_4t8n2"]
+[ext_resource type="Script" uid="uid://t1854y8kbc02" path="res://scripts/briefcase.gd" id="2_4t8n2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g015x"]
 size = Vector2(24, 17)

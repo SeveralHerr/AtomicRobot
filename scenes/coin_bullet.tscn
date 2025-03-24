@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://o61lmvx1pufs"]
 
 [ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://Tiles/custom_tiles.png" id="1_0d2bf"]
-[ext_resource type="Script" path="res://scripts/coin_bullet.gd" id="1_yrbct"]
+[ext_resource type="Script" uid="uid://b4dpl0l1gdtam" path="res://scripts/coin_bullet.gd" id="1_yrbct"]
 [ext_resource type="AudioStream" uid="uid://txxmsbx723pd" path="res://sounds/coin.wav" id="3_vy3yn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3lgt0"]

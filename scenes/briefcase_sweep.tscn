@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bkxww6mafdpr7"]
 
-[ext_resource type="Script" path="res://scripts/briefcase_sweep.gd" id="1_dsh4m"]
+[ext_resource type="Script" uid="uid://1ekqtgbyu15p" path="res://scripts/briefcase_sweep.gd" id="1_dsh4m"]
 [ext_resource type="Texture2D" uid="uid://6cm6r46f8sfw" path="res://images/briefcase.png" id="1_r123g"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qbymo"]
