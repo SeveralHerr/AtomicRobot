@@ -88,7 +88,7 @@ shadow_enabled = true
 shadow_color = Color(0, 0.501961, 0, 0.486275)
 
 [node name="Player" parent="." instance=ExtResource("7_l5flg")]
-position = Vector2(-45, 46)
+position = Vector2(29, 47)
 collision_mask = 3
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
@@ -99,13 +99,18 @@ limit_smoothed = true
 position_smoothing_enabled = true
 
 [node name="Boss" type="Node2D" parent="."]
-position = Vector2(20, 33)
+position = Vector2(157, 35)
 script = ExtResource("7_8p1qj")
 
 [node name="BossSprite" type="Sprite2D" parent="Boss"]
 texture = ExtResource("8_dlsew")
 
 [node name="AttackTimer" type="Timer" parent="Boss"]
+autostart = true
+
+[node name="WakeUpTimer" type="Timer" parent="Boss"]
+wait_time = 6.0
+one_shot = true
 autostart = true
 
 [node name="Audio" type="Node" parent="."]
@@ -119,7 +124,7 @@ autoplay = true
 [node name="UIContainer" parent="UI" instance=ExtResource("11_g5e85")]
 
 [node name="SweepingAttack" parent="." instance=ExtResource("9_tkie7")]
-position = Vector2(26, -9)
+position = Vector2(-128, 33)
 
 [editable path="UI/UIContainer"]
 [editable path="UI/UIContainer/MobileUI/Virtual Joystick2"]
