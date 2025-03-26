@@ -18,8 +18,8 @@ signal player_health_updated(current_value: int)
 var is_dead: bool = false
 var health: int = 4
 
-const SPEED = 100.0
-const JUMP_VELOCITY = -650.0
+const SPEED = 200.0
+const JUMP_VELOCITY = -1250.0
 var state_machine: StateMachine
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
