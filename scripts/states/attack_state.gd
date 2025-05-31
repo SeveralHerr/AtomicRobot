@@ -6,6 +6,7 @@ const PLAYER_DAMAGE = 2
 func enter_state(player: Player) -> void:
 	player.default_sprite.play("Attack")
 	player.attack_audio.play()
+	player.velocity = Vector2.ZERO
 	#_handle_offset(player, 1)
 	
 	player.area_2d.monitoring = true
@@ -25,6 +26,12 @@ func enter_state(player: Player) -> void:
 			parent.receive_hit(PLAYER_DAMAGE)
 		elif parent is Boss:
 			parent.receive_hit(PLAYER_DAMAGE)
+			
+func handle_input(player: Player, event: InputEvent) -> void:
+	if event.is_action_pressed("ui_accept") and player.is_on_floor():
+		player.state_machine.change_state("JumpState")
+	elif event.is_action("ui_down") and player.is_on_floor():
+		player.state_machine.change_state("CrouchState")
 
 func exit_state(player: Player) -> void:
 	#_handle_offset(player, -1)

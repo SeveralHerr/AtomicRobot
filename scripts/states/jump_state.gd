@@ -15,7 +15,10 @@ func exit_state(player: Player) -> void:
 
 func update(player: Player, delta: float) -> void:
 	if player.is_on_floor() and player.velocity.y >= -100:
-		player.state_machine.change_state("IdleState")
+		if player.velocity.x <= 0:
+			player.state_machine.change_state("IdleState")
+		else:
+			player.state_machine.change_state("WalkStates")			
 		
 	if player.velocity.y > 0 and player.jumping_streak_sprite.visible:
 		player.jumping_streak_sprite.hide()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=46 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="1_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
@@ -36,7 +36,6 @@
 [ext_resource type="Texture2D" uid="uid://364i7jx70r62" path="res://images/new/Streetsign.png" id="26_1mphf"]
 [ext_resource type="Texture2D" uid="uid://cig2a7s14sgri" path="res://images/new/BuildingCourthouse.png" id="26_k35ai"]
 [ext_resource type="PackedScene" uid="uid://bx5bwuj7fad3" path="res://scenes/streetlight.tscn" id="31_euxwc"]
-[ext_resource type="PackedScene" uid="uid://csis0b6hdasqr" path="res://scenes/meter_maid.tscn" id="32_1mphf"]
 [ext_resource type="Script" uid="uid://dv0rbnba2864c" path="res://scripts/enemy_manager.gd" id="38_ikgy1"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
@@ -404,10 +403,6 @@ texture = ExtResource("25_k35ai")
 position = Vector2(1993, -137)
 texture = ExtResource("25_k35ai")
 flip_h = true
-
-[node name="MeterMaid2" parent="." instance=ExtResource("32_1mphf")]
-position = Vector2(595, -28)
-scale = Vector2(-1, 1)
 
 [node name="EnemyManager" type="Node2D" parent="."]
 script = ExtResource("38_ikgy1")
