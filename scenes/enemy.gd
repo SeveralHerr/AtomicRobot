@@ -27,11 +27,11 @@ var speed: int = 50
 var target: Node2D = null
 var coins: int = 4
 var node: Node
+var last_dir: int = 0
 
+
+	
 func _update_sprite_direction(direction: float) -> void:
-	animated_sprite_2d.flip_h = sign(direction) == -1
-	#if direction < 0:
-		#scale.x = -1
-	#else:
-		#scale.x = 1
-	#scale.x = sign(direction)
+	return
+	# Flip the entire node based on the direction to the player
+	#scale.x = -1 if (Globals.player.position - position).normalized().x < 0 else 1

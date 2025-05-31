@@ -69,7 +69,7 @@ func physics_update(delta: float) -> void:
 		enemy.animated_sprite_2d.play("idle")
 		
 func _update_sprite_direction(enemy: Enemy) -> void:
-	print("t")
+
 	enemy._update_sprite_direction(dir.x)
 
 func _create_bullet() -> void:

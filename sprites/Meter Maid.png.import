@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bgusvpj701syt"
-path="res://.godot/imported/MeterMaidSheet.png-fd607e84ce9b92cb57b9dd650f1d85bd.ctex"
+uid="uid://ctotmrb257nrs"
+path="res://.godot/imported/Meter Maid.png-c600bc27102cf36db6f5b4c697aad8b0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/MeterMaidSheet.png"
-dest_files=["res://.godot/imported/MeterMaidSheet.png-fd607e84ce9b92cb57b9dd650f1d85bd.ctex"]
+source_file="res://sprites/Meter Maid.png"
+dest_files=["res://.godot/imported/Meter Maid.png-c600bc27102cf36db6f5b4c697aad8b0.ctex"]
 
 [params]
 

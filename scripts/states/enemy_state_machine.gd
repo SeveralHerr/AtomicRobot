@@ -28,6 +28,9 @@ func handle_input(event: InputEvent) -> void:
 		current_state.handle_input(enemy, event)
 
 func update(delta: float) -> void:
+	#func _process(delta: float) -> void:
+	#enemy.scale.x = sign((Globals.player.position - enemy.position).normalized().x)
+	
 	if current_state:
 		current_state.update(enemy, delta)
 		

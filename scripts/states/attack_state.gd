@@ -5,7 +5,7 @@ const PLAYER_DAMAGE = 3
 
 func enter_state(player: Player) -> void:
 	player.default_sprite.play("Attack")
-	_handle_offset(player, 1)
+	#_handle_offset(player, 1)
 	
 	player.area_2d.monitoring = true
 	player.default_sprite.animation_finished.connect(_on_animation_finished)
@@ -27,20 +27,20 @@ func enter_state(player: Player) -> void:
 			parent.receive_hit(PLAYER_DAMAGE)
 
 func exit_state(player: Player) -> void:
-	_handle_offset(player, -1)
-	player.collision_shape_2d.position.x = 0
+	#_handle_offset(player, -1)
+	#player.collision_shape_2d.position.x = 0
 	player.area_2d.monitoring = false
 	player.default_sprite.animation_finished.disconnect(_on_animation_finished)
 
 func _on_animation_finished() -> void:
 	Globals.player.state_machine.change_state("IdleState")
 	
-func _handle_offset(player: Player, value: int) -> void:
-	if player.default_sprite.flip_h:
-		player.default_sprite.offset.x -= 8 * value
-		player.collision_shape_2d.position.x = -6
-	else:
-		player.default_sprite.offset.x += 8 * value
-		player.collision_shape_2d.position.x = 6
+#func _handle_offset(player: Player, value: int) -> void:
+	#if player.default_sprite.flip_h:
+		#player.default_sprite.offset.x -= 8 * value
+		##player.collision_shape_2d.position.x = -6
+	#else:
+		#player.default_sprite.offset.x += 8 * value
+		##player.collision_shape_2d.position.x = 6
 		
 		
