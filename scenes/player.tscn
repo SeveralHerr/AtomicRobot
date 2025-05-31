@@ -200,7 +200,7 @@ libraries = {
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, 20)
-zoom = Vector2(2, 2)
+zoom = Vector2(3, 3)
 limit_bottom = 25
 
 [node name="AttackAudio" type="AudioStreamPlayer" parent="."]
