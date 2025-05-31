@@ -49,7 +49,7 @@ func _input(event: InputEvent) -> void:
 	state_machine.handle_input(event)
 	
 func is_near_ground() -> bool: 
-	if position.y >= -80:
+	if position.y >= -200:
 		return true
 	return false
 

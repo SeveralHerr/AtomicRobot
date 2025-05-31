@@ -72,7 +72,7 @@ func physics_update(delta: float) -> void:
 		
 	dir = (Globals.player.position - enemy.position).normalized()
 	var dist = enemy.position.distance_to(Globals.player.position)
-	if dist > 650:
+	if dist > 3650:
 		print("way too far... removing enemy")
 		queue_free()
 	_update_sprite_direction(enemy)
