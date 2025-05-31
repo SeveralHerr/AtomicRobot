@@ -41,6 +41,7 @@ func _hit(body: Node2D) -> void:
 	area_2d.set_collision_mask_value(9, false)	
 	
 	if body is Player:
+		print("Coin hit")
 		body.receive_hit(global_position, 1)
 		var instance = HIT_FX.instantiate()
 		body.get_tree().root.add_child(instance)

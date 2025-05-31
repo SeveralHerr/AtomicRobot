@@ -1,5 +1,5 @@
 extends Node2D
-const METER_MAID = preload("res://scenes/meter_maid.tscn")
+const EnemySpawner = preload("res://scripts/enemy_spawner.gd")
 @onready var player: Player = $"../Player"
 
 var spawn_timer: Timer
@@ -17,23 +17,7 @@ func _ready():
 	spawn_timer.start()
 
 func _on_spawn_timer_timeout():
-	spawn_enemy()
+	EnemySpawner.spawn_enemy(self, player, viewport_size)
 	# Reset timer with new random interval
 	spawn_timer.wait_time = randf_range(3.0, 15.0)
 	spawn_timer.start()
-
-func spawn_enemy():
-	var enemy = METER_MAID.instantiate()
-	add_child(enemy)
-	
-	# Randomly choose left or right side
-	var spawn_side = randi() % 2 # 0 for left, 1 for right
-	var spawn_x = 0.0
-	
-	if spawn_side == 0: # Left side
-		spawn_x = player.position.x - viewport_size.x / 2 - 100 # 100 pixels off-screen
-	else: # Right side
-		spawn_x = player.position.x + viewport_size.x / 2 + 100 # 100 pixels off-screen
-	
-	# Set enemy position
-	enemy.position = Vector2(spawn_x, player.position.y)

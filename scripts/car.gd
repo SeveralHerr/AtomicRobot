@@ -37,6 +37,7 @@ func _hit(body: Node2D) -> void:
 	if body is Player:
 		shaker.apply_shake(2)
 		_enable_player_layer(false)
+		print("Car hit")
 		body.receive_hit(global_position, car_damage)
 
 		speed = 0
