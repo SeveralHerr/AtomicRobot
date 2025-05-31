@@ -10,21 +10,30 @@ func enter_state(player: Player) -> void:
 func update(player: Player, delta: float) -> void:
 	var direction := Input.get_axis("ui_left", "ui_right")
 	if direction:
-		if direction <= -1:
-			player.default_sprite.flip_h = true
-		elif direction >= 1:
-			player.default_sprite.flip_h = false
+		return
 	else:
 		player.state_machine.change_state("IdleState")
 		
-
+var last_dir = 0
 func physics_update(player: Player, delta: float) -> void:
+	
 	var direction := Input.get_axis("ui_left", "ui_right")
+
+	#var direction := Input.get_axis("ui_left", "ui_right")
 	if direction:
 		player.velocity.x = move_toward(player.velocity.x, direction * player.SPEED, ACCELERATION * delta)
 	else:
 		player.velocity.x = move_toward(player.velocity.x, 0, player.SPEED * delta)
 
+	if direction:
+		if direction < 0:
+			if last_dir != -1:
+				player.scale.x *= -1
+				last_dir = -1
+		elif direction > 0:
+			if last_dir != 1:
+				player.scale.x *= -1
+				last_dir = 1
 		
 func handle_input(player: Player, event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept") and player.is_on_floor():
