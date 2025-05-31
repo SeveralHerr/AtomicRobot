@@ -29,6 +29,9 @@ func _on_spawn_timer_timeout():
 	if is_event_active:
 		spawn_timer.stop()
 		return
+	if not player.is_near_ground():
+		print("player not near ground, skipping enemy spawn")
+		return
 	EnemySpawner.spawn_enemy(self, player, viewport_size)
 	# Reset timer with new random interval
 	spawn_timer.wait_time = randf_range(13.0, 15.0)

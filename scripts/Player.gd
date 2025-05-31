@@ -48,7 +48,10 @@ func take_damage(amount: int) -> void:
 func _input(event: InputEvent) -> void:
 	state_machine.handle_input(event)
 	
-
+func is_near_ground() -> bool: 
+	if position.y >= -80:
+		return true
+	return false
 
 func _ready() -> void:
 	Globals.player = self

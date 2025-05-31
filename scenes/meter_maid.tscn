@@ -76,22 +76,22 @@ collision_mask = 3
 position = Vector2(0, 2)
 shape = SubResource("RectangleShape2D_n43qx")
 
-[node name="RayCast2D_Left" type="RayCast2D" parent="."]
+[node name="RayCast2D_LeftDown" type="RayCast2D" parent="."]
 position = Vector2(-25, -15)
 collision_mask = 14
 
-[node name="RayCast2D_Left2" type="RayCast2D" parent="."]
+[node name="RayCast2D_LeftWall" type="RayCast2D" parent="."]
 position = Vector2(0, 7)
 rotation = 1.5708
 target_position = Vector2(4.72069e-05, 13)
 collision_mask = 14
 collide_with_areas = true
 
-[node name="RayCast2D_Right" type="RayCast2D" parent="."]
+[node name="RayCast2D_RightDown" type="RayCast2D" parent="."]
 position = Vector2(27, -15)
 collision_mask = 14
 
-[node name="RayCast2D_Right2" type="RayCast2D" parent="."]
+[node name="RayCast2D_RightWall" type="RayCast2D" parent="."]
 position = Vector2(5, 7)
 rotation = -1.5708
 target_position = Vector2(-2.90871e-05, 8)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=62 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="1_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
@@ -48,6 +48,7 @@
 [ext_resource type="Script" uid="uid://btp2q1lxrlo07" path="res://scripts/enemy_event.gd" id="32_bjc77"]
 [ext_resource type="Texture2D" uid="uid://ds6dn0qq2gslf" path="res://images/new/Black_Trashcan.png" id="37_k2mcc"]
 [ext_resource type="Script" uid="uid://dv0rbnba2864c" path="res://scripts/enemy_manager.gd" id="38_ikgy1"]
+[ext_resource type="PackedScene" uid="uid://bxtldf7fn5fty" path="res://scenes/platform.tscn" id="48_dy54k"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("1_4dtmh")
@@ -164,9 +165,15 @@ sources/5 = SubResource("TileSetAtlasSource_bjc77")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k2mcc"]
 size = Vector2(431, 559)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_01ywe"]
+size = Vector2(729, 14)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_lcs47"]
 atlas = ExtResource("21_euxwc")
 region = Rect2(16, 940, 126, 36)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dy54k"]
+size = Vector2(18, 8)
 
 [node name="Main" type="Node2D"]
 
@@ -715,8 +722,44 @@ collision_mask = 31
 position = Vector2(25.5, 67.5)
 shape = SubResource("RectangleShape2D_k2mcc")
 
+[node name="AtomicRobotBuildingGroup" type="Node2D" parent="SceneItemsBackground"]
+position = Vector2(-1875, 1)
+
+[node name="AtomicRobotBuilding" type="StaticBody2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup"]
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/AtomicRobotBuilding"]
+position = Vector2(498.5, -108)
+shape = SubResource("RectangleShape2D_01ywe")
+one_way_collision = true
+
+[node name="AtomicRobotRoof" type="StaticBody2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/AtomicRobotBuilding"]
+position = Vector2(-4, -77)
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/AtomicRobotBuilding/AtomicRobotRoof"]
+position = Vector2(498.5, -108)
+shape = SubResource("RectangleShape2D_01ywe")
+one_way_collision = true
+
+[node name="Platforms" type="Node2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup"]
+
+[node name="Platform" parent="SceneItemsBackground/AtomicRobotBuildingGroup/Platforms" instance=ExtResource("48_dy54k")]
+position = Vector2(933, -212)
+
+[node name="Platform2" parent="SceneItemsBackground/AtomicRobotBuildingGroup/Platforms" instance=ExtResource("48_dy54k")]
+position = Vector2(933, -276)
+
+[node name="Platform3" parent="SceneItemsBackground/AtomicRobotBuildingGroup/Platforms" instance=ExtResource("48_dy54k")]
+position = Vector2(933, -340)
+
+[node name="Platform4" parent="SceneItemsBackground/AtomicRobotBuildingGroup/Platforms" instance=ExtResource("48_dy54k")]
+position = Vector2(933, -404)
+
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
-position = Vector2(1998, -21)
+position = Vector2(500, -21)
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false
@@ -748,6 +791,18 @@ texture = ExtResource("26_1mphf")
 [node name="Trashcan" type="Sprite2D" parent="SceneItems"]
 position = Vector2(853, -16)
 texture = ExtResource("21_0bwfm")
+
+[node name="Trashcan3" type="Sprite2D" parent="SceneItems"]
+position = Vector2(170, -17)
+texture = ExtResource("21_0bwfm")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="SceneItems/Trashcan3"]
+collision_layer = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItems/Trashcan3/StaticBody2D"]
+position = Vector2(0, -12)
+shape = SubResource("RectangleShape2D_dy54k")
+one_way_collision = true
 
 [node name="Trashcan2" type="Sprite2D" parent="SceneItems"]
 position = Vector2(1421, -16)
