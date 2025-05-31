@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=55 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="1_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
@@ -31,6 +31,7 @@
 [ext_resource type="Texture2D" uid="uid://dkelg2q4oskqe" path="res://images/new/Parking_Meter.png" id="24_meefr"]
 [ext_resource type="Texture2D" uid="uid://bbfmdfj6vkv53" path="res://images/new/Streetlamp.png" id="25_aq23j"]
 [ext_resource type="Texture2D" uid="uid://bbkwm4msmpsf7" path="res://images/new/Lamppost2.png" id="25_k35ai"]
+[ext_resource type="PackedScene" uid="uid://c86dda1gnhixs" path="res://scenes/tree.tscn" id="25_vek1y"]
 [ext_resource type="Texture2D" uid="uid://364i7jx70r62" path="res://images/new/Streetsign.png" id="26_1mphf"]
 [ext_resource type="Texture2D" uid="uid://cig2a7s14sgri" path="res://images/new/BuildingCourthouse.png" id="26_k35ai"]
 [ext_resource type="Texture2D" uid="uid://wte7eto6y6lq" path="res://images/new/Traffic_Light.png" id="27_4dtmh"]
@@ -438,17 +439,14 @@ texture = ExtResource("19_62krv")
 position = Vector2(2701, -54)
 texture = ExtResource("3_62krv")
 
-[node name="Tree" type="Sprite2D" parent="SceneItems"]
+[node name="Tree" parent="SceneItems" instance=ExtResource("25_vek1y")]
 position = Vector2(127, -77)
-texture = ExtResource("28_vq1rx")
 
-[node name="Tree2" type="Sprite2D" parent="SceneItems"]
+[node name="Tree4" parent="SceneItems" instance=ExtResource("25_vek1y")]
 position = Vector2(893, -77)
-texture = ExtResource("28_vq1rx")
 
-[node name="Tree3" type="Sprite2D" parent="SceneItems"]
+[node name="Tree5" parent="SceneItems" instance=ExtResource("25_vek1y")]
 position = Vector2(2790, -77)
-texture = ExtResource("28_vq1rx")
 
 [node name="StreetSign" type="Sprite2D" parent="SceneItems"]
 position = Vector2(956, -49)

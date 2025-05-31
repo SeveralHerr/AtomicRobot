@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3 uid="uid://c86dda1gnhixs"]
+
+[ext_resource type="Material" uid="uid://bdaa2m466o4m2" path="res://shaders/tree_shader.tres" id="1_qd6xs"]
+[ext_resource type="Texture2D" uid="uid://b7c3ulm6ps4bi" path="res://images/new/Tree.png" id="2_ake3r"]
+[ext_resource type="Script" uid="uid://bba7sf7x7u3kk" path="res://scripts/tree.gd" id="3_18mvg"]
+[ext_resource type="Texture2D" uid="uid://b3qbng565i6ss" path="res://images/new/leaf.png" id="4_dmmp0"]
+
+[node name="Tree" type="Sprite2D"]
+z_index = 1
+material = ExtResource("1_qd6xs")
+texture = ExtResource("2_ake3r")
+script = ExtResource("3_18mvg")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+z_as_relative = false
+position = Vector2(-17, -10)
+amount = 3
+texture = ExtResource("4_dmmp0")
+lifetime = 5.0
+explosiveness = 0.61
+direction = Vector2(1, -0.2)
+spread = 22.83
+gravity = Vector2(0, 6)
+initial_velocity_min = 19.0
+initial_velocity_max = 25.0
+angular_velocity_min = 5.0
+angular_velocity_max = 5.0
+scale_amount_min = 1.5
+scale_amount_max = 2.0
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="."]
+z_as_relative = false
+position = Vector2(5, -45)
+amount = 1
+texture = ExtResource("4_dmmp0")
+lifetime = 5.0
+explosiveness = 0.61
+direction = Vector2(1, -0.2)
+spread = 22.83
+gravity = Vector2(0, 6)
+initial_velocity_min = 19.0
+initial_velocity_max = 25.0
+angular_velocity_min = 5.0
+angular_velocity_max = 5.0
+scale_amount_min = 1.5
+scale_amount_max = 2.0

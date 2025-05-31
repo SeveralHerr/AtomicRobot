@@ -14,7 +14,7 @@ func update(player: Player, delta: float) -> void:
 	else:
 		player.state_machine.change_state("IdleState")
 		
-var last_dir = 0
+var last_dir = 1
 func physics_update(player: Player, delta: float) -> void:
 	
 	var direction := Input.get_axis("ui_left", "ui_right")

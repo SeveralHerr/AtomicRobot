@@ -3,11 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bsqusdqsvpa4f"
-valid=false
+path="res://.godot/imported/ARTBot-Web-Header.webp-ce1ae05fc60d01cb54442769e427762d.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://images/ARTBot-Web-Header.webp"
+dest_files=["res://.godot/imported/ARTBot-Web-Header.webp-ce1ae05fc60d01cb54442769e427762d.ctex"]
 
 [params]
 
