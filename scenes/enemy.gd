@@ -32,6 +32,12 @@ var last_dir: int = 0
 
 	
 func _update_sprite_direction(direction: float) -> void:
-	return
-	# Flip the entire node based on the direction to the player
-	#scale.x = -1 if (Globals.player.position - position).normalized().x < 0 else 1
+	if direction:
+		if direction < 0:
+			if last_dir != -1:
+				scale.x *= -1
+				last_dir = -1
+		elif direction > 0:
+			if last_dir != 1:
+				scale.x *= -1
+				last_dir = 1

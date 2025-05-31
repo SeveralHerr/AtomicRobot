@@ -17,8 +17,8 @@ func physics_update(delta: float) -> void:
 		#direction = -1
 	#elif enemy.ray_cast_2d_right.is_colliding() and enemy.ray_cast_2d_right2.is_colliding() and direction == 1:
 		#direction = -1
-	direction = (Globals.player.position - enemy.position).normalized().x
-
+	direction = (Globals.player.global_position - enemy.global_position).normalized().x
+	print(direction)
 	enemy._update_sprite_direction(direction)
 	enemy.velocity.x = move_toward(enemy.velocity.x, direction * 50, 2009 * delta)
 		
