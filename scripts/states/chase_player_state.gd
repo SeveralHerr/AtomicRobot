@@ -44,8 +44,7 @@ func _check_range() -> void:
 func physics_update(delta: float) -> void:
 	if stand_still:
 		enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)
-		if enemy.animated_sprite_2d.animation != "attack":		
-			enemy.animated_sprite_2d.play("idle")
+		# Don't change animation when attacking - let the attack animation play
 		return 
 		
 	dir = (Globals.player.position - enemy.position).normalized()
@@ -54,20 +53,25 @@ func physics_update(delta: float) -> void:
 
 	
 	if dist > 90:
-		enemy.animated_sprite_2d.play("walk")
-		
+		# Moving towards player
 		if not enemy.ray_cast_2d_left.is_colliding():
 			enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
 		elif not enemy.ray_cast_2d_right.is_colliding():
 			enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
 		else:
-
-		
 			enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)		
 	else:
+		# Close to player - stop moving
 		enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
-		enemy.animated_sprite_2d.play("idle")
-		
+	
+	# Simple animation logic: if not moving, play idle. If moving, play walk.
+	# But don't override attack animation if it's currently playing
+	if enemy.animated_sprite_2d.animation != "attack":
+		if abs(enemy.velocity.x) < 5.0:  # Not moving (small threshold for floating point precision)
+			enemy.animated_sprite_2d.play("idle")
+		else:  # Moving
+			enemy.animated_sprite_2d.play("walk")
+
 func _update_sprite_direction(enemy: Enemy) -> void:
 
 	enemy._update_sprite_direction(dir.x)
@@ -82,13 +86,18 @@ func _create_bullet() -> void:
 		
 	
 	stand_still = true
-	enemy.animated_sprite_2d.animation_finished.connect(throw_coin)
 	enemy.animated_sprite_2d.play("attack")
 	
+	# Spawn coin halfway through attack animation instead of at the end
+	_spawn_coin_delayed()
+	
+func _spawn_coin_delayed() -> void:
+	# Wait for roughly half the attack animation duration
+	await enemy.get_tree().create_timer(0.3).timeout
+	throw_coin()
+	
 func throw_coin() -> void:
-
 	stand_still = false
-	enemy.animated_sprite_2d.animation_finished.disconnect(throw_coin)
 	
 	var instance = enemy.COIN_BULLET.instantiate()
 	enemy.coins -= 1
@@ -96,5 +105,8 @@ func throw_coin() -> void:
 	#instance.position = enemy.position + enemy.coin_spawn_point.positiona
 	var pos = enemy.position + enemy.coin_spawn_point.position
 	instance.start(pos,  (Globals.player.position - pos).normalized())
+	
+	# Return to idle after throwing
+	await enemy.animated_sprite_2d.animation_finished
 	enemy.animated_sprite_2d.play("idle")
 	_check_range()
