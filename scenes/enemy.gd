@@ -20,6 +20,7 @@ const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
 @onready var line_of_sight: LineOfSight = $LineOfSight
 @onready var range_timer: Timer = $RangeTimer
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var receive_hit_audio: AudioStreamPlayer = $ReceiveHitAudio
 
 var health: int = 3
 var direction: int = -1

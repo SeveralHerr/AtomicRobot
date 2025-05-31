@@ -6,7 +6,10 @@ const ACCELERATION = 5000.0  # Adjust as needed for smoother acceleration
 func enter_state(player: Player) -> void:
 	player.velocity.x = 0
 	player.default_sprite.play("Walk")
-
+	#player.walk_audio.play()
+	
+#func exit_state(player: Player) -> void:
+	#player.walk_audio.stop()
 func update(player: Player, delta: float) -> void:
 	var direction := Input.get_axis("ui_left", "ui_right")
 	if direction:
@@ -22,6 +25,7 @@ func physics_update(player: Player, delta: float) -> void:
 	#var direction := Input.get_axis("ui_left", "ui_right")
 	if direction:
 		player.velocity.x = move_toward(player.velocity.x, direction * player.SPEED, ACCELERATION * delta)
+		
 	else:
 		player.velocity.x = move_toward(player.velocity.x, 0, player.SPEED * delta)
 

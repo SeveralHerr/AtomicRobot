@@ -21,6 +21,8 @@ const KnockbackState = preload("res://scripts/states/knockback_state.gd")
 @onready var boss_spawn_position: Node2D = $BossSpawnPosition
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var enemy_attack_position: Node2D = $EnemyAttackPosition
+@onready var attack_audio: AudioStreamPlayer = $AttackAudio
+@onready var walk_audio: AudioStreamPlayer = $WalkAudio
 
 var is_dead: bool = false
 var health: int = 4

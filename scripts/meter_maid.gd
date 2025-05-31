@@ -49,6 +49,7 @@ func receive_hit(damage: int) -> void:
 	
 	# Play the hit animation which includes the white flash effect
 	animation_player.play("Hit")
+	receive_hit_audio.play()
 	health -= damage
 	
 	if health <= 0: 
