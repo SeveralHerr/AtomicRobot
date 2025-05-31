@@ -39,6 +39,7 @@ func change_to_green():
 	green_light.visible = true
 
 	car.global_position = Vector2(player.position.x + car_position.x, car_y_pos)
+	car.speed = 0
 	car.start = true
 	
 	# Wait for green duration
