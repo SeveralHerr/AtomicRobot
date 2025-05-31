@@ -1,0 +1,156 @@
+[gd_scene load_steps=10 format=3 uid="uid://c1xoom8lmej7f"]
+
+[ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="1_46kfa"]
+[ext_resource type="Script" uid="uid://c42vpl7gcvpcq" path="res://scripts/story.gd" id="1_of347"]
+[ext_resource type="Script" uid="uid://chic8djxflbae" path="res://scripts/sway.gd" id="2_l2ljf"]
+[ext_resource type="LabelSettings" uid="uid://dagx3yqrlt5ea" path="res://styles/story_white_label.tres" id="3_md1pp"]
+[ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://styles/AldotheApache.ttf" id="13_b1hqr"]
+
+[sub_resource type="FontVariation" id="FontVariation_w3rue"]
+base_font = ExtResource("13_b1hqr")
+spacing_glyph = 2
+
+[sub_resource type="LabelSettings" id="LabelSettings_wq8l7"]
+font = SubResource("FontVariation_w3rue")
+font_size = 90
+shadow_size = 15
+shadow_color = Color(0, 0, 0, 0.384314)
+
+[sub_resource type="LabelSettings" id="LabelSettings_of347"]
+font = SubResource("FontVariation_w3rue")
+font_size = 120
+shadow_size = 15
+shadow_color = Color(0, 0, 0, 0.384314)
+
+[sub_resource type="LabelSettings" id="LabelSettings_d52np"]
+font = SubResource("FontVariation_w3rue")
+font_size = 40
+shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.384314)
+
+[node name="Story" type="Control"]
+self_modulate = Color(0.268138, 0.268138, 0.268138, 0.576471)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_of347")
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = -2.0
+offset_right = -42.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.1, 1.15)
+texture = ExtResource("1_46kfa")
+expand_mode = 1
+script = ExtResource("2_l2ljf")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StoryLabel1" type="Label" parent="CenterContainer"]
+custom_minimum_size = Vector2(1400, 0)
+layout_mode = 2
+text = "SomethIng’s gone wrong IN downtown sIoux falls"
+label_settings = ExtResource("3_md1pp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="StoryLabel2" type="Label" parent="CenterContainer"]
+visible = false
+custom_minimum_size = Vector2(1400, 0)
+layout_mode = 2
+text = "THE METER MAIDS HAVE GONE ROGUE
+
+USING QUARTERS AS WEAPONS AND ENFORCING CHAOS UNDER THE DIRECTION OF THE...
+
+SIOUX FALLS CITY COUNCIL"
+label_settings = ExtResource("3_md1pp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="StoryLabel3" type="Label" parent="CenterContainer"]
+visible = false
+custom_minimum_size = Vector2(1400, 0)
+layout_mode = 2
+text = "ATOMIC ROBOT TATTOO WON’T STAND BY"
+label_settings = ExtResource("3_md1pp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="StoryLabel4" type="Label" parent="CenterContainer"]
+visible = false
+custom_minimum_size = Vector2(1400, 0)
+layout_mode = 2
+text = "FROM THEIR INK-STAINED STRONGHOLD, A CREW OF BOLD ARTISTS RISES UP
+
+ARMED WITH CUSTOM GEAR AND A DRIVE TO DEFEND THEIR BLOCK
+
+THEY’RE READY TO TAKE A STAND"
+label_settings = SubResource("LabelSettings_wq8l7")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="StoryLabel5" type="Label" parent="CenterContainer"]
+visible = false
+custom_minimum_size = Vector2(1400, 0)
+layout_mode = 2
+text = "IT'S TIME TO CONFRONT 
+CITY HALL"
+label_settings = SubResource("LabelSettings_of347")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="StoryLabel6" type="Label" parent="CenterContainer"]
+visible = false
+custom_minimum_size = Vector2(1400, 0)
+layout_mode = 2
+text = "THIS ISN’T ABOUT PARKING ANYMORE
+
+THIS IS WAR"
+label_settings = SubResource("LabelSettings_of347")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 20
+
+[node name="ContinueLabel" type="Label" parent="MarginContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 33
+text = "PRESS ANY BUTTON TO CONTINUE"
+label_settings = SubResource("LabelSettings_d52np")

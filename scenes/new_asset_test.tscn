@@ -393,6 +393,7 @@ texture = ExtResource("4_vq1rx")
 expand_mode = 5
 
 [node name="GameOverContainer" type="CenterContainer" parent="UI"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

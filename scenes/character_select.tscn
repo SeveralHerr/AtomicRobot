@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://yevc5esw132y"]
+[gd_scene load_steps=30 format=3 uid="uid://yevc5esw132y"]
 
 [ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="1_uhull"]
 [ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://styles/font_v2.tres" id="2_m77mk"]
@@ -13,6 +13,9 @@
 [ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://Sprites/Meter Maid.png" id="8_yxv22"]
 [ext_resource type="Texture2D" uid="uid://bnjygxsayqp0m" path="res://images/locked.png" id="9_f0ux6"]
 [ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://styles/AldotheApache.ttf" id="9_n5hh7"]
+[ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="14_pj2qx"]
+[ext_resource type="Texture2D" uid="uid://bh61iiq15jejg" path="res://images/check_square_grey_checkmark.png" id="15_ckm5t"]
+[ext_resource type="Texture2D" uid="uid://tr5mt6lm8paj" path="res://images/check_square_grey.png" id="16_qgi8m"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yxv22"]
 texture = ExtResource("7_0sghn")
@@ -47,6 +50,24 @@ font = SubResource("FontVariation_w3rue")
 font_size = 60
 shadow_size = 8
 shadow_color = Color(0, 0, 0, 0.337255)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pj2qx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ckm5t"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qgi8m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3338a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_27udu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yya7f"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_pj2qx"]
+font = SubResource("FontVariation_w3rue")
+font_size = 40
+shadow_size = 7
+shadow_color = Color(0, 0, 0, 0.384314)
 
 [node name="Character Select" type="Control"]
 self_modulate = Color(0.268138, 0.268138, 0.268138, 0.576471)
@@ -295,3 +316,39 @@ vertical_alignment = 1
 
 [node name="Timer" type="Timer" parent="."]
 autostart = true
+
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -130.0
+offset_top = -66.0
+offset_right = 130.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer2"]
+layout_mode = 2
+
+[node name="CheckBox" type="CheckBox" parent="MarginContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(55, 10)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("14_pj2qx")
+theme_override_font_sizes/font_size = 35
+theme_override_styles/focus = SubResource("StyleBoxEmpty_pj2qx")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_ckm5t")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_qgi8m")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_3338a")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_27udu")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yya7f")
+theme_override_icons/checked = ExtResource("15_ckm5t")
+theme_override_icons/unchecked = ExtResource("16_qgi8m")
+
+[node name="Label" type="Label" parent="MarginContainer2/HBoxContainer"]
+layout_mode = 2
+text = "SKIP INTRO"
+label_settings = SubResource("LabelSettings_pj2qx")

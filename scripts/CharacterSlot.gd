@@ -1,6 +1,6 @@
 extends TextureRect
 
-const GAME: PackedScene = preload("res://scenes/new_asset_test.tscn")
+const STORY: PackedScene = preload("res://scenes/story.tscn")
 @export var character: String
 var slot_name: String
 var description: String
@@ -10,7 +10,8 @@ var description: String
 @onready var character_image: TextureRect = $Character
 @onready var button: Button = $Button
 @onready var texture_rect: PanelContainer = $Background/TextureRect
-
+@onready var check_box: CheckBox = $"../../../../MarginContainer2/HBoxContainer/CheckBox"
+const NEW_ASSET_TEST = preload("res://scenes/new_asset_test.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -32,7 +33,10 @@ func _ready() -> void:
 
 func _on_press() -> void:
 	Globals.selected_character = character
-	get_tree().change_scene_to_packed(GAME)
+	if check_box.button_pressed:
+		get_tree().change_scene_to_packed(NEW_ASSET_TEST)
+	else:
+		get_tree().change_scene_to_packed(STORY)
 
 func _on_focus() -> void:
 	texture_rect.show()
