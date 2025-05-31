@@ -137,7 +137,7 @@ func throw_coin() -> void:
 	
 	# Return to idle after throwing
 	await enemy.animated_sprite_2d.animation_finished
-	if enemy == null:
+	if enemy == null or enemy.health <= 0: 
 		return
 	enemy.animated_sprite_2d.play("idle")
 	_check_range()
