@@ -9,7 +9,7 @@ func enter_state(player: Player) -> void:
 	player.velocity = Vector2.ZERO
 	#_handle_offset(player, 1)
 	
-	player.area_2d.monitoring = true
+	#player.area_2d.monitoring = true
 	player.default_sprite.animation_finished.connect(_on_animation_finished)
 
 
@@ -36,7 +36,7 @@ func handle_input(player: Player, event: InputEvent) -> void:
 func exit_state(player: Player) -> void:
 	#_handle_offset(player, -1)
 	#player.collision_shape_2d.position.x = 0
-	player.area_2d.monitoring = false
+	#player.area_2d.monitoring = false
 	player.default_sprite.animation_finished.disconnect(_on_animation_finished)
 
 func _on_animation_finished() -> void:

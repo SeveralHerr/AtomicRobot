@@ -4,6 +4,8 @@ extends Node2D
 var spawn_timer: Timer
 var viewport_size: Vector2
 
+var is_event_active: bool = false
+
 func _ready():
 	# Get the viewport size
 	viewport_size = get_viewport_rect().size
@@ -14,8 +16,19 @@ func _ready():
 	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
 	spawn_timer.wait_time = randf_range(13.0, 15.0)
 	spawn_timer.start()
+	
+	Globals.event.connect(_event_started)
+	
+func _event_started(status: bool) -> void:
+	is_event_active = status
+	
+	if not is_event_active: 
+		spawn_timer.start()
 
 func _on_spawn_timer_timeout():
+	if is_event_active:
+		spawn_timer.stop()
+		return
 	EnemySpawner.spawn_enemy(self, player, viewport_size)
 	# Reset timer with new random interval
 	spawn_timer.wait_time = randf_range(13.0, 15.0)

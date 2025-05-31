@@ -15,7 +15,7 @@ func _event_started(status: bool ) -> void:
 	else:
 		notification_label.text = "Event Completed"
 		reveal_fade(0.4)
-		await get_tree().create_timer(2).timeout
+		await get_tree().create_timer(3.5).timeout
 		fade_out(0.4)		
 
 	

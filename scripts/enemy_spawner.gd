@@ -2,7 +2,7 @@ extends Node
 
 const METER_MAID = preload("res://scenes/meter_maid.tscn")
 
-static func spawn_enemy(parent: Node2D, player: Node2D, viewport_size: Vector2, offset: float = 0.0) -> Node2D:
+static func spawn_enemy(parent: Node2D, player: Node2D, viewport_size: Vector2, offset: float = 50.0) -> Node2D:
 	var enemy = METER_MAID.instantiate()
 	parent.call_deferred("add_child",enemy)
 	
@@ -19,7 +19,7 @@ static func spawn_enemy(parent: Node2D, player: Node2D, viewport_size: Vector2, 
 	enemy.position = Vector2(spawn_x, player.position.y)
 	return enemy
 
-static func spawn_wave(parent: Node2D, player: Node2D, viewport_size: Vector2, count: int = 3, offset: float = 0.0) -> Array[Node2D]:
+static func spawn_wave(parent: Node2D, player: Node2D, viewport_size: Vector2, count: int = 3, offset: float = 50.0) -> Array[Node2D]:
 	var enemies: Array[Node2D] = []
 	for i in range(count):
 		var enemy = spawn_enemy(parent, player, viewport_size, offset)

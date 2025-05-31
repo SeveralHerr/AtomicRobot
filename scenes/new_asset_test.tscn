@@ -58,7 +58,7 @@ shadow_color = Color(0, 0, 0, 1)
 shadow_offset = Vector2(0, 0)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dbsfu"]
-size = Vector2(200, 400)
+size = Vector2(111, 400)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lfwgu"]
 texture = ExtResource("2_ipf1n")
@@ -532,7 +532,7 @@ collision_layer = 0
 script = ExtResource("32_bjc77")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup2/EnemyEvent"]
-position = Vector2(576, -12)
+position = Vector2(576.5, -12)
 shape = SubResource("RectangleShape2D_dbsfu")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="SceneItemsBackground"]
