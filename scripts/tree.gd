@@ -1,7 +1,7 @@
 extends Sprite2D
 @onready var cpu_particles_2d: CPUParticles2D = $CPUParticles2D
 @onready var cpu_particles_2d_2: CPUParticles2D = $CPUParticles2D2
-@onready var timer: Timer = $Timer
+var timer: Timer
 
 func _ready() -> void:
 	# Set up timer

@@ -4,7 +4,7 @@ class_name JumpState
 const ACCELERATION = 500.0  # Adjust as needed for smoother acceleration
 
 func enter_state(player: Player) -> void:
-	player.velocity.y = -350.0
+	player.velocity.y = -400.0
 	player.default_sprite.play("Jump")
 	player.jump_audio_player.play()
 	player.jumping_streak_sprite.show()
