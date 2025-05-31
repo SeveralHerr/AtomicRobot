@@ -28,8 +28,8 @@ const KnockbackState = preload("res://scripts/states/knockback_state.gd")
 
 var is_dead: bool = false
 var health: int = 4
-
-const SPEED = 200.0
+var is_event_active: bool = false
+var SPEED = 200.0
 const JUMP_VELOCITY = -1250.0
 var state_machine: StateMachine
 
@@ -67,7 +67,14 @@ func _ready() -> void:
 
 	default_sprite.sprite_frames = Globals.character_dict[Globals.selected_character].sprite_frames 
 
-	
+	Globals.event.connect(_event_started)
+
+func _event_started(status: bool) -> void:
+	if status:
+		print("event active... lowering player speed")
+		SPEED /= 3
+	else:
+		SPEED *= 3
 	
 func move_player() -> void:
 	camera_2d.position_smoothing_enabled = false

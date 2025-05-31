@@ -1,4 +1,4 @@
-[gd_scene load_steps=56 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=57 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="1_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
@@ -16,6 +16,7 @@
 [ext_resource type="Script" uid="uid://o2h3iex6u6ps" path="res://scripts/game_over_container.gd" id="5_sj8ng"]
 [ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://styles/font_v2.tres" id="5_yhyvh"]
 [ext_resource type="Texture2D" uid="uid://biqvjni2xn7rp" path="res://images/new/Background_Bushes.png" id="6_fg85f"]
+[ext_resource type="Script" uid="uid://fv8o1x5w5344" path="res://scripts/notificataion_container.gd" id="7_2pg4o"]
 [ext_resource type="Script" uid="uid://bljv8wkcve17e" path="res://scripts/initial_fade_in.gd" id="7_gdeaw"]
 [ext_resource type="PackedScene" uid="uid://cd687fbnvb516" path="res://scenes/fade_overlay.tscn" id="7_lcs47"]
 [ext_resource type="Texture2D" uid="uid://chx0xg7umpsy2" path="res://images/new/Background_Far_Building1.png" id="7_u80fe"]
@@ -244,6 +245,26 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_font_sizes/font_size = 31
 text = "Restart"
+
+[node name="NotificataionContainer" type="CenterContainer" parent="UI"]
+visible = false
+z_index = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_2pg4o")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/NotificataionContainer"]
+layout_mode = 2
+
+[node name="NotificationLabel" type="Label" parent="UI/NotificataionContainer/VBoxContainer"]
+layout_mode = 2
+text = "Event Started...."
+label_settings = ExtResource("5_yhyvh")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="InitialFadeIn" type="Control" parent="UI"]
 layout_mode = 3
@@ -548,7 +569,7 @@ position = Vector2(1835, -208)
 texture = ExtResource("3_lfwgu")
 
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
-position = Vector2(481, -21)
+position = Vector2(1998, -21)
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false

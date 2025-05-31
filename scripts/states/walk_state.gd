@@ -24,7 +24,8 @@ func physics_update(player: Player, delta: float) -> void:
 
 	#var direction := Input.get_axis("ui_left", "ui_right")
 	if direction:
-		player.velocity.x = move_toward(player.velocity.x, direction * player.SPEED, ACCELERATION * delta)
+		var target = direction * player.SPEED
+		player.velocity.x = move_toward(player.velocity.x, target, ACCELERATION * delta)
 		
 	else:
 		player.velocity.x = move_toward(player.velocity.x, 0, player.SPEED * delta)

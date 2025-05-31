@@ -1,5 +1,4 @@
 extends Node2D
-const EnemySpawner = preload("res://scripts/enemy_spawner.gd")
 @onready var player: Player = $"../Player"
 
 var spawn_timer: Timer
@@ -13,11 +12,11 @@ func _ready():
 	spawn_timer = Timer.new()
 	add_child(spawn_timer)
 	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
-	spawn_timer.wait_time = randf_range(3.0, 15.0)
+	spawn_timer.wait_time = randf_range(13.0, 15.0)
 	spawn_timer.start()
 
 func _on_spawn_timer_timeout():
 	EnemySpawner.spawn_enemy(self, player, viewport_size)
 	# Reset timer with new random interval
-	spawn_timer.wait_time = randf_range(3.0, 15.0)
+	spawn_timer.wait_time = randf_range(13.0, 15.0)
 	spawn_timer.start()
