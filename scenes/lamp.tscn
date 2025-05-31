@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bn6uk4y67s804"]
+
+[ext_resource type="Texture2D" uid="uid://bbfmdfj6vkv53" path="res://images/new/Streetlamp.png" id="1_hxjgs"]
+[ext_resource type="Texture2D" uid="uid://cqpsd4jvj7kk5" path="res://images/light_faded.png" id="2_60c0r"]
+
+[node name="Lamp" type="Sprite2D"]
+z_index = 1
+texture = ExtResource("1_hxjgs")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(-1, -57)
+energy = 0.7
+texture = ExtResource("2_60c0r")
+texture_scale = 0.45

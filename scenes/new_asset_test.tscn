@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=56 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="1_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
@@ -32,14 +32,19 @@
 [ext_resource type="Texture2D" uid="uid://bv1ony8p1mlcx" path="res://images/new/Blue_Trashcan.png" id="21_0bwfm"]
 [ext_resource type="Texture2D" uid="uid://dr4h2bc6ecmy3" path="res://Tiles/mp_cs_tilemap_all.png" id="21_euxwc"]
 [ext_resource type="Texture2D" uid="uid://dc1a5p03kl1vo" path="res://images/new/Building_glass.png" id="21_sj8ng"]
+[ext_resource type="Texture2D" uid="uid://jo0qmhfs7b8r" path="res://images/new/Background_bush2.png" id="22_lcs47"]
 [ext_resource type="Texture2D" uid="uid://dkelg2q4oskqe" path="res://images/new/Parking_Meter.png" id="24_meefr"]
+[ext_resource type="Texture2D" uid="uid://bscwynmlxfbo7" path="res://images/new/Mailbox.png" id="25_bjc77"]
 [ext_resource type="Texture2D" uid="uid://bbkwm4msmpsf7" path="res://images/new/Lamppost2.png" id="25_k35ai"]
 [ext_resource type="PackedScene" uid="uid://c86dda1gnhixs" path="res://scenes/tree.tscn" id="25_vek1y"]
 [ext_resource type="Texture2D" uid="uid://364i7jx70r62" path="res://images/new/Streetsign.png" id="26_1mphf"]
 [ext_resource type="Texture2D" uid="uid://cig2a7s14sgri" path="res://images/new/BuildingCourthouse.png" id="26_k35ai"]
+[ext_resource type="Texture2D" uid="uid://chhv1366a66d0" path="res://images/new/Bollard.png" id="27_gdeaw"]
+[ext_resource type="PackedScene" uid="uid://bn6uk4y67s804" path="res://scenes/lamp.tscn" id="28_dbsfu"]
 [ext_resource type="Texture2D" uid="uid://cq4jtef6t0c60" path="res://images/new/Building3.png" id="29_64efg"]
 [ext_resource type="Texture2D" uid="uid://bjuidvxkbuctr" path="res://images/new/Building4.png" id="30_euxwc"]
 [ext_resource type="PackedScene" uid="uid://bx5bwuj7fad3" path="res://scenes/streetlight.tscn" id="31_euxwc"]
+[ext_resource type="Script" uid="uid://btp2q1lxrlo07" path="res://scripts/enemy_event.gd" id="32_bjc77"]
 [ext_resource type="Script" uid="uid://dv0rbnba2864c" path="res://scripts/enemy_manager.gd" id="38_ikgy1"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
@@ -50,6 +55,9 @@ outline_size = 6
 shadow_size = 18
 shadow_color = Color(0, 0, 0, 1)
 shadow_offset = Vector2(0, 0)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dbsfu"]
+size = Vector2(200, 400)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lfwgu"]
 texture = ExtResource("2_ipf1n")
@@ -311,13 +319,8 @@ texture = ExtResource("13_n5jul")
 [node name="SceneItemsBackground" type="Node2D" parent="."]
 position = Vector2(1875, -1)
 
-[node name="Building" type="Sprite2D" parent="SceneItemsBackground"]
-self_modulate = Color(0.490196, 0.490196, 0.490196, 1)
-position = Vector2(422, -102)
-texture = ExtResource("3_lfwgu")
-
-[node name="Building3" type="Sprite2D" parent="SceneItemsBackground"]
-self_modulate = Color(0.489622, 0.489622, 0.489622, 1)
+[node name="Bush" type="Sprite2D" parent="SceneItemsBackground"]
+self_modulate = Color(0.6897, 0.6897, 0.6897, 1)
 position = Vector2(2468, -35)
 texture = ExtResource("3_62krv")
 
@@ -331,10 +334,185 @@ self_modulate = Color(0.489622, 0.489622, 0.489622, 1)
 position = Vector2(-1017, -125)
 texture = ExtResource("21_sj8ng")
 
-[node name="Building8" type="Sprite2D" parent="SceneItemsBackground"]
+[node name="BuildingGroup1" type="Node2D" parent="SceneItemsBackground"]
+
+[node name="Building8" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
 self_modulate = Color(0.489622, 0.489622, 0.489622, 1)
 position = Vector2(2696, -209.5)
 texture = ExtResource("21_sj8ng")
+
+[node name="Bush2" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+self_modulate = Color(0.6897, 0.6897, 0.6897, 1)
+position = Vector2(2695, -38)
+texture = ExtResource("22_lcs47")
+
+[node name="Building7" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+position = Vector2(2960, -349.5)
+texture = ExtResource("20_yhyvh")
+
+[node name="Building2" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+position = Vector2(2472, -130.5)
+texture = ExtResource("30_euxwc")
+
+[node name="Tree5" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("25_vek1y")]
+position = Vector2(2281, -85)
+flip_h = true
+
+[node name="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Tree5" index="2"]
+position = Vector2(9, 81)
+
+[node name="Tree6" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("25_vek1y")]
+position = Vector2(2721, -85)
+flip_h = true
+
+[node name="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Tree6" index="2"]
+position = Vector2(9, 81)
+
+[node name="Tree7" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("25_vek1y")]
+position = Vector2(3109, -85)
+
+[node name="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Tree7" index="2"]
+position = Vector2(-9, 81)
+
+[node name="Tree8" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("25_vek1y")]
+position = Vector2(2921, -128)
+scale = Vector2(1.5, 1.5)
+
+[node name="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Tree8" index="2"]
+position = Vector2(-9, 81)
+
+[node name="Bush3" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+self_modulate = Color(0.729658, 0.729658, 0.729658, 1)
+position = Vector2(1782, -47)
+texture = ExtResource("22_lcs47")
+
+[node name="Mailbox" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+z_index = 1
+position = Vector2(2637, -16)
+texture = ExtResource("25_bjc77")
+
+[node name="Meter" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+z_index = 1
+position = Vector2(2673, -29)
+texture = ExtResource("24_meefr")
+
+[node name="Meter7" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+z_index = 1
+position = Vector2(2833, -29)
+texture = ExtResource("24_meefr")
+
+[node name="Meter6" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+z_index = 1
+position = Vector2(2486, -29)
+texture = ExtResource("24_meefr")
+
+[node name="Meter2" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+z_index = 1
+position = Vector2(2365, -29)
+texture = ExtResource("24_meefr")
+
+[node name="Meter3" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+z_index = 1
+position = Vector2(2179, -29)
+texture = ExtResource("24_meefr")
+
+[node name="Meter4" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+z_index = 1
+position = Vector2(2053, -29)
+texture = ExtResource("24_meefr")
+
+[node name="Meter5" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+z_index = 1
+position = Vector2(1863, -29)
+texture = ExtResource("24_meefr")
+
+[node name="Trash" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+z_index = 1
+position = Vector2(3009, -16)
+texture = ExtResource("21_0bwfm")
+
+[node name="Trash2" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+z_index = 1
+position = Vector2(1622, -16)
+texture = ExtResource("21_0bwfm")
+
+[node name="Lamp" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("28_dbsfu")]
+position = Vector2(3037, -69)
+
+[node name="Lamp2" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("28_dbsfu")]
+position = Vector2(2006, -69)
+
+[node name="BuildingGroup2" type="Node2D" parent="SceneItemsBackground"]
+
+[node name="Trash3" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup2"]
+z_index = 1
+position = Vector2(367, -16)
+texture = ExtResource("21_0bwfm")
+
+[node name="Mailbox" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup2"]
+z_index = 1
+position = Vector2(604, -16)
+texture = ExtResource("25_bjc77")
+
+[node name="Bush2" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup2"]
+self_modulate = Color(0.729658, 0.729658, 0.729658, 1)
+position = Vector2(624, -50)
+texture = ExtResource("22_lcs47")
+
+[node name="Building" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup2"]
+self_modulate = Color(0.490196, 0.490196, 0.490196, 1)
+position = Vector2(422, -102)
+texture = ExtResource("3_lfwgu")
+
+[node name="Building4" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup2"]
+position = Vector2(577, -205)
+texture = ExtResource("29_64efg")
+
+[node name="Tree6" parent="SceneItemsBackground/BuildingGroup2" instance=ExtResource("25_vek1y")]
+position = Vector2(334, -84)
+flip_h = true
+
+[node name="Sprite2D" parent="SceneItemsBackground/BuildingGroup2/Tree6" index="2"]
+position = Vector2(9, 81)
+
+[node name="Tree7" parent="SceneItemsBackground/BuildingGroup2" instance=ExtResource("25_vek1y")]
+position = Vector2(818, -84)
+
+[node name="Bullard" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup2"]
+z_index = 1
+position = Vector2(853, -17)
+texture = ExtResource("27_gdeaw")
+
+[node name="Bullard2" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup2"]
+z_index = 1
+position = Vector2(924, -16)
+texture = ExtResource("27_gdeaw")
+
+[node name="Lamp3" parent="SceneItemsBackground/BuildingGroup2" instance=ExtResource("28_dbsfu")]
+position = Vector2(576, -69)
+
+[node name="Meter4" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup2"]
+z_index = 1
+position = Vector2(675, -28)
+texture = ExtResource("24_meefr")
+
+[node name="Meter5" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup2"]
+z_index = 1
+position = Vector2(489, -28)
+texture = ExtResource("24_meefr")
+
+[node name="Meter6" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup2"]
+z_index = 1
+position = Vector2(272, -28)
+texture = ExtResource("24_meefr")
+
+[node name="EnemyEvent" type="Area2D" parent="SceneItemsBackground/BuildingGroup2"]
+collision_layer = 0
+script = ExtResource("32_bjc77")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup2/EnemyEvent"]
+position = Vector2(576, -12)
+shape = SubResource("RectangleShape2D_dbsfu")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="SceneItemsBackground"]
 position = Vector2(-1875, 0)
@@ -365,18 +543,6 @@ texture = ExtResource("3_62krv")
 position = Vector2(5222, -233.5)
 texture = ExtResource("26_k35ai")
 
-[node name="Building4" type="Sprite2D" parent="SceneItemsBackground"]
-position = Vector2(577, -205)
-texture = ExtResource("29_64efg")
-
-[node name="Building7" type="Sprite2D" parent="SceneItemsBackground"]
-position = Vector2(2960, -349.5)
-texture = ExtResource("20_yhyvh")
-
-[node name="Building2" type="Sprite2D" parent="SceneItemsBackground"]
-position = Vector2(2472, -130.5)
-texture = ExtResource("30_euxwc")
-
 [node name="Building9" type="Sprite2D" parent="SceneItemsBackground"]
 position = Vector2(1835, -208)
 texture = ExtResource("3_lfwgu")
@@ -400,29 +566,12 @@ position = Vector2(127, -84)
 [node name="Tree4" parent="SceneItems" instance=ExtResource("25_vek1y")]
 position = Vector2(893, -84)
 
-[node name="Tree5" parent="SceneItems" instance=ExtResource("25_vek1y")]
-position = Vector2(4156, -86)
-flip_h = true
-
-[node name="Sprite2D" parent="SceneItems/Tree5" index="2"]
-position = Vector2(9, 81)
-
 [node name="Tree8" parent="SceneItems" instance=ExtResource("25_vek1y")]
 position = Vector2(3511, -86)
 flip_h = true
 
 [node name="Sprite2D" parent="SceneItems/Tree8" index="2"]
 position = Vector2(9, 81)
-
-[node name="Tree6" parent="SceneItems" instance=ExtResource("25_vek1y")]
-position = Vector2(2209, -85)
-flip_h = true
-
-[node name="Sprite2D" parent="SceneItems/Tree6" index="2"]
-position = Vector2(9, 81)
-
-[node name="Tree7" parent="SceneItems" instance=ExtResource("25_vek1y")]
-position = Vector2(2693, -85)
 
 [node name="StreetSign" type="Sprite2D" parent="SceneItems"]
 position = Vector2(956, -49)
@@ -456,43 +605,50 @@ texture = ExtResource("24_meefr")
 position = Vector2(1007, -32)
 texture = ExtResource("24_meefr")
 
-[node name="Streetlight" parent="SceneItems" node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
-position = Vector2(1551, -79)
-player = NodePath("../../Player")
+[node name="Intersection" type="Node2D" parent="SceneItems"]
 
-[node name="Streetlight3" parent="SceneItems" node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
-position = Vector2(1991, -79)
-player = NodePath("../../Player")
-
-[node name="Lightpost" type="Sprite2D" parent="SceneItems"]
-position = Vector2(1552, -137)
-texture = ExtResource("25_k35ai")
-
-[node name="Lightpost2" type="Sprite2D" parent="SceneItems"]
-position = Vector2(1993, -137)
-texture = ExtResource("25_k35ai")
-flip_h = true
-
-[node name="Streetlight2" parent="SceneItems" node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
+[node name="Streetlight2" parent="SceneItems/Intersection" node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
 position = Vector2(2899, -78.5)
-player = NodePath("../../Player")
+player = NodePath("../../../Player")
 
-[node name="Streetlight4" parent="SceneItems" node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
+[node name="Streetlight4" parent="SceneItems/Intersection" node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
 position = Vector2(3339, -78.5)
-player = NodePath("../../Player")
+player = NodePath("../../../Player")
 
-[node name="Lightpost3" type="Sprite2D" parent="SceneItems"]
+[node name="Lightpost3" type="Sprite2D" parent="SceneItems/Intersection"]
 position = Vector2(2900, -136.5)
 texture = ExtResource("25_k35ai")
 
-[node name="Lightpost4" type="Sprite2D" parent="SceneItems"]
+[node name="Lightpost4" type="Sprite2D" parent="SceneItems/Intersection"]
 position = Vector2(3341, -136.5)
+texture = ExtResource("25_k35ai")
+flip_h = true
+
+[node name="Intersection2" type="Node2D" parent="SceneItems"]
+
+[node name="Streetlight" parent="SceneItems/Intersection2" node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
+position = Vector2(1551, -79)
+player = NodePath("../../../Player")
+
+[node name="Streetlight3" parent="SceneItems/Intersection2" node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
+position = Vector2(1991, -79)
+player = NodePath("../../../Player")
+
+[node name="Lightpost" type="Sprite2D" parent="SceneItems/Intersection2"]
+position = Vector2(1552, -137)
+texture = ExtResource("25_k35ai")
+
+[node name="Lightpost2" type="Sprite2D" parent="SceneItems/Intersection2"]
+position = Vector2(1993, -137)
 texture = ExtResource("25_k35ai")
 flip_h = true
 
 [node name="EnemyManager" type="Node2D" parent="."]
 script = ExtResource("38_ikgy1")
 
-[editable path="SceneItems/Tree5"]
+[editable path="SceneItemsBackground/BuildingGroup1/Tree5"]
+[editable path="SceneItemsBackground/BuildingGroup1/Tree6"]
+[editable path="SceneItemsBackground/BuildingGroup1/Tree7"]
+[editable path="SceneItemsBackground/BuildingGroup1/Tree8"]
+[editable path="SceneItemsBackground/BuildingGroup2/Tree6"]
 [editable path="SceneItems/Tree8"]
-[editable path="SceneItems/Tree6"]
