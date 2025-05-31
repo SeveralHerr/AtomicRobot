@@ -1,5 +1,7 @@
 extends HBoxContainer
 
+@onready var player: Player = $"../../../../Player"
+
 @onready var hp_1: TextureRect = $HP1
 @onready var hp_2: TextureRect = $HP2
 @onready var hp_3: TextureRect = $HP3
@@ -7,7 +9,7 @@ extends HBoxContainer
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	Globals.player.player_health_updated.connect(_update_health)
+	player.player_health_updated.connect(_update_health)
 	pass # Replace with function body.
 
 func _update_health(current_health: int) -> void: 

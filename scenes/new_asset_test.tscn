@@ -1,10 +1,13 @@
-[gd_scene load_steps=49 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=53 format=4 uid="uid://d2jsdjdehljbp"]
 
+[ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="1_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="Texture2D" uid="uid://ci8iiyx7hgv6r" path="res://images/new/Street.png" id="1_jd2el"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
 [ext_resource type="Texture2D" uid="uid://dax3brqylomy8" path="res://images/new/Shop.png" id="2_ipf1n"]
 [ext_resource type="Texture2D" uid="uid://5n1wfynio4tv" path="res://images/new/Background_Really_Far_Buildings.png" id="2_n5jul"]
+[ext_resource type="Script" uid="uid://dc00l4kuir5j0" path="res://scripts/health_container.gd" id="2_vq1rx"]
+[ext_resource type="PackedScene" uid="uid://btaphps6ps5mq" path="res://scenes/hp_1.tscn" id="3_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://grr2bmq732dp" path="res://images/new/Background_Bridge.png" id="3_62krv"]
 [ext_resource type="Texture2D" uid="uid://bcn27o4sktbhx" path="res://images/new/Building1.png" id="3_lfwgu"]
 [ext_resource type="Texture2D" uid="uid://dl0af8uvy0y6w" path="res://images/new/Background_Big_Sculpture.png" id="4_27y8j"]
@@ -32,6 +35,15 @@
 [ext_resource type="Texture2D" uid="uid://wte7eto6y6lq" path="res://images/new/Traffic_Light.png" id="27_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://b7c3ulm6ps4bi" path="res://images/new/Tree.png" id="28_vq1rx"]
 [ext_resource type="PackedScene" uid="uid://csis0b6hdasqr" path="res://scenes/meter_maid.tscn" id="32_1mphf"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
+font = ExtResource("1_4dtmh")
+font_size = 100
+font_color = Color(0.462745, 0, 0, 1)
+outline_size = 6
+shadow_size = 18
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(0, 0)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5jk15"]
 texture = ExtResource("1_jd2el")
@@ -284,6 +296,43 @@ sources/8 = SubResource("TileSetAtlasSource_dbsfu")
 
 [node name="Main" type="Node2D"]
 
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HealthContainer" type="MarginContainer" parent="UI"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Health" type="HBoxContainer" parent="UI/HealthContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="UI/HealthContainer/Health"]
+layout_mode = 2
+text = "HP "
+label_settings = SubResource("LabelSettings_ikgy1")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/HealthContainer/Health"]
+layout_mode = 2
+theme_override_constants/separation = -2
+script = ExtResource("2_vq1rx")
+
+[node name="HP1" parent="UI/HealthContainer/Health/HBoxContainer" instance=ExtResource("3_4dtmh")]
+layout_mode = 2
+
+[node name="HP2" parent="UI/HealthContainer/Health/HBoxContainer" instance=ExtResource("3_4dtmh")]
+layout_mode = 2
+
+[node name="HP3" parent="UI/HealthContainer/Health/HBoxContainer" instance=ExtResource("3_4dtmh")]
+layout_mode = 2
+
+[node name="HP4" parent="UI/HealthContainer/Health/HBoxContainer" instance=ExtResource("3_4dtmh")]
+layout_mode = 2
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(882.5, -349.25)
 scale = Vector2(15.7757, 1.22348)
@@ -347,7 +396,7 @@ tile_map_data = PackedByteArray("AAD//wAAAAABAAAAAAAAAAAAAAABAAAAAAABAAAAAAABAAA
 tile_set = SubResource("TileSet_ipf1n")
 
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
-position = Vector2(-57, -244)
+position = Vector2(-247, -23)
 
 [node name="SceneItems" type="Node2D" parent="."]
 
@@ -440,4 +489,4 @@ texture = ExtResource("26_k35ai")
 tile_set = SubResource("TileSet_bjc77")
 
 [node name="MeterMaid2" parent="." instance=ExtResource("32_1mphf")]
-position = Vector2(-24, -31)
+position = Vector2(595, -28)

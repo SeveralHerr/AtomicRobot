@@ -1,7 +1,7 @@
 extends State
 class_name AttackState
 
-const PLAYER_DAMAGE = 3
+const PLAYER_DAMAGE = 2
 
 func enter_state(player: Player) -> void:
 	player.default_sprite.play("Attack")

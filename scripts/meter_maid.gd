@@ -5,11 +5,15 @@ class_name MeterMaid
 
 
 func _ready() -> void:
+	# Set health to 3
+	health = 3
+	
 	node = Globals.player.get_parent()
 
 	enemy_state_machine = EnemyStateMachine.new(self)
 	#enemy_state_machine.add_state("PatrolState", PatrolState.new())
 	enemy_state_machine.add_state("ChasePlayerState", ChasePlayerState.new())
+	enemy_state_machine.add_state("DeadEnemyState", DeadEnemyState.new())
 	#enemy_state_machine.add_state("FindMeterState", FindMeterState.new())
 	#enemy_state_machine.add_state("AttackPlayerState", AttackPlayerState.new())
 	add_child(enemy_state_machine)
@@ -34,21 +38,21 @@ func _physics_process(delta: float) -> void:
 		
 	enemy_state_machine.physics_update(delta)
 	move_and_slide()
+func die() -> void:
+	enemy_state_machine.change_state("DeadEnemyState")
+	
 	
 func receive_hit(damage: int) -> void:
-
+	# Stop any currently playing animation to ensure hit effect plays
 	if animation_player.is_playing():
 		animation_player.stop()
 	
+	# Play the hit animation which includes the white flash effect
 	animation_player.play("Hit")
 	health -= damage
 	
 	if health <= 0: 
-		Globals.meter_maids_killed += 1
-		Globals.meter_maid_death.emit()
-
-		call_deferred("queue_free")
-	
+		call_deferred("die")
 	# Calculate knockback direction based on the player's position
 	var knockback_direction = (position - Globals.player.position).normalized()
 	

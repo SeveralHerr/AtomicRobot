@@ -124,6 +124,8 @@ func _spawn_coin_delayed() -> void:
 	throw_coin()
 	
 func throw_coin() -> void:
+	if enemy == null:
+		return
 	stand_still = false
 	
 	var instance = enemy.COIN_BULLET.instantiate()
@@ -135,5 +137,7 @@ func throw_coin() -> void:
 	
 	# Return to idle after throwing
 	await enemy.animated_sprite_2d.animation_finished
+	if enemy == null:
+		return
 	enemy.animated_sprite_2d.play("idle")
 	_check_range()
