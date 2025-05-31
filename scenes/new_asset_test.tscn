@@ -210,6 +210,7 @@ expand_mode = 5
 
 [node name="GameOverContainer" type="CenterContainer" parent="UI"]
 visible = false
+z_index = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -406,6 +407,7 @@ flip_h = true
 
 [node name="MeterMaid2" parent="." instance=ExtResource("32_1mphf")]
 position = Vector2(595, -28)
+scale = Vector2(-1, 1)
 
 [node name="EnemyManager" type="Node2D" parent="."]
 script = ExtResource("38_ikgy1")
