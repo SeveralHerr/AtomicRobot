@@ -8,10 +8,15 @@ func physics_update(delta: float) -> void:
 	enemy.animated_sprite_2d.play("walk")
 	
 	# Check if player is in line of sight to chase
-	if enemy.line_of_sight.is_player_line_of_sight():
+	#if enemy.line_of_sight.is_player_line_of_sight():
+		#enemy.enemy_state_machine.change_state("ChasePlayerState")
+		#return
+	#dir = (Globals.player.position - enemy.position).normalized()
+	var dist = enemy.position.distance_to(Globals.player.position)
+
+	if dist < 150:
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
 		return
-	
 	# Calculate direction towards player
 	var player_direction = (Globals.player.global_position - enemy.global_position).normalized()
 	direction = sign(player_direction.x)

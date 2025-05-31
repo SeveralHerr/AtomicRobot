@@ -24,11 +24,12 @@ const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
 var health: int = 3
 var direction: int = -1
 var speed: int = 50
+var move_speed: float = 100.0
 var target: Node2D = null
 var coins: int = 4
 var node: Node
 var last_dir: int = 0
-
+var attack_range: int = 150
 
 	
 func _update_sprite_direction(direction: float) -> void:

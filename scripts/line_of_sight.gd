@@ -7,15 +7,15 @@ var raycast_distance = 110.0
 func is_player_line_of_sight() -> bool:
 	var to_player = Globals.player.global_position - global_position
 	var distance = to_player.length()
+	target_position = to_player.normalized() * raycast_distance
+	force_raycast_update()
 
+
+	
 	if distance > raycast_distance:
 		#enabled = false
 		#print("dist")
 		return false
-
-	#enabled = true
-	target_position = to_player.normalized() * raycast_distance
-	force_raycast_update()
 	if is_colliding():
 		var collider = get_collider()
 

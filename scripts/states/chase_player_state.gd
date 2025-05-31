@@ -9,7 +9,8 @@ func enter_state(new_enemy: Enemy) -> void:
 	enemy = new_enemy
 	enemy.velocity.x = 0
 	stand_still = false
-		
+	enemy.timer.one_shot = true
+	
 	if not enemy.timer.timeout.is_connected(_create_bullet):
 		enemy.timer.timeout.connect(_create_bullet)
 		
@@ -18,10 +19,15 @@ func enter_state(new_enemy: Enemy) -> void:
 		
 	#ChatBubble.create(enemy, "I'LL GET YOU!")
 	enemy.animated_sprite_2d.play("idle")
-	enemy.timer.start()
 
+func in_range() -> void:
+	if not enemy.timer.timeout.is_connected(_create_bullet):
+		enemy.timer.timeout.connect(_create_bullet)
 		
-func exit_state(enemy: Enemy) -> void:
+	if not enemy.range_timer.timeout.is_connected(_check_range):
+		enemy.range_timer.timeout.connect(_check_range)
+		
+func out_of_range(enemy: Enemy) -> void:
 	if enemy.timer.timeout.is_connected(_create_bullet):
 		enemy.timer.timeout.disconnect(_create_bullet)
 		
@@ -33,15 +39,22 @@ func exit_state(enemy: Enemy) -> void:
 func _check_range() -> void:
 	if Globals.player.is_dead:
 		return
+		
+	dir = (Globals.player.position - enemy.position).normalized()
+	var dist = enemy.position.distance_to(Globals.player.position)
+
 	
-	print("check range")
-	if not enemy.line_of_sight.is_player_line_of_sight():
-		#ChatBubble.create(enemy, "LOST HIM.")
-		enemy.enemy_state_machine.change_state("PatrolState")
+	if dist > enemy.attack_range:
+		out_of_range(enemy)
+	#print("check range")
+	#if not enemy.line_of_sight.is_player_line_of_sight():
+		##ChatBubble.create(enemy, "LOST HIM.")
+		#enemy.enemy_state_machine.change_state("PatrolState")
 
 
 		
 func physics_update(delta: float) -> void:
+	enemy.line_of_sight.is_player_line_of_sight()
 	if stand_still:
 		enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)
 		# Don't change animation when attacking - let the attack animation play
@@ -52,17 +65,28 @@ func physics_update(delta: float) -> void:
 	_update_sprite_direction(enemy)
 
 	
-	if dist > 90:
+	if dist > enemy.attack_range:
+		#enemy.timer.stop()
 		# Moving towards player
-		if not enemy.ray_cast_2d_left.is_colliding():
-			enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
-		elif not enemy.ray_cast_2d_right.is_colliding():
-			enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
-		else:
-			enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)		
+		#if not enemy.ray_cast_2d_left.is_colliding():
+			#enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
+		#elif not enemy.ray_cast_2d_right.is_colliding():
+			#enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
+		#else:
+			#enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)		
+			#
+		var player_direction = (Globals.player.global_position - enemy.global_position).normalized()
+		var direction = sign(player_direction.x)
+		var target_velocity = direction * enemy.move_speed
+		enemy.velocity.x = move_toward(enemy.velocity.x, target_velocity, 2000 * delta)
 	else:
-		# Close to player - stop moving
+		in_range()
+		# Close to player - stop moving and attack if cooldown is finished
 		enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
+		
+		# Attack immediately if timer cooldown has finished
+		if enemy.timer.is_stopped():
+			_create_bullet()
 	
 	# Simple animation logic: if not moving, play idle. If moving, play walk.
 	# But don't override attack animation if it's currently playing
@@ -79,6 +103,9 @@ func _update_sprite_direction(enemy: Enemy) -> void:
 func _create_bullet() -> void:
 	if Globals.player.is_dead:
 		return
+		
+	if enemy.timer.is_stopped():
+		enemy.timer.start()
 	
 	#elif enemy.coins <= 0:
 		##enemy.enemy_state_machine.change_state("FindMeterState")
