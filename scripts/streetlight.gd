@@ -51,6 +51,8 @@ func change_to_green():
 	green_light.visible = false
 	car.hide()
 	car.start = false
+	car.area_2d.monitorable = false
+	car.area_2d.monitoring = false
 
 	car.global_position = Vector2(player.position.x + car_position.x, 0)
 	current_state = LightState.RED
