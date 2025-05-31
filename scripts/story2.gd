@@ -22,17 +22,13 @@ func _ready() -> void:
 	for label in labels:
 		label.show()
 		label.modulate.a = 0
-	
+
 	continue_label.show()
 	continue_label.modulate.a = 0
 	
 	# Wait for initial fade in to complete before starting story
-	fade_overlay.fade_finished.connect(_on_fade_finished)
+	#await fade_overlay.fade_finished
 	show_next_label()
-
-func _on_fade_finished() -> void:
-	if current_label_index >= labels.size():
-		get_tree().change_scene_to_packed(GAME)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey or event is InputEventMouseButton:
@@ -61,7 +57,11 @@ func transition_to_game() -> void:
 	await current_tween.finished
 	
 	# Fade to black
-	fade_overlay.fade_out()
+	await fade_overlay.fade_out()
+	await get_tree().create_timer(1).timeout
+	
+	# Change scene
+	get_tree().change_scene_to_packed(GAME)
 
 func show_next_label() -> void:
 	if current_label_index < labels.size():
