@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=62 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="1_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
@@ -14,6 +14,8 @@
 [ext_resource type="Texture2D" uid="uid://ci6x7l4g5mh5l" path="res://images/new/Building2.png" id="4_ek68m"]
 [ext_resource type="Texture2D" uid="uid://54wohi1aav3k" path="res://images/ART-Mobile-logo (1).png" id="4_vq1rx"]
 [ext_resource type="Texture2D" uid="uid://8yprqpyhlbjs" path="res://images/new/Background_Building1.png" id="5_bxj0o"]
+[ext_resource type="Script" uid="uid://o2h3iex6u6ps" path="res://scripts/game_over_container.gd" id="5_sj8ng"]
+[ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://styles/font_v2.tres" id="5_yhyvh"]
 [ext_resource type="Texture2D" uid="uid://biqvjni2xn7rp" path="res://images/new/Background_Bushes.png" id="6_fg85f"]
 [ext_resource type="Texture2D" uid="uid://chx0xg7umpsy2" path="res://images/new/Background_Far_Building1.png" id="7_u80fe"]
 [ext_resource type="Texture2D" uid="uid://oxwnjyvooesx" path="res://images/new/Background_Far_Building2.png" id="8_qyuoi"]
@@ -389,6 +391,29 @@ custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
 texture = ExtResource("4_vq1rx")
 expand_mode = 5
+
+[node name="GameOverContainer" type="CenterContainer" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_sj8ng")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOverContainer"]
+layout_mode = 2
+
+[node name="GameOverLabel" type="Label" parent="UI/GameOverContainer/VBoxContainer"]
+layout_mode = 2
+text = "Game Over"
+label_settings = ExtResource("5_yhyvh")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="UI/GameOverContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 31
+text = "Restart"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(882.5, -349.25)
