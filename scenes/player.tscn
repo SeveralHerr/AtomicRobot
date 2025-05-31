@@ -186,3 +186,7 @@ position = Vector2(143, -160)
 libraries = {
 &"": SubResource("AnimationLibrary_qxslq")
 }
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(1.4, 1.4)
+limit_bottom = 100

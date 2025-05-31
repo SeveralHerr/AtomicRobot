@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=51 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="Texture2D" uid="uid://ci8iiyx7hgv6r" path="res://images/new/Street.png" id="1_jd2el"]
@@ -31,6 +31,8 @@
 [ext_resource type="Texture2D" uid="uid://cig2a7s14sgri" path="res://images/new/BuildingCourthouse.png" id="26_k35ai"]
 [ext_resource type="Texture2D" uid="uid://wte7eto6y6lq" path="res://images/new/Traffic_Light.png" id="27_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://b7c3ulm6ps4bi" path="res://images/new/Tree.png" id="28_vq1rx"]
+[ext_resource type="Script" uid="uid://cihyuohvsiwd6" path="res://scenes/new_meter_maid.gd" id="32_aq23j"]
+[ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://sprites/metermaid_sprite_frames.tres" id="33_1mphf"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5jk15"]
 texture = ExtResource("1_jd2el")
@@ -280,6 +282,9 @@ sources/6 = SubResource("TileSetAtlasSource_lcs47")
 sources/7 = SubResource("TileSetAtlasSource_gdeaw")
 sources/8 = SubResource("TileSetAtlasSource_dbsfu")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4dtmh"]
+size = Vector2(25, 52)
+
 [node name="Main" type="Node2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -345,15 +350,7 @@ tile_map_data = PackedByteArray("AAD//wAAAAABAAAAAAAAAAAAAAABAAAAAAABAAAAAAABAAA
 tile_set = SubResource("TileSet_ipf1n")
 
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
-position = Vector2(0, -36)
-scale = Vector2(2, 2)
-
-[node name="Camera2D" type="Camera2D" parent="Player" groups=["Camera"]]
-position = Vector2(-6.5, -129.5)
-zoom = Vector2(1.2, 1.2)
-limit_bottom = 120
-limit_smoothed = true
-position_smoothing_enabled = true
+position = Vector2(-57, -244)
 
 [node name="SceneItems" type="Node2D" parent="."]
 
@@ -445,4 +442,16 @@ texture = ExtResource("26_k35ai")
 [node name="TileMapLayer2" type="TileMapLayer" parent="."]
 tile_set = SubResource("TileSet_bjc77")
 
-[editable path="Player"]
+[node name="MeterMaid" type="Node2D" parent="."]
+script = ExtResource("32_aq23j")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="MeterMaid"]
+position = Vector2(-2, -34)
+sprite_frames = ExtResource("33_1mphf")
+animation = &"idle"
+
+[node name="RigidBody2D" type="RigidBody2D" parent="MeterMaid"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MeterMaid/RigidBody2D"]
+position = Vector2(-11.5, -27)
+shape = SubResource("RectangleShape2D_4dtmh")

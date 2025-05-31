@@ -50,7 +50,7 @@ func physics_update(delta: float) -> void:
 	var dist = enemy.position.distance_to(Globals.player.position)
 	_update_sprite_direction(enemy)
 	if dist > 90:
-		enemy.animated_sprite_2d.play("Walk")
+		enemy.animated_sprite_2d.play("walk")
 		
 		if not enemy.ray_cast_2d_left.is_colliding():
 			enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
@@ -62,7 +62,7 @@ func physics_update(delta: float) -> void:
 			enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)		
 	else:
 		enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
-		enemy.animated_sprite_2d.play("Idle")
+		enemy.animated_sprite_2d.play("idle")
 		
 func _update_sprite_direction(enemy: Enemy) -> void:
 	enemy.animated_sprite_2d.flip_h = sign(dir.x) == -1
@@ -70,14 +70,14 @@ func _update_sprite_direction(enemy: Enemy) -> void:
 func _create_bullet() -> void:
 	if Globals.player.is_dead:
 		return
-	elif enemy.coins <= 0:
-		enemy.enemy_state_machine.change_state("FindMeterState")
-		return	
+	#elif enemy.coins <= 0:
+		##enemy.enemy_state_machine.change_state("FindMeterState")
+		#return	
 		
 	
 	stand_still = true
 	enemy.animated_sprite_2d.animation_finished.connect(throw_coin)
-	enemy.animated_sprite_2d.play("ThrowCoin")
+	enemy.animated_sprite_2d.play("attack")
 	
 func throw_coin() -> void:
 
@@ -90,5 +90,5 @@ func throw_coin() -> void:
 	#instance.position = enemy.position + enemy.coin_spawn_point.positiona
 	var pos = enemy.position + enemy.coin_spawn_point.position
 	instance.start(pos,  (Globals.player.position - pos).normalized())
-	enemy.animated_sprite_2d.play("Idle")
+	enemy.animated_sprite_2d.play("idle")
 	_check_range()
