@@ -36,10 +36,6 @@ var attack_range: int = 150
 func _update_sprite_direction(direction: float) -> void:
 	if direction:
 		if direction < 0:
-			if last_dir != -1:
-				scale.x *= -1
-				last_dir = -1
+			animated_sprite_2d.flip_h = true
 		elif direction > 0:
-			if last_dir != 1:
-				scale.x *= -1
-				last_dir = 1
+			animated_sprite_2d.flip_h = false

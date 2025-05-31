@@ -9,12 +9,13 @@ func _ready() -> void:
 	health = 3
 	
 	var dir = (Globals.player.position - global_position).normalized().x
-	if dir < 0:
-		scale.x *= -1
-		last_dir = -1
-	else:
-		scale.x = 1
-	
+	_update_sprite_direction(dir)
+	#if dir < 0:
+		#scale.x *= -1
+		#last_dir = -1
+	#else:
+		#scale.x = 1
+	#
 	node = Globals.player.get_parent()
 
 	enemy_state_machine = EnemyStateMachine.new(self)

@@ -18,7 +18,7 @@ func update(player: Player, delta: float) -> void:
 		if player.velocity.x <= 0:
 			player.state_machine.change_state("IdleState")
 		else:
-			player.state_machine.change_state("WalkStates")			
+			player.state_machine.change_state("WalkState")			
 		
 	if player.velocity.y > 0 and player.jumping_streak_sprite.visible:
 		player.jumping_streak_sprite.hide()
