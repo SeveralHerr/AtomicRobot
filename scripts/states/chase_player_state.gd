@@ -69,7 +69,8 @@ func physics_update(delta: float) -> void:
 		enemy.animated_sprite_2d.play("idle")
 		
 func _update_sprite_direction(enemy: Enemy) -> void:
-	enemy.animated_sprite_2d.flip_h = sign(dir.x) == -1
+	print("t")
+	enemy._update_sprite_direction(dir.x)
 
 func _create_bullet() -> void:
 	if Globals.player.is_dead:

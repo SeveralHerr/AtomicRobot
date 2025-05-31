@@ -2,13 +2,13 @@
 
 [ext_resource type="Script" uid="uid://b4j6tw0kgdavd" path="res://scripts/Player.gd" id="1_ncv2v"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_rc65t"]
-[ext_resource type="SpriteFrames" uid="uid://dfpnisnlh7i5m" path="res://sprites/robot_frames.tres" id="2_wxl44"]
+[ext_resource type="SpriteFrames" uid="uid://dfpnisnlh7i5m" path="res://Sprites/robot_frames.tres" id="2_wxl44"]
 [ext_resource type="AudioStream" uid="uid://cdvwrp2suj31r" path="res://sounds/jump.wav" id="3_73a41"]
 [ext_resource type="AudioStream" uid="uid://cu2ft4k3uwd2u" path="res://sounds/hurt.wav" id="4_mkmka"]
 [ext_resource type="AudioStream" uid="uid://c5gk8xvel2tsp" path="res://sounds/hit3.ogg" id="5_hoc3m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qa0j5"]
-size = Vector2(14, 23)
+size = Vector2(28, 51.5)
 
 [sub_resource type="Shader" id="Shader_27hpx"]
 code = "shader_type canvas_item;
@@ -28,7 +28,7 @@ shader_parameter/flash_color = Color(1, 1, 1, 1)
 shader_parameter/flash_value = 0.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_sv8s5"]
-radius = 14.0
+radius = 36.0139
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_34cfq"]
 atlas = ExtResource("1_rc65t")
@@ -138,13 +138,14 @@ collision_mask = 1025
 script = ExtResource("1_ncv2v")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 4.5)
+position = Vector2(-23, -26.25)
 shape = SubResource("RectangleShape2D_qa0j5")
 
 [node name="DefaultSprite" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_mw4su")
+position = Vector2(1, -33)
 sprite_frames = ExtResource("2_wxl44")
-animation = &"idle"
+animation = &"Jump"
 autoplay = "idle"
 
 [node name="Area2D" type="Area2D" parent="."]
@@ -153,7 +154,7 @@ collision_mask = 514
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(6, 0)
+position = Vector2(1, -24)
 shape = SubResource("CircleShape2D_sv8s5")
 
 [node name="JumpAudioPlayer" type="AudioStreamPlayer2D" parent="."]
@@ -174,7 +175,7 @@ frame_progress = 0.860659
 
 [node name="JumpingStreakSprite" type="AnimatedSprite2D" parent="."]
 visible = false
-position = Vector2(0, 33)
+position = Vector2(-17, 16)
 sprite_frames = SubResource("SpriteFrames_qydoc")
 frame = 2
 frame_progress = 1.0

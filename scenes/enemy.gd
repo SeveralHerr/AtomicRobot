@@ -30,3 +30,8 @@ var node: Node
 
 func _update_sprite_direction(direction: float) -> void:
 	animated_sprite_2d.flip_h = sign(direction) == -1
+	#if direction < 0:
+		#scale.x = -1
+	#else:
+		#scale.x = 1
+	#scale.x = sign(direction)
