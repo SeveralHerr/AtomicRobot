@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://7jivrmqq5v5f"
+path="res://.godot/imported/21 this is healing .wav-4cd721cf01e14d89e304aa4e55fc6704.sample"
+
+[deps]
+
+source_file="res://sounds/21 this is healing .wav"
+dest_files=["res://.godot/imported/21 this is healing .wav-4cd721cf01e14d89e304aa4e55fc6704.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=2
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

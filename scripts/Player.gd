@@ -23,6 +23,7 @@ const KnockbackState = preload("res://scripts/states/knockback_state.gd")
 @onready var enemy_attack_position: Node2D = $EnemyAttackPosition
 @onready var attack_audio: AudioStreamPlayer = $AttackAudio
 @onready var walk_audio: AudioStreamPlayer = $WalkAudio
+@onready var hurt_audio: AudioStreamPlayer = $HurtAudio
 
 var is_dead: bool = false
 var health: int = 4
@@ -95,7 +96,7 @@ func receive_hit(source_position: Vector2, damage: int) -> void:
 	if state_machine.current_state is KnockbackState:
 		return
 	
-	hurt_audio_player.play()
+	hurt_audio.play()
 
 	if animation_player.is_playing():
 		animation_player.stop()
