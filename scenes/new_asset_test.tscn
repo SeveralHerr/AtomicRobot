@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=54 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="1_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://bcn27o4sktbhx" path="res://images/new/Building1.png" id="3_lfwgu"]
 [ext_resource type="Texture2D" uid="uid://dl0af8uvy0y6w" path="res://images/new/Background_Big_Sculpture.png" id="4_27y8j"]
 [ext_resource type="Texture2D" uid="uid://ci6x7l4g5mh5l" path="res://images/new/Building2.png" id="4_ek68m"]
+[ext_resource type="Texture2D" uid="uid://54wohi1aav3k" path="res://images/ART-Mobile-logo (1).png" id="4_vq1rx"]
 [ext_resource type="Texture2D" uid="uid://8yprqpyhlbjs" path="res://images/new/Background_Building1.png" id="5_bxj0o"]
 [ext_resource type="Texture2D" uid="uid://biqvjni2xn7rp" path="res://images/new/Background_Bushes.png" id="6_fg85f"]
 [ext_resource type="Texture2D" uid="uid://chx0xg7umpsy2" path="res://images/new/Background_Far_Building1.png" id="7_u80fe"]
@@ -332,6 +333,23 @@ layout_mode = 2
 
 [node name="HP4" parent="UI/HealthContainer/Health/HBoxContainer" instance=ExtResource("3_4dtmh")]
 layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -210.0
+offset_bottom = 145.945
+grow_horizontal = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="TextureRect" type="TextureRect" parent="UI/MarginContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+texture = ExtResource("4_vq1rx")
+expand_mode = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(882.5, -349.25)

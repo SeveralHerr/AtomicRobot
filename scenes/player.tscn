@@ -145,8 +145,10 @@ shape = ExtResource("2_fjrip")
 material = SubResource("ShaderMaterial_mw4su")
 position = Vector2(1, -13)
 sprite_frames = ExtResource("2_wxl44")
-animation = &"Crouch"
+animation = &"Attack"
 autoplay = "idle"
+frame = 6
+frame_progress = 1.0
 
 [node name="Area2D" type="Area2D" parent="."]
 position = Vector2(0, 20)
