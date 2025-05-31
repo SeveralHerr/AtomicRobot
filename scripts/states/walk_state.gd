@@ -28,10 +28,15 @@ func physics_update(player: Player, delta: float) -> void:
 	if direction:
 		if direction < 0:
 			if last_dir != -1:
+				if player.scale.x == -1:
+					player.scale.x *= -1
+					last_dir = -1
+					return
 				player.scale.x *= -1
 				last_dir = -1
+
 		elif direction > 0:
-			if last_dir != 1:
+			if last_dir != 1 :
 				player.scale.x *= -1
 				last_dir = 1
 		

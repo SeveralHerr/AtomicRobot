@@ -20,6 +20,7 @@ const KnockbackState = preload("res://scripts/states/knockback_state.gd")
 @onready var collision_shape_2d_body: CollisionShape2D = $CollisionShape2D
 @onready var boss_spawn_position: Node2D = $BossSpawnPosition
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var enemy_attack_position: Node2D = $EnemyAttackPosition
 
 var is_dead: bool = false
 var health: int = 4

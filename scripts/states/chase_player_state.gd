@@ -133,7 +133,7 @@ func throw_coin() -> void:
 	enemy.node.add_child(instance)
 	#instance.position = enemy.position + enemy.coin_spawn_point.positiona
 	var pos = enemy.position + enemy.coin_spawn_point.position
-	instance.start(pos,  (Globals.player.position - pos).normalized())
+	instance.start(pos,  (Globals.player.enemy_attack_position.global_position - pos).normalized())
 	
 	# Return to idle after throwing
 	await enemy.animated_sprite_2d.animation_finished
