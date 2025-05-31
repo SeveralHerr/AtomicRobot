@@ -1,14 +1,14 @@
 extends Sprite2D
 @onready var red_light: PointLight2D = $RedLight
 @onready var green_light: PointLight2D = $GreenLight
-@onready var car: Node2D = $Car
+#@onready var car: Node2D = $Car
 # car.start = true, it will show the car automatically 
-
+const CAR = preload("res://scenes/car.tscn")
 # Traffic light states
 enum LightState {RED, GREEN}
 var current_state: LightState = LightState.RED
-var car_position: Vector2
-var car_y_pos: float
+var car_position: Vector2 = Vector2(713, 62)
+var car_y_pos: float 
 
 # Player detection
 @export var detection_radius: float = 100.0
@@ -21,8 +21,7 @@ var can_change_state: bool = true
 
 func _ready():
 	# Initialize lights
-	car_position = car.position
-	car_y_pos = car.global_position.y
+
 	red_light.visible = true
 	green_light.visible = false
 
@@ -38,7 +37,9 @@ func change_to_green():
 	red_light.visible = false
 	green_light.visible = true
 
-	car.global_position = Vector2(player.position.x + car_position.x, car_y_pos)
+	var car = CAR.instantiate()
+	add_child(car)
+	car.global_position = Vector2(player.position.x + car_position.x, 0)
 	car.speed = 0
 	car.start = true
 	
@@ -51,11 +52,12 @@ func change_to_green():
 	car.hide()
 	car.start = false
 
-	car.global_position = Vector2(player.position.x + car_position.x, car_y_pos)
+	car.global_position = Vector2(player.position.x + car_position.x, 0)
 	current_state = LightState.RED
 	
 	# Wait for red duration before allowing state change again
 	await get_tree().create_timer(red_duration).timeout
+	car.queue_free()
 	can_change_state = true
 
 func _on_detection_area_body_entered(body):

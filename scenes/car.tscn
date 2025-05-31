@@ -8,14 +8,17 @@
 points = PackedVector2Array(-57.5, 11, -54.5, -5, -26.5, -8, -18.5, -16, 21.5, -15, 39.5, -6, 39.5, 16, -48.5, 15)
 
 [node name="Car" type="Node2D"]
+z_index = 1
+scale = Vector2(1.8, 1.8)
 script = ExtResource("1_sparu")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-3, 6)
+position = Vector2(-2.83331, -3.5)
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("2_50v30")
 
 [node name="Area2D" type="Area2D" parent="."]
+position = Vector2(0.166694, -9.5)
 collision_layer = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
@@ -23,10 +26,11 @@ position = Vector2(4.5, 8)
 shape = SubResource("ConvexPolygonShape2D_jtldb")
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
-position = Vector2(41, 11)
+position = Vector2(41.1667, 1.5)
 scale = Vector2(19.45, 14.15)
 enable_node_path = NodePath("../AudioStreamPlayer2D")
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(0.166694, -9.5)
 stream = ExtResource("3_1d6nu")
 autoplay = true
