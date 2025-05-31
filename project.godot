@@ -22,7 +22,6 @@ Utils="*res://scripts/Utils.gd"
 ChatBubble="*res://scripts/chat_bubble.gd"
 ScreenShake="*res://scripts/screenshake.gd"
 AudioManager="*res://scripts/audio_manager.gd"
-FadeUtility="*res://scripts/fade_utility.gd"
 
 [display]
 
