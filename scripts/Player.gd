@@ -91,13 +91,13 @@ func receive_hit(source_position: Vector2, damage: int) -> void:
 	animation_player.play("Hit")
 	
 	var knockback_direction = (global_position - source_position).normalized()
-	var knockback_strength = 50.0  
+	var knockback_strength = 166
 	if state_machine.current_state is WalkState:
 		knockback_strength *= 2
 	velocity += knockback_direction * knockback_strength
 
 	# Optionally, you could also reset velocity.y to create a more distinct knockback effect
-	velocity.y += -10.0 
+	#velocity.y += -10.0 
 	#state_machine.change_state("DeadState")
 	
 	take_damage(damage)
@@ -108,3 +108,11 @@ func death() -> void:
 
 func _on_attack_timer_timeout() -> void:
 	pass # Replace with function body.
+
+# Update player's facing direction based on movement input
+func update_facing_direction() -> void:
+	var direction := Input.get_axis("ui_left", "ui_right")
+	if direction < 0:
+		scale.x = -1  # Face left
+	elif direction > 0:
+		scale.x = 1   # Face right

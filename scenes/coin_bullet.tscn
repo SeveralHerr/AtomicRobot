@@ -14,11 +14,7 @@ radius = 1.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_3tlwt"]
 radius = 1.0
 
-[node name="CoinBullet" type="RigidBody2D"]
-collision_layer = 516
-collision_mask = 260
-mass = 0.005
-gravity_scale = 0.2
+[node name="CoinBullet" type="Node2D"]
 script = ExtResource("1_yrbct")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -26,8 +22,8 @@ texture = SubResource("AtlasTexture_3lgt0")
 offset = Vector2(0, 1)
 
 [node name="Area2D" type="Area2D" parent="."]
-collision_layer = 257
-collision_mask = 769
+collision_layer = 8
+collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(1, 0)

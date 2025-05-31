@@ -1,4 +1,4 @@
-extends RigidBody2D
+extends Node2D
 class_name Bullet
 
 const HIT_FX = preload("res://scenes/hit_fx.tscn")
@@ -7,61 +7,60 @@ const HIT_FX = preload("res://scenes/hit_fx.tscn")
 @onready var ground_area_2d: Area2D = $GroundArea2D
 
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
-var speed: float = 200.0
+var speed: float = 600.0
 var direction: Vector2
-
+var velocity: Vector2
+var is_falling: bool = false
+var has_hit_player: bool = false
 
 func start(_position: Vector2, _direction: Vector2, is_arc: bool = false) -> void:
 	position = _position
-	#direction = _direction.normalized()
 	coin_audio_player.play()
 	if is_arc:
-		#$Sprite2D.scale = Vector2(0.5, 0.5)
-		linear_velocity  = _direction #* 2 #* speed
-
+		velocity = _direction
 	else: 
-		linear_velocity  = _direction * speed		
-	#linear_velocity.y -= 300
-
-
+		velocity = _direction * speed
 
 func _process(delta: float) -> void:
-	pass
+	if has_hit_player and is_falling:
+		# Apply gravity when falling
+		velocity.y += gravity * delta
+	
+	# Update position based on velocity
+	position += velocity * delta
 
 func _hit(body: Node2D) -> void:
-	
 	if body is Bullet or body is Enemy:
 		return
 
-	set_collision_layer_value(10, false)
-	set_collision_mask_value(9, false)
+	# Disable collision detection to prevent multiple hits
 	area_2d.set_collision_layer_value(1, false)
 	area_2d.set_collision_layer_value(9, false)	
 	area_2d.set_collision_mask_value(1, false)
 	area_2d.set_collision_mask_value(9, false)	
+	
 	if body is Player:
 		body.receive_hit(global_position, 1)
 		var instance = HIT_FX.instantiate()
 		body.get_tree().root.add_child(instance)
 		instance.global_position = global_position
 		instance.start()
+		
+		# Mark as hit and start falling
+		has_hit_player = true
+		is_falling = true
+		# Reduce horizontal velocity but keep some momentum
+		velocity.x *= 0.3
+		velocity.y = 0  # Reset vertical velocity before gravity takes over
 
-	
+	# Clean up after 4 seconds
 	await get_tree().create_timer(4).timeout
-
-
-	freeze_mode = FREEZE_MODE_KINEMATIC
-	freeze = true
-	pass
+	queue_free()
 
 func _ready() -> void:
 	area_2d.body_entered.connect(_hit)
-	#var tween = get_tree().create_tween().parallel()
-	#tween.set_ease(Tween.EASE_IN)
-	#tween.set_trans(Tween.TRANS_SINE)
-	#tween.tween_property($Sprite2D, "scale", Vector2(1, 1), 0.8)
-
-	#tween.tween_property(self, "linear_velocity",linear_velocity * 2, 0.8)
+	
+	# Clean up after 15 seconds if nothing happens
 	await get_tree().create_timer(15).timeout
 	queue_free()
 
