@@ -6,6 +6,9 @@ signal player_health_updated(current_value: int)
 const PLAYER_CROUCH_COLLISION_SHAPE = preload("res://sprites/player_crouch_collision_shape.tres")
 const PLAYER_NORMAL_COLLISION_SHAPE = preload("res://sprites/player_normal_collision_shape.tres")
 
+# Import the KnockbackState
+const KnockbackState = preload("res://scripts/states/knockback_state.gd")
+
 @onready var default_sprite: AnimatedSprite2D = $DefaultSprite
 @onready var area_2d: Area2D = $Area2D
 @onready var collision_shape_2d: CollisionShape2D = $Area2D/CollisionShape2D
@@ -52,6 +55,7 @@ func _ready() -> void:
 	state_machine.add_state("DeadState", DeadState.new())
 	state_machine.add_state("ClimbState", ClimbState.new())
 	state_machine.add_state("CrouchState", CrouchState.new())
+	state_machine.add_state("KnockbackState", KnockbackState.new())
 	
 	state_machine.change_state("IdleState")
 	jumping_streak_sprite.hide()
@@ -73,7 +77,7 @@ func move_player() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y += gravity * delta
-		
+	
 	state_machine.physics_update(delta)
 	move_and_slide()
 	
@@ -83,6 +87,11 @@ func _process(delta: float) -> void:
 func receive_hit(source_position: Vector2, damage: int) -> void:
 	if is_dead:
 		return
+	
+	# Don't allow multiple hits during knockback
+	if state_machine.current_state is KnockbackState:
+		return
+	
 	hurt_audio_player.play()
 
 	if animation_player.is_playing():
@@ -90,15 +99,41 @@ func receive_hit(source_position: Vector2, damage: int) -> void:
 	
 	animation_player.play("Hit")
 	
+	# Calculate knockback direction and strength
 	var knockback_direction = (global_position - source_position).normalized()
-	var knockback_strength = 166
+	var base_knockback_strength = 300
+	
+	# Adjust knockback based on current state
+	var knockback_multiplier = 1.0
 	if state_machine.current_state is WalkState:
-		knockback_strength *= 2
-	velocity += knockback_direction * knockback_strength
-
-	# Optionally, you could also reset velocity.y to create a more distinct knockback effect
-	#velocity.y += -10.0 
-	#state_machine.change_state("DeadState")
+		knockback_multiplier = 1.5
+	elif state_machine.current_state is CrouchState:
+		knockback_multiplier = 0.5
+	elif state_machine.current_state is JumpState:
+		knockback_multiplier = 0.8
+	
+	var final_knockback_strength = base_knockback_strength * knockback_multiplier
+	
+	# Apply knockback (replace velocity instead of adding to it for more consistent effect)
+	velocity.x = knockback_direction.x * final_knockback_strength
+	
+	# Add slight upward velocity for more dramatic effect if on ground
+	if is_on_floor():
+		velocity.y = -100
+	else:
+		velocity.y = knockback_direction.y * final_knockback_strength * 0.5
+	
+	# Add screen shake effect (if you have a camera shake system)
+	if camera_2d.has_method("add_trauma"):
+		camera_2d.add_trauma(0.3)
+	
+	# Use the existing screenshake system
+	var screenshake_node = get_tree().get_first_node_in_group("screenshake")
+	if screenshake_node:
+		screenshake_node.apply_shake(15.0, 0.3)
+	
+	# Change to knockback state
+	state_machine.change_state("KnockbackState")
 	
 	take_damage(damage)
 	
