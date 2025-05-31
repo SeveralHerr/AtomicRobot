@@ -65,7 +65,7 @@ _data = {
 [node name="MeterMaid" type="CharacterBody2D"]
 top_level = true
 collision_layer = 4
-collision_mask = 67
+collision_mask = 99
 script = ExtResource("1_wr56e")
 
 [node name="Area2D" type="Area2D" parent="."]
@@ -84,7 +84,7 @@ collision_mask = 66
 position = Vector2(0, 7)
 rotation = 1.5708
 target_position = Vector2(6.53267e-05, 18)
-collision_mask = 66
+collision_mask = 98
 collide_with_areas = true
 
 [node name="RayCast2D_RightDown" type="RayCast2D" parent="."]
@@ -95,7 +95,7 @@ collision_mask = 66
 position = Vector2(5, 7)
 rotation = -1.5708
 target_position = Vector2(-4.72069e-05, 13)
-collision_mask = 66
+collision_mask = 98
 collide_with_areas = true
 
 [node name="Timer" type="Timer" parent="."]

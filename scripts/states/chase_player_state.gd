@@ -66,18 +66,22 @@ func physics_update(delta: float) -> void:
 		# Don't change animation when attacking - let the attack animation play
 		return 
 		
-	if not Globals.player.is_near_ground():
+	if not Globals.player.is_near_ground() and not enemy.persist_enabled:
 		enemy.enemy_state_machine.change_state("PatrolState")
 		return
 		
+
+		
 	dir = (Globals.player.position - enemy.position).normalized()
 	var dist = enemy.position.distance_to(Globals.player.position)
-	if dist > 3650:
+	if dist > 3650 and not enemy.persist_enabled:
 		print("way too far... removing enemy")
 		queue_free()
 	_update_sprite_direction(enemy)
 
-	
+	if dist > 250 and enemy.persist_enabled:
+		enemy.enemy_state_machine.change_state("PatrolState")
+		return	
 	if dist > enemy.attack_range:
 		#enemy.timer.stop()
 		# Moving towards player

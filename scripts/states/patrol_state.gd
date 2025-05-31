@@ -22,7 +22,11 @@ func physics_update(delta: float) -> void:
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
 		return
 		
-	if Globals.player.is_near_ground():
+	if dist < 250 and enemy.persist_enabled:
+		enemy.enemy_state_machine.change_state("ChasePlayerState")
+		return
+		
+	if Globals.player.is_near_ground() and not enemy.persist_enabled:
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
 		return
 	
@@ -31,11 +35,11 @@ func physics_update(delta: float) -> void:
 	
 	if direction < 0: # Moving left
 		if enemy.ray_cast_2d_left_wall.is_colliding():# or not enemy.ray_cast_2d_left_down.is_colliding():
-			print("Hit something on the left")
+			#print("Hit something on the left")
 			should_turn = true
 	elif direction > 0: # Moving right
 		if enemy.ray_cast_2d_right_wall.is_colliding() :#or not enemy.ray_cast_2d_right_down.is_colliding():
-			print("hit something on the right")
+			#print("hit something on the right")
 			should_turn = true
 	
 	# Check if we've reached patrol boundaries

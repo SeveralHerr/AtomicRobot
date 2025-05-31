@@ -22,6 +22,7 @@ const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var receive_hit_audio: AudioStreamPlayer = $ReceiveHitAudio
 
+@export var persist_enabled: bool =false
 var health: int = 3
 var direction: int = -1
 var speed: int = 50

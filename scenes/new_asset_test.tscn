@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=65 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="1_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
@@ -45,6 +45,7 @@
 [ext_resource type="Texture2D" uid="uid://cq4jtef6t0c60" path="res://images/new/Building3.png" id="29_64efg"]
 [ext_resource type="Texture2D" uid="uid://bjuidvxkbuctr" path="res://images/new/Building4.png" id="30_euxwc"]
 [ext_resource type="PackedScene" uid="uid://bx5bwuj7fad3" path="res://scenes/streetlight.tscn" id="31_euxwc"]
+[ext_resource type="PackedScene" uid="uid://csis0b6hdasqr" path="res://scenes/meter_maid.tscn" id="32_1mphf"]
 [ext_resource type="Script" uid="uid://btp2q1lxrlo07" path="res://scripts/enemy_event.gd" id="32_bjc77"]
 [ext_resource type="Texture2D" uid="uid://ds6dn0qq2gslf" path="res://images/new/Black_Trashcan.png" id="37_k2mcc"]
 [ext_resource type="Script" uid="uid://dv0rbnba2864c" path="res://scripts/enemy_manager.gd" id="38_ikgy1"]
@@ -167,6 +168,12 @@ size = Vector2(431, 559)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_01ywe"]
 size = Vector2(729, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2p6wh"]
+size = Vector2(438, 9)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_64moy"]
+size = Vector2(24, 39)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lcs47"]
 atlas = ExtResource("21_euxwc")
@@ -725,6 +732,10 @@ shape = SubResource("RectangleShape2D_k2mcc")
 [node name="AtomicRobotBuildingGroup" type="Node2D" parent="SceneItemsBackground"]
 position = Vector2(-1875, 1)
 
+[node name="MeterMaid" parent="SceneItemsBackground/AtomicRobotBuildingGroup" instance=ExtResource("32_1mphf")]
+position = Vector2(1121, -379)
+persist_enabled = true
+
 [node name="AtomicRobotBuilding" type="StaticBody2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup"]
 collision_layer = 32
 collision_mask = 0
@@ -757,6 +768,31 @@ position = Vector2(933, -340)
 
 [node name="Platform4" parent="SceneItemsBackground/AtomicRobotBuildingGroup/Platforms" instance=ExtResource("48_dy54k")]
 position = Vector2(933, -404)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup"]
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/StaticBody2D"]
+position = Vector2(1180, -347.5)
+shape = SubResource("RectangleShape2D_2p6wh")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup"]
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/StaticBody2D2"]
+position = Vector2(1180, -365)
+shape = SubResource("RectangleShape2D_64moy")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup"]
+position = Vector2(-204, -4)
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/StaticBody2D3"]
+position = Vector2(1179, -362.5)
+shape = SubResource("RectangleShape2D_64moy")
 
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
 position = Vector2(500, -21)

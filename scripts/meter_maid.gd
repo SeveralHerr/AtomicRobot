@@ -8,15 +8,16 @@ func _ready() -> void:
 	# Set health to 3
 	health = 3
 	
-	var dir = (Globals.player.position - global_position).normalized().x
-	_update_sprite_direction(dir)
+	call_deferred("set_sprite")
+		
+
 	#if dir < 0:
 		#scale.x *= -1
 		#last_dir = -1
 	#else:
 		#scale.x = 1
 	#
-	node = Globals.player.get_parent()
+
 
 	enemy_state_machine = EnemyStateMachine.new(self)
 	enemy_state_machine.add_state("PatrolState", PatrolState.new())
@@ -28,7 +29,10 @@ func _ready() -> void:
 	
 	enemy_state_machine.change_state("PatrolState")
 	Globals.player_death.connect(_on_player_death)
-
+func set_sprite():
+	var dir = (Globals.player.position - global_position).normalized().x
+	_update_sprite_direction(dir)
+	node = Globals.player.get_parent()
 	
 func _on_player_death() -> void:
 	print("Player died, changing state...")
