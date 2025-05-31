@@ -346,7 +346,7 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="TextureRect" type="TextureRect" parent="UI/MarginContainer"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
 texture = ExtResource("4_vq1rx")
 expand_mode = 5

@@ -1,9 +1,10 @@
-[gd_scene load_steps=19 format=3 uid="uid://yevc5esw132y"]
+[gd_scene load_steps=20 format=3 uid="uid://yevc5esw132y"]
 
 [ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="1_uhull"]
 [ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://styles/font_v2.tres" id="2_m77mk"]
 [ext_resource type="Script" uid="uid://chic8djxflbae" path="res://scripts/sway.gd" id="2_oya25"]
 [ext_resource type="Script" uid="uid://6ek3ot0hh754" path="res://scripts/CharacterSlot.gd" id="2_p1ay4"]
+[ext_resource type="Texture2D" uid="uid://dmv708vklptwo" path="res://images/ARTBot-Web-Header.png" id="3_0sghn"]
 [ext_resource type="Texture2D" uid="uid://cdr1pqjg00fa7" path="res://sprites/Cody.png" id="6_0sghn"]
 [ext_resource type="Material" uid="uid://bbeo0ug80m7w3" path="res://shaders/rays_shader_mat.tres" id="6_fqvby"]
 [ext_resource type="Texture2D" uid="uid://ww1jxoogbja4" path="res://images/backdrop.png" id="6_xmudk"]
@@ -56,16 +57,34 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = -34.0
+[node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -42.0
 offset_top = -2.0
-offset_right = 1415.0
-offset_bottom = 888.0
+offset_right = -42.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.1, 1.15)
 texture = ExtResource("1_uhull")
 expand_mode = 1
-stretch_mode = 5
 script = ExtResource("2_oya25")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(240, 200)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -172.973
+offset_right = 172.973
+offset_bottom = 200.0
+grow_horizontal = 2
+texture = ExtResource("3_0sghn")
+expand_mode = 3
+stretch_mode = 5
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
