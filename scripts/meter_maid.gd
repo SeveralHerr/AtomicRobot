@@ -10,11 +10,11 @@ func _ready() -> void:
 	enemy_state_machine = EnemyStateMachine.new(self)
 	enemy_state_machine.add_state("PatrolState", PatrolState.new())
 	enemy_state_machine.add_state("ChasePlayerState", ChasePlayerState.new())
-	enemy_state_machine.add_state("FindMeterState", FindMeterState.new())
+	#enemy_state_machine.add_state("FindMeterState", FindMeterState.new())
 	#enemy_state_machine.add_state("AttackPlayerState", AttackPlayerState.new())
 	add_child(enemy_state_machine)
 	
-	enemy_state_machine.change_state("PatrolState")
+	enemy_state_machine.change_state("ChasePlayerState")
 	Globals.player_death.connect(_on_player_death)
 
 	

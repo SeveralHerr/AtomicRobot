@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://dj5v0xinrjdvu"]
 
 [ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://Tiles/custom_tiles.png" id="1_1fymc"]
-[ext_resource type="Script" path="res://scripts/meter.gd" id="1_24d3b"]
+[ext_resource type="Script" uid="uid://d0nehjup8esyc" path="res://scripts/meter.gd" id="1_24d3b"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wfqmv"]
 atlas = ExtResource("1_1fymc")
@@ -58,8 +58,8 @@ script = ExtResource("1_24d3b")
 visible = false
 position = Vector2(0, -9)
 amount = 10
-explosiveness = 1.0
 texture = SubResource("AtlasTexture_wfqmv")
+explosiveness = 1.0
 emission_shape = 1
 emission_sphere_radius = 2.0
 spread = 148.66

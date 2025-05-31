@@ -16,8 +16,8 @@ func enter_state(new_enemy: Enemy) -> void:
 	if not enemy.range_timer.timeout.is_connected(_check_range):
 		enemy.range_timer.timeout.connect(_check_range)
 		
-	ChatBubble.create(enemy, "I'LL GET YOU!")
-		
+	#ChatBubble.create(enemy, "I'LL GET YOU!")
+	enemy.animated_sprite_2d.play("idle")
 	enemy.timer.start()
 
 		
@@ -36,19 +36,23 @@ func _check_range() -> void:
 	
 	print("check range")
 	if not enemy.line_of_sight.is_player_line_of_sight():
-		ChatBubble.create(enemy, "LOST HIM.")
+		#ChatBubble.create(enemy, "LOST HIM.")
 		enemy.enemy_state_machine.change_state("PatrolState")
 
 
 		
 func physics_update(delta: float) -> void:
 	if stand_still:
-		enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)		
+		enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)
+		if enemy.animated_sprite_2d.animation != "attack":		
+			enemy.animated_sprite_2d.play("idle")
 		return 
 		
 	dir = (Globals.player.position - enemy.position).normalized()
 	var dist = enemy.position.distance_to(Globals.player.position)
 	_update_sprite_direction(enemy)
+
+	
 	if dist > 90:
 		enemy.animated_sprite_2d.play("walk")
 		
@@ -70,6 +74,7 @@ func _update_sprite_direction(enemy: Enemy) -> void:
 func _create_bullet() -> void:
 	if Globals.player.is_dead:
 		return
+	
 	#elif enemy.coins <= 0:
 		##enemy.enemy_state_machine.change_state("FindMeterState")
 		#return	
