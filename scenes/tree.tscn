@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://c86dda1gnhixs"]
+[gd_scene load_steps=6 format=3 uid="uid://c86dda1gnhixs"]
 
 [ext_resource type="Material" uid="uid://bdaa2m466o4m2" path="res://shaders/tree_shader.tres" id="1_qd6xs"]
 [ext_resource type="Texture2D" uid="uid://b7c3ulm6ps4bi" path="res://images/new/Tree.png" id="2_ake3r"]
 [ext_resource type="Script" uid="uid://bba7sf7x7u3kk" path="res://scripts/tree.gd" id="3_18mvg"]
 [ext_resource type="Texture2D" uid="uid://b3qbng565i6ss" path="res://images/new/leaf.png" id="4_dmmp0"]
+[ext_resource type="Texture2D" uid="uid://b6sp6fstgl30b" path="res://images/new/Curb_white.png" id="5_ake3r"]
 
 [node name="Tree" type="Sprite2D"]
 z_index = 1
@@ -44,3 +45,7 @@ angular_velocity_min = 5.0
 angular_velocity_max = 5.0
 scale_amount_min = 1.5
 scale_amount_max = 2.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-8, 81)
+texture = ExtResource("5_ake3r")
