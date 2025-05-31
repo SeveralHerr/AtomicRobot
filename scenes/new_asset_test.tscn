@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=60 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="1_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
@@ -26,6 +26,7 @@
 [ext_resource type="Texture2D" uid="uid://cfe6he8i4dnb0" path="res://images/new/Background_David.png" id="19_62krv"]
 [ext_resource type="Texture2D" uid="uid://ds6dn0qq2gslf" path="res://images/new/Black_Trashcan.png" id="20_gb004"]
 [ext_resource type="Texture2D" uid="uid://bv1ony8p1mlcx" path="res://images/new/Blue_Trashcan.png" id="21_0bwfm"]
+[ext_resource type="Texture2D" uid="uid://dr4h2bc6ecmy3" path="res://Tiles/mp_cs_tilemap_all.png" id="21_euxwc"]
 [ext_resource type="Texture2D" uid="uid://chhv1366a66d0" path="res://images/new/Bollard.png" id="22_sroee"]
 [ext_resource type="Texture2D" uid="uid://bscwynmlxfbo7" path="res://images/new/Mailbox.png" id="23_k35ai"]
 [ext_resource type="Texture2D" uid="uid://dkelg2q4oskqe" path="res://images/new/Parking_Meter.png" id="24_meefr"]
@@ -36,7 +37,10 @@
 [ext_resource type="Texture2D" uid="uid://cig2a7s14sgri" path="res://images/new/BuildingCourthouse.png" id="26_k35ai"]
 [ext_resource type="Texture2D" uid="uid://wte7eto6y6lq" path="res://images/new/Traffic_Light.png" id="27_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://b7c3ulm6ps4bi" path="res://images/new/Tree.png" id="28_vq1rx"]
+[ext_resource type="Script" uid="uid://djtwnnsogpq8u" path="res://scripts/streetlight.gd" id="31_sj8ng"]
+[ext_resource type="Texture2D" uid="uid://cqpsd4jvj7kk5" path="res://images/light_faded.png" id="31_yhyvh"]
 [ext_resource type="PackedScene" uid="uid://csis0b6hdasqr" path="res://scenes/meter_maid.tscn" id="32_1mphf"]
+[ext_resource type="PackedScene" uid="uid://n5akfit43i" path="res://scenes/car.tscn" id="40_sj8ng"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("1_4dtmh")
@@ -171,6 +175,10 @@ sources/1 = SubResource("TileSetAtlasSource_lfwgu")
 sources/2 = SubResource("TileSetAtlasSource_ek68m")
 sources/3 = SubResource("TileSetAtlasSource_oqdyw")
 sources/4 = SubResource("TileSetAtlasSource_meefr")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lcs47"]
+atlas = ExtResource("21_euxwc")
+region = Rect2(16, 940, 126, 36)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vek1y"]
 texture = ExtResource("20_gb004")
@@ -417,6 +425,13 @@ tile_set = SubResource("TileSet_ipf1n")
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
 position = Vector2(-247, -23)
 
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+visible = false
+z_index = 2
+position = Vector2(1649, -21)
+scale = Vector2(1.2, 1.2)
+texture = SubResource("AtlasTexture_lcs47")
+
 [node name="SceneItems" type="Node2D" parent="."]
 
 [node name="Background_Bushes" type="Sprite2D" parent="SceneItems"]
@@ -480,9 +495,33 @@ texture = ExtResource("24_meefr")
 position = Vector2(1007, -32)
 texture = ExtResource("24_meefr")
 
-[node name="Streetlight" type="Sprite2D" parent="SceneItems"]
+[node name="Streetlight" type="Sprite2D" parent="SceneItems" node_paths=PackedStringArray("player")]
 position = Vector2(1551, -79)
 texture = ExtResource("27_4dtmh")
+script = ExtResource("31_sj8ng")
+player = NodePath("../../Player")
+
+[node name="RedLight" type="PointLight2D" parent="SceneItems/Streetlight"]
+self_modulate = Color(1, 0, 0.0431373, 1)
+position = Vector2(20, -64)
+color = Color(1, 0.152941, 0.0352941, 1)
+energy = 1.2
+texture = ExtResource("31_yhyvh")
+texture_scale = 0.12
+
+[node name="GreenLight" type="PointLight2D" parent="SceneItems/Streetlight"]
+visible = false
+self_modulate = Color(1, 0, 0.0431373, 1)
+position = Vector2(21, -43)
+color = Color(0, 1, 0.0352941, 1)
+energy = 1.2
+texture = ExtResource("31_yhyvh")
+texture_scale = 0.12
+
+[node name="Car" parent="SceneItems/Streetlight" instance=ExtResource("40_sj8ng")]
+z_index = 2
+position = Vector2(595, 50)
+scale = Vector2(1.2, 1.2)
 
 [node name="Streetlight2" type="Sprite2D" parent="SceneItems"]
 position = Vector2(1991, -79)

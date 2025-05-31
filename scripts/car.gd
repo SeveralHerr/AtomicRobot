@@ -3,22 +3,25 @@ extends Node2D
 @onready var area_2d: Area2D = $Area2D
 
 var shaker: Shaker
-
-var car_damage = 3
+var start: bool = false
+var car_damage = 1
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	area_2d.body_entered.connect(_hit)
 	shaker = Shaker.new(self)
+	hide()
 
 	pass # Replace with function body.
 
 func _physics_process(delta: float) -> void:
-	position.x -= delta * 200
+	if start:
+		_enable_player_layer(true)
+		show()
+		position.x -= delta * 200
 	
 func _process(delta: float) -> void:
-	if position.x <= Globals.player.position.x - 2000:
-		position.x = Globals.player.position.x +2000
+
 		
 	shaker.process(delta)
 
@@ -26,3 +29,7 @@ func _hit(body: Node2D) -> void:
 	if body is Player:
 		shaker.apply_shake(2)
 		body.receive_hit(global_position, car_damage)
+		_enable_player_layer(false)
+		
+func _enable_player_layer(can_hit: bool) -> void:
+	area_2d.set_collision_mask_value(1, can_hit)
