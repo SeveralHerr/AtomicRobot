@@ -14,7 +14,7 @@ func _ready() -> void:
 	#enemy_state_machine.add_state("AttackPlayerState", AttackPlayerState.new())
 	add_child(enemy_state_machine)
 	
-	enemy_state_machine.change_state("ChasePlayerState")
+	enemy_state_machine.change_state("PatrolState")
 	Globals.player_death.connect(_on_player_death)
 
 	

@@ -2,23 +2,24 @@ extends EnemyState
 class_name PatrolState
 
 var direction: int = -1
-
+var move_speed: float = 100.0
 
 func physics_update(delta: float) -> void:
 	enemy.animated_sprite_2d.play("walk")
+	
+	# Check if player is in line of sight to chase
 	if enemy.line_of_sight.is_player_line_of_sight():
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
-		#
-	#if not enemy.ray_cast_2d_left.is_colliding():
-		#direction = 1
-	#elif enemy.ray_cast_2d_left.is_colliding() and enemy.ray_cast_2d_left2.is_colliding() and direction == -1:
-		#direction = 1
-	#elif not enemy.ray_cast_2d_right.is_colliding():
-		#direction = -1
-	#elif enemy.ray_cast_2d_right.is_colliding() and enemy.ray_cast_2d_right2.is_colliding() and direction == 1:
-		#direction = -1
-	direction = (Globals.player.global_position - enemy.global_position).normalized().x
-	print(direction)
+		return
+	
+	# Calculate direction towards player
+	var player_direction = (Globals.player.global_position - enemy.global_position).normalized()
+	direction = sign(player_direction.x)
+	
+	# Update sprite direction
 	enemy._update_sprite_direction(direction)
-	enemy.velocity.x = move_toward(enemy.velocity.x, direction * 50, 2009 * delta)
+	
+	# Move towards player with smooth acceleration
+	var target_velocity = direction * move_speed
+	enemy.velocity.x = move_toward(enemy.velocity.x, target_velocity, 2000 * delta)
 		
