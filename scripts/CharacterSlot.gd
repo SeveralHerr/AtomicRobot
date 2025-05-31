@@ -1,6 +1,6 @@
 extends TextureRect
 
-const GAME: PackedScene = preload("res://scenes/main.tscn")
+const GAME: PackedScene = preload("res://scenes/new_asset_test.tscn")
 @export var character: String
 var slot_name: String
 var description: String
@@ -9,6 +9,7 @@ var description: String
 @onready var locked: TextureRect = $Locked
 @onready var character_image: TextureRect = $Character
 @onready var button: Button = $Button
+@onready var texture_rect: PanelContainer = $Background/TextureRect
 
 
 # Called when the node enters the scene tree for the first time.
@@ -16,6 +17,8 @@ func _ready() -> void:
 	$Button.pressed.connect(_on_press)
 	$Button.mouse_entered.connect(_on_focus)
 	$Button.mouse_exited.connect(_on_focus_exit)
+	
+	texture_rect.hide()
 
 	character_name_label.text = ""
 	character_description_label.text = ""
@@ -32,6 +35,7 @@ func _on_press() -> void:
 	get_tree().change_scene_to_packed(GAME)
 
 func _on_focus() -> void:
+	texture_rect.show()
 	var focus_character = Globals.character_dict[character]
 	var unlocked = focus_character.unlocked
 	button.disabled = !unlocked
@@ -39,6 +43,7 @@ func _on_focus() -> void:
 	character_description_label.text = focus_character.description if unlocked else focus_character.unlock_hint
 
 func _on_focus_exit() -> void:
+	texture_rect.hide()
 	button.disabled = false
 	character_name_label.text = ""
 	character_description_label.text = ""

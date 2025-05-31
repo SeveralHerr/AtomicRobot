@@ -6,11 +6,11 @@ signal meter_maid_boss_death
 signal unlocked(name: String, description: String)
 signal boss_fight(status: bool)
 
-var selected_character: String = "Robot"
+var selected_character: String = "Cody"
 var character_dict = {
-		"Robot": Unlockable.new("Robot", "ROBOT IS NOW PLAYABLE", true, "Atomic Robot Tattoo Mascot", preload("res://Sprites/robot_frames.tres"), ""),
-		"Cody": Unlockable.new("Cody", "CODY IS NOW PLAYABLE", false, "Owner of Atomic Robot Tattoo", preload("res://Sprites/default_frames.tres"), "HINT: If only there was a sign"),
-		"Ryan": Unlockable.new("Ryan", "RYAN IS NOW PLAYABLE", false, "Employee of Atomic Robot Tatoo", preload("res://Sprites/default_frames.tres"), "HINT: TMNT"),
+		"Robot": Unlockable.new("Robot", "ROBOT IS NOW PLAYABLE", true, "Atomic Robot Tattoo Mascot", preload("res://sprites/cody_sprite_frames.tres"), ""),
+		"Cody": Unlockable.new("Cody", "CODY IS NOW PLAYABLE", true, "Owner of Atomic Robot Tattoo", preload("res://Sprites/cody_sprite_frames.tres"), ""),
+		"Ryan": Unlockable.new("Ryan", "RYAN IS NOW PLAYABLE", true, "Employee of Atomic Robot Tatoo", preload("res://Sprites/cody_sprite_frames.tres"), ""),
 	}
 
 var player: Player

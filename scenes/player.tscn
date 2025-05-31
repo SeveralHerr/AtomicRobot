@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://b4j6tw0kgdavd" path="res://scripts/Player.gd" id="1_ncv2v"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_rc65t"]
 [ext_resource type="Shape2D" uid="uid://vgx6w6q5wbi" path="res://sprites/player_normal_collision_shape.tres" id="2_fjrip"]
-[ext_resource type="SpriteFrames" uid="uid://dfpnisnlh7i5m" path="res://sprites/robot_frames.tres" id="2_wxl44"]
 [ext_resource type="AudioStream" uid="uid://cdvwrp2suj31r" path="res://sounds/jump.wav" id="3_73a41"]
+[ext_resource type="SpriteFrames" uid="uid://c0258e88sc8p1" path="res://sprites/cody_sprite_frames.tres" id="3_fjrip"]
 [ext_resource type="AudioStream" uid="uid://cu2ft4k3uwd2u" path="res://sounds/hurt.wav" id="4_mkmka"]
 [ext_resource type="AudioStream" uid="uid://c5gk8xvel2tsp" path="res://sounds/hit3.ogg" id="5_hoc3m"]
 
@@ -144,11 +144,10 @@ shape = ExtResource("2_fjrip")
 [node name="DefaultSprite" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_mw4su")
 position = Vector2(1, -13)
-sprite_frames = ExtResource("2_wxl44")
-animation = &"Attack"
+sprite_frames = ExtResource("3_fjrip")
+animation = &"idle"
 autoplay = "idle"
-frame = 6
-frame_progress = 1.0
+frame_progress = 0.0530596
 
 [node name="Area2D" type="Area2D" parent="."]
 position = Vector2(0, 20)
