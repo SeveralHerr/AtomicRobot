@@ -16,9 +16,15 @@ func enter_state(new_enemy: Enemy) -> void:
 		
 	if not enemy.range_timer.timeout.is_connected(_check_range):
 		enemy.range_timer.timeout.connect(_check_range)
-		
+	#enemy.timer.start()
+	#enemy.range_timer.start()
 	#ChatBubble.create(enemy, "I'LL GET YOU!")
 	enemy.animated_sprite_2d.play("idle")
+	
+func exit_state(enemy: Enemy) -> void:
+	enemy.timer.stop()
+	enemy.range_timer.stop()
+	pass
 
 func in_range() -> void:
 	if not enemy.timer.timeout.is_connected(_create_bullet):
@@ -60,8 +66,15 @@ func physics_update(delta: float) -> void:
 		# Don't change animation when attacking - let the attack animation play
 		return 
 		
+	if not Globals.player.is_near_ground():
+		enemy.enemy_state_machine.change_state("PatrolState")
+		return
+		
 	dir = (Globals.player.position - enemy.position).normalized()
 	var dist = enemy.position.distance_to(Globals.player.position)
+	if dist > 650:
+		print("way too far... removing enemy")
+		queue_free()
 	_update_sprite_direction(enemy)
 
 	

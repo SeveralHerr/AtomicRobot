@@ -699,7 +699,7 @@ position = Vector2(7535, -284)
 texture = ExtResource("20_yhyvh")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="SceneItemsBackground/RightBoundary/Building10"]
-collision_layer = 0
+collision_layer = 64
 collision_mask = 31
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/RightBoundary/Building10/StaticBody2D"]
@@ -715,7 +715,7 @@ texture = ExtResource("20_yhyvh")
 flip_h = true
 
 [node name="StaticBody2D" type="StaticBody2D" parent="SceneItemsBackground/LeftBoundary/Building10"]
-collision_layer = 0
+collision_layer = 64
 collision_mask = 31
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/LeftBoundary/Building10/StaticBody2D"]

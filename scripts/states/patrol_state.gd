@@ -1,10 +1,7 @@
 extends EnemyState
 class_name PatrolState
 
-@onready var ray_cast_2d_left_down: RayCast2D = $RayCast2D_LeftDown
-@onready var ray_cast_2d_left_wall: RayCast2D = $RayCast2D_LeftWall
-@onready var ray_cast_2d_right_down: RayCast2D = $RayCast2D_RightDown
-@onready var ray_cast_2d_right_wall: RayCast2D = $RayCast2D_RightWall
+
 
 var direction: int = -1
 var move_speed: float = 100.0
@@ -20,10 +17,10 @@ func physics_update(delta: float) -> void:
 	enemy.animated_sprite_2d.play("walk")
 	
 	# Check if player is in line of sight to chase
-	#var dist = enemy.position.distance_to(Globals.player.position)
-	#if dist < 50:
-		#enemy.enemy_state_machine.change_state("ChasePlayerState")
-		#return
+	var dist = enemy.position.distance_to(Globals.player.position)
+	if dist < 50:
+		enemy.enemy_state_machine.change_state("ChasePlayerState")
+		return
 		
 	if Globals.player.is_near_ground():
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
@@ -33,14 +30,17 @@ func physics_update(delta: float) -> void:
 	var should_turn = false
 	
 	if direction < 0: # Moving left
-		if ray_cast_2d_left_wall.is_colliding() or not ray_cast_2d_left_down.is_colliding():
+		if enemy.ray_cast_2d_left_wall.is_colliding():# or not enemy.ray_cast_2d_left_down.is_colliding():
+			print("Hit something on the left")
 			should_turn = true
 	elif direction > 0: # Moving right
-		if ray_cast_2d_right_wall.is_colliding() or not ray_cast_2d_right_down.is_colliding():
+		if enemy.ray_cast_2d_right_wall.is_colliding() :#or not enemy.ray_cast_2d_right_down.is_colliding():
+			print("hit something on the right")
 			should_turn = true
 	
 	# Check if we've reached patrol boundaries
-	if enemy.global_position.x <= patrol_start_x or enemy.global_position.x >= patrol_end_x:
+	var rand = randi_range(0, 130)
+	if rand == 2:
 		should_turn = true
 	
 	# Turn around if needed

@@ -8,10 +8,10 @@ const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
 
 @onready var coin_spawn_point: Node2D = $CoinSpawnPoint
 
-@onready var ray_cast_2d_left: RayCast2D = $RayCast2D_Left
-@onready var ray_cast_2d_right: RayCast2D = $RayCast2D_Right
-@onready var ray_cast_2d_left2: RayCast2D = $RayCast2D_Left2
-@onready var ray_cast_2d_right2: RayCast2D = $RayCast2D_Right2
+@onready var ray_cast_2d_left_down: RayCast2D = $RayCast2D_LeftDown
+@onready var ray_cast_2d_left_wall: RayCast2D = $RayCast2D_LeftWall
+@onready var ray_cast_2d_right_down: RayCast2D = $RayCast2D_RightDown
+@onready var ray_cast_2d_right_wall: RayCast2D = $RayCast2D_RightWall
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 @onready var area_2d: Area2D = $Area2D
 @onready var timer: Timer = $Timer
