@@ -6,7 +6,7 @@ const HIT_FX = preload("res://scenes/hit_fx.tscn")
 @onready var coin_audio_player: AudioStreamPlayer2D = $CoinAudioPlayer
 @onready var ground_area_2d: Area2D = $GroundArea2D
 
-var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
+var gravity: float = 100 #ProjectSettings.get_setting("physics/2d/default_gravity")
 var speed: float = 600.0
 var direction: Vector2
 var velocity: Vector2
@@ -22,9 +22,10 @@ func start(_position: Vector2, _direction: Vector2, is_arc: bool = false) -> voi
 		velocity = _direction * speed
 
 func _process(delta: float) -> void:
-	if has_hit_player and is_falling:
+	#if has_hit_player and is_falling:
 		# Apply gravity when falling
-		velocity.y += gravity * delta
+	gravity *= 1.05
+	velocity.y += gravity * delta
 	
 	# Update position based on velocity
 	position += velocity * delta

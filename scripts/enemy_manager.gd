@@ -13,13 +13,13 @@ func _ready():
 	spawn_timer = Timer.new()
 	add_child(spawn_timer)
 	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
-	spawn_timer.wait_time = randf_range(3.0, 10.0)
+	spawn_timer.wait_time = randf_range(3.0, 15.0)
 	spawn_timer.start()
 
 func _on_spawn_timer_timeout():
 	spawn_enemy()
 	# Reset timer with new random interval
-	spawn_timer.wait_time = randf_range(3.0, 10.0)
+	spawn_timer.wait_time = randf_range(3.0, 15.0)
 	spawn_timer.start()
 
 func spawn_enemy():
