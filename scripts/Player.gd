@@ -29,7 +29,7 @@ const KnockbackState = preload("res://scripts/states/knockback_state.gd")
 var is_dead: bool = false
 var health: int = 4
 var is_event_active: bool = false
-var SPEED = 200.0
+var SPEED = 170.0
 const JUMP_VELOCITY = -1250.0
 var state_machine: StateMachine
 

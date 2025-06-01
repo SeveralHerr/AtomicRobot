@@ -1,4 +1,4 @@
-[gd_scene load_steps=65 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=67 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="1_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
@@ -47,6 +47,7 @@
 [ext_resource type="PackedScene" uid="uid://bx5bwuj7fad3" path="res://scenes/streetlight.tscn" id="31_euxwc"]
 [ext_resource type="PackedScene" uid="uid://csis0b6hdasqr" path="res://scenes/meter_maid.tscn" id="32_1mphf"]
 [ext_resource type="Script" uid="uid://btp2q1lxrlo07" path="res://scripts/enemy_event.gd" id="32_bjc77"]
+[ext_resource type="Shader" uid="uid://fc8uls4asel3" path="res://shaders/sway.gdshader" id="37_2p6wh"]
 [ext_resource type="Texture2D" uid="uid://ds6dn0qq2gslf" path="res://images/new/Black_Trashcan.png" id="37_k2mcc"]
 [ext_resource type="Script" uid="uid://dv0rbnba2864c" path="res://scripts/enemy_manager.gd" id="38_ikgy1"]
 [ext_resource type="PackedScene" uid="uid://bxtldf7fn5fty" path="res://scenes/platform.tscn" id="48_dy54k"]
@@ -62,6 +63,18 @@ shadow_offset = Vector2(0, 0)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dbsfu"]
 size = Vector2(111, 400)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_64moy"]
+shader = ExtResource("37_2p6wh")
+shader_parameter/speed = 2.0
+shader_parameter/minStrength = 0.05
+shader_parameter/maxStrength = 0.015
+shader_parameter/strengthScale = 100.0
+shader_parameter/interval = 3.5
+shader_parameter/detail = 1.0
+shader_parameter/distortion = 0.608
+shader_parameter/heightOffset = 0.0
+shader_parameter/offset = 0.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lfwgu"]
 texture = ExtResource("2_ipf1n")
@@ -470,7 +483,7 @@ position = Vector2(1622, -16)
 texture = ExtResource("21_0bwfm")
 
 [node name="Lamp" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("28_dbsfu")]
-position = Vector2(3139, -69)
+position = Vector2(3139, -68)
 
 [node name="Lamp2" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("28_dbsfu")]
 position = Vector2(2006, -69)
@@ -653,7 +666,16 @@ position = Vector2(5526, -84)
 position = Vector2(5676, -84)
 
 [node name="Tree14" parent="SceneItemsBackground/BuildingGroup3" instance=ExtResource("25_vek1y")]
+material = SubResource("ShaderMaterial_64moy")
 position = Vector2(5826, -84)
+
+[node name="CPUParticles2D" parent="SceneItemsBackground/BuildingGroup3/Tree14" index="0"]
+randomness = 0.7
+lifetime_randomness = 0.54
+
+[node name="CPUParticles2D2" parent="SceneItemsBackground/BuildingGroup3/Tree14" index="1"]
+randomness = 0.1
+lifetime_randomness = 0.1
 
 [node name="Tree15" parent="SceneItemsBackground/BuildingGroup3" instance=ExtResource("25_vek1y")]
 position = Vector2(5976, -84)
@@ -909,3 +931,4 @@ script = ExtResource("38_ikgy1")
 [editable path="SceneItemsBackground/BuildingGroup1/Tree8"]
 [editable path="SceneItemsBackground/BuildingGroup1/Tree9"]
 [editable path="SceneItemsBackground/BuildingGroup2/Tree6"]
+[editable path="SceneItemsBackground/BuildingGroup3/Tree14"]

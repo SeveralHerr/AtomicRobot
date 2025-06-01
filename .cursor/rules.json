@@ -1,0 +1,155 @@
+{
+  "project": {
+    "name": "FindMyWeiner",
+    "type": "godot",
+    "version": "4.x"
+  },
+  "codePatterns": {
+    "autoload": {
+      "path": "scripts/autoload/*.gd",
+      "description": "Autoloaded singleton scripts",
+      "examples": ["upgradesystem.gd"]
+    },
+    "multiplayer": {
+      "path": "scripts/multiplayer/*.gd",
+      "description": "Multiplayer and networking related scripts",
+      "examples": ["chat_container.gd"]
+    },
+    "steam": {
+      "path": "scripts/steam/*.gd",
+      "description": "Steam integration related scripts",
+      "examples": ["steam_manager.gd"]
+    }
+  },
+  "coreDevelopment": {
+    "requirements": [
+      "Use strict typing in GDScript for better error detection",
+      "Implement _ready() with explicit super() calls",
+      "Use @onready annotations instead of direct node references",
+      "Prefer composition over inheritance",
+      "Use signals for loose coupling between nodes"
+    ],
+    "codeStyle": {
+      "general": [
+        "Use type hints for all variables and function parameters",
+        "Document complex functions with docstrings",
+        "Keep methods focused and under 30 lines",
+        "Use meaningful variable and function names",
+        "Group related properties and methods together"
+      ]
+    }
+  },
+  "namingConventions": {
+    "files": {
+      "pattern": "snake_case",
+      "examples": ["player_character.gd", "main_menu.tscn"]
+    },
+    "classes": {
+      "pattern": "PascalCase",
+      "examples": ["PlayerCharacter"]
+    },
+    "variables": {
+      "pattern": "snake_case",
+      "examples": ["health_points"]
+    },
+    "constants": {
+      "pattern": "UPPER_SNAKE_CASE",
+      "examples": ["MAX_HEALTH"]
+    },
+    "functions": {
+      "pattern": "snake_case",
+      "examples": ["move_player()"]
+    },
+    "enums": {
+      "type": "PascalCase",
+      "values": "UPPER_SNAKE_CASE"
+    },
+    "nodes": {
+      "pattern": "PascalCase",
+      "examples": ["PlayerCharacter", "MainCamera"]
+    },
+    "signals": {
+      "pattern": "snake_case_past_tense",
+      "examples": ["health_depleted", "enemy_defeated"]
+    }
+  },
+  "sceneOrganization": {
+    "principles": [
+      "Keep scene tree depth minimal for performance",
+      "Use scene inheritance for reusable components",
+      "Implement proper scene cleanup on queue_free()",
+      "Use SubViewport nodes carefully due to performance impact"
+    ]
+  },
+  "signalBestPractices": {
+    "naming": "Use clear, contextual names in past tense",
+    "typing": "Use typed signals for safety (e.g., signal item_collected(item_name: String))",
+    "connections": {
+      "dynamic": "Connect signals in code for dynamic nodes",
+      "static": "Connect signals in editor for static relationships"
+    },
+    "guidelines": [
+      "Avoid overusing signals - reserve for important events",
+      "Pass only necessary data through signal arguments",
+      "Use EventBus singleton for global signals",
+      "Minimize signal bubbling",
+      "Always disconnect signals when nodes are freed"
+    ]
+  },
+  "resourceManagement": {
+    "cleanup": [
+      "Implement proper resource cleanup in _exit_tree()",
+      "Use preload() for essential resources",
+      "Use load() for optional resources",
+      "Implement resource unloading for unused assets"
+    ]
+  },
+  "performanceBestPractices": {
+    "optimization": [
+      "Use node groups judiciously",
+      "Implement object pooling for frequent spawns",
+      "Use physics layers to optimize collision detection",
+      "Prefer packed arrays over regular arrays"
+    ]
+  },
+  "errorHandling": {
+    "practices": [
+      "Implement graceful fallbacks for missing resources",
+      "Use assert() for development-time checking",
+      "Log errors appropriately in production",
+      "Handle network errors gracefully"
+    ]
+  },
+  "tileMapImplementation": {
+    "notes": [
+      "TileMap node is deprecated - use TileMapLayer nodes",
+      "Convert existing TileMaps using Extract TileMap layers",
+      "Access TileMap layers through TileMapLayer nodes",
+      "Update navigation code to use TileMapLayer.get_navigation_map()",
+      "Store layer-specific properties on individual TileMapLayer nodes"
+    ]
+  },
+  "conventions": {
+    "documentation": {
+      "required": true,
+      "style": "gdscript"
+    }
+  },
+  "dependencies": {
+    "steam": {
+      "required": true,
+      "description": "Steam SDK integration for multiplayer and achievements"
+    }
+  },
+  "fileStructure": {
+    "scripts": {
+      "autoload": "Singleton scripts that are automatically loaded",
+      "multiplayer": "Multiplayer and networking related scripts",
+      "steam": "Steam integration scripts",
+      "ui": "User interface related scripts",
+      "player": "Player related scripts",
+      "enemies": "Enemy related scripts",
+      "pickups": "Pickup and collectible related scripts"
+    }
+  }
+}
