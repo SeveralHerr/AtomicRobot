@@ -201,8 +201,8 @@ libraries = {
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, 20)
-zoom = Vector2(3, 3)
-limit_bottom = 43
+zoom = Vector2(2.5, 2.5)
+limit_bottom = 20
 
 [node name="AttackAudio" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_smehm")

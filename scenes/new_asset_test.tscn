@@ -750,7 +750,7 @@ shape = SubResource("RectangleShape2D_64moy")
 position = Vector2(1148, -17)
 
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
-position = Vector2(691, 1)
+position = Vector2(478, -29)
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false
@@ -860,7 +860,7 @@ script = ExtResource("38_ikgy1")
 
 [node name="Crate" type="Sprite2D" parent="."]
 z_index = 1
-position = Vector2(126, -16.5)
+position = Vector2(257, -15)
 texture = ExtResource("51_64moy")
 
 [node name="Sprite2D7" type="Sprite2D" parent="Crate"]
@@ -874,8 +874,8 @@ position = Vector2(12, -31)
 texture = ExtResource("51_64moy")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
-modulate = Color(0.205117, 0.205117, 0.205117, 1)
-tile_map_data = PackedByteArray("AAACAAEABQAAAAAAAAADAAEABQAAAAAAAAAEAAEABQAAAAAAAAAFAAEABQAAAAAAAAAGAAEABQAAAAAAAAAHAAEABQAAAAAAAAAIAAEABQAAAAAAAAAJAAEABQAAAAAAAAAKAAEABQAAAAAAAAALAAEABQAAAAAAAAAMAAEABQAAAAAAAAAgAAEABQAAAAAAAAAhAAEABQAAAAAAAAAiAAEABQAAAAAAAAAjAAEABQAAAAAAAAAkAAEABQAAAAAAAAAlAAEABQAAAAAAAAAmAAEABQAAAAAAAAAnAAEABAAFAAEAAAAoAAEABAAFAAEAAAApAAEABAAFAAEAAAAqAAEABAAFAAEAAAArAAEABAAFAAEAAAAsAAEABAAFAAEAAAAtAAEABAAFAAEAAAAuAAEABAAFAAEAAAAvAAEABAAFAAEAAAAwAAEABAAFAAEAAAAxAAEABAAFAAEAAAAyAAEABAAFAAEAAAAzAAEABQAAAAAAAAA0AAEABQAAAAAAAAA1AAEABQAAAAAAAAA2AAEABQAAAAAAAAA3AAEABQAAAAAAAAA4AAEABQAAAAAAAAA5AAEABQAAAAAAAAA6AAEABQAAAAAAAAA=")
+visible = false
+modulate = Color(0.271682, 0.271682, 0.271682, 1)
 tile_set = ExtResource("41_01ywe")
 
 [node name="Sprite2D" type="Sprite2D" parent="TileMapLayer"]
@@ -890,11 +890,24 @@ texture = ExtResource("22_lcs47")
 
 [node name="Sprite2D3" type="Sprite2D" parent="TileMapLayer"]
 z_index = 1
-position = Vector2(683, 25)
+position = Vector2(593, 25)
+scale = Vector2(2, 2)
+texture = ExtResource("24_meefr")
+
+[node name="Sprite2D6" type="Sprite2D" parent="TileMapLayer"]
+z_index = 1
+position = Vector2(1000, 25)
+scale = Vector2(2, 2)
+texture = ExtResource("24_meefr")
+
+[node name="Sprite2D7" type="Sprite2D" parent="TileMapLayer"]
+z_index = 1
+position = Vector2(1500, 25)
 scale = Vector2(2, 2)
 texture = ExtResource("24_meefr")
 
 [node name="Sprite2D4" type="Sprite2D" parent="TileMapLayer"]
+visible = false
 z_index = 1
 position = Vector2(1050, 21)
 scale = Vector2(2, 2)
