@@ -95,6 +95,7 @@ func _physics_process(delta: float) -> void:
 	
 	state_machine.physics_update(delta)
 	move_and_slide()
+	print(position)
 	
 func _process(delta: float) -> void:
 	state_machine.update(delta)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=86 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=87 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
@@ -174,6 +174,9 @@ region = Rect2(471, 678, 191, 308)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4yhg"]
 size = Vector2(14000, 200)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_m5f86"]
+size = Vector2(368, 20)
+
 [node name="Main" type="Node2D"]
 
 [node name="UI" type="CanvasLayer" parent="."]
@@ -336,7 +339,6 @@ scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_qr2g0")
 
 [node name="AudioArea2D" type="Area2D" parent="WaterHandler"]
-visible = false
 position = Vector2(6560, 131)
 collision_layer = 0
 collision_mask = 5
@@ -345,6 +347,7 @@ collision_mask = 5
 position = Vector2(-6.31836, -277.907)
 scale = Vector2(1, 1)
 shape = SubResource("CircleShape2D_j0wti")
+debug_color = Color(0.886987, 0.317957, 0.233918, 0.42)
 
 [node name="RunningWaterAudio" type="AudioStreamPlayer" parent="WaterHandler"]
 stream = ExtResource("15_m5f86")
@@ -1211,6 +1214,15 @@ script = ExtResource("58_qr2g0")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UnderWorldKillBox"]
 position = Vector2(3488, 208)
 shape = SubResource("RectangleShape2D_g4yhg")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="UnderWorldKillBox"]
+position = Vector2(6394, 162)
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UnderWorldKillBox/StaticBody2D"]
+position = Vector2(174, 0)
+shape = SubResource("RectangleShape2D_m5f86")
 
 [editable path="SceneItemsBackground/BuildingGroup1/Tree5"]
 [editable path="SceneItemsBackground/BuildingGroup1/Tree6"]

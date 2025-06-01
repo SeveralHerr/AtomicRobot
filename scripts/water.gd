@@ -12,18 +12,16 @@ var start_y: float = 2
 var bubble_start_y: float = 75
 
 func _ready() -> void:
-	running_water_audio.volume_db -= 7
-	audio_area_2d.body_entered.connect(func(body: Node2D): 
-		if body is Player: 
-			running_water_audio.play())
-			
-			
-	audio_area_2d.body_exited.connect(func(body: Node2D): 
+	running_water_audio.volume_db = -40 # Start muted
+	audio_area_2d.body_entered.connect(func(body: Node2D):
 		if body is Player:
-			running_water_audio.stop())
+			_fade_in_running_water())
 			
-	splash_area_2d.body_entered.connect(func(body: Node2D): 
-		
+	audio_area_2d.body_exited.connect(func(body: Node2D):
+		if body is Player:
+			_fade_out_running_water())
+			
+	splash_area_2d.body_entered.connect(func(body: Node2D):
 		_handle_splash(body)
 		
 		_handle_bubbles(body)
@@ -46,3 +44,13 @@ func _handle_splash(body: Node2D) -> void:
 	await get_tree().create_timer(1).timeout
 	instance.queue_free()
 	pass
+
+func _fade_in_running_water():
+	var tween = create_tween()
+	running_water_audio.play()
+	tween.tween_property(running_water_audio, "volume_db", -7, 1)
+
+func _fade_out_running_water():
+	var tween = create_tween()
+	tween.tween_property(running_water_audio, "volume_db", -40, 1)
+	tween.tween_callback(Callable(running_water_audio, "stop"))
