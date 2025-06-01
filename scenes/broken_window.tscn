@@ -1,0 +1,57 @@
+[gd_scene load_steps=8 format=3 uid="uid://di2g4epq8sggc"]
+
+[ext_resource type="Texture2D" uid="uid://c12aaib43riwl" path="res://images/window_break.png" id="1_kp7ub"]
+[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://Sprites/Meter Maid.png" id="2_eqofk"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r3t6l"]
+atlas = ExtResource("1_kp7ub")
+region = Rect2(0, 0, 59, 58)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lqxer"]
+atlas = ExtResource("1_kp7ub")
+region = Rect2(62, 0, 60, 55)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_63y1g"]
+atlas = ExtResource("2_eqofk")
+region = Rect2(48, 50, 37, 59)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_61l77"]
+atlas = ExtResource("1_kp7ub")
+region = Rect2(125, 46, 60, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kp7ub"]
+atlas = ExtResource("1_kp7ub")
+region = Rect2(190, 25, 13, 22)
+
+[node name="BrokenWindow" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(0, -0.5)
+texture = SubResource("AtlasTexture_r3t6l")
+
+[node name="TopWindow" type="Sprite2D" parent="."]
+position = Vector2(0, -3.5)
+texture = SubResource("AtlasTexture_lqxer")
+
+[node name="MM" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1, -1)
+texture = SubResource("AtlasTexture_63y1g")
+
+[node name="BottomWindow" type="Sprite2D" parent="."]
+position = Vector2(0, 21.5)
+texture = SubResource("AtlasTexture_61l77")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 14
+texture = SubResource("AtlasTexture_kp7ub")
+emission_shape = 1
+emission_sphere_radius = 20.0
+direction = Vector2(0, -1)
+gravity = Vector2(0, 400)
+initial_velocity_min = 44.0
+initial_velocity_max = 44.0
+angular_velocity_max = 297.96
+scale_amount_min = 0.4
+scale_amount_max = 1.5

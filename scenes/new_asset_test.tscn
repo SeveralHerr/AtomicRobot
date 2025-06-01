@@ -1,4 +1,4 @@
-[gd_scene load_steps=67 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=68 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="1_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
@@ -50,6 +50,7 @@
 [ext_resource type="Shader" uid="uid://fc8uls4asel3" path="res://shaders/sway.gdshader" id="37_2p6wh"]
 [ext_resource type="Texture2D" uid="uid://ds6dn0qq2gslf" path="res://images/new/Black_Trashcan.png" id="37_k2mcc"]
 [ext_resource type="Script" uid="uid://dv0rbnba2864c" path="res://scripts/enemy_manager.gd" id="38_ikgy1"]
+[ext_resource type="PackedScene" uid="uid://bxsksxhbmge8q" path="res://scenes/meter_maid_window.tscn" id="48_64moy"]
 [ext_resource type="PackedScene" uid="uid://bxtldf7fn5fty" path="res://scenes/platform.tscn" id="48_dy54k"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
@@ -499,6 +500,10 @@ flip_h = true
 [node name="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Tree9" index="2"]
 position = Vector2(9, 81)
 
+[node name="MeterMaidWindow" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("48_64moy")]
+visible = false
+position = Vector2(3363, -199)
+
 [node name="BuildingGroup2" type="Node2D" parent="SceneItemsBackground"]
 position = Vector2(2549, 0)
 
@@ -817,7 +822,7 @@ position = Vector2(1179, -362.5)
 shape = SubResource("RectangleShape2D_64moy")
 
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
-position = Vector2(500, -21)
+position = Vector2(3583, -23)
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false

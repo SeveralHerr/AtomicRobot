@@ -5,76 +5,116 @@ const ACCELERATION = 5000.0
 var dir: Vector2
 var stand_still: bool = false
 
-var see: bool = false
-var r
 func enter_state(new_enemy: Enemy) -> void:
+	enemy.attack_range =250
 	enemy = new_enemy
-	enemy.velocity.x = 0
-	stand_still = false
-	#enemy.line_of_sight.set_collision_mask_value(11, true)
-	#enemy.line_of_sight.set_collision_mask_value(1, false)
-	enemy.timer.wait_time = 1
-	enemy.animated_sprite_2d.play("Idle")
-	if not enemy.timer.timeout.is_connected(throw_coin2):
-		enemy.timer.timeout.connect(throw_coin2)
+	enemy.timer.one_shot = true
+	
+	if not enemy.timer.timeout.is_connected(_create_bullet):
+		enemy.timer.timeout.connect(_create_bullet)
 		
-	enemy.timer.start()
+	if not enemy.range_timer.timeout.is_connected(_check_range):
+		enemy.range_timer.timeout.connect(_check_range)
+	#enemy.timer.start()
+	#enemy.range_timer.start()
+	#ChatBubble.create(enemy, "I'LL GET YOU!")
+	enemy.animated_sprite_2d.play("idle")
+	#await enemy.get_tree().create_timer(1).timeout
+		#if enemy.timer.is_stopped():
+	#_create_bullet()
 	
+func exit_state(enemy: Enemy) -> void:
+	enemy.timer.stop()
+	enemy.range_timer.stop()
+	pass
 
-func physics_update( delta: float) -> void:
+func in_range() -> void:
+	if not enemy.timer.timeout.is_connected(_create_bullet):
+		enemy.timer.timeout.connect(_create_bullet)
+		
+	if not enemy.range_timer.timeout.is_connected(_check_range):
+		enemy.range_timer.timeout.connect(_check_range)
+		
+func out_of_range(enemy: Enemy) -> void:
+	if enemy.timer.timeout.is_connected(_create_bullet):
+		enemy.timer.timeout.disconnect(_create_bullet)
+		
+	if enemy.range_timer.timeout.is_connected(_check_range):
+		enemy.range_timer.timeout.disconnect(_check_range)
+		
 
-	dir = (Globals.player.global_position - enemy.global_position).normalized()
+		
+func _check_range() -> void:
+	if Globals.player.is_dead:
+		return
+		
+	dir = (Globals.player.position - enemy.position).normalized()
+	var dist = enemy.position.distance_to(Globals.player.position)
+
 	
+	if dist > enemy.attack_range:
+		out_of_range(enemy)
+
+
+		
+func physics_update(delta: float) -> void:
 	_update_sprite_direction(enemy)
-
-	#see = enemy.line_of_sight.is_player_line_of_sight()
-
+	var dist = enemy.position.distance_to(Globals.player.position)
+#
+	if dist > enemy.attack_range:
+		return
+	else:
+		in_range()
+		## Close to player - stop moving and attack if cooldown is finished
+#
+		## Attack immediately if timer cooldown has finished
+		if enemy.timer.is_stopped():
+			_create_bullet()
+	
 
 
 func _update_sprite_direction(enemy: Enemy) -> void:
-	enemy.animated_sprite_2d.flip_h = sign(dir.x) == -1
 
+	enemy._update_sprite_direction(dir.x)
 
-func throw_coin() -> void:
-	enemy.animated_sprite_2d.animation_finished.disconnect(throw_coin)
-	
-	var instance = enemy.COIN_BULLET.instantiate()
-	Globals.player.get_parent().add_child(instance)
-
-	var pos = enemy.coin_spawn_point.global_position
-	instance.start(pos,  (Globals.player.position - pos).normalized())
-
-func throw_coin2() -> void:
-
+func _create_bullet() -> void:
 	if Globals.player.is_dead:
 		return
-	if not enemy.line_of_sight.is_player_line_of_sight():
-		return
 		
-	enemy.animated_sprite_2d.play("ThrowCoin")		
+	if enemy.timer.is_stopped():
+		enemy.timer.start()
+	
+	#elif enemy.coins <= 0:
+		##enemy.enemy_state_machine.change_state("FindMeterState")
+		#return	
+		
+	
+	stand_still = true
+	enemy.animated_sprite_2d.play("attack")
+	
+	# Spawn coin halfway through attack animation instead of at the end
+	_spawn_coin_delayed()
+	
+func _spawn_coin_delayed() -> void:
+	# Wait for roughly half the attack animation duration
 	await enemy.get_tree().create_timer(0.3).timeout
-
-
+	throw_coin()
+	
+func throw_coin() -> void:
+	if enemy == null:
+		return
+	stand_still = false
+	
 	var instance = enemy.COIN_BULLET.instantiate()
-	Globals.player.get_parent().add_child(instance)
-
-	var start_pos = enemy.coin_spawn_point.global_position
-	var target_pos = Globals.player.global_position
-
-	# Calculate the distance and height difference
-	var distance_x = target_pos.x - start_pos.x
-	var distance_y = target_pos.y - start_pos.y
-
-	# Determine the time it should take for the projectile to reach the player
-	var time_to_target = 1  # Adjust this to control the arc height and duration
-
-	# Calculate the horizontal velocity required to reach the player in the given time
-	var velocity_x = distance_x / time_to_target
-
-	# Calculate the vertical velocity required to reach the player's height considering gravity
-	var gravity = 20.0  # Adjust this to change the arc's shape
-	var velocity_y = (distance_y + 0.5 * gravity * pow(time_to_target, 2)) / time_to_target
-
-	# Set the projectile's initial velocity
-	instance.start(start_pos, Vector2(velocity_x, -velocity_y), true)
-	enemy.animated_sprite_2d.play("Idle")
+	enemy.coins -= 1
+	enemy.node.add_child(instance)
+	#instance.position = enemy.position + enemy.coin_spawn_point.positiona
+	var pos = enemy.position + enemy.coin_spawn_point.position
+	instance.start(pos,  (Globals.player.enemy_attack_position.global_position - pos).normalized())
+	
+	# Return to idle after throwing
+	await enemy.animated_sprite_2d.animation_finished
+	if enemy == null or enemy.health <= 0: 
+		return
+	enemy.animated_sprite_2d.play("idle")
+	_check_range()
