@@ -1,4 +1,4 @@
-[gd_scene load_steps=70 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=71 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
@@ -42,6 +42,7 @@
 [ext_resource type="PackedScene" uid="uid://bx5bwuj7fad3" path="res://scenes/streetlight.tscn" id="31_euxwc"]
 [ext_resource type="PackedScene" uid="uid://csis0b6hdasqr" path="res://scenes/meter_maid.tscn" id="32_1mphf"]
 [ext_resource type="Script" uid="uid://btp2q1lxrlo07" path="res://scripts/enemy_event.gd" id="32_bjc77"]
+[ext_resource type="Texture2D" uid="uid://dos02h3f2rxj6" path="res://images/spike.png" id="35_7k40d"]
 [ext_resource type="Shader" uid="uid://fc8uls4asel3" path="res://shaders/sway.gdshader" id="37_2p6wh"]
 [ext_resource type="Texture2D" uid="uid://ds6dn0qq2gslf" path="res://images/new/Black_Trashcan.png" id="37_k2mcc"]
 [ext_resource type="Script" uid="uid://dv0rbnba2864c" path="res://scripts/enemy_manager.gd" id="38_ikgy1"]
@@ -79,7 +80,7 @@ size = Vector2(38, 147)
 size = Vector2(348, 25)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k4pk8"]
-size = Vector2(663, 10.5)
+size = Vector2(731, 10.5)
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_64moy"]
 a = Vector2(12, -1)
@@ -334,7 +335,7 @@ position = Vector2(1955.5, -109.5)
 texture = ExtResource("22_lcs47")
 
 [node name="Building9" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
-position = Vector2(2025, -270)
+position = Vector2(2026, -270)
 texture = ExtResource("3_lfwgu")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="SceneItemsBackground/BuildingGroup1"]
@@ -390,7 +391,7 @@ collision_layer = 64
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup1/Building2/StaticBody2D"]
-position = Vector2(-174, -6)
+position = Vector2(-136, -7.5)
 shape = SubResource("RectangleShape2D_7k40d")
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="SceneItemsBackground/BuildingGroup1/Building2"]
@@ -402,7 +403,7 @@ position = Vector2(19, -95)
 shape = SubResource("RectangleShape2D_wvjmt")
 
 [node name="Tree5" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("25_vek1y")]
-position = Vector2(2281, -85)
+position = Vector2(2432, -85)
 flip_h = true
 
 [node name="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Tree5" index="2"]
@@ -458,12 +459,12 @@ texture = ExtResource("24_meefr")
 
 [node name="Bollard" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
 z_index = 1
-position = Vector2(2167, -17)
+position = Vector2(2214, -17)
 texture = ExtResource("27_gdeaw")
 
 [node name="Meter4" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
 z_index = 1
-position = Vector2(2053, -29)
+position = Vector2(2053, -28)
 texture = ExtResource("24_meefr")
 
 [node name="Meter5" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
@@ -485,7 +486,7 @@ texture = ExtResource("21_0bwfm")
 position = Vector2(3139, -68)
 
 [node name="Lamp2" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("28_dbsfu")]
-position = Vector2(2006, -69)
+position = Vector2(1991, -69)
 
 [node name="Tree9" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("25_vek1y")]
 position = Vector2(1706, -85)
@@ -504,7 +505,7 @@ collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup1/StaticBody2D2"]
-position = Vector2(10.5, 77.75)
+position = Vector2(44.5, 77.75)
 shape = SubResource("RectangleShape2D_k4pk8")
 one_way_collision = true
 
@@ -518,7 +519,7 @@ shape = SubResource("SegmentShape2D_64moy")
 one_way_collision = true
 
 [node name="Crate" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
-position = Vector2(2232, -15)
+position = Vector2(2278, -15)
 texture = ExtResource("51_64moy")
 
 [node name="Sprite2D7" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
@@ -587,7 +588,7 @@ position = Vector2(-0.5, -62)
 shape = SubResource("RectangleShape2D_n3g1k")
 
 [node name="Trashcan3" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
-position = Vector2(2159, -80)
+position = Vector2(2200, -80)
 texture = ExtResource("21_0bwfm")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="SceneItemsBackground/BuildingGroup1/Trashcan3"]
@@ -597,6 +598,16 @@ collision_layer = 32
 position = Vector2(0, -12)
 shape = SubResource("RectangleShape2D_dy54k")
 one_way_collision = true
+
+[node name="Spike" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+visible = false
+position = Vector2(2276, -72)
+texture = ExtResource("35_7k40d")
+
+[node name="Spike2" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+visible = false
+position = Vector2(2288, -72)
+texture = ExtResource("35_7k40d")
 
 [node name="BuildingGroup2" type="Node2D" parent="SceneItemsBackground"]
 position = Vector2(2549, 0)
