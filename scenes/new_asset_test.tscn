@@ -858,19 +858,19 @@ flip_h = true
 [node name="EnemyManager" type="Node2D" parent="."]
 script = ExtResource("38_ikgy1")
 
-[node name="Sprite2D6" type="Sprite2D" parent="."]
+[node name="Crate" type="Sprite2D" parent="."]
 z_index = 1
 position = Vector2(126, -16.5)
 texture = ExtResource("51_64moy")
 
-[node name="Sprite2D7" type="Sprite2D" parent="."]
+[node name="Sprite2D7" type="Sprite2D" parent="Crate"]
 z_index = 1
-position = Vector2(158, -16.5)
+position = Vector2(32, 0)
 texture = ExtResource("51_64moy")
 
-[node name="Sprite2D8" type="Sprite2D" parent="."]
+[node name="Sprite2D8" type="Sprite2D" parent="Crate"]
 z_index = 1
-position = Vector2(138, -47.5)
+position = Vector2(12, -31)
 texture = ExtResource("51_64moy")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
