@@ -1,0 +1,75 @@
+[gd_scene load_steps=9 format=3 uid="uid://bi5pyhjxtocqc"]
+
+[ext_resource type="Texture2D" uid="uid://bscwynmlxfbo7" path="res://images/new/Mailbox.png" id="1_nhryr"]
+[ext_resource type="Script" uid="uid://cfhair3py7sgq" path="res://scripts/interactive_mailbox.gd" id="2_uwo4u"]
+[ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="3_u7wxk"]
+[ext_resource type="FontFile" uid="uid://bfxvyxd0g1s31" path="res://styles/KomikaTitlePaint-D3x.ttf" id="3_uwo4u"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_64moy"]
+radius = 23.0217
+
+[sub_resource type="FontVariation" id="FontVariation_u7wxk"]
+base_font = ExtResource("3_uwo4u")
+spacing_glyph = 1
+
+[sub_resource type="LabelSettings" id="LabelSettings_5iqop"]
+line_spacing = -5.0
+font = SubResource("FontVariation_u7wxk")
+font_size = 14
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 0.392157)
+
+[sub_resource type="LabelSettings" id="LabelSettings_wvjmt"]
+line_spacing = -5.0
+font = ExtResource("3_u7wxk")
+font_size = 20
+outline_color = Color(0, 0, 0, 1)
+shadow_color = Color(0, 0, 0, 0.392157)
+
+[node name="InteractiveMailbox" type="Sprite2D"]
+z_index = 1
+texture = ExtResource("1_nhryr")
+script = ExtResource("2_uwo4u")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_64moy")
+
+[node name="NotificationLabel" type="Label" parent="."]
+visible = false
+z_index = 2
+custom_minimum_size = Vector2(300, 58)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -168.0
+offset_top = -97.0
+offset_right = 132.0
+offset_bottom = -20.0
+grow_horizontal = 2
+text = "EVENT STARTED event startedEVENT STARTED event started"
+label_settings = SubResource("LabelSettings_5iqop")
+horizontal_alignment = 1
+vertical_alignment = 2
+autowrap_mode = 2
+
+[node name="InteractLabel" type="Label" parent="."]
+visible = false
+z_index = 2
+custom_minimum_size = Vector2(400, 0)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -211.0
+offset_top = -39.0
+offset_right = 189.0
+offset_bottom = -22.0
+grow_horizontal = 2
+text = "[e]"
+label_settings = SubResource("LabelSettings_wvjmt")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

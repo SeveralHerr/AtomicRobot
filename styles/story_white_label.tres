@@ -1,9 +1,14 @@
-[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://dagx3yqrlt5ea"]
+[gd_resource type="LabelSettings" load_steps=3 format=3 uid="uid://dagx3yqrlt5ea"]
 
-[ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="1_gp1ku"]
+[ext_resource type="FontFile" uid="uid://bfxvyxd0g1s31" path="res://styles/KomikaTitlePaint-D3x.ttf" id="1_gp1ku"]
+
+[sub_resource type="FontVariation" id="FontVariation_qt0oh"]
+base_font = ExtResource("1_gp1ku")
+spacing_glyph = 1
 
 [resource]
-font = ExtResource("1_gp1ku")
-font_size = 100
+line_spacing = -30.0
+font = SubResource("FontVariation_qt0oh")
+font_size = 60
 shadow_size = 15
 shadow_color = Color(0, 0, 0, 0.384314)

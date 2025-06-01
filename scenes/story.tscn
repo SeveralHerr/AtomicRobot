@@ -1,33 +1,28 @@
-[gd_scene load_steps=12 format=3 uid="uid://c1xoom8lmej7f"]
+[gd_scene load_steps=10 format=3 uid="uid://c1xoom8lmej7f"]
 
 [ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="1_46kfa"]
 [ext_resource type="Script" uid="uid://d2ugpbfa0gp6n" path="res://scripts/story2.gd" id="1_d52np"]
 [ext_resource type="Script" uid="uid://chic8djxflbae" path="res://scripts/sway.gd" id="2_l2ljf"]
 [ext_resource type="LabelSettings" uid="uid://dagx3yqrlt5ea" path="res://styles/story_white_label.tres" id="3_md1pp"]
-[ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="6_2tlxm"]
+[ext_resource type="FontFile" uid="uid://bfxvyxd0g1s31" path="res://styles/KomikaTitlePaint-D3x.ttf" id="5_yrqcj"]
 [ext_resource type="PackedScene" uid="uid://cd687fbnvb516" path="res://scenes/fade_overlay.tscn" id="6_d52np"]
-[ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://styles/AldotheApache.ttf" id="13_b1hqr"]
 
-[sub_resource type="FontVariation" id="FontVariation_w3rue"]
-base_font = ExtResource("13_b1hqr")
-spacing_glyph = 2
+[sub_resource type="FontVariation" id="FontVariation_qt0oh"]
+base_font = ExtResource("5_yrqcj")
+spacing_glyph = 1
 
-[sub_resource type="LabelSettings" id="LabelSettings_wq8l7"]
-font = SubResource("FontVariation_w3rue")
-font_size = 90
-shadow_size = 15
-shadow_color = Color(0, 0, 0, 0.384314)
-
-[sub_resource type="LabelSettings" id="LabelSettings_of347"]
-font = SubResource("FontVariation_w3rue")
-font_size = 120
+[sub_resource type="LabelSettings" id="LabelSettings_he5lq"]
+line_spacing = -30.0
+font = SubResource("FontVariation_qt0oh")
+font_size = 60
 shadow_size = 15
 shadow_color = Color(0, 0, 0, 0.384314)
 
 [sub_resource type="LabelSettings" id="LabelSettings_d52np"]
-font = ExtResource("6_2tlxm")
-font_size = 40
-shadow_size = 0
+line_spacing = -30.0
+font = SubResource("FontVariation_qt0oh")
+font_size = 25
+shadow_size = 10
 shadow_color = Color(0, 0, 0, 0.384314)
 
 [node name="Story" type="Control"]
@@ -65,7 +60,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="StoryLabel1" type="Label" parent="CenterContainer"]
-custom_minimum_size = Vector2(1400, 0)
+custom_minimum_size = Vector2(1300, 0)
 layout_mode = 2
 text = "SomethIng’s gone wrong IN downtown sIoux falls"
 label_settings = ExtResource("3_md1pp")
@@ -75,7 +70,7 @@ autowrap_mode = 3
 
 [node name="StoryLabel2" type="Label" parent="CenterContainer"]
 visible = false
-custom_minimum_size = Vector2(1400, 0)
+custom_minimum_size = Vector2(1300, 0)
 layout_mode = 2
 text = "THE METER MAIDS HAVE GONE ROGUE
 
@@ -89,7 +84,7 @@ autowrap_mode = 3
 
 [node name="StoryLabel3" type="Label" parent="CenterContainer"]
 visible = false
-custom_minimum_size = Vector2(1400, 0)
+custom_minimum_size = Vector2(1300, 0)
 layout_mode = 2
 text = "ATOMIC ROBOT TATTOO WON’T STAND BY"
 label_settings = ExtResource("3_md1pp")
@@ -99,37 +94,37 @@ autowrap_mode = 3
 
 [node name="StoryLabel4" type="Label" parent="CenterContainer"]
 visible = false
-custom_minimum_size = Vector2(1400, 0)
+custom_minimum_size = Vector2(1300, 0)
 layout_mode = 2
 text = "FROM THEIR INK-STAINED STRONGHOLD, A CREW OF BOLD ARTISTS RISES UP
 
 ARMED WITH CUSTOM GEAR AND A DRIVE TO DEFEND THEIR BLOCK
 
 THEY’RE READY TO TAKE A STAND"
-label_settings = SubResource("LabelSettings_wq8l7")
+label_settings = SubResource("LabelSettings_he5lq")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="StoryLabel5" type="Label" parent="CenterContainer"]
 visible = false
-custom_minimum_size = Vector2(1400, 0)
+custom_minimum_size = Vector2(1300, 0)
 layout_mode = 2
 text = "IT'S TIME TO CONFRONT 
 CITY HALL"
-label_settings = SubResource("LabelSettings_of347")
+label_settings = ExtResource("3_md1pp")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="StoryLabel6" type="Label" parent="CenterContainer"]
 visible = false
-custom_minimum_size = Vector2(1400, 0)
+custom_minimum_size = Vector2(1300, 0)
 layout_mode = 2
 text = "THIS ISN’T ABOUT PARKING ANYMORE
 
 THIS IS WAR"
-label_settings = SubResource("LabelSettings_of347")
+label_settings = ExtResource("3_md1pp")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3

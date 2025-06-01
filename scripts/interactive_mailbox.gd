@@ -6,13 +6,13 @@ extends Sprite2D
 var can_interact: bool = true
 var player_in_area: bool = false
 var cooldown_time: float = 300.0 # 5 minutes in seconds
-var notification_duration: float = 2.5 # seconds
+var notification_duration: float = 4.0 # seconds
 var newspaper_texts := [
-	"Local Cat Saves Family from Fire!",
-	"Mayor Declares Free Pizza Day!",
-	"Mysterious Lights Seen Over City.",
-	"Tattoo Shop Wins Best in Town!",
-	"Robot Parade Scheduled for Friday!"
+	"“City Council Approves New Parking Tax: Breathing Near Meters Now $0.25”",
+	"“Meter Maid Union Demands Heavier Quarters: ‘These Ones Don’t Leave a Dent’”",
+	"“Local Tattoo Artist Wins Award for Most Controversial Dolphin Sleeve”",
+	"“Parking Meter Develops Sentience, Immediately Quits Job”",
+	"“Robot Parade Scheduled for Friday!“"
 ]
 
 func _ready() -> void:
