@@ -179,31 +179,6 @@ texture = ExtResource("4_vq1rx")
 expand_mode = 5
 stretch_mode = 5
 
-[node name="GameOverContainer" type="CenterContainer" parent="UI"]
-visible = false
-z_index = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("5_sj8ng")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOverContainer"]
-layout_mode = 2
-
-[node name="GameOverLabel" type="Label" parent="UI/GameOverContainer/VBoxContainer"]
-layout_mode = 2
-text = "Game Over"
-label_settings = ExtResource("5_yhyvh")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Button" type="Button" parent="UI/GameOverContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 31
-text = "Restart"
-
 [node name="NotificataionContainer" type="CenterContainer" parent="UI"]
 z_index = 1
 anchors_preset = 15
@@ -256,6 +231,31 @@ script = ExtResource("7_gdeaw")
 visible = false
 layout_mode = 1
 color = Color(0, 0, 0, 1)
+
+[node name="GameOverContainer" type="CenterContainer" parent="UI"]
+visible = false
+z_index = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_sj8ng")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOverContainer"]
+layout_mode = 2
+
+[node name="GameOverLabel" type="Label" parent="UI/GameOverContainer/VBoxContainer"]
+layout_mode = 2
+text = "Game Over"
+label_settings = ExtResource("5_yhyvh")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="UI/GameOverContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 31
+text = "Restart"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(882.5, -349.25)
