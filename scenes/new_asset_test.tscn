@@ -350,6 +350,32 @@ texture = ExtResource("22_lcs47")
 position = Vector2(2960, -349.5)
 texture = ExtResource("20_yhyvh")
 
+[node name="Platforms" type="Node2D" parent="SceneItemsBackground/BuildingGroup1/Building7"]
+
+[node name="Platform" parent="SceneItemsBackground/BuildingGroup1/Building7/Platforms" instance=ExtResource("48_dy54k")]
+position = Vector2(222, 266.5)
+
+[node name="Platform2" parent="SceneItemsBackground/BuildingGroup1/Building7/Platforms" instance=ExtResource("48_dy54k")]
+position = Vector2(222, 202.5)
+
+[node name="Platform3" parent="SceneItemsBackground/BuildingGroup1/Building7/Platforms" instance=ExtResource("48_dy54k")]
+position = Vector2(222, 138.5)
+
+[node name="Platform4" parent="SceneItemsBackground/BuildingGroup1/Building7/Platforms" instance=ExtResource("48_dy54k")]
+position = Vector2(222, 74.5)
+
+[node name="Platform5" parent="SceneItemsBackground/BuildingGroup1/Building7/Platforms" instance=ExtResource("48_dy54k")]
+position = Vector2(222, 9.5)
+
+[node name="Platform6" parent="SceneItemsBackground/BuildingGroup1/Building7/Platforms" instance=ExtResource("48_dy54k")]
+position = Vector2(222, -54.5)
+
+[node name="Platform7" parent="SceneItemsBackground/BuildingGroup1/Building7/Platforms" instance=ExtResource("48_dy54k")]
+position = Vector2(222, -118.5)
+
+[node name="Platform8" parent="SceneItemsBackground/BuildingGroup1/Building7/Platforms" instance=ExtResource("48_dy54k")]
+position = Vector2(222, -182.5)
+
 [node name="Building2" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
 position = Vector2(2472, -130.5)
 texture = ExtResource("30_euxwc")
@@ -425,10 +451,10 @@ z_index = 1
 position = Vector2(2365, -29)
 texture = ExtResource("24_meefr")
 
-[node name="Meter3" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+[node name="Bollard" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
 z_index = 1
-position = Vector2(2142, -28)
-texture = ExtResource("24_meefr")
+position = Vector2(2167, -17)
+texture = ExtResource("27_gdeaw")
 
 [node name="Meter4" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
 z_index = 1

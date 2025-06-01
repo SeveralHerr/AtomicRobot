@@ -9,8 +9,8 @@
 [ext_resource type="Material" uid="uid://bbeo0ug80m7w3" path="res://shaders/rays_shader_mat.tres" id="6_fqvby"]
 [ext_resource type="Texture2D" uid="uid://ww1jxoogbja4" path="res://images/backdrop.png" id="6_xmudk"]
 [ext_resource type="Texture2D" uid="uid://degiutq3ukb4w" path="res://images/Logo_small.png" id="7_0sghn"]
-[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://Sprites/Meter Maid.png" id="8_yxv22"]
 [ext_resource type="Texture2D" uid="uid://bnjygxsayqp0m" path="res://images/locked.png" id="9_f0ux6"]
+[ext_resource type="Texture2D" uid="uid://c2hqjpgo48hjx" path="res://Sprites/Ryan2.png" id="11_qokh3"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="12_qokh3"]
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="14_pj2qx"]
 [ext_resource type="Texture2D" uid="uid://bh61iiq15jejg" path="res://images/check_square_grey_checkmark.png" id="15_ckm5t"]
@@ -28,8 +28,8 @@ atlas = ExtResource("6_0sghn")
 region = Rect2(63, 56, 82, 53)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pj2qx"]
-atlas = ExtResource("8_yxv22")
-region = Rect2(48, 50, 37, 59)
+atlas = ExtResource("11_qokh3")
+region = Rect2(63, 56, 77, 53)
 
 [sub_resource type="LabelSettings" id="LabelSettings_c5qsv"]
 font = ExtResource("12_qokh3")
@@ -212,7 +212,7 @@ grow_vertical = 2
 custom_minimum_size = Vector2(250, 250)
 layout_mode = 2
 script = ExtResource("2_p1ay4")
-character = "Robot"
+character = "Ryan"
 
 [node name="Background" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot2"]
 self_modulate = Color(1, 1, 1, 0.752941)
@@ -221,10 +221,10 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = -10.0
-offset_top = -223.0
-offset_right = 230.0
-offset_bottom = 17.0
+offset_left = -63.0
+offset_top = -228.0
+offset_right = 177.0
+offset_bottom = 12.0
 grow_vertical = 0
 mouse_filter = 2
 texture = ExtResource("6_xmudk")
@@ -244,20 +244,14 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_yxv22")
 [node name="Character" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot2"]
 custom_minimum_size = Vector2(0, 115)
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -92.5
-offset_top = -85.0
-offset_right = 92.5
-offset_bottom = 85.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = SubResource("AtlasTexture_pj2qx")
-expand_mode = 3
+expand_mode = 5
 stretch_mode = 5
 
 [node name="Locked" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot2"]
