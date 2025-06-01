@@ -26,6 +26,8 @@ func enter_state(player: Player) -> void:
 			parent.receive_hit(PLAYER_DAMAGE)
 		elif parent is Boss:
 			parent.receive_hit(PLAYER_DAMAGE)
+		elif parent is Crack: 
+			parent.receive_hit()
 			
 func handle_input(player: Player, event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept") and player.is_on_floor():

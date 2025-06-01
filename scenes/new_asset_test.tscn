@@ -1,4 +1,4 @@
-[gd_scene load_steps=71 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=72 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
@@ -54,6 +54,7 @@
 [ext_resource type="Texture2D" uid="uid://bdjs24506sg7i" path="res://images/crate.png" id="51_64moy"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="51_k4pk8"]
 [ext_resource type="Texture2D" uid="uid://d3wt71ex2l4u4" path="res://Sprites/ChatGPT Image Jun 1, 2025, 10_47_12 AM.png" id="53_n3g1k"]
+[ext_resource type="PackedScene" uid="uid://xnc3xl36cxv" path="res://scenes/crack.tscn" id="55_wvjmt"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("51_k4pk8")
@@ -862,6 +863,9 @@ shape = SubResource("RectangleShape2D_k2mcc")
 [node name="AtomicRobotBuildingGroup" type="Node2D" parent="SceneItemsBackground"]
 position = Vector2(-1875, 1)
 
+[node name="Crack" parent="SceneItemsBackground/AtomicRobotBuildingGroup" instance=ExtResource("55_wvjmt")]
+position = Vector2(691, -35)
+
 [node name="MeterMaid" parent="SceneItemsBackground/AtomicRobotBuildingGroup" instance=ExtResource("32_1mphf")]
 position = Vector2(1121, -379)
 persist_enabled = true
@@ -928,7 +932,7 @@ shape = SubResource("RectangleShape2D_64moy")
 position = Vector2(1148, -17)
 
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
-position = Vector2(478, -29)
+position = Vector2(465, -51)
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false
