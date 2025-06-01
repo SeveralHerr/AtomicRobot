@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://b3qn1pwt77r8v"]
+
+[ext_resource type="Texture2D" uid="uid://c7i7raglf7bib" path="res://images/new/Sewer_Backgrounds.png" id="1_mhpbq"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2xtnq"]
+atlas = ExtResource("1_mhpbq")
+region = Rect2(13, 113, 2, 2)
+
+[sub_resource type="Curve" id="Curve_335wh"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.947489, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="SplashParticles" type="CPUParticles2D"]
+self_modulate = Color(0.780137, 0.780137, 0.780137, 1)
+z_index = 1
+emitting = false
+amount = 55
+texture = SubResource("AtlasTexture_2xtnq")
+one_shot = true
+explosiveness = 1.0
+randomness = 0.47
+lifetime_randomness = 0.16
+direction = Vector2(0, -1)
+gravity = Vector2(0, 100)
+initial_velocity_min = 5.0
+initial_velocity_max = 88.0
+scale_amount_max = 1.7
+scale_amount_curve = SubResource("Curve_335wh")

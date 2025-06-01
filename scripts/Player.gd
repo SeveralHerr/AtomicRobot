@@ -24,7 +24,7 @@ const KnockbackState = preload("res://scripts/states/knockback_state.gd")
 @onready var attack_audio: AudioStreamPlayer = $AttackAudio
 @onready var walk_audio: AudioStreamPlayer = $WalkAudio
 @onready var hurt_audio: AudioStreamPlayer = $HurtAudio
-@onready var game_over_container: GameOver = $"../UI/GameOverContainer"
+
 
 var is_dead: bool = false
 var health: int = 4

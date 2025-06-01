@@ -9,3 +9,5 @@ func _ready() -> void:
 	button.grab_focus()
 	button.pressed.connect(func(): 
 		get_tree().change_scene_to_packed(CHARACTER_SELECT) )
+		
+	Globals.player_death.connect(func(): show())
