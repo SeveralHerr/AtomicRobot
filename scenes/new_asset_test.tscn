@@ -1,6 +1,5 @@
-[gd_scene load_steps=68 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=73 format=4 uid="uid://d2jsdjdehljbp"]
 
-[ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="1_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
 [ext_resource type="Texture2D" uid="uid://dax3brqylomy8" path="res://images/new/Shop.png" id="2_ipf1n"]
@@ -20,6 +19,7 @@
 [ext_resource type="Script" uid="uid://bljv8wkcve17e" path="res://scripts/initial_fade_in.gd" id="7_gdeaw"]
 [ext_resource type="PackedScene" uid="uid://cd687fbnvb516" path="res://scenes/fade_overlay.tscn" id="7_lcs47"]
 [ext_resource type="Texture2D" uid="uid://chx0xg7umpsy2" path="res://images/new/Background_Far_Building1.png" id="7_u80fe"]
+[ext_resource type="Script" uid="uid://1oip5i83mu4r" path="res://scripts/news_paper_notification_container.gd" id="8_7k40d"]
 [ext_resource type="Texture2D" uid="uid://oxwnjyvooesx" path="res://images/new/Background_Far_Building2.png" id="8_qyuoi"]
 [ext_resource type="Texture2D" uid="uid://dbaj2wu3mxrgl" path="res://images/new/Background_Far_Building3.png" id="9_8dex5"]
 [ext_resource type="Texture2D" uid="uid://cgpe40qrvx7ud" path="res://images/new/Background_Far_Building4.png" id="10_pca7s"]
@@ -52,15 +52,26 @@
 [ext_resource type="Script" uid="uid://dv0rbnba2864c" path="res://scripts/enemy_manager.gd" id="38_ikgy1"]
 [ext_resource type="PackedScene" uid="uid://bxsksxhbmge8q" path="res://scenes/meter_maid_window.tscn" id="48_64moy"]
 [ext_resource type="PackedScene" uid="uid://bxtldf7fn5fty" path="res://scenes/platform.tscn" id="48_dy54k"]
+[ext_resource type="Script" uid="uid://cfhair3py7sgq" path="res://scripts/interactive_mailbox.gd" id="48_n3g1k"]
+[ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="51_k4pk8"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
-font = ExtResource("1_4dtmh")
+font = ExtResource("51_k4pk8")
 font_size = 100
 font_color = Color(0.462745, 0, 0, 1)
 outline_size = 6
 shadow_size = 18
 shadow_color = Color(0, 0, 0, 1)
 shadow_offset = Vector2(0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_k4pk8"]
+font = ExtResource("51_k4pk8")
+font_size = 60
+outline_size = 4
+outline_color = Color(0, 0, 0, 0.47451)
+shadow_size = 6
+shadow_color = Color(0, 0, 0, 0.243137)
+shadow_offset = Vector2(2, 2)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dbsfu"]
 size = Vector2(111, 400)
@@ -189,6 +200,16 @@ size = Vector2(438, 9)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_64moy"]
 size = Vector2(24, 39)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_64moy"]
+radius = 23.0217
+
+[sub_resource type="LabelSettings" id="LabelSettings_wvjmt"]
+line_spacing = -5.0
+font = ExtResource("51_k4pk8")
+font_size = 20
+outline_color = Color(0, 0, 0, 1)
+shadow_color = Color(0, 0, 0, 0.392157)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_lcs47"]
 atlas = ExtResource("21_euxwc")
 region = Rect2(16, 940, 126, 36)
@@ -240,8 +261,8 @@ layout_mode = 2
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -210.0
-offset_bottom = 145.945
+offset_left = -250.0
+offset_bottom = 171.133
 grow_horizontal = 0
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
@@ -252,6 +273,7 @@ custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
 texture = ExtResource("4_vq1rx")
 expand_mode = 5
+stretch_mode = 5
 
 [node name="GameOverContainer" type="CenterContainer" parent="UI"]
 visible = false
@@ -279,7 +301,6 @@ theme_override_font_sizes/font_size = 31
 text = "Restart"
 
 [node name="NotificataionContainer" type="CenterContainer" parent="UI"]
-visible = false
 z_index = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -295,6 +316,26 @@ layout_mode = 2
 layout_mode = 2
 text = "Event Started...."
 label_settings = ExtResource("5_yhyvh")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NewsPaperNotificationContainer" type="CenterContainer" parent="UI"]
+visible = false
+z_index = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_7k40d")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/NewsPaperNotificationContainer"]
+layout_mode = 2
+
+[node name="NotificationLabel" type="Label" parent="UI/NewsPaperNotificationContainer/VBoxContainer"]
+layout_mode = 2
+text = "Event Started...."
+label_settings = SubResource("LabelSettings_k4pk8")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -821,8 +862,52 @@ collision_mask = 0
 position = Vector2(1179, -362.5)
 shape = SubResource("RectangleShape2D_64moy")
 
+[node name="InteractiveMailbox" type="Sprite2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup"]
+z_index = 1
+position = Vector2(1148, -17)
+texture = ExtResource("25_bjc77")
+script = ExtResource("48_n3g1k")
+
+[node name="Area2D" type="Area2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/InteractiveMailbox"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/InteractiveMailbox/Area2D"]
+shape = SubResource("CircleShape2D_64moy")
+
+[node name="NotificationLabel" type="Label" parent="SceneItemsBackground/AtomicRobotBuildingGroup/InteractiveMailbox"]
+custom_minimum_size = Vector2(300, 58)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -168.0
+offset_top = -97.0
+offset_right = 132.0
+offset_bottom = -20.0
+grow_horizontal = 2
+text = "EVENT STARTED event startedEVENT STARTED event started"
+label_settings = SubResource("LabelSettings_wvjmt")
+horizontal_alignment = 1
+vertical_alignment = 2
+autowrap_mode = 2
+
+[node name="InteractLabel" type="Label" parent="SceneItemsBackground/AtomicRobotBuildingGroup/InteractiveMailbox"]
+visible = false
+custom_minimum_size = Vector2(400, 0)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -211.0
+offset_top = -39.0
+offset_right = 189.0
+offset_bottom = -22.0
+grow_horizontal = 2
+text = "[e]"
+label_settings = SubResource("LabelSettings_wvjmt")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
-position = Vector2(3583, -23)
+position = Vector2(1278, -25)
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false

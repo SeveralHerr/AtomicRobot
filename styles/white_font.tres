@@ -1,0 +1,7 @@
+[gd_resource type="FontVariation" load_steps=2 format=3 uid="uid://c0y2iyybvk45p"]
+
+[ext_resource type="FontFile" uid="uid://tlobedot6hie" path="res://styles/Bangers-Regular.ttf" id="1_p8816"]
+
+[resource]
+base_font = ExtResource("1_p8816")
+spacing_glyph = 1

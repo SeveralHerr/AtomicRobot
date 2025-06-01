@@ -6,6 +6,7 @@ signal meter_maid_boss_death
 signal unlocked(name: String, description: String)
 signal boss_fight(status: bool)
 signal event(status: bool)
+signal newspaper(status: bool)
 
 var selected_character: String = "Cody"
 var character_dict = {

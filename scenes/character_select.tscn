@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://yevc5esw132y"]
+[gd_scene load_steps=28 format=3 uid="uid://yevc5esw132y"]
 
 [ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="1_uhull"]
 [ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://styles/font_v2.tres" id="2_m77mk"]
@@ -9,10 +9,9 @@
 [ext_resource type="Material" uid="uid://bbeo0ug80m7w3" path="res://shaders/rays_shader_mat.tres" id="6_fqvby"]
 [ext_resource type="Texture2D" uid="uid://ww1jxoogbja4" path="res://images/backdrop.png" id="6_xmudk"]
 [ext_resource type="Texture2D" uid="uid://degiutq3ukb4w" path="res://images/Logo_small.png" id="7_0sghn"]
-[ext_resource type="FontVariation" uid="uid://rdj5e70hecho" path="res://styles/new_font_variation_6.tres" id="8_nymwb"]
 [ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://Sprites/Meter Maid.png" id="8_yxv22"]
 [ext_resource type="Texture2D" uid="uid://bnjygxsayqp0m" path="res://images/locked.png" id="9_f0ux6"]
-[ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://styles/AldotheApache.ttf" id="9_n5hh7"]
+[ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="12_qokh3"]
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="14_pj2qx"]
 [ext_resource type="Texture2D" uid="uid://bh61iiq15jejg" path="res://images/check_square_grey_checkmark.png" id="15_ckm5t"]
 [ext_resource type="Texture2D" uid="uid://tr5mt6lm8paj" path="res://images/check_square_grey.png" id="16_qgi8m"]
@@ -33,20 +32,16 @@ atlas = ExtResource("8_yxv22")
 region = Rect2(48, 50, 37, 59)
 
 [sub_resource type="LabelSettings" id="LabelSettings_c5qsv"]
-font = ExtResource("8_nymwb")
+font = ExtResource("12_qokh3")
 font_size = 86
 font_color = Color(0.462745, 0, 0, 1)
 outline_size = 10
-shadow_size = 29
+shadow_size = 20
 shadow_color = Color(0, 0, 0, 1)
 shadow_offset = Vector2(0, 0)
 
-[sub_resource type="FontVariation" id="FontVariation_w3rue"]
-base_font = ExtResource("9_n5hh7")
-spacing_glyph = 2
-
 [sub_resource type="LabelSettings" id="LabelSettings_ynb8k"]
-font = SubResource("FontVariation_w3rue")
+font = ExtResource("12_qokh3")
 font_size = 60
 shadow_size = 8
 shadow_color = Color(0, 0, 0, 0.337255)
@@ -64,7 +59,7 @@ shadow_color = Color(0, 0, 0, 0.337255)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yya7f"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_pj2qx"]
-font = SubResource("FontVariation_w3rue")
+font = ExtResource("12_qokh3")
 font_size = 40
 shadow_size = 7
 shadow_color = Color(0, 0, 0, 0.384314)
