@@ -90,14 +90,17 @@ expand_mode = 1
 script = ExtResource("2_oya25")
 
 [node name="TextureRect" type="TextureRect" parent="."]
+visible = false
 custom_minimum_size = Vector2(240, 200)
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = -172.973
-offset_right = 172.973
-offset_bottom = 200.0
+offset_left = -331.0
+offset_top = 34.0
+offset_right = 334.946
+offset_bottom = 234.0
 grow_horizontal = 2
+scale = Vector2(0.85, 0.85)
 texture = ExtResource("3_0sghn")
 expand_mode = 3
 stretch_mode = 5
