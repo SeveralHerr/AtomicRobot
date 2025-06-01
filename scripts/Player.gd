@@ -1,7 +1,7 @@
 extends CharacterBody2D
 class_name Player
 
-signal player_health_updated(current_value: int) 
+signal player_health_updated(current_value: int)
 
 const PLAYER_CROUCH_COLLISION_SHAPE = preload("res://sprites/player_crouch_collision_shape.tres")
 const PLAYER_NORMAL_COLLISION_SHAPE = preload("res://sprites/player_normal_collision_shape.tres")
@@ -36,11 +36,16 @@ var state_machine: StateMachine
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 
+# --- JUMP PHYSICS TUNING ---
+var coyote_time: float = 0.1
+var time_since_grounded: float = 0.0
+var fall_multiplier: float = 2.0 # Stronger gravity when falling
+
 func take_damage(amount: int) -> void:
 	health -= amount
 	print(health)
 	
-	player_health_updated.emit(health) 
+	player_health_updated.emit(health)
 	
 	if health <= 0:
 		death()
@@ -48,12 +53,13 @@ func take_damage(amount: int) -> void:
 func _input(event: InputEvent) -> void:
 	state_machine.handle_input(event)
 	
-func is_near_ground() -> bool: 
+func is_near_ground() -> bool:
 	if position.y >= -200:
 		return true
 	return false
 
 func _ready() -> void:
+	print("grav, ", gravity)
 	Globals.player = self
 	state_machine = StateMachine.new(self)
 	state_machine.add_state("IdleState", IdleState.new())
@@ -68,7 +74,7 @@ func _ready() -> void:
 	state_machine.change_state("IdleState")
 	jumping_streak_sprite.hide()
 
-	default_sprite.sprite_frames = Globals.character_dict[Globals.selected_character].sprite_frames 
+	default_sprite.sprite_frames = Globals.character_dict[Globals.selected_character].sprite_frames
 
 	Globals.event.connect(_event_started)
 
@@ -90,12 +96,21 @@ func move_player() -> void:
 	Globals.player_last_position = null
 		
 func _physics_process(delta: float) -> void:
+	# Track coyote time
+	if is_on_floor():
+		time_since_grounded = 0.0
+	else:
+		time_since_grounded += delta
+
+	# Apply gravity and fall multiplier
 	if not is_on_floor():
+		if velocity.y > 0:
+			velocity.y += gravity * (fall_multiplier - 1.0) * delta
 		velocity.y += gravity * delta
 	
 	state_machine.physics_update(delta)
 	move_and_slide()
-	print(position)
+
 	
 func _process(delta: float) -> void:
 	state_machine.update(delta)
@@ -164,6 +179,6 @@ func _on_attack_timer_timeout() -> void:
 func update_facing_direction() -> void:
 	var direction := Input.get_axis("ui_left", "ui_right")
 	if direction < 0:
-		scale.x = -1  # Face left
+		scale.x = -1 # Face left
 	elif direction > 0:
-		scale.x = 1   # Face right
+		scale.x = 1 # Face right
