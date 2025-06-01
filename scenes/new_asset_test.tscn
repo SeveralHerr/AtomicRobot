@@ -506,7 +506,7 @@ shape = SubResource("RectangleShape2D_dbsfu")
 
 [node name="Parallax2D2" type="Parallax2D" parent="SceneItemsBackground/BuildingGroup3"]
 scroll_scale = Vector2(0.95, 1)
-scroll_offset = Vector2(3861, 0)
+scroll_offset = Vector2(3280, 9)
 
 [node name="Background_Building1" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup3/Parallax2D2"]
 position = Vector2(3087, -223)
