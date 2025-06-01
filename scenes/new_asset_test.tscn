@@ -1,4 +1,4 @@
-[gd_scene load_steps=79 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=86 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
@@ -22,8 +22,11 @@
 [ext_resource type="Texture2D" uid="uid://dbaj2wu3mxrgl" path="res://images/new/Background_Far_Building3.png" id="9_8dex5"]
 [ext_resource type="Texture2D" uid="uid://cgpe40qrvx7ud" path="res://images/new/Background_Far_Building4.png" id="10_pca7s"]
 [ext_resource type="Texture2D" uid="uid://l0qn2kimtjnd" path="res://images/new/Background_Far_Building5.png" id="11_cdohn"]
+[ext_resource type="Script" uid="uid://7wheqajfou04" path="res://scripts/water.gd" id="12_g4yhg"]
 [ext_resource type="Texture2D" uid="uid://p3wekatscrc" path="res://images/new/Background_Far_Building6.png" id="12_gb004"]
 [ext_resource type="Texture2D" uid="uid://dvddce0kog2ml" path="res://images/new/Background_Building2.png" id="13_n5jul"]
+[ext_resource type="AudioStream" uid="uid://h22uccj0lbg6" path="res://sounds/168897__fredericfont__water-stream-calmed-3.wav" id="15_m5f86"]
+[ext_resource type="AudioStream" uid="uid://cfcvw8qesil1k" path="res://sounds/469608__sheyvan__watersplash.wav" id="16_2yfl3"]
 [ext_resource type="Texture2D" uid="uid://cfe6he8i4dnb0" path="res://images/new/Background_David.png" id="19_62krv"]
 [ext_resource type="Texture2D" uid="uid://biiglmxbmaihn" path="res://images/new/tall_building.png" id="20_yhyvh"]
 [ext_resource type="Texture2D" uid="uid://bv1ony8p1mlcx" path="res://images/new/Blue_Trashcan.png" id="21_0bwfm"]
@@ -57,6 +60,7 @@
 [ext_resource type="PackedScene" uid="uid://xnc3xl36cxv" path="res://scenes/crack.tscn" id="55_wvjmt"]
 [ext_resource type="Shader" uid="uid://b3nk82nwgcmxy" path="res://shaders/water.gdshader" id="56_fndef"]
 [ext_resource type="Texture2D" uid="uid://c3klbois75lr4" path="res://images/Light.png" id="57_qr2g0"]
+[ext_resource type="Script" uid="uid://dvdcq0lhqdrnd" path="res://scripts/under_world_kill_box.gd" id="58_qr2g0"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("51_k4pk8")
@@ -106,6 +110,12 @@ shader_parameter/tiling = Vector2(1, 1)
 shader_parameter/offSetSpeed = Vector2(0.03, 0.1)
 shader_parameter/backGroundDirX = 0.01
 shader_parameter/backGroundDirY = 0.01
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qr2g0"]
+size = Vector2(688.422, 20.9302)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_j0wti"]
+radius = 500.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7k40d"]
 size = Vector2(38, 147)
@@ -160,6 +170,9 @@ region = Rect2(16, 940, 126, 36)
 [sub_resource type="AtlasTexture" id="AtlasTexture_7k40d"]
 atlas = ExtResource("53_n3g1k")
 region = Rect2(471, 678, 191, 308)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4yhg"]
+size = Vector2(14000, 200)
 
 [node name="Main" type="Node2D"]
 
@@ -302,12 +315,42 @@ position = Vector2(882.5, -349.25)
 scale = Vector2(15.7757, 1.22348)
 texture = ExtResource("1_haqju")
 
-[node name="Water" type="Sprite2D" parent="."]
+[node name="WaterHandler" type="Node2D" parent="."]
+script = ExtResource("12_g4yhg")
+
+[node name="Water" type="Sprite2D" parent="WaterHandler"]
 z_index = 1
 material = SubResource("ShaderMaterial_g4yhg")
 position = Vector2(6560, 131)
 scale = Vector2(0.316667, 0.43)
 texture = ExtResource("57_qr2g0")
+
+[node name="SplashArea2D" type="Area2D" parent="WaterHandler"]
+position = Vector2(6560, 131)
+collision_layer = 0
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WaterHandler/SplashArea2D"]
+position = Vector2(-6.31836, -105.907)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_qr2g0")
+
+[node name="AudioArea2D" type="Area2D" parent="WaterHandler"]
+visible = false
+position = Vector2(6560, 131)
+collision_layer = 0
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WaterHandler/AudioArea2D"]
+position = Vector2(-6.31836, -277.907)
+scale = Vector2(1, 1)
+shape = SubResource("CircleShape2D_j0wti")
+
+[node name="RunningWaterAudio" type="AudioStreamPlayer" parent="WaterHandler"]
+stream = ExtResource("15_m5f86")
+
+[node name="SplashAudio" type="AudioStreamPlayer" parent="WaterHandler"]
+stream = ExtResource("16_2yfl3")
 
 [node name="Parallax2DBackground" type="Parallax2D" parent="."]
 scroll_scale = Vector2(0.1, 1)
@@ -851,7 +894,7 @@ tile_set = ExtResource("41_01ywe")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="SceneItemsBackground/TileMapLayer"]
 position = Vector2(0, 3)
-tile_map_data = PackedByteArray("AADLAAIABAAAAAEAAADKAAEAAAAAAAMAAADLAAEAAAAAAAMAAADMAAEAAAAAAAMAAADNAAEAAAAAAAMAAADOAAEAAAAAAAMAAADPAAEAAAAAAAMAAADKAAAAAAAAAAMAAADLAAAAAAAAAAMAAADMAAAAAAAAAAMAAADNAAAAAAAAAAMAAADOAAAAAAAAAAMAAADPAAAAAAAAAAMAAAA=")
+tile_map_data = PackedByteArray("AADKAAEAAAAAAAMAAADLAAEAAAAAAAMAAADMAAEAAAAAAAMAAADNAAEAAAAAAAMAAADOAAEAAAAAAAMAAADPAAEAAAAAAAMAAADKAAAAAAAAAAMAAADLAAAAAAAAAAMAAADMAAAAAAAAAAMAAADNAAAAAAAAAAMAAADOAAAAAAAAAAMAAADPAAAAAAAAAAMAAAA=")
 tile_set = ExtResource("41_01ywe")
 
 [node name="BuildingGroup4" type="Node2D" parent="SceneItemsBackground"]
@@ -1156,6 +1199,15 @@ texture = ExtResource("51_2p6wh")
 position = Vector2(89, -15)
 scale = Vector2(0.1, 0.1)
 texture = SubResource("AtlasTexture_7k40d")
+
+[node name="UnderWorldKillBox" type="Area2D" parent="."]
+position = Vector2(2, 99)
+collision_layer = 0
+script = ExtResource("58_qr2g0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UnderWorldKillBox"]
+position = Vector2(3488, 208)
+shape = SubResource("RectangleShape2D_g4yhg")
 
 [editable path="SceneItemsBackground/BuildingGroup1/Tree5"]
 [editable path="SceneItemsBackground/BuildingGroup1/Tree6"]
