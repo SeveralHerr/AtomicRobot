@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=68 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
@@ -71,6 +71,25 @@ shadow_size = 6
 shadow_color = Color(0, 0, 0, 0.243137)
 shadow_offset = Vector2(2, 2)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7k40d"]
+size = Vector2(38, 147)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wvjmt"]
+size = Vector2(348, 25)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k4pk8"]
+size = Vector2(663, 10.5)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_64moy"]
+a = Vector2(12, -1)
+b = Vector2(-47, 59)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n3g1k"]
+size = Vector2(95, 154)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dy54k"]
+size = Vector2(18, 8)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dbsfu"]
 size = Vector2(111, 400)
 
@@ -101,9 +120,6 @@ size = Vector2(24, 39)
 [sub_resource type="AtlasTexture" id="AtlasTexture_lcs47"]
 atlas = ExtResource("21_euxwc")
 region = Rect2(16, 940, 126, 36)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_dy54k"]
-size = Vector2(18, 8)
 
 [node name="Main" type="Node2D"]
 
@@ -304,8 +320,21 @@ position = Vector2(-1294, 0)
 
 [node name="Bush" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
 self_modulate = Color(0.6897, 0.6897, 0.6897, 1)
-position = Vector2(2468, -35)
+position = Vector2(2493, -115)
 texture = ExtResource("3_62krv")
+
+[node name="Bush3" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+self_modulate = Color(0.729658, 0.729658, 0.729658, 1)
+position = Vector2(1955.5, -109.5)
+texture = ExtResource("22_lcs47")
+
+[node name="Building9" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+position = Vector2(2025, -270)
+texture = ExtResource("3_lfwgu")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="SceneItemsBackground/BuildingGroup1"]
+tile_map_data = PackedByteArray("AAAwAP//CAAHAAEAAAAxAP7/CAAIAAAAAAAxAP//CAAIAAEAAAAyAP7/CAAJAAAAAAAyAP//CAAJAAEAAAAzAP7/CAAAAAAAAAAzAP//CAAAAAEAAAA0AP7/CAAAAAAAAAA0AP//CAAAAAEAAAA1AP7/CAAAAAAAAAA1AP//CAAAAAEAAAA2AP7/CAAAAAAAAAA2AP//CAAAAAEAAAA3AP7/CAAAAAAAAAA3AP//CAAAAAEAAAA4AP7/CAAAAAAAAAA4AP//CAAAAAEAAAA5AP7/CAAAAAAAAAA5AP//CAAAAAEAAAA6AP7/CAAAAAAAAAA6AP//CAAAAAEAAAA7AP7/CAAAAAAAAAA7AP//CAAAAAEAAAA8AP7/CAAAAAAAAAA8AP//CAAAAAEAAAA9AP7/CAAAAAAAAAA9AP//CAAAAAEAAAA+AP7/CAAAAAAAAAA+AP//CAAAAAEAAAA/AP7/CAAAAAAAAAA/AP//CAAAAAEAAABAAP7/CAAAAAAAAABAAP//CAAAAAEAAABBAP7/CAAAAAAAAABBAP//CAAAAAEAAABCAP7/CAAAAAAAAABCAP//CAAAAAEAAABDAP7/CAAAAAAAAABDAP//CAAAAAEAAABEAP7/CAAAAAAAAABEAP//CAAAAAEAAABFAP7/CAAAAAAAAABFAP//CAAAAAEAAABGAP7/CAAAAAAAAABGAP//CAAAAAEAAABHAP7/CAAAAAAAAABHAP//CAAAAAEAAABIAP7/CAAAAAAAAABIAP//CAAAAAEAAABJAP7/CAAAAAAAAABJAP//CAAAAAEAAABKAP7/CAAAAAAAAABKAP//CAAAAAEAAABLAP7/CAAAAAAAAABLAP//CAAAAAEAAABMAP7/CAAEAAAAAABMAP//CAAEAAEAAABNAP7/CAAFAAAAAABNAP//CAAFAAEAAABOAP//CAAGAAEAAAA=")
+tile_set = ExtResource("41_01ywe")
 
 [node name="Building8" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
 self_modulate = Color(0.489622, 0.489622, 0.489622, 1)
@@ -324,6 +353,22 @@ texture = ExtResource("20_yhyvh")
 [node name="Building2" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
 position = Vector2(2472, -130.5)
 texture = ExtResource("30_euxwc")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="SceneItemsBackground/BuildingGroup1/Building2"]
+collision_layer = 64
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup1/Building2/StaticBody2D"]
+position = Vector2(-174, -6)
+shape = SubResource("RectangleShape2D_7k40d")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="SceneItemsBackground/BuildingGroup1/Building2"]
+collision_layer = 64
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup1/Building2/StaticBody2D2"]
+position = Vector2(19, -95)
+shape = SubResource("RectangleShape2D_wvjmt")
 
 [node name="Tree5" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("25_vek1y")]
 position = Vector2(2281, -85)
@@ -351,11 +396,6 @@ scale = Vector2(1.5, 1.5)
 
 [node name="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Tree8" index="2"]
 position = Vector2(-9, 81)
-
-[node name="Bush3" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
-self_modulate = Color(0.729658, 0.729658, 0.729658, 1)
-position = Vector2(1782, -47)
-texture = ExtResource("22_lcs47")
 
 [node name="InteractiveMailbox" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("49_7k40d")]
 position = Vector2(2637, -16)
@@ -387,7 +427,7 @@ texture = ExtResource("24_meefr")
 
 [node name="Meter3" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
 z_index = 1
-position = Vector2(2179, -29)
+position = Vector2(2142, -28)
 texture = ExtResource("24_meefr")
 
 [node name="Meter4" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
@@ -407,7 +447,7 @@ texture = ExtResource("21_0bwfm")
 
 [node name="Trash2" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
 z_index = 1
-position = Vector2(1622, -16)
+position = Vector2(1682, -16)
 texture = ExtResource("21_0bwfm")
 
 [node name="Lamp" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("28_dbsfu")]
@@ -416,12 +456,8 @@ position = Vector2(3139, -68)
 [node name="Lamp2" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("28_dbsfu")]
 position = Vector2(2006, -69)
 
-[node name="Building9" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
-position = Vector2(1835, -208)
-texture = ExtResource("3_lfwgu")
-
 [node name="Tree9" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("25_vek1y")]
-position = Vector2(1636, -85)
+position = Vector2(1706, -85)
 flip_h = true
 
 [node name="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Tree9" index="2"]
@@ -430,6 +466,106 @@ position = Vector2(9, 81)
 [node name="MeterMaidWindow" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("48_64moy")]
 visible = false
 position = Vector2(3363, -199)
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="SceneItemsBackground/BuildingGroup1"]
+position = Vector2(1938, -135)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup1/StaticBody2D2"]
+position = Vector2(10.5, 77.75)
+shape = SubResource("RectangleShape2D_k4pk8")
+one_way_collision = true
+
+[node name="StaticBody2D" type="StaticBody2D" parent="SceneItemsBackground/BuildingGroup1/StaticBody2D2"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup1/StaticBody2D2/StaticBody2D"]
+position = Vector2(-332, 74)
+shape = SubResource("SegmentShape2D_64moy")
+one_way_collision = true
+
+[node name="Crate" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+position = Vector2(2232, -15)
+texture = ExtResource("51_64moy")
+
+[node name="Sprite2D7" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+position = Vector2(32, 0)
+texture = ExtResource("51_64moy")
+
+[node name="Sprite2D8" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+position = Vector2(-32, 0)
+texture = ExtResource("51_64moy")
+
+[node name="Sprite2D9" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+position = Vector2(32, -31)
+texture = ExtResource("51_64moy")
+
+[node name="Sprite2D11" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+position = Vector2(0, -31)
+texture = ExtResource("51_64moy")
+
+[node name="Sprite2D10" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+position = Vector2(-32, -31)
+texture = ExtResource("51_64moy")
+
+[node name="Sprite2D12" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+position = Vector2(32, -62)
+texture = ExtResource("51_64moy")
+
+[node name="Sprite2D13" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+position = Vector2(-32, -62)
+texture = ExtResource("51_64moy")
+
+[node name="Sprite2D14" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+position = Vector2(32, -93)
+texture = ExtResource("51_64moy")
+
+[node name="Sprite2D15" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+position = Vector2(0, -93)
+texture = ExtResource("51_64moy")
+
+[node name="Sprite2D16" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+position = Vector2(-32, -93)
+texture = ExtResource("51_64moy")
+
+[node name="Sprite2D18" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+position = Vector2(32, -124)
+texture = ExtResource("51_64moy")
+
+[node name="Sprite2D19" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+position = Vector2(0, -124)
+texture = ExtResource("51_64moy")
+
+[node name="Sprite2D20" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+position = Vector2(-32, -124)
+texture = ExtResource("51_64moy")
+
+[node name="Sprite2D17" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+position = Vector2(0, -62)
+texture = ExtResource("51_64moy")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="SceneItemsBackground/BuildingGroup1/Crate"]
+collision_layer = 66
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup1/Crate/StaticBody2D"]
+z_index = -1
+position = Vector2(-0.5, -62)
+shape = SubResource("RectangleShape2D_n3g1k")
+
+[node name="Trashcan3" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+position = Vector2(2116, -80)
+texture = ExtResource("21_0bwfm")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="SceneItemsBackground/BuildingGroup1/Trashcan3"]
+collision_layer = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup1/Trashcan3/StaticBody2D"]
+position = Vector2(0, -12)
+shape = SubResource("RectangleShape2D_dy54k")
+one_way_collision = true
 
 [node name="BuildingGroup2" type="Node2D" parent="SceneItemsBackground"]
 position = Vector2(2549, 0)
