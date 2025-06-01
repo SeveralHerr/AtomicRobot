@@ -1,4 +1,4 @@
-[gd_scene load_steps=68 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=70 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
@@ -52,6 +52,7 @@
 [ext_resource type="Texture2D" uid="uid://b7c3ulm6ps4bi" path="res://images/new/Tree.png" id="51_2p6wh"]
 [ext_resource type="Texture2D" uid="uid://bdjs24506sg7i" path="res://images/crate.png" id="51_64moy"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="51_k4pk8"]
+[ext_resource type="Texture2D" uid="uid://d3wt71ex2l4u4" path="res://Sprites/ChatGPT Image Jun 1, 2025, 10_47_12 AM.png" id="53_n3g1k"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("51_k4pk8")
@@ -82,7 +83,7 @@ size = Vector2(663, 10.5)
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_64moy"]
 a = Vector2(12, -1)
-b = Vector2(-47, 59)
+b = Vector2(-29, 47)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n3g1k"]
 size = Vector2(95, 154)
@@ -120,6 +121,10 @@ size = Vector2(24, 39)
 [sub_resource type="AtlasTexture" id="AtlasTexture_lcs47"]
 atlas = ExtResource("21_euxwc")
 region = Rect2(16, 940, 126, 36)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7k40d"]
+atlas = ExtResource("53_n3g1k")
+region = Rect2(471, 678, 191, 308)
 
 [node name="Main" type="Node2D"]
 
@@ -333,7 +338,7 @@ position = Vector2(2025, -270)
 texture = ExtResource("3_lfwgu")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="SceneItemsBackground/BuildingGroup1"]
-tile_map_data = PackedByteArray("AAAwAP//CAAHAAEAAAAxAP7/CAAIAAAAAAAxAP//CAAIAAEAAAAyAP7/CAAJAAAAAAAyAP//CAAJAAEAAAAzAP7/CAAAAAAAAAAzAP//CAAAAAEAAAA0AP7/CAAAAAAAAAA0AP//CAAAAAEAAAA1AP7/CAAAAAAAAAA1AP//CAAAAAEAAAA2AP7/CAAAAAAAAAA2AP//CAAAAAEAAAA3AP7/CAAAAAAAAAA3AP//CAAAAAEAAAA4AP7/CAAAAAAAAAA4AP//CAAAAAEAAAA5AP7/CAAAAAAAAAA5AP//CAAAAAEAAAA6AP7/CAAAAAAAAAA6AP//CAAAAAEAAAA7AP7/CAAAAAAAAAA7AP//CAAAAAEAAAA8AP7/CAAAAAAAAAA8AP//CAAAAAEAAAA9AP7/CAAAAAAAAAA9AP//CAAAAAEAAAA+AP7/CAAAAAAAAAA+AP//CAAAAAEAAAA/AP7/CAAAAAAAAAA/AP//CAAAAAEAAABAAP7/CAAAAAAAAABAAP//CAAAAAEAAABBAP7/CAAAAAAAAABBAP//CAAAAAEAAABCAP7/CAAAAAAAAABCAP//CAAAAAEAAABDAP7/CAAAAAAAAABDAP//CAAAAAEAAABEAP7/CAAAAAAAAABEAP//CAAAAAEAAABFAP7/CAAAAAAAAABFAP//CAAAAAEAAABGAP7/CAAAAAAAAABGAP//CAAAAAEAAABHAP7/CAAAAAAAAABHAP//CAAAAAEAAABIAP7/CAAAAAAAAABIAP//CAAAAAEAAABJAP7/CAAAAAAAAABJAP//CAAAAAEAAABKAP7/CAAAAAAAAABKAP//CAAAAAEAAABLAP7/CAAAAAAAAABLAP//CAAAAAEAAABMAP7/CAAEAAAAAABMAP//CAAEAAEAAABNAP7/CAAFAAAAAABNAP//CAAFAAEAAABOAP//CAAGAAEAAAA=")
+tile_map_data = PackedByteArray("AAAwAP//CAAHAAEAAAAxAP7/CAAIAAAAAAAxAP//CgAIAAEAAAAyAP7/CgAJAAAAAAAyAP//CgAJAAEAAAAzAP7/CAAAAAAAAAAzAP//CAAAAAEAAAA0AP7/CAAAAAAAAAA0AP//CAAAAAEAAAA1AP7/CAAAAAAAAAA1AP//CAAAAAEAAAA2AP7/CAAAAAAAAAA2AP//CAAAAAEAAAA3AP7/CAAAAAAAAAA3AP//CAAAAAEAAAA4AP7/CAAAAAAAAAA4AP//CAAAAAEAAAA5AP7/CAAAAAAAAAA5AP//CAAAAAEAAAA6AP7/CAAAAAAAAAA6AP//CAAAAAEAAAA7AP7/CAAAAAAAAAA7AP//CAAAAAEAAAA8AP7/CAAAAAAAAAA8AP//CAAAAAEAAAA9AP7/CAAAAAAAAAA9AP//CAAAAAEAAAA+AP7/CAAAAAAAAAA+AP//CAAAAAEAAAA/AP7/CAAAAAAAAAA/AP//CAAAAAEAAABAAP7/CAAAAAAAAABAAP//CAAAAAEAAABBAP7/CAAAAAAAAABBAP//CAAAAAEAAABCAP7/CAAAAAAAAABCAP//CAAAAAEAAABDAP7/CAAAAAAAAABDAP//CAAAAAEAAABEAP7/CAAAAAAAAABEAP//CAAAAAEAAABFAP7/CAAAAAAAAABFAP//CAAAAAEAAABGAP7/CAAAAAAAAABGAP//CAAAAAEAAABHAP7/CAAAAAAAAABHAP//CAAAAAEAAABIAP7/CAAAAAAAAABIAP//CAAAAAEAAABJAP7/CAAAAAAAAABJAP//CAAAAAEAAABKAP7/CAAAAAAAAABKAP//CAAAAAEAAABLAP7/CAAAAAAAAABLAP//CAAAAAEAAABMAP7/CAAEAAAAAABMAP//CAAEAAEAAABNAP7/CAAFAAAAAABNAP//CAAFAAEAAABOAP//CAAGAAEAAAA=")
 tile_set = ExtResource("41_01ywe")
 
 [node name="Building8" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
@@ -582,7 +587,7 @@ position = Vector2(-0.5, -62)
 shape = SubResource("RectangleShape2D_n3g1k")
 
 [node name="Trashcan3" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
-position = Vector2(2116, -80)
+position = Vector2(2159, -80)
 texture = ExtResource("21_0bwfm")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="SceneItemsBackground/BuildingGroup1/Trashcan3"]
@@ -1081,6 +1086,11 @@ z_index = 1
 position = Vector2(300, -101)
 scale = Vector2(2, 2)
 texture = ExtResource("51_2p6wh")
+
+[node name="Sprite2D3" type="Sprite2D" parent="."]
+position = Vector2(89, -15)
+scale = Vector2(0.1, 0.1)
+texture = SubResource("AtlasTexture_7k40d")
 
 [editable path="SceneItemsBackground/BuildingGroup1/Tree5"]
 [editable path="SceneItemsBackground/BuildingGroup1/Tree6"]
