@@ -31,7 +31,7 @@ var target: Node2D = null
 var coins: int = 4
 var node: Node
 var last_dir: int = 0
-var attack_range: int = 150
+var attack_range: int = 120
 
 	
 func _update_sprite_direction(direction: float) -> void:

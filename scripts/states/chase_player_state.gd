@@ -82,19 +82,15 @@ func physics_update(delta: float) -> void:
 	if dist > 250 and enemy.persist_enabled:
 		enemy.enemy_state_machine.change_state("PatrolState")
 		return	
-	if dist > enemy.attack_range:
-		#enemy.timer.stop()
-		# Moving towards player
-		#if not enemy.ray_cast_2d_left.is_colliding():
-			#enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
-		#elif not enemy.ray_cast_2d_right.is_colliding():
-			#enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
-		#else:
-			#enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)		
-			#
+	elif dist > enemy.attack_range and dist > 180:
 		var player_direction = (Globals.player.global_position - enemy.global_position).normalized()
 		var direction = sign(player_direction.x)
-		var target_velocity = direction * enemy.move_speed
+		var target_velocity = direction * enemy.move_speed * 1.2
+		enemy.velocity.x = move_toward(enemy.velocity.x, target_velocity, 2000 * delta)
+	elif dist > enemy.attack_range:
+		var player_direction = (Globals.player.global_position - enemy.global_position).normalized()
+		var direction = sign(player_direction.x)
+		var target_velocity = direction * enemy.move_speed 
 		enemy.velocity.x = move_toward(enemy.velocity.x, target_velocity, 2000 * delta)
 	else:
 		in_range()

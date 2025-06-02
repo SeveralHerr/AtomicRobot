@@ -64,6 +64,7 @@ _data = {
 }
 
 [node name="MeterMaidWindow" type="CharacterBody2D"]
+visible = false
 top_level = true
 collision_layer = 4
 collision_mask = 99
