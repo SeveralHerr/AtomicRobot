@@ -1,12 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://o61lmvx1pufs"]
+[gd_scene load_steps=6 format=3 uid="uid://o61lmvx1pufs"]
 
-[ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://Tiles/custom_tiles.png" id="1_0d2bf"]
 [ext_resource type="Script" uid="uid://b4dpl0l1gdtam" path="res://scripts/coin_bullet.gd" id="1_yrbct"]
+[ext_resource type="Texture2D" uid="uid://bebxlupbocur" path="res://images/coin.png" id="2_w4kev"]
 [ext_resource type="AudioStream" uid="uid://txxmsbx723pd" path="res://sounds/coin.wav" id="3_vy3yn"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3lgt0"]
-atlas = ExtResource("1_0d2bf")
-region = Rect2(144, 64, 16, 16)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hpc32"]
 radius = 1.0
@@ -18,7 +14,7 @@ radius = 1.0
 script = ExtResource("1_yrbct")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = SubResource("AtlasTexture_3lgt0")
+texture = ExtResource("2_w4kev")
 offset = Vector2(0, 1)
 
 [node name="Area2D" type="Area2D" parent="."]
