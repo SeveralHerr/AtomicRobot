@@ -39,7 +39,7 @@ var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 # --- JUMP PHYSICS TUNING ---
 var coyote_time: float = 0.1
 var time_since_grounded: float = 0.0
-var fall_multiplier: float = 2.0 # Stronger gravity when falling
+var fall_multiplier: float = 1.5 # Stronger gravity when falling
 
 func take_damage(amount: int) -> void:
 	health -= amount

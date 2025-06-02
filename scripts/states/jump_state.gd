@@ -2,15 +2,26 @@ extends State
 class_name JumpState
 
 const ACCELERATION = 500.0 # Adjust as needed for smoother acceleration
-const JUMP_VELOCITY = -420.0 # Slightly lower jump height
+const JUMP_VELOCITY = -380.0 # Slightly lower jump height
+const RUN_JUMP_X_BOOST = 60.0 # Tweak this value for how much extra x velocity to add
+const WALK_THRESHOLD = 10.0 # Minimum x velocity to count as running
 
 func enter_state(player: Player) -> void:
 	# Only allow jump if on floor or within coyote time
 	if player.is_on_floor() or player.time_since_grounded <= player.coyote_time:
 		player.velocity.y = JUMP_VELOCITY
+		# Add x boost if player was moving horizontally (run-and-jump)
 		var direction := Input.get_axis("ui_left", "ui_right")
-		if direction != 0:
-				player.velocity.x += direction * 40
+		var can_boost := true
+		if player.is_on_wall():
+			# If pressing into the wall, don't boost
+			if (direction < 0 and player.get_wall_normal().x > 0) or (direction > 0 and player.get_wall_normal().x < 0):
+				can_boost = false
+
+		if can_boost and (abs(player.velocity.x) > WALK_THRESHOLD or direction != 0):
+			var boost_dir = direction if direction != 0 else sign(player.velocity.x)
+			player.velocity.x += boost_dir * RUN_JUMP_X_BOOST
+			player.velocity.y -= boost_dir * RUN_JUMP_X_BOOST
 		player.default_sprite.play("Jump")
 		player.jump_audio_player.play()
 		player.jumping_streak_sprite.show()

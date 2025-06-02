@@ -75,6 +75,14 @@ Interact={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="Player"
+2d_physics/layer_2="Ground"
+2d_physics/layer_3="Enemy"
+2d_physics/layer_6="Platforms"
+2d_physics/layer_7="wall"
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

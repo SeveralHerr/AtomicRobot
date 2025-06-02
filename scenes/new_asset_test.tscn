@@ -335,7 +335,6 @@ collision_mask = 5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WaterHandler/SplashArea2D"]
 position = Vector2(-6.31836, -105.907)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_qr2g0")
 
 [node name="AudioArea2D" type="Area2D" parent="WaterHandler"]
@@ -345,7 +344,6 @@ collision_mask = 5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WaterHandler/AudioArea2D"]
 position = Vector2(-6.31836, -277.907)
-scale = Vector2(1, 1)
 shape = SubResource("CircleShape2D_j0wti")
 debug_color = Color(0.886987, 0.317957, 0.233918, 0.42)
 
@@ -588,7 +586,7 @@ position = Vector2(3363, -199)
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="SceneItemsBackground/BuildingGroup1"]
 position = Vector2(1938, -135)
-collision_layer = 2
+collision_layer = 32
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup1/StaticBody2D2"]
@@ -1032,7 +1030,7 @@ shape = SubResource("RectangleShape2D_64moy")
 position = Vector2(1148, -17)
 
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
-position = Vector2(6422, -23)
+position = Vector2(2366, -126)
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false
