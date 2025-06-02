@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b4148jkj0h31i"
-path="res://.godot/imported/meter maid melee.png-03169802cf0c0f6713c3928a6f890cbe.ctex"
+path="res://.godot/imported/meter maid melee.png-b71195c3a65f22216943c83ee4da3308.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/meter maid melee.png"
-dest_files=["res://.godot/imported/meter maid melee.png-03169802cf0c0f6713c3928a6f890cbe.ctex"]
+source_file="res://sprites/meter maid melee.png"
+dest_files=["res://.godot/imported/meter maid melee.png-b71195c3a65f22216943c83ee4da3308.ctex"]
 
 [params]
 

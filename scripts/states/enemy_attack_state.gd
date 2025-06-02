@@ -48,8 +48,8 @@ func _check_range() -> void:
 	if Globals.player.is_dead:
 		return
 		
-	dir = (Globals.player.position - enemy.position).normalized()
-	var dist = enemy.position.distance_to(Globals.player.position)
+	dir = (Globals.player.position - enemy.global_position).normalized()
+	var dist = enemy.global_position.distance_to(Globals.player.position)
 
 	
 	if dist > enemy.attack_range:
@@ -59,7 +59,7 @@ func _check_range() -> void:
 		
 func physics_update(delta: float) -> void:
 	_update_sprite_direction(enemy)
-	var dist = enemy.position.distance_to(Globals.player.position)
+	var dist = enemy.global_position.distance_to(Globals.player.position)
 #
 	if dist > enemy.attack_range:
 		return
@@ -109,7 +109,7 @@ func throw_coin() -> void:
 	enemy.coins -= 1
 	enemy.node.add_child(instance)
 	#instance.position = enemy.position + enemy.coin_spawn_point.positiona
-	var pos = enemy.position + enemy.coin_spawn_point.position
+	var pos = enemy.global_position + enemy.coin_spawn_point.position
 	instance.start(pos,  (Globals.player.enemy_attack_position.global_position - pos).normalized())
 	
 	# Return to idle after throwing

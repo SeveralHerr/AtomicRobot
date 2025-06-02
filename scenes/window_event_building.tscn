@@ -1,0 +1,108 @@
+[gd_scene load_steps=10 format=3 uid="uid://yomdf011c10y"]
+
+[ext_resource type="Script" uid="uid://dw6hmroaf4k4r" path="res://scripts/window_event_building.gd" id="1_55ooh"]
+[ext_resource type="Texture2D" uid="uid://ci6x7l4g5mh5l" path="res://images/new/Building2.png" id="1_won0d"]
+[ext_resource type="PackedScene" uid="uid://bxsksxhbmge8q" path="res://scenes/meter_maid_window.tscn" id="2_55ooh"]
+[ext_resource type="PackedScene" uid="uid://bxtldf7fn5fty" path="res://scenes/platform.tscn" id="3_3t3vt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_16jtx"]
+size = Vector2(438, 9)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_won0d"]
+size = Vector2(569, 9)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fdjp5"]
+size = Vector2(445, 9)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oetyi"]
+size = Vector2(24, 39)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3t3vt"]
+size = Vector2(21, 177)
+
+[node name="WindowEventBuilding" type="Node2D"]
+script = ExtResource("1_55ooh")
+
+[node name="Building" type="Sprite2D" parent="."]
+texture = ExtResource("1_won0d")
+
+[node name="MeterMaidWindow" parent="." instance=ExtResource("2_55ooh")]
+visible = false
+position = Vector2(-190, 193)
+is_event = true
+
+[node name="MeterMaidWindow2" parent="." instance=ExtResource("2_55ooh")]
+visible = false
+position = Vector2(224, 193)
+is_event = true
+
+[node name="MeterMaidWindow3" parent="." instance=ExtResource("2_55ooh")]
+visible = false
+position = Vector2(149, 75)
+is_event = true
+
+[node name="Collisions" type="Node2D" parent="."]
+
+[node name="MiddleStaticBody2D" type="StaticBody2D" parent="Collisions"]
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Collisions/MiddleStaticBody2D"]
+position = Vector2(-2, -43)
+shape = SubResource("RectangleShape2D_16jtx")
+
+[node name="LowerMiddleStaticBody2D" type="StaticBody2D" parent="Collisions"]
+position = Vector2(10, 160)
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Collisions/LowerMiddleStaticBody2D"]
+position = Vector2(-10.5, -43)
+shape = SubResource("RectangleShape2D_won0d")
+
+[node name="RoofStaticBody2D4" type="StaticBody2D" parent="Collisions"]
+position = Vector2(-6, -202)
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Collisions/RoofStaticBody2D4"]
+position = Vector2(1.5, -43)
+shape = SubResource("RectangleShape2D_fdjp5")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="Collisions"]
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Collisions/StaticBody2D2"]
+position = Vector2(204, -60)
+shape = SubResource("RectangleShape2D_oetyi")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="Collisions"]
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Collisions/StaticBody2D3"]
+position = Vector2(-209, -60)
+shape = SubResource("RectangleShape2D_oetyi")
+
+[node name="Platforms" type="Node2D" parent="."]
+
+[node name="Platform" parent="Platforms" instance=ExtResource("3_3t3vt")]
+position = Vector2(-251, 93)
+
+[node name="Platform2" parent="Platforms" instance=ExtResource("3_3t3vt")]
+position = Vector2(-251, 29)
+
+[node name="Platform3" parent="Platforms" instance=ExtResource("3_3t3vt")]
+position = Vector2(-251, -35)
+
+[node name="Platform4" parent="Platforms" instance=ExtResource("3_3t3vt")]
+position = Vector2(-251, -99)
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(-3, 285)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0.5, -69.5)
+shape = SubResource("RectangleShape2D_3t3vt")
