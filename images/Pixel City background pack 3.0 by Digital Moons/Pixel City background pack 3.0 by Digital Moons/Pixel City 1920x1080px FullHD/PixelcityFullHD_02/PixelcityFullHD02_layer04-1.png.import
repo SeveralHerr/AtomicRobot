@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d3wt71ex2l4u4"
-path="res://.godot/imported/ChatGPT Image Jun 1, 2025, 10_47_12 AM.png-c82890a0b31a5f2e76f974707db6c4ac.ctex"
+uid="uid://ct42jfl4ums1y"
+path="res://.godot/imported/PixelcityFullHD02_layer04-1.png-af88ffa4f5df66da6a0d35fd14d4dc54.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/ChatGPT Image Jun 1, 2025, 10_47_12 AM.png"
-dest_files=["res://.godot/imported/ChatGPT Image Jun 1, 2025, 10_47_12 AM.png-c82890a0b31a5f2e76f974707db6c4ac.ctex"]
+source_file="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_02/PixelcityFullHD02_layer04-1.png"
+dest_files=["res://.godot/imported/PixelcityFullHD02_layer04-1.png-af88ffa4f5df66da6a0d35fd14d4dc54.ctex"]
 
 [params]
 

@@ -21,7 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://dvddce0kog2ml" path="res://images/new/Background_Building2.png" id="13_n5jul"]
 [ext_resource type="AudioStream" uid="uid://h22uccj0lbg6" path="res://sounds/168897__fredericfont__water-stream-calmed-3.wav" id="15_m5f86"]
 [ext_resource type="AudioStream" uid="uid://cfcvw8qesil1k" path="res://sounds/469608__sheyvan__watersplash.wav" id="16_2yfl3"]
-[ext_resource type="Texture2D" uid="uid://673gwwu3m0ct" path="res://images/1.png" id="18_2xtnq"]
+[ext_resource type="Texture2D" uid="uid://ctgfviqfmrl63" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 240x135px/Pixelcity02/Pixelcity02_layer01.png" id="17_2xtnq"]
 [ext_resource type="Texture2D" uid="uid://b7tiv0rjrceoi" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_01/PixelcityFullHD01_layer01.png" id="18_2yfl3"]
 [ext_resource type="Texture2D" uid="uid://cvbjr1d03twqw" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_01/PixelcityFullHD01_layer02.png" id="19_2xtnq"]
 [ext_resource type="Texture2D" uid="uid://cfe6he8i4dnb0" path="res://images/new/Background_David.png" id="19_62krv"]
@@ -29,8 +29,8 @@
 [ext_resource type="Texture2D" uid="uid://bv1ony8p1mlcx" path="res://images/new/Blue_Trashcan.png" id="21_0bwfm"]
 [ext_resource type="Texture2D" uid="uid://dr4h2bc6ecmy3" path="res://Tiles/mp_cs_tilemap_all.png" id="21_euxwc"]
 [ext_resource type="Texture2D" uid="uid://dc1a5p03kl1vo" path="res://images/new/Building_glass.png" id="21_sj8ng"]
-[ext_resource type="Texture2D" uid="uid://cst3awg5fxlng" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_02/PixelcityFullHD02_layer04.png" id="22_2yfl3"]
 [ext_resource type="Texture2D" uid="uid://ibkloxrt0asn" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_01/PixelcityFullHD01_layer03.png" id="22_335wh"]
+[ext_resource type="Texture2D" uid="uid://cxlmma5joa6la" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_01/PixelcityFullHD01_layer04.png" id="22_brcwu"]
 [ext_resource type="Texture2D" uid="uid://jo0qmhfs7b8r" path="res://images/new/Background_bush2.png" id="22_lcs47"]
 [ext_resource type="Texture2D" uid="uid://duod82cw3fsl0" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_01/PixelcityFullHD01_layer06.png" id="23_2xtnq"]
 [ext_resource type="Texture2D" uid="uid://bkm0tybwwbc6i" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_01/PixelcityFullHD01_layer05.png" id="23_335wh"]
@@ -57,7 +57,7 @@
 [ext_resource type="Texture2D" uid="uid://b7c3ulm6ps4bi" path="res://images/new/Tree.png" id="51_2p6wh"]
 [ext_resource type="Texture2D" uid="uid://bdjs24506sg7i" path="res://images/crate.png" id="51_64moy"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="51_k4pk8"]
-[ext_resource type="Texture2D" uid="uid://d3wt71ex2l4u4" path="res://sprites/ChatGPT Image Jun 1, 2025, 10_47_12 AM.png" id="53_n3g1k"]
+[ext_resource type="Texture2D" uid="uid://d3wt71ex2l4u4" path="res://Sprites/ChatGPT Image Jun 1, 2025, 10_47_12 AM.png" id="53_n3g1k"]
 [ext_resource type="PackedScene" uid="uid://xnc3xl36cxv" path="res://scenes/crack.tscn" id="55_wvjmt"]
 [ext_resource type="Shader" uid="uid://b3nk82nwgcmxy" path="res://shaders/water.gdshader" id="56_fndef"]
 [ext_resource type="Texture2D" uid="uid://c3klbois75lr4" path="res://images/Light.png" id="57_qr2g0"]
@@ -357,7 +357,7 @@ stream = ExtResource("16_2yfl3")
 
 [node name="Parallax2DBackground" type="Parallax2D" parent="."]
 scroll_scale = Vector2(0.1, 1)
-scroll_offset = Vector2(-30, -167)
+scroll_offset = Vector2(-30, -249)
 repeat_size = Vector2(1160.38, 0)
 repeat_times = 11
 
@@ -365,7 +365,7 @@ repeat_times = 11
 visible = false
 position = Vector2(985, -532)
 scale = Vector2(3, 3)
-texture = ExtResource("18_2xtnq")
+texture = ExtResource("17_2xtnq")
 
 [node name="Background_Far_Building1" type="Sprite2D" parent="Parallax2DBackground"]
 position = Vector2(752, -233)
@@ -384,7 +384,7 @@ texture = ExtResource("2_n5jul")
 
 [node name="Parallax2D" type="Parallax2D" parent="."]
 scroll_scale = Vector2(0.4, 1)
-scroll_offset = Vector2(-204, 146)
+scroll_offset = Vector2(-204, 64)
 repeat_size = Vector2(1160.38, 0)
 repeat_times = 11
 
@@ -395,14 +395,15 @@ texture = ExtResource("22_335wh")
 
 [node name="Parallax2D2" type="Parallax2D" parent="."]
 scroll_scale = Vector2(0.6, 1)
-scroll_offset = Vector2(-738, 24)
+scroll_offset = Vector2(-738, -58)
 repeat_size = Vector2(882.6, 0)
 repeat_times = 11
 
 [node name="Background_Far_Building5" type="Sprite2D" parent="Parallax2D2"]
-position = Vector2(2583, -179)
+modulate = Color(0.872435, 0.872435, 0.872435, 1)
+position = Vector2(2500, -134)
 scale = Vector2(0.46, 0.46)
-texture = ExtResource("22_2yfl3")
+texture = ExtResource("22_brcwu")
 
 [node name="ForegroundParallaxLayer" type="Parallax2D" parent="."]
 visible = false
@@ -1244,7 +1245,7 @@ position = Vector2(2, 99)
 script = ExtResource("58_qr2g0")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UnderWorldKillBox"]
-position = Vector2(3488, 208)
+position = Vector2(3403, 206)
 shape = SubResource("RectangleShape2D_g4yhg")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="UnderWorldKillBox"]
