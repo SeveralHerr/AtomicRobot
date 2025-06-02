@@ -36,6 +36,7 @@ script = ExtResource("2_uwo4u")
 collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+z_index = -1
 shape = SubResource("CircleShape2D_64moy")
 
 [node name="NotificationLabel" type="Label" parent="."]

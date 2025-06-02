@@ -6,4 +6,5 @@ func _ready() -> void:
 	audio  = AudioStreamPlayer.new()
 	add_child(audio)
 	audio.stream= _21_THIS_IS_HEALING_
+	audio.volume_db -= 10
 	audio.play()

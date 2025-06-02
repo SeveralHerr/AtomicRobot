@@ -18,6 +18,7 @@ texture = ExtResource("2_w4kev")
 offset = Vector2(0, 1)
 
 [node name="Area2D" type="Area2D" parent="."]
+position = Vector2(-16, 3)
 collision_layer = 8
 collision_mask = 3
 

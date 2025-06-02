@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://yomdf011c10y"]
+[gd_scene load_steps=11 format=3 uid="uid://yomdf011c10y"]
 
-[ext_resource type="Script" uid="uid://dw6hmroaf4k4r" path="res://scripts/window_event_building.gd" id="1_55ooh"]
+[ext_resource type="Script" path="res://scripts/window_event_building.gd" id="1_55ooh"]
 [ext_resource type="Texture2D" uid="uid://ci6x7l4g5mh5l" path="res://images/new/Building2.png" id="1_won0d"]
 [ext_resource type="PackedScene" uid="uid://bxsksxhbmge8q" path="res://scenes/meter_maid_window.tscn" id="2_55ooh"]
 [ext_resource type="PackedScene" uid="uid://bxtldf7fn5fty" path="res://scenes/platform.tscn" id="3_3t3vt"]
+[ext_resource type="Texture2D" uid="uid://bdjq75snjsyn6" path="res://images/banner.png" id="3_16jtx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_16jtx"]
 size = Vector2(438, 9)
@@ -25,6 +26,10 @@ script = ExtResource("1_55ooh")
 
 [node name="Building" type="Sprite2D" parent="."]
 texture = ExtResource("1_won0d")
+
+[node name="Banner" type="Sprite2D" parent="."]
+position = Vector2(297, 227)
+texture = ExtResource("3_16jtx")
 
 [node name="MeterMaidWindow" parent="." instance=ExtResource("2_55ooh")]
 visible = false

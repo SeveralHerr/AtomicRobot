@@ -1,4 +1,4 @@
-[gd_scene load_steps=89 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=87 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
@@ -56,7 +56,6 @@
 [ext_resource type="Texture2D" uid="uid://b7c3ulm6ps4bi" path="res://images/new/Tree.png" id="51_2p6wh"]
 [ext_resource type="Texture2D" uid="uid://bdjs24506sg7i" path="res://images/crate.png" id="51_64moy"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="51_k4pk8"]
-[ext_resource type="Texture2D" uid="uid://d3wt71ex2l4u4" path="res://sprites/ChatGPT Image Jun 1, 2025, 10_47_12 AM.png" id="53_n3g1k"]
 [ext_resource type="PackedScene" uid="uid://yomdf011c10y" path="res://scenes/window_event_building.tscn" id="54_2xtnq"]
 [ext_resource type="PackedScene" uid="uid://xnc3xl36cxv" path="res://scenes/crack.tscn" id="55_wvjmt"]
 [ext_resource type="Shader" uid="uid://b3nk82nwgcmxy" path="res://shaders/water.gdshader" id="56_fndef"]
@@ -168,10 +167,6 @@ size = Vector2(24, 39)
 [sub_resource type="AtlasTexture" id="AtlasTexture_lcs47"]
 atlas = ExtResource("21_euxwc")
 region = Rect2(16, 940, 126, 36)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_7k40d"]
-atlas = ExtResource("53_n3g1k")
-region = Rect2(471, 678, 191, 308)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4yhg"]
 size = Vector2(14000, 200)
@@ -316,7 +311,7 @@ theme_override_font_sizes/font_size = 31
 text = "Restart"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(882.5, -349.25)
+position = Vector2(884, -348)
 scale = Vector2(15.7757, 1.22348)
 texture = ExtResource("1_haqju")
 
@@ -617,6 +612,7 @@ position = Vector2(9, 81)
 
 [node name="MeterMaidWindow" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("48_64moy")]
 visible = false
+top_level = true
 position = Vector2(3088, -107)
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="SceneItemsBackground/BuildingGroup1"]
@@ -1014,6 +1010,7 @@ collision_layer = 32
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/AtomicRobotBuilding/AtomicRobotRoof"]
+z_index = -1
 position = Vector2(498.5, -108)
 shape = SubResource("RectangleShape2D_01ywe")
 one_way_collision = true
@@ -1174,21 +1171,6 @@ flip_h = true
 [node name="EnemyManager" type="Node2D" parent="."]
 script = ExtResource("38_ikgy1")
 
-[node name="Crate" type="Sprite2D" parent="."]
-z_index = 1
-position = Vector2(257, -15)
-texture = ExtResource("51_64moy")
-
-[node name="Sprite2D7" type="Sprite2D" parent="Crate"]
-z_index = 1
-position = Vector2(32, 0)
-texture = ExtResource("51_64moy")
-
-[node name="Sprite2D8" type="Sprite2D" parent="Crate"]
-z_index = 1
-position = Vector2(12, -31)
-texture = ExtResource("51_64moy")
-
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 visible = false
 modulate = Color(0.271682, 0.271682, 0.271682, 1)
@@ -1235,11 +1217,6 @@ z_index = 1
 position = Vector2(300, -101)
 scale = Vector2(2, 2)
 texture = ExtResource("51_2p6wh")
-
-[node name="Sprite2D3" type="Sprite2D" parent="."]
-position = Vector2(89, -15)
-scale = Vector2(0.1, 0.1)
-texture = SubResource("AtlasTexture_7k40d")
 
 [node name="UnderWorldKillBox" type="Area2D" parent="."]
 position = Vector2(2, 99)
