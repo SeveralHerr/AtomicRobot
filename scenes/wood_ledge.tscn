@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://dwd6lyrgrnp0h"]
+
+[ext_resource type="Texture2D" uid="uid://bt3u1i27nnely" path="res://images/wood_ledge.png" id="1_qpdmb"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cjlxv"]
+size = Vector2(32.5, 5)
+
+[node name="WoodLedge" type="Sprite2D"]
+texture = ExtResource("1_qpdmb")
+flip_h = true
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+z_index = -1
+position = Vector2(11.75, -25)
+shape = SubResource("RectangleShape2D_cjlxv")
+one_way_collision = true

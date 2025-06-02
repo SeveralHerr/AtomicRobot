@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=3 uid="uid://d4hesyanxo8l"]
+
+[ext_resource type="Texture2D" uid="uid://jo0qmhfs7b8r" path="res://images/new/Background_bush2.png" id="1_moqmv"]
+[ext_resource type="Texture2D" uid="uid://biqvjni2xn7rp" path="res://images/new/Background_Bushes.png" id="2_tjqi0"]
+[ext_resource type="TileSet" uid="uid://dnk1onf4fhpgp" path="res://Tiles/tileset.tres" id="3_1ucss"]
+[ext_resource type="PackedScene" uid="uid://e6jpmakf8sa0" path="res://scenes/atomic_robot_building.tscn" id="4_uw6ff"]
+[ext_resource type="PackedScene" uid="uid://yomdf011c10y" path="res://scenes/window_event_building.tscn" id="5_07bf7"]
+[ext_resource type="PackedScene" uid="uid://bttbaymvxp2ts" path="res://scenes/crate2.tscn" id="6_tjqi0"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Bush" type="Sprite2D" parent="."]
+position = Vector2(439, 42)
+texture = ExtResource("1_moqmv")
+
+[node name="Bush2" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(439, 42)
+texture = ExtResource("2_tjqi0")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray(0, 0, 11, 0, 2, 0, 13, 0, 0, 0, 0, 0, 0, 0, 12, 0, 2, 0, 13, 0, 0, 0, 0, 0, 0, 0, 13, 0, 2, 0, 13, 0, 0, 0, 0, 0, 0, 0, 14, 0, 2, 0, 13, 0, 0, 0, 0, 0, 0, 0, 15, 0, 2, 0, 13, 0, 0, 0, 0, 0, 0, 0)
+tile_set = ExtResource("3_1ucss")
+
+[node name="AtomicRobotBuilding" parent="." instance=ExtResource("4_uw6ff")]
+
+[node name="WindowEventBuilding" parent="." instance=ExtResource("5_07bf7")]
+position = Vector2(770, -208)
+
+[node name="Crates" type="Node2D" parent="."]
+
+[node name="Crate" parent="Crates" instance=ExtResource("6_tjqi0")]
+position = Vector2(306, -111)
+
+[node name="Crate2" parent="Crates" instance=ExtResource("6_tjqi0")]
+position = Vector2(337, -111)
+
+[node name="Crate3" parent="Crates" instance=ExtResource("6_tjqi0")]
+position = Vector2(330, -141)

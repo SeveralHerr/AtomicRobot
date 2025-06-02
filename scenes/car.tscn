@@ -22,10 +22,13 @@ position = Vector2(0.166694, -9.5)
 collision_layer = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+z_index = -1
 position = Vector2(4.5, 8)
 shape = SubResource("ConvexPolygonShape2D_jtldb")
+debug_color = Color(0, 0.6, 0.701961, 0)
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+modulate = Color(1, 1, 1, 0)
 position = Vector2(41.1667, 1.5)
 scale = Vector2(19.45, 14.15)
 enable_node_path = NodePath("../AudioStreamPlayer2D")
