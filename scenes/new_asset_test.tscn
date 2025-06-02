@@ -1,4 +1,4 @@
-[gd_scene load_steps=87 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=88 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
@@ -61,6 +61,7 @@
 [ext_resource type="Shader" uid="uid://b3nk82nwgcmxy" path="res://shaders/water.gdshader" id="56_fndef"]
 [ext_resource type="Texture2D" uid="uid://c3klbois75lr4" path="res://images/Light.png" id="57_qr2g0"]
 [ext_resource type="Script" uid="uid://dvdcq0lhqdrnd" path="res://scripts/under_world_kill_box.gd" id="58_qr2g0"]
+[ext_resource type="Texture2D" uid="uid://c1rfgsu0deewc" path="res://images/bean3.PNG" id="62_2yfl3"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("51_k4pk8")
@@ -484,6 +485,7 @@ collision_layer = 64
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup1/Building2/StaticBody2D2"]
+z_index = -1
 position = Vector2(19, -95)
 shape = SubResource("RectangleShape2D_wvjmt")
 
@@ -897,7 +899,7 @@ tile_set = ExtResource("41_01ywe")
 
 [node name="TileMapLayer2" type="TileMapLayer" parent="SceneItemsBackground/TileMapLayer"]
 z_index = 1
-tile_map_data = PackedByteArray("AAD3//f/BQAJAAAAAAD4//f/BQAJAAAAAAD7//b/BQAJAAAAAAD8//b/BQAJAAAAAADKAAAABQAJAAAAAADPAAAABQAKAAAAAADPAAEABQAKAAEAAADKAAEABQAJAAEAAAA=")
+tile_map_data = PackedByteArray("AAD3//f/BQAJAAAAAAD4//f/BQAJAAAAAAD7//b/BQAJAAAAAAD8//b/BQAJAAAAAADKAAAABQAJAAAAAADPAAAABQAKAAAAAADPAAEABQAKAAEAAADKAAEABQAJAAEAAABzAPH/CQAAAAAAAAByAPH/CQAAAAAAAABxAPH/CQAAAAAAAAA=")
 tile_set = ExtResource("41_01ywe")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="SceneItemsBackground/TileMapLayer"]
@@ -1221,6 +1223,10 @@ collision_mask = 0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UnderWorldKillBox/StaticBody2D"]
 position = Vector2(174, 0)
 shape = SubResource("RectangleShape2D_m5f86")
+
+[node name="Sprite2D4" type="Sprite2D" parent="."]
+position = Vector2(3283, -523)
+texture = ExtResource("62_2yfl3")
 
 [editable path="SceneItemsBackground/BuildingGroup1/Tree5"]
 [editable path="SceneItemsBackground/BuildingGroup1/Tree6"]
