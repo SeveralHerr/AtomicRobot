@@ -2,7 +2,7 @@ extends State
 class_name JumpState
 
 
-const JUMP_VELOCITY = -400.0 # Slightly lower jump height
+const JUMP_VELOCITY = -450.0 # Slightly lower jump height
 const RUN_JUMP_X_BOOST = 60.0 # Tweak this value for how much extra x velocity to add
 const WALK_THRESHOLD = 10.0 # Minimum x velocity to count as running
 

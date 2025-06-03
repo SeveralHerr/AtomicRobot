@@ -38,7 +38,7 @@ const JUMP_VELOCITY = -1250.0
 var state_machine: StateMachine
 const FRICTION := 800
 # Get the gravity from the project settings to be synced with RigidBody nodes.
-var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
+var gravity: int = 1200
 const ACCELERATION = 1000.0  # Adjust as needed for smoother acceleration
 const AIR_CONTROL: float = 0.6
 # --- JUMP PHYSICS TUNING ---
