@@ -44,7 +44,7 @@ var coyote_time: float = 0.1
 var time_since_grounded: float = 0.0
 var fall_multiplier: float = 1.5 # Stronger gravity when falling
 var running_time: float = 0.0
-var run_boost_runtime: float = 0.3
+var run_boost_runtime: float = 0.2
 var boost_speed: float = 0
 var jump_start_position: Vector2
 
@@ -133,7 +133,7 @@ func _physics_process(delta: float) -> void:
 	# faster animation when jump boost is ready
 	if running_time >= run_boost_runtime:
 		default_sprite.speed_scale = 1.5
-		boost_speed = 30
+		boost_speed = 15
 		run_particles.start()
 	else: 
 		default_sprite.speed_scale = 1

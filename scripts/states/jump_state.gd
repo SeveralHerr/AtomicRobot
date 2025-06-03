@@ -24,7 +24,7 @@ func enter_state(player: Player) -> void:
 			var boost_dir = direction if direction != 0 else sign(player.velocity.x)
 			if boost_dir == 0:
 				boost_dir = 1 # Default to right if completely stopped (optional)
-			player.velocity.x += boost_dir * RUN_JUMP_X_BOOST
+
 			if boost_dir == -1:
 				player.velocity.y += boost_dir * RUN_JUMP_X_BOOST
 			else:
@@ -37,7 +37,7 @@ func enter_state(player: Player) -> void:
 		player.jumping_streak_sprite.play("default")
 	else:
 		# If not allowed, return to idle
-		player.state_machine.change_state("IdleState")
+		player.state_machine.change_state("IdleState")  
 
 func exit_state(player: Player) -> void:
 	player.jumping_streak_sprite.hide()
