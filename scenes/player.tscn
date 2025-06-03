@@ -151,10 +151,11 @@ shape = ExtResource("2_fjrip")
 
 [node name="DefaultSprite" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_mw4su")
-position = Vector2(1, -13)
+position = Vector2(2, 19)
 sprite_frames = ExtResource("3_y4r1p")
 animation = &"Attack"
 autoplay = "idle"
+offset = Vector2(0, -33.19)
 
 [node name="Area2D" type="Area2D" parent="."]
 position = Vector2(0, 20)
@@ -229,7 +230,7 @@ explosiveness = 0.8
 randomness = 1.0
 lifetime_randomness = 1.0
 emission_shape = 3
-emission_rect_extents = Vector2(12, 1)
+emission_rect_extents = Vector2(16, 1)
 direction = Vector2(0, -1)
 spread = 180.0
 gravity = Vector2(0, -60)

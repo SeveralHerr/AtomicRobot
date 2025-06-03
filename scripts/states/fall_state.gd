@@ -18,13 +18,26 @@ func update(player: Player, delta: float) -> void:
 	if not player.is_on_floor():
 		return
 		
+	squash_and_stretch(player)
 	if abs(player.velocity.x) <= 0:
+		
 		player.state_machine.change_state("IdleState")
 		return
 
 	player.state_machine.change_state("WalkState")
 
+func squash_and_stretch(player: Player):
+	player.default_sprite.scale = Vector2.ONE  # Reset scale before tweening
 
+	var tween = player.get_tree().create_tween()
+	tween.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+	# Shrink (squash)
+	tween.tween_property(player.default_sprite, "scale", Vector2(1.2, 0.8), 0.08)
+
+	# Stretch back
+	tween.tween_property(player.default_sprite, "scale", Vector2.ONE, 0.1)
+	
 func physics_update(player: Player, delta: float) -> void:
 	var direction := Input.get_axis("ui_left", "ui_right")
 	if direction:
