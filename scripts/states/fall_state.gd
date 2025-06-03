@@ -9,6 +9,7 @@ func enter_state(player: Player) -> void:
 
 func exit_state(player: Player) -> void:
 	player.jump_fx.emitting = true
+
 	pass
 
 func update(player: Player, delta: float) -> void:

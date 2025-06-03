@@ -1066,7 +1066,7 @@ position = Vector2(-3701, -106)
 position = Vector2(0, 10)
 
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
-position = Vector2(-1878, -18)
+position = Vector2(-1879, -21)
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false
