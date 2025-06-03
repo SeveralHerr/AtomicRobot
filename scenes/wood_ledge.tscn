@@ -10,6 +10,8 @@ texture = ExtResource("1_qpdmb")
 flip_h = true
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 32
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 z_index = -1
