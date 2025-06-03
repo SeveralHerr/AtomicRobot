@@ -35,7 +35,7 @@ var is_event_active: bool = false
 var SPEED = 170.0
 const JUMP_VELOCITY = -1250.0
 var state_machine: StateMachine
-
+const FRICTION := 800
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 
@@ -45,7 +45,7 @@ var time_since_grounded: float = 0.0
 var fall_multiplier: float = 1.5 # Stronger gravity when falling
 var running_time: float = 0.0
 var run_boost_runtime: float = 0.3
-
+var boost_speed: float = 0
 var jump_start_position: Vector2
 
 func take_damage(amount: int) -> void:
@@ -133,8 +133,12 @@ func _physics_process(delta: float) -> void:
 	# faster animation when jump boost is ready
 	if running_time >= run_boost_runtime:
 		default_sprite.speed_scale = 1.5
+		boost_speed = 30
+		run_particles.start()
 	else: 
 		default_sprite.speed_scale = 1
+		boost_speed = 0
+		run_particles.stop()
 
 	# Apply gravity and fall multiplier
 	if not is_on_floor():
@@ -150,6 +154,8 @@ func _physics_process(delta: float) -> void:
 	state_machine.physics_update(delta)
 	move_and_slide()
 
+func get_speed() -> float:
+	return SPEED + boost_speed
 	
 func _process(delta: float) -> void:
 	state_machine.update(delta)

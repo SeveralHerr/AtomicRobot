@@ -10,6 +10,7 @@ func enter_state(player: Player) -> void:
 func exit_state(player: Player) -> void:
 	player.jump_fx.emitting = true
 
+
 	pass
 
 func update(player: Player, delta: float) -> void:
@@ -22,7 +23,7 @@ func update(player: Player, delta: float) -> void:
 func physics_update(player: Player, delta: float) -> void:
 	var direction := Input.get_axis("ui_left", "ui_right")
 	if direction:
-		player.velocity.x = move_toward(player.velocity.x, direction * player.SPEED, ACCELERATION * delta)
+		player.velocity.x = move_toward(player.velocity.x, direction * player.get_speed(), ACCELERATION * delta)
 	else:
-		player.velocity.x = move_toward(player.velocity.x, 0, player.SPEED)
+		player.velocity.x = move_toward(player.velocity.x, 0, player.FRICTION * delta)
 	# Gravity and fall multiplier are handled in Player.gd 

@@ -4,12 +4,14 @@ extends CPUParticles2D
 var active: bool = false
 
 func start() -> void:
-	timer.start()
-	timer.timeout.connect(_toggle)
+	if not timer.timeout.is_connected(_toggle):
+		timer.start()
+		timer.timeout.connect(_toggle)
 func stop() -> void:
 	emitting = false
 	timer.stop()
-	timer.timeout.disconnect(_toggle)
+	if timer.timeout.is_connected(_toggle):
+		timer.timeout.disconnect(_toggle)
 
 
 func _toggle() -> void:
