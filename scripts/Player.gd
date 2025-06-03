@@ -6,9 +6,10 @@ signal player_health_updated(current_value: int)
 const PLAYER_CROUCH_COLLISION_SHAPE = preload("res://sprites/player_crouch_collision_shape.tres")
 const PLAYER_NORMAL_COLLISION_SHAPE = preload("res://sprites/player_normal_collision_shape.tres")
 
-# Import the KnockbackState
+# Import the states
 const KnockbackState = preload("res://scripts/states/knockback_state.gd")
 const FallState = preload("res://scripts/states/fall_state.gd")
+const RunState = preload("res://scripts/states/run_state.gd")
 
 @onready var default_sprite: AnimatedSprite2D = $DefaultSprite
 @onready var area_2d: Area2D = $Area2D
@@ -38,16 +39,15 @@ var state_machine: StateMachine
 const FRICTION := 800
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
-
+const ACCELERATION = 1000.0  # Adjust as needed for smoother acceleration
+const AIR_CONTROL: float = 0.6
 # --- JUMP PHYSICS TUNING ---
 var coyote_time: float = 0.1
 var time_since_grounded: float = 0.0
 var fall_multiplier: float = 1.5 # Stronger gravity when falling
-var running_time: float = 0.0
-var run_boost_runtime: float = 0.2
 var boost_speed: float = 0
 var jump_start_position: Vector2
-
+var last_dir = 1
 func take_damage(amount: int) -> void:
 	health -= amount
 	print(health)
@@ -73,6 +73,7 @@ func _ready() -> void:
 	state_machine.add_state("JumpState", JumpState.new())
 	state_machine.add_state("AttackState", AttackState.new())
 	state_machine.add_state("WalkState", WalkState.new())
+	state_machine.add_state("RunState", RunState.new())
 	state_machine.add_state("DeadState", DeadState.new())
 	state_machine.add_state("ClimbState", ClimbState.new())
 	state_machine.add_state("CrouchState", CrouchState.new())
@@ -82,19 +83,6 @@ func _ready() -> void:
 	state_machine.change_state("IdleState")
 	jumping_streak_sprite.hide()
 	jump_fx_offset = jump_fx.position.y
-	#var tex = default_sprite.sprite_frames.get_frame_texture(default_sprite.animation, default_sprite.frame)
-#
-	#if tex is AtlasTexture:
-		#var atlas := tex as AtlasTexture
-		#var hframes = atlas.get_size().x / atlas.atlas.get_width()
-		#h = hframes
-		#var vframes = atlas.get_size().y / atlas.atlas.get_height()
-		## Or send manually known values if ratio isn't perfect
-		#var m: ShaderMaterial = default_sprite.material 
-		#m.set_shader_parameter("nb_frames", Vector2(hframes, vframes))
-		
-
-	#default_sprite.material.set_shader_param("nb_frames",Vector2(default_sprite.sprite_frames.hframes, default_sprite.sprite_frames.vframes))
 	default_sprite.sprite_frames = Globals.character_dict[Globals.selected_character].sprite_frames
 
 	Globals.event.connect(_event_started)
@@ -122,23 +110,6 @@ func _physics_process(delta: float) -> void:
 		time_since_grounded = 0.0
 	else:
 		time_since_grounded += delta
-
-	# Track running time
-	var direction := Input.get_axis("ui_left", "ui_right")	
-	if abs(velocity.x) > 10 and direction != 0 and is_on_floor():
-		running_time += delta
-	else:
-		running_time = 0.0
-		
-	# faster animation when jump boost is ready
-	if running_time >= run_boost_runtime:
-		default_sprite.speed_scale = 1.5
-		boost_speed = 15
-		run_particles.start()
-	else: 
-		default_sprite.speed_scale = 1
-		boost_speed = 0
-		run_particles.stop()
 
 	# Apply gravity and fall multiplier
 	if not is_on_floor():

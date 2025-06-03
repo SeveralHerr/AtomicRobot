@@ -3,6 +3,7 @@ class_name StateMachine
 
 var states = {}
 var current_state: State = null
+var previous_state: State = null
 var player: Player
 
 func _init(player: Player) -> void:
@@ -14,7 +15,9 @@ func add_state(name: String, state: State) -> void:
 func change_state(name: String) -> void:
 	#print(name)
 	if current_state:
+		previous_state = current_state
 		current_state.exit_state(player)
+
 	current_state = states[name]
 	print("Player state: ", name)
 	current_state.enter_state(player)
