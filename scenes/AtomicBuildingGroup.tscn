@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://d4hesyanxo8l"]
+[gd_scene load_steps=15 format=4 uid="uid://d4hesyanxo8l"]
 
 [ext_resource type="Texture2D" uid="uid://jo0qmhfs7b8r" path="res://images/new/Background_bush2.png" id="1_moqmv"]
 [ext_resource type="Texture2D" uid="uid://biqvjni2xn7rp" path="res://images/new/Background_Bushes.png" id="2_tjqi0"]
@@ -7,8 +7,15 @@
 [ext_resource type="PackedScene" uid="uid://yomdf011c10y" path="res://scenes/window_event_building.tscn" id="5_07bf7"]
 [ext_resource type="PackedScene" uid="uid://bttbaymvxp2ts" path="res://scenes/crate2.tscn" id="6_tjqi0"]
 [ext_resource type="PackedScene" uid="uid://dwd6lyrgrnp0h" path="res://scenes/wood_ledge.tscn" id="7_1ucss"]
+[ext_resource type="PackedScene" uid="uid://c86dda1gnhixs" path="res://scenes/tree.tscn" id="8_uw6ff"]
+[ext_resource type="Texture2D" uid="uid://ds6dn0qq2gslf" path="res://images/new/Black_Trashcan.png" id="9_07bf7"]
+[ext_resource type="Texture2D" uid="uid://bv1ony8p1mlcx" path="res://images/new/Blue_Trashcan.png" id="10_c5bjw"]
+[ext_resource type="PackedScene" uid="uid://bn6uk4y67s804" path="res://scenes/lamp.tscn" id="11_c5bjw"]
+[ext_resource type="PackedScene" uid="uid://bi5pyhjxtocqc" path="res://scenes/interactive_mailbox.tscn" id="12_c5bjw"]
+[ext_resource type="PackedScene" uid="uid://xnc3xl36cxv" path="res://scenes/crack.tscn" id="13_ops16"]
+[ext_resource type="Texture2D" uid="uid://djcyx273wjxf0" path="res://images/car2.png" id="14_x5r1p"]
 
-[node name="Node2D" type="Node2D"]
+[node name="AtomicGroup" type="Node2D"]
 
 [node name="Bush2" type="Sprite2D" parent="."]
 position = Vector2(471, 43)
@@ -47,3 +54,39 @@ scale = Vector2(-1, 1)
 [node name="WoodLedge2" parent="." instance=ExtResource("7_1ucss")]
 show_behind_parent = true
 position = Vector2(543, -68)
+
+[node name="Tree" parent="." instance=ExtResource("8_uw6ff")]
+position = Vector2(320, 11)
+
+[node name="Tree2" parent="." instance=ExtResource("8_uw6ff")]
+position = Vector2(733, 10)
+
+[node name="Trash" type="Sprite2D" parent="."]
+z_index = 1
+position = Vector2(288, 81)
+texture = ExtResource("9_07bf7")
+
+[node name="Trash2" type="Sprite2D" parent="."]
+z_index = 1
+position = Vector2(965, 80)
+texture = ExtResource("10_c5bjw")
+
+[node name="Lamp" parent="." instance=ExtResource("11_c5bjw")]
+position = Vector2(523, 27)
+
+[node name="InteractiveMailbox" parent="." instance=ExtResource("12_c5bjw")]
+position = Vector2(564, 80)
+
+[node name="Crack" parent="." instance=ExtResource("13_ops16")]
+visible = false
+position = Vector2(647, -351)
+
+[node name="AnimatedSprite2D" parent="Crack" index="0"]
+position = Vector2(-2, 20)
+scale = Vector2(0.66, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("14_x5r1p")
+
+[editable path="Crack"]
