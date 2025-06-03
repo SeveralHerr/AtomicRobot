@@ -26,9 +26,6 @@ func physics_update(player: Player, delta: float) -> void:
 		var target = direction * player.get_speed()
 		player.velocity.x = move_toward(player.velocity.x, target, player.ACCELERATION * delta)
 		
-	else:
-		player.velocity.x = move_toward(player.velocity.x, 0, player.FRICTION * delta)
-		
 	_handle_direction(direction, player)
 
 func _handle_direction(direction, player) -> void:
@@ -50,7 +47,7 @@ func _handle_direction(direction, player) -> void:
 func handle_input(player: Player, event: InputEvent) -> void:
 	if event.is_action_pressed("Run"):
 		player.state_machine.change_state("RunState")
-	elif event.is_action_pressed("ui_accept") and player.is_on_floor():
+	elif event.is_action_pressed("ui_accept") and player.can_jump():
 		player.state_machine.change_state("JumpState")
 	elif event.is_action_pressed("Attack"):
 		player.state_machine.change_state("AttackState")

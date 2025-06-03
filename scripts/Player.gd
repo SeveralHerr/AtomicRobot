@@ -42,7 +42,8 @@ var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 const ACCELERATION = 1000.0  # Adjust as needed for smoother acceleration
 const AIR_CONTROL: float = 0.6
 # --- JUMP PHYSICS TUNING ---
-var coyote_time: float = 0.1
+const COYOTE_TIME: float = 0.1
+var coyote_timer: float = 0
 var time_since_grounded: float = 0.0
 var fall_multiplier: float = 1.5 # Stronger gravity when falling
 var boost_speed: float = 0
@@ -107,9 +108,9 @@ func move_player() -> void:
 func _physics_process(delta: float) -> void:
 	# Track coyote time
 	if is_on_floor():
-		time_since_grounded = 0.0
+		coyote_timer = COYOTE_TIME
 	else:
-		time_since_grounded += delta
+		coyote_timer -= delta
 
 	# Apply gravity and fall multiplier
 	if not is_on_floor():
@@ -124,6 +125,9 @@ func _physics_process(delta: float) -> void:
 
 	state_machine.physics_update(delta)
 	move_and_slide()
+	
+func can_jump() -> bool: 
+	return coyote_timer > 0 or is_on_floor()
 
 func get_speed() -> float:
 	return SPEED + boost_speed

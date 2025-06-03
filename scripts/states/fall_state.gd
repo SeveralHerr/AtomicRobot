@@ -32,3 +32,10 @@ func physics_update(player: Player, delta: float) -> void:
 	#else:
 		#player.velocity.x = move_toward(player.velocity.x, 0, player.FRICTION * delta* player.AIR_CONTROL)
 	# Gravity and fall multiplier are handled in Player.gd 
+func handle_input(player: Player, event: InputEvent) -> void:
+	if event.is_action_pressed("ui_accept") and player.can_jump():
+		player.state_machine.change_state("JumpState")
+	elif event.is_action_pressed("Attack"):
+		player.state_machine.change_state("AttackState")
+	elif event.is_action_pressed("ui_down") and player.is_on_floor():
+		player.state_machine.change_state("CrouchState")

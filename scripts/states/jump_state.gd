@@ -2,15 +2,16 @@ extends State
 class_name JumpState
 
 
-const JUMP_VELOCITY = -380.0 # Slightly lower jump height
+const JUMP_VELOCITY = -400.0 # Slightly lower jump height
 const RUN_JUMP_X_BOOST = 60.0 # Tweak this value for how much extra x velocity to add
 const WALK_THRESHOLD = 10.0 # Minimum x velocity to count as running
 
 func enter_state(player: Player) -> void:
 	player.jump_start_position = Vector2(player.global_position.x, player.global_position.y + player.jump_fx_offset)
 	# Only allow jump if on floor or within coyote time
-	if player.is_on_floor() or player.time_since_grounded <= player.coyote_time:
-		player.velocity.y = JUMP_VELOCITY
+
+	player.velocity.y = JUMP_VELOCITY
+	player.coyote_timer = 0
 		
 		# running jump boost
 		#if player.state_machine.previous_state is RunState:
@@ -36,15 +37,15 @@ func enter_state(player: Player) -> void:
 				#player.velocity.y += boost_dir * RUN_JUMP_X_BOOST
 			#else:
 				#player.velocity.y -= boost_dir * RUN_JUMP_X_BOOST
-		player.jump_fx.global_position = 	player.jump_start_position
-		player.jump_fx.emitting=true
-		player.default_sprite.play("Jump")
-		player.jump_audio_player.play()
-		player.jumping_streak_sprite.show()
-		player.jumping_streak_sprite.play("default")
-	else:
-		# If not allowed, return to idle
-		player.state_machine.change_state("IdleState")  
+	player.jump_fx.global_position = 	player.jump_start_position
+	player.jump_fx.emitting=true
+	player.default_sprite.play("Jump")
+	player.jump_audio_player.play()
+	player.jumping_streak_sprite.show()
+	player.jumping_streak_sprite.play("default")
+	#else:
+		## If not allowed, return to idle
+		#player.state_machine.change_state("IdleState")  
 
 func exit_state(player: Player) -> void:
 	player.jumping_streak_sprite.hide()
