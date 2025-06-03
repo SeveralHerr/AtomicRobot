@@ -24,6 +24,10 @@ ScreenShake="*res://scripts/screenshake.gd"
 AudioManager="*res://scripts/audio_manager.gd"
 EnemySpawner="*res://scripts/enemy_spawner.gd"
 
+[debug]
+
+settings/stdout/print_fps=true
+
 [display]
 
 window/size/viewport_width=1280

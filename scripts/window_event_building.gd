@@ -14,7 +14,7 @@ func _ready() -> void:
 	
 	# Initialize spawn timer
 	spawn_timer = Timer.new()
-	spawn_timer.wait_time = 3.0
+	spawn_timer.wait_time = 7.0
 	spawn_timer.one_shot = false
 	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
 	add_child(spawn_timer)

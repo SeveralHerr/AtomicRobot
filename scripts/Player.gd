@@ -41,6 +41,8 @@ var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 var coyote_time: float = 0.1
 var time_since_grounded: float = 0.0
 var fall_multiplier: float = 1.5 # Stronger gravity when falling
+var running_time: float = 0.0
+var run_boost_runtime: float = 0.3
 
 func take_damage(amount: int) -> void:
 	health -= amount
@@ -103,6 +105,19 @@ func _physics_process(delta: float) -> void:
 		time_since_grounded = 0.0
 	else:
 		time_since_grounded += delta
+
+	# Track running time
+	var direction := Input.get_axis("ui_left", "ui_right")	
+	if abs(velocity.x) > 10 and direction != 0 and is_on_floor():
+		running_time += delta
+	else:
+		running_time = 0.0
+		
+	# faster animation when jump boost is ready
+	if running_time >= run_boost_runtime:
+		default_sprite.speed_scale = 1.5
+	else: 
+		default_sprite.speed_scale = 1
 
 	# Apply gravity and fall multiplier
 	if not is_on_floor():

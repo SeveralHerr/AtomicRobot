@@ -18,16 +18,16 @@ func enter_state(player: Player) -> void:
 			if (direction < 0 and player.get_wall_normal().x > 0) or (direction > 0 and player.get_wall_normal().x < 0):
 				can_boost = false
 
-		if can_boost and (abs(player.velocity.x) > WALK_THRESHOLD or direction != 0):
+		# Only apply boost if running for at least 0.5s
+		if can_boost and (abs(player.velocity.x) > WALK_THRESHOLD or direction != 0) and player.running_time >= player.run_boost_runtime:
 			var boost_dir = direction if direction != 0 else sign(player.velocity.x)
 			if boost_dir == 0:
 				boost_dir = 1 # Default to right if completely stopped (optional)
-				
 			player.velocity.x += boost_dir * RUN_JUMP_X_BOOST
-			if boost_dir == -1: 
-				player.velocity.y += boost_dir * RUN_JUMP_X_BOOST 				
+			if boost_dir == -1:
+				player.velocity.y += boost_dir * RUN_JUMP_X_BOOST
 			else:
-				player.velocity.y -= boost_dir * RUN_JUMP_X_BOOST 
+				player.velocity.y -= boost_dir * RUN_JUMP_X_BOOST
 
 		player.default_sprite.play("Jump")
 		player.jump_audio_player.play()
