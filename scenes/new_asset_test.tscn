@@ -56,8 +56,8 @@
 [ext_resource type="Texture2D" uid="uid://b7c3ulm6ps4bi" path="res://images/new/Tree.png" id="51_2p6wh"]
 [ext_resource type="Texture2D" uid="uid://bdjs24506sg7i" path="res://images/crate.png" id="51_64moy"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="51_k4pk8"]
+[ext_resource type="PackedScene" uid="uid://d4hesyanxo8l" path="res://scenes/AtomicBuildingGroup.tscn" id="54_2yfl3"]
 [ext_resource type="PackedScene" uid="uid://xnc3xl36cxv" path="res://scenes/crack.tscn" id="55_wvjmt"]
-[ext_resource type="PackedScene" uid="uid://e6jpmakf8sa0" path="res://scenes/atomic_robot_building.tscn" id="56_brcwu"]
 [ext_resource type="Shader" uid="uid://b3nk82nwgcmxy" path="res://shaders/water.gdshader" id="56_fndef"]
 [ext_resource type="Texture2D" uid="uid://c3klbois75lr4" path="res://images/Light.png" id="57_qr2g0"]
 [ext_resource type="Script" uid="uid://dvdcq0lhqdrnd" path="res://scripts/under_world_kill_box.gd" id="58_qr2g0"]
@@ -1062,11 +1062,11 @@ position = Vector2(1494, -16)
 [node name="TestGroup" type="Node2D" parent="SceneItemsBackground"]
 position = Vector2(-3701, -106)
 
-[node name="AtomicRobotBuilding" parent="SceneItemsBackground/TestGroup" instance=ExtResource("56_brcwu")]
+[node name="Node2D" parent="SceneItemsBackground/TestGroup" instance=ExtResource("54_2yfl3")]
 position = Vector2(0, 10)
 
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
-position = Vector2(-1879, -41)
+position = Vector2(-1878, -18)
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false

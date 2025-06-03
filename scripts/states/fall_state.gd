@@ -8,6 +8,7 @@ func enter_state(player: Player) -> void:
 	player.jumping_streak_sprite.hide()
 
 func exit_state(player: Player) -> void:
+	player.jump_fx.emitting = true
 	pass
 
 func update(player: Player, delta: float) -> void:

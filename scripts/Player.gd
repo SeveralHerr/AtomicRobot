@@ -25,8 +25,10 @@ const FallState = preload("res://scripts/states/fall_state.gd")
 @onready var attack_audio: AudioStreamPlayer = $AttackAudio
 @onready var walk_audio: AudioStreamPlayer = $WalkAudio
 @onready var hurt_audio: AudioStreamPlayer = $HurtAudio
+@onready var jump_fx: CPUParticles2D = $JumpFx
+@onready var run_particles: CPUParticles2D = $RunParticles
 
-
+var jump_fx_offset: float = 0
 var is_dead: bool = false
 var health: int = 4
 var is_event_active: bool = false
@@ -44,6 +46,8 @@ var fall_multiplier: float = 1.5 # Stronger gravity when falling
 var running_time: float = 0.0
 var run_boost_runtime: float = 0.3
 
+var jump_start_position: Vector2
+
 func take_damage(amount: int) -> void:
 	health -= amount
 	print(health)
@@ -60,7 +64,7 @@ func is_near_ground() -> bool:
 	if position.y >= -200:
 		return true
 	return false
-
+var h
 func _ready() -> void:
 	print("grav, ", gravity)
 	Globals.player = self
@@ -77,7 +81,20 @@ func _ready() -> void:
 	
 	state_machine.change_state("IdleState")
 	jumping_streak_sprite.hide()
+	jump_fx_offset = jump_fx.position.y
+	#var tex = default_sprite.sprite_frames.get_frame_texture(default_sprite.animation, default_sprite.frame)
+#
+	#if tex is AtlasTexture:
+		#var atlas := tex as AtlasTexture
+		#var hframes = atlas.get_size().x / atlas.atlas.get_width()
+		#h = hframes
+		#var vframes = atlas.get_size().y / atlas.atlas.get_height()
+		## Or send manually known values if ratio isn't perfect
+		#var m: ShaderMaterial = default_sprite.material 
+		#m.set_shader_parameter("nb_frames", Vector2(hframes, vframes))
+		
 
+	#default_sprite.material.set_shader_param("nb_frames",Vector2(default_sprite.sprite_frames.hframes, default_sprite.sprite_frames.vframes))
 	default_sprite.sprite_frames = Globals.character_dict[Globals.selected_character].sprite_frames
 
 	Globals.event.connect(_event_started)
@@ -127,7 +144,7 @@ func _physics_process(delta: float) -> void:
 
 	# Switch to FallState if falling and not already in it or dead
 	if not is_on_floor() and velocity.y > 0:
-		if not (state_machine.current_state is FallState or state_machine.current_state is DeadState):
+		if not (state_machine.current_state is FallState or state_machine.current_state is DeadState or state_machine.current_state is IdleState):
 			state_machine.change_state("FallState")
 
 	state_machine.physics_update(delta)
@@ -136,6 +153,12 @@ func _physics_process(delta: float) -> void:
 	
 func _process(delta: float) -> void:
 	state_machine.update(delta)
+	#var frame = default_sprite.frame
+	#var x = frame / h
+	#var y = frame / h
+	#var frame_coords = Vector2(x, y)
+	#default_sprite.material.set_shader_parameter("frame_coords",frame_coords)
+	#default_sprite.material.set_shader_parameter("velocity",velocity)
 
 func receive_hit(source_position: Vector2, damage: int) -> void:
 	if is_dead:

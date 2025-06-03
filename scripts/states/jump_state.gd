@@ -7,6 +7,7 @@ const RUN_JUMP_X_BOOST = 60.0 # Tweak this value for how much extra x velocity t
 const WALK_THRESHOLD = 10.0 # Minimum x velocity to count as running
 
 func enter_state(player: Player) -> void:
+	player.jump_start_position = Vector2(player.global_position.x, player.global_position.y + player.jump_fx_offset)
 	# Only allow jump if on floor or within coyote time
 	if player.is_on_floor() or player.time_since_grounded <= player.coyote_time:
 		player.velocity.y = JUMP_VELOCITY
@@ -28,7 +29,8 @@ func enter_state(player: Player) -> void:
 				player.velocity.y += boost_dir * RUN_JUMP_X_BOOST
 			else:
 				player.velocity.y -= boost_dir * RUN_JUMP_X_BOOST
-
+		player.jump_fx.global_position = 	player.jump_start_position
+		player.jump_fx.emitting=true
 		player.default_sprite.play("Jump")
 		player.jump_audio_player.play()
 		player.jumping_streak_sprite.show()
@@ -39,8 +41,10 @@ func enter_state(player: Player) -> void:
 
 func exit_state(player: Player) -> void:
 	player.jumping_streak_sprite.hide()
+	player.jump_fx.global_position = Vector2(player.global_position.x, player.global_position.y + player.jump_fx_offset)
 
 func update(player: Player, delta: float) -> void:
+	player.jump_fx.global_position = 	player.jump_start_position
 	if player.is_on_floor() and player.velocity.y >= -100:
 		if player.velocity.x <= 0:
 			player.state_machine.change_state("IdleState")

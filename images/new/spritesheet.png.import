@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c2hqjpgo48hjx"
-path="res://.godot/imported/Ryan2.png-186b76f879c743052dc3eb67fb0e7632.ctex"
+uid="uid://b85qvn6fan7s3"
+path="res://.godot/imported/spritesheet.png-2d3321ec504615688a541e27ec277199.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/Ryan2.png"
-dest_files=["res://.godot/imported/Ryan2.png-186b76f879c743052dc3eb67fb0e7632.ctex"]
+source_file="res://images/new/spritesheet.png"
+dest_files=["res://.godot/imported/spritesheet.png-2d3321ec504615688a541e27ec277199.ctex"]
 
 [params]
 
