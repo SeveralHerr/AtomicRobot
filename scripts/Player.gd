@@ -8,6 +8,7 @@ const PLAYER_NORMAL_COLLISION_SHAPE = preload("res://sprites/player_normal_colli
 
 # Import the KnockbackState
 const KnockbackState = preload("res://scripts/states/knockback_state.gd")
+const FallState = preload("res://scripts/states/fall_state.gd")
 
 @onready var default_sprite: AnimatedSprite2D = $DefaultSprite
 @onready var area_2d: Area2D = $Area2D
@@ -70,6 +71,7 @@ func _ready() -> void:
 	state_machine.add_state("ClimbState", ClimbState.new())
 	state_machine.add_state("CrouchState", CrouchState.new())
 	state_machine.add_state("KnockbackState", KnockbackState.new())
+	state_machine.add_state("FallState", FallState.new())
 	
 	state_machine.change_state("IdleState")
 	jumping_streak_sprite.hide()
@@ -107,7 +109,12 @@ func _physics_process(delta: float) -> void:
 		if velocity.y > 0:
 			velocity.y += gravity * (fall_multiplier - 1.0) * delta
 		velocity.y += gravity * delta
-	
+
+	# Switch to FallState if falling and not already in it or dead
+	if not is_on_floor() and velocity.y > 0:
+		if not (state_machine.current_state is FallState or state_machine.current_state is DeadState):
+			state_machine.change_state("FallState")
+
 	state_machine.physics_update(delta)
 	move_and_slide()
 

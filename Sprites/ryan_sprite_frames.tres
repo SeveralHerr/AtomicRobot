@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=34 format=3 uid="uid://do54d5cxhwo50"]
+[gd_resource type="SpriteFrames" load_steps=35 format=3 uid="uid://do54d5cxhwo50"]
 
 [ext_resource type="Texture2D" uid="uid://c2hqjpgo48hjx" path="res://Sprites/Ryan2.png" id="1_bga50"]
 
@@ -77,6 +77,10 @@ region = Rect2(0, 4408, 170, 152)
 [sub_resource type="AtlasTexture" id="AtlasTexture_2p17n"]
 atlas = ExtResource("1_bga50")
 region = Rect2(0, 4560, 170, 152)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bga50"]
+atlas = ExtResource("1_bga50")
+region = Rect2(0, 1976, 170, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_faa6g"]
 atlas = ExtResource("1_bga50")
@@ -208,6 +212,14 @@ animations = [{
 "loop": false,
 "name": &"Dead",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bga50")
+}],
+"loop": true,
+"name": &"Fall",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,

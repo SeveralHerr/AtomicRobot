@@ -20,8 +20,15 @@ func enter_state(player: Player) -> void:
 
 		if can_boost and (abs(player.velocity.x) > WALK_THRESHOLD or direction != 0):
 			var boost_dir = direction if direction != 0 else sign(player.velocity.x)
+			if boost_dir == 0:
+				boost_dir = 1 # Default to right if completely stopped (optional)
+				
 			player.velocity.x += boost_dir * RUN_JUMP_X_BOOST
-			player.velocity.y -= boost_dir * RUN_JUMP_X_BOOST
+			if boost_dir == -1: 
+				player.velocity.y += boost_dir * RUN_JUMP_X_BOOST 				
+			else:
+				player.velocity.y -= boost_dir * RUN_JUMP_X_BOOST 
+
 		player.default_sprite.play("Jump")
 		player.jump_audio_player.play()
 		player.jumping_streak_sprite.show()

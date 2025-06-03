@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=34 format=3 uid="uid://c0258e88sc8p1"]
+[gd_resource type="SpriteFrames" load_steps=35 format=3 uid="uid://c0258e88sc8p1"]
 
 [ext_resource type="Texture2D" uid="uid://cdr1pqjg00fa7" path="res://Sprites/Cody.png" id="1_o01pa"]
 [ext_resource type="Texture2D" uid="uid://cmr8elkjwdcuf" path="res://Sprites/Cody2.png" id="2_4jrfh"]
@@ -74,6 +74,10 @@ region = Rect2(344, 608, 172, 152)
 [sub_resource type="AtlasTexture" id="AtlasTexture_j1av8"]
 atlas = ExtResource("1_o01pa")
 region = Rect2(516, 608, 172, 152)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qgyeg"]
+atlas = ExtResource("2_4jrfh")
+region = Rect2(172, 304, 172, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ts4sn"]
 atlas = ExtResource("1_o01pa")
@@ -202,6 +206,14 @@ animations = [{
 "loop": false,
 "name": &"Dead",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qgyeg")
+}],
+"loop": true,
+"name": &"Fall",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
