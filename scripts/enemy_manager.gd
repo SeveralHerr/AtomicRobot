@@ -14,7 +14,7 @@ func _ready():
 	spawn_timer = Timer.new()
 	add_child(spawn_timer)
 	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
-	spawn_timer.wait_time = randf_range(3.0, 15.0)
+	spawn_timer.wait_time = randf_range(8.0, 15.0)
 	spawn_timer.start()
 	
 	Globals.event.connect(_event_started)

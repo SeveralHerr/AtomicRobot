@@ -208,3 +208,18 @@ func update_facing_direction() -> void:
 		scale.x = -1 # Face left
 	elif direction > 0:
 		scale.x = 1 # Face right
+func _handle_direction(direction, player) -> void:
+	if direction:
+		if direction < 0:
+			if last_dir != -1:
+				if scale.x == -1:
+					scale.x *= -1
+					last_dir = -1
+					return
+				scale.x *= -1
+				last_dir = -1
+
+		elif direction > 0:
+			if last_dir != 1 :
+				scale.x *= -1
+				last_dir = 1

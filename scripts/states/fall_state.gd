@@ -29,6 +29,7 @@ func physics_update(player: Player, delta: float) -> void:
 	var direction := Input.get_axis("ui_left", "ui_right")
 	if direction:
 		player.velocity.x = move_toward(player.velocity.x, direction * player.get_speed(), ACCELERATION * delta* player.AIR_CONTROL)
+	player._handle_direction(direction, player)
 	#else:
 		#player.velocity.x = move_toward(player.velocity.x, 0, player.FRICTION * delta* player.AIR_CONTROL)
 	# Gravity and fall multiplier are handled in Player.gd 

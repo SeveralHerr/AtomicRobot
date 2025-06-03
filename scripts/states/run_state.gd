@@ -37,21 +37,6 @@ func physics_update(player: Player, delta: float) -> void:
 		var target = direction * player.get_speed()
 		player.velocity.x = move_toward(player.velocity.x, target, player.ACCELERATION * delta)
 		
-	_handle_direction(direction, player)
+	player._handle_direction(direction, player)
 
-func _handle_direction(direction, player) -> void:
-	if direction:
-		if direction < 0:
-			if player.last_dir != -1:
-				if player.scale.x == -1:
-					player.scale.x *= -1
-					player.last_dir = -1
-					return
-				player.scale.x *= -1
-				player.last_dir = -1
-
-		elif direction > 0:
-			if player.last_dir != 1 :
-				player.scale.x *= -1
-				player.last_dir = 1
 		
