@@ -32,7 +32,7 @@ func exit_state(enemy: Enemy) -> void:
 
 
 func physics_update(delta: float) -> void:
-	_update_sprite_direction(enemy)
+
 	if stand_still:
 			enemy.velocity.x = 0
 			enemy.animated_sprite_2d.pause()
@@ -61,6 +61,8 @@ func physics_update(delta: float) -> void:
 		
 		var target_velocity = dir.x * enemy.move_speed 
 		enemy.velocity.x = move_toward(enemy.velocity.x, target_velocity, 2000 * delta)
+		
+	_update_sprite_direction(enemy)
 	
 func move_along_path(delta: float) -> void:
 	var target_position = enemy.navigation_agent_2d.get_next_path_position()

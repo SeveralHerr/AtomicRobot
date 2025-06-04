@@ -1,7 +1,7 @@
 [gd_resource type="SpriteFrames" load_steps=30 format=3 uid="uid://ckct5j2bt3fq7"]
 
-[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://Sprites/Meter Maid.png" id="1_8f8f2"]
-[ext_resource type="Texture2D" uid="uid://b4148jkj0h31i" path="res://Sprites/meter maid melee.png" id="2_u5nk8"]
+[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://sprites/Meter Maid.png" id="1_8f8f2"]
+[ext_resource type="Texture2D" uid="uid://c5t338lvqm8mh" path="res://sprites/meter maid refill.png" id="2_uvsvq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uvsvq"]
 atlas = ExtResource("1_8f8f2")
@@ -187,7 +187,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_u5nk8")
+"texture": ExtResource("2_uvsvq")
 }],
 "loop": true,
 "name": &"refill",
