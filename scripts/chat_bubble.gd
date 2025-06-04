@@ -12,7 +12,8 @@ func create(parent: Node, text: String) -> void:
 	label.text = text
 
 	parent.add_child(instance)
-	#instance.position = parent.position
+	instance.global_position = Vector2(parent.global_position.x, parent.global_position.y - 63)
+
 	instance.show()
 	
 	await parent.get_tree().create_timer(2).timeout

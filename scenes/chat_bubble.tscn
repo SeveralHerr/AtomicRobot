@@ -1,7 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://dqf1ot3uhuul7"]
+[gd_scene load_steps=5 format=3 uid="uid://dqf1ot3uhuul7"]
 
 [ext_resource type="Texture2D" uid="uid://c6qj2s14gh231" path="res://images/chatbubble.png" id="1_ydwr7"]
-[ext_resource type="FontFile" uid="uid://dx3iudetbksmy" path="res://styles/Pixeled.ttf" id="2_300vo"]
+[ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="2_f8oay"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3w7au"]
 texture = ExtResource("1_ydwr7")
@@ -9,25 +9,17 @@ texture_margin_left = 8.0
 texture_margin_right = 8.0
 texture_margin_bottom = 1.0
 
-[sub_resource type="FontVariation" id="FontVariation_h5ofh"]
-base_font = ExtResource("2_300vo")
-spacing_bottom = -4
-baseline_offset = -0.21
-
 [sub_resource type="LabelSettings" id="LabelSettings_ouaqp"]
 line_spacing = 0.0
-font = SubResource("FontVariation_h5ofh")
-font_size = 5
+font = ExtResource("2_f8oay")
+font_size = 10
 font_color = Color(0, 0, 0.117647, 1)
 shadow_color = Color(0, 0, 0, 0.223529)
 shadow_offset = Vector2(0.5, 1)
 
 [node name="ChatBubble" type="CenterContainer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 200.0
+offset_bottom = 35.0
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 2

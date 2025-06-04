@@ -13,9 +13,6 @@ func add_state(name: String, state: EnemyState) -> void:
 	states[name] = state
 
 func change_state(name: String) -> void:
-	print(name)
-
-	
 	if current_state:
 		current_state.exit_state(enemy)	
 	current_state = states[name]

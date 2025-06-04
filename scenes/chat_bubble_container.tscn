@@ -1,16 +1,20 @@
-[gd_scene load_steps=2 format=3 uid="uid://b4dw5xfyolt1c"]
+[gd_scene load_steps=4 format=3 uid="uid://b4dw5xfyolt1c"]
 
 [ext_resource type="PackedScene" uid="uid://dqf1ot3uhuul7" path="res://scenes/chat_bubble.tscn" id="1_ib2gs"]
+[ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="2_uidk3"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_bpq22"]
+line_spacing = 0.0
+font = ExtResource("2_uidk3")
+font_size = 10
+font_color = Color(0, 0, 0.117647, 1)
+shadow_color = Color(0, 0, 0, 0.223529)
+shadow_offset = Vector2(0.5, 1)
 
 [node name="ChatBubbleContainer" type="PanelContainer"]
 self_modulate = Color(1, 1, 1, 0)
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_top = -29.0
-offset_right = 150.0
-offset_bottom = -6.0
-grow_vertical = 2
+offset_right = 182.0
+offset_bottom = 35.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 
@@ -19,6 +23,6 @@ layout_mode = 2
 size_flags_horizontal = 0
 
 [node name="Label" parent="ChatBubble/PanelContainer/MarginContainer" index="0"]
-text = "OH NO,TERS"
+label_settings = SubResource("LabelSettings_bpq22")
 
 [editable path="ChatBubble"]

@@ -120,7 +120,7 @@ func _create_bullet() -> void:
 	if enemy.timer.is_stopped():
 		enemy.timer.start()
 	
-	if enemy.coins <= 0:
+	if enemy.coins <= 0 and enemy.refills_enabled:
 		enemy.enemy_state_machine.change_state("FindMeterState")
 		return	
 		

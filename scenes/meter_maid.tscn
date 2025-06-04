@@ -65,8 +65,9 @@ _data = {
 [node name="MeterMaid" type="CharacterBody2D"]
 top_level = true
 collision_layer = 4
-collision_mask = 99
+collision_mask = 98
 script = ExtResource("1_wr56e")
+refills_enabled = true
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 4

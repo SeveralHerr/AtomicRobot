@@ -19,7 +19,7 @@ func enter_state(new_enemy: Enemy) -> void:
 	
 	#enemy.navigation_agent_2d.set_target_position(meter.position)
 	
-	#aChatBubble.create(enemy, "OH NO! I NEED MORE QUARTERS.")
+	ChatBubble.create(enemy, "Out of ammo!")
 	
 func exit_state(enemy: Enemy) -> void:
 
@@ -45,22 +45,22 @@ func physics_update(delta: float) -> void:
 	
 	var dist = enemy.global_position.distance_to(meter.global_position)
 	dir = (meter.position - enemy.position).normalized()
-	if dist < 25 and enemy.coins <= 0:
+	if dist < 20 and enemy.coins <= 0:
 		stand_still = true
 		enemy.coins += 4
 		meter.play_animation()
 		enemy.velocity.x = 0
 		
 		enemy.coin_audio_player.play()
-		enemy.animated_sprite_2d.play("refill")
-		
+		enemy.animated_sprite_2d.play("refill", 2 )
+		Utils.shake_two_node2d(enemy.animated_sprite_2d, meter, 3)
 		await enemy.get_tree().create_timer(2).timeout
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
 
-		return
+	else:
 		
-	var target_velocity = dir.x * enemy.move_speed 
-	enemy.velocity.x = move_toward(enemy.velocity.x, target_velocity, 2000 * delta)
+		var target_velocity = dir.x * enemy.move_speed 
+		enemy.velocity.x = move_toward(enemy.velocity.x, target_velocity, 2000 * delta)
 	
 func move_along_path(delta: float) -> void:
 	var target_position = enemy.navigation_agent_2d.get_next_path_position()
