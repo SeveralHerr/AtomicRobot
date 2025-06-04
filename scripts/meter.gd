@@ -22,7 +22,7 @@ func play_animation() -> void:
 	#$AnimatedSprite2D.play("Trigger")
 	coin_particles.emitting = true
 	#timer.start()
-	Globals.meters.erase(self)
+#	Globals.meters.erase(self)
 	#await get_tree().create_timer(1).timeout
 	
 	#$AnimatedSprite2D.play("Idle")

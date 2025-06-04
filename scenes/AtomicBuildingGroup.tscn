@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=4 uid="uid://d4hesyanxo8l"]
+[gd_scene load_steps=34 format=4 uid="uid://d4hesyanxo8l"]
 
 [ext_resource type="Texture2D" uid="uid://jo0qmhfs7b8r" path="res://images/new/Background_bush2.png" id="1_moqmv"]
 [ext_resource type="Texture2D" uid="uid://biqvjni2xn7rp" path="res://images/new/Background_Bushes.png" id="2_tjqi0"]
@@ -14,8 +14,183 @@
 [ext_resource type="PackedScene" uid="uid://bi5pyhjxtocqc" path="res://scenes/interactive_mailbox.tscn" id="12_c5bjw"]
 [ext_resource type="PackedScene" uid="uid://xnc3xl36cxv" path="res://scenes/crack.tscn" id="13_ops16"]
 [ext_resource type="Texture2D" uid="uid://djcyx273wjxf0" path="res://images/car2.png" id="14_x5r1p"]
+[ext_resource type="Texture2D" uid="uid://bcn27o4sktbhx" path="res://images/new/Building1.png" id="15_iyp3j"]
+[ext_resource type="Script" uid="uid://3wy4teiu0tsl" path="res://scripts/left_atomic_building.gd" id="15_x8eh4"]
+[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://sprites/Meter Maid.png" id="17_af66f"]
+[ext_resource type="Texture2D" uid="uid://c8bs0f5orsg10" path="res://sprites/middle_finger_meter_forward.png" id="18_af66f"]
+[ext_resource type="PackedScene" uid="uid://dj5v0xinrjdvu" path="res://scenes/meter.tscn" id="19_r28sc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r056b"]
+atlas = ExtResource("17_af66f")
+region = Rect2(0, 0, 128, 152)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r28sc"]
+atlas = ExtResource("17_af66f")
+region = Rect2(256, 0, 128, 152)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nmp4y"]
+atlas = ExtResource("17_af66f")
+region = Rect2(384, 0, 128, 152)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k1ki3"]
+atlas = ExtResource("17_af66f")
+region = Rect2(512, 0, 128, 152)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1v2x3"]
+atlas = ExtResource("17_af66f")
+region = Rect2(640, 0, 128, 152)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yh2w1"]
+atlas = ExtResource("17_af66f")
+region = Rect2(0, 152, 128, 152)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dautr"]
+atlas = ExtResource("17_af66f")
+region = Rect2(128, 152, 128, 152)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2j72i"]
+atlas = ExtResource("17_af66f")
+region = Rect2(256, 152, 128, 152)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_llsel"]
+atlas = ExtResource("17_af66f")
+region = Rect2(384, 152, 128, 152)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_eqw4a"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r056b")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("18_af66f")
+}],
+"loop": true,
+"name": &"middle_finger",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r28sc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nmp4y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k1ki3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1v2x3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yh2w1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dautr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2j72i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_llsel")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_iyp3j"]
+radius = 131.1
+
+[sub_resource type="Animation" id="Animation_af66f"]
+resource_name = "flip_off"
+length = 8.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Bush6/MiddleFingerMeterMaid:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.9, 5.83333, 8),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(77, 5), Vector2(140, 5), Vector2(140, 5), Vector2(77, 5)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Bush6/MiddleFingerMeterMaid:animation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.9, 2.76667, 4.63333, 5.83333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [&"walk", &"default", &"middle_finger", &"default", &"walk"]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Bush6/MiddleFingerMeterMaid:flip_h")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 5.83333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+
+[sub_resource type="Animation" id="Animation_r28sc"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Bush6/MiddleFingerMeterMaid:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"walk"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Bush6/MiddleFingerMeterMaid:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_r056b"]
+_data = {
+&"RESET": SubResource("Animation_r28sc"),
+&"flip_off": SubResource("Animation_af66f")
+}
 
 [node name="AtomicGroup" type="Node2D"]
+
+[node name="Bush3" type="Sprite2D" parent="."]
+show_behind_parent = true
+position = Vector2(-471.5, 42.5)
+texture = ExtResource("2_tjqi0")
+
+[node name="Bush4" type="Sprite2D" parent="."]
+show_behind_parent = true
+position = Vector2(-450.5, 41.5)
+texture = ExtResource("1_moqmv")
 
 [node name="Bush2" type="Sprite2D" parent="."]
 position = Vector2(471, 43)
@@ -26,56 +201,57 @@ position = Vector2(492, 42)
 texture = ExtResource("1_moqmv")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
-tile_map_data = PackedByteArray("AAALAAIADQAAAAAAAAAMAAIADQAAAAAAAAANAAIADQAAAAAAAAAOAAIADQAAAAAAAAAPAAIADQAAAAAAAAAQAAIADQAAAAAAAAARAAIADQAAAAAAAAASAAIADQAAAAAAAAATAAIADQAAAAAAAAAUAAIADQAAAAAAAAAVAAIADQAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAALAAIADQAAAAAAAAAMAAIADQAAAAAAAAANAAIADQAAAAAAAAAOAAIADQAAAAAAAAAPAAIADQAAAAAAAAAQAAIADQAAAAAAAAARAAIADQAAAAAAAAASAAIADQAAAAAAAAATAAIADQAAAAAAAAAUAAIADQAAAAAAAAAVAAIADQAAAAAAAAD0/wIADQAAAAAAAADz/wIADQAAAAAAAADy/wIADQAAAAAAAADx/wIADQAAAAAAAADw/wIADQAAAAAAAADv/wIADQAAAAAAAADu/wIADQAAAAAAAADt/wIADQAAAAAAAADs/wIADQAAAAAAAADr/wIADQAAAAAAAADq/wIADQAAAAAAAADp/wIADQAAAAAAAADo/wIADQAAAAAAAADn/wIADQAAAAAAAADm/wIADQAAAAAAAADl/wIADQAAAAAAAADk/wIADQAAAAAAAADj/wIADQAAAAAAAADi/wIADQAAAAAAAADh/wIADQAAAAAAAADg/wIADQAAAAAAAADf/wIADQAAAAAAAADe/wIADQAAAAAAAADd/wIADQAAAAAAAADc/wIADQAAAAAAAADb/wIADQAAAAAAAADa/wIADQAAAAAAAADZ/wIADQAAAAAAAAA=")
 tile_set = ExtResource("3_1ucss")
 
 [node name="AtomicRobotBuilding" parent="." instance=ExtResource("4_uw6ff")]
 
-[node name="WindowEventBuilding" parent="." instance=ExtResource("5_07bf7")]
-position = Vector2(852, -208)
-
-[node name="Crates" type="Node2D" parent="."]
-position = Vector2(-2, -1)
-
-[node name="Crate" parent="Crates" instance=ExtResource("6_tjqi0")]
-position = Vector2(306, -111)
-
-[node name="Crate2" parent="Crates" instance=ExtResource("6_tjqi0")]
-position = Vector2(337, -111)
-
-[node name="Crate3" parent="Crates" instance=ExtResource("6_tjqi0")]
-position = Vector2(330, -141)
-
-[node name="WoodLedge" parent="." instance=ExtResource("7_1ucss")]
-show_behind_parent = true
-position = Vector2(406, -69)
-scale = Vector2(-1, 1)
-
-[node name="WoodLedge2" parent="." instance=ExtResource("7_1ucss")]
-show_behind_parent = true
-position = Vector2(543, -68)
-
-[node name="Tree" parent="." instance=ExtResource("8_uw6ff")]
-position = Vector2(320, 11)
-
-[node name="Tree2" parent="." instance=ExtResource("8_uw6ff")]
-position = Vector2(733, 10)
-
-[node name="Trash" type="Sprite2D" parent="."]
+[node name="Trash" type="Sprite2D" parent="AtomicRobotBuilding"]
 z_index = 1
 position = Vector2(288, 81)
 texture = ExtResource("9_07bf7")
 
-[node name="Trash2" type="Sprite2D" parent="."]
+[node name="WoodLedge3" parent="AtomicRobotBuilding" instance=ExtResource("7_1ucss")]
+show_behind_parent = true
+position = Vector2(406, -69)
+rotation = 3.14159
+scale = Vector2(1, -1)
+
+[node name="Tree" parent="AtomicRobotBuilding" instance=ExtResource("8_uw6ff")]
+position = Vector2(320, 11)
+
+[node name="Crates" type="Node2D" parent="AtomicRobotBuilding"]
+position = Vector2(-2, -1)
+
+[node name="Crate" parent="AtomicRobotBuilding/Crates" instance=ExtResource("6_tjqi0")]
+position = Vector2(306, -111)
+
+[node name="Crate2" parent="AtomicRobotBuilding/Crates" instance=ExtResource("6_tjqi0")]
+position = Vector2(337, -111)
+
+[node name="Crate3" parent="AtomicRobotBuilding/Crates" instance=ExtResource("6_tjqi0")]
+position = Vector2(330, -141)
+
+[node name="WindowEventBuilding" parent="." instance=ExtResource("5_07bf7")]
+position = Vector2(852, -208)
+
+[node name="WoodLedge2" parent="WindowEventBuilding" instance=ExtResource("7_1ucss")]
+show_behind_parent = true
+position = Vector2(-309, 140)
+
+[node name="Tree2" parent="WindowEventBuilding" instance=ExtResource("8_uw6ff")]
+position = Vector2(-119, 218)
+
+[node name="Trash2" type="Sprite2D" parent="WindowEventBuilding"]
 z_index = 1
-position = Vector2(965, 80)
+position = Vector2(113, 288)
 texture = ExtResource("10_c5bjw")
 
-[node name="Lamp" parent="." instance=ExtResource("11_c5bjw")]
-position = Vector2(523, 27)
+[node name="Lamp" parent="WindowEventBuilding" instance=ExtResource("11_c5bjw")]
+position = Vector2(-329, 235)
 
-[node name="InteractiveMailbox" parent="." instance=ExtResource("12_c5bjw")]
-position = Vector2(564, 80)
+[node name="InteractiveMailbox" parent="WindowEventBuilding" instance=ExtResource("12_c5bjw")]
+position = Vector2(-288, 288)
 
 [node name="Crack" parent="." instance=ExtResource("13_ops16")]
 visible = false
@@ -88,5 +264,53 @@ scale = Vector2(0.66, 1)
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
 texture = ExtResource("14_x5r1p")
+
+[node name="LeftBuilding" type="Node2D" parent="."]
+script = ExtResource("15_x8eh4")
+
+[node name="Building" type="Sprite2D" parent="LeftBuilding"]
+position = Vector2(-714, -112)
+texture = ExtResource("15_iyp3j")
+
+[node name="Bush5" type="Sprite2D" parent="LeftBuilding"]
+show_behind_parent = true
+z_as_relative = false
+position = Vector2(-1069, 46)
+texture = ExtResource("2_tjqi0")
+flip_h = true
+
+[node name="Bush6" type="Sprite2D" parent="LeftBuilding"]
+show_behind_parent = true
+position = Vector2(-1120, 43)
+texture = ExtResource("1_moqmv")
+
+[node name="MiddleFingerMeterMaid" type="AnimatedSprite2D" parent="LeftBuilding/Bush6"]
+show_behind_parent = true
+position = Vector2(77, 5)
+sprite_frames = SubResource("SpriteFrames_eqw4a")
+animation = &"walk"
+autoplay = "default"
+frame_progress = 0.183328
+
+[node name="InteractiveMailbox" parent="LeftBuilding" instance=ExtResource("12_c5bjw")]
+position = Vector2(-521, 80)
+
+[node name="Area2D" type="Area2D" parent="LeftBuilding"]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftBuilding/Area2D"]
+position = Vector2(-902, 43)
+shape = SubResource("CircleShape2D_iyp3j")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="LeftBuilding"]
+libraries = {
+&"": SubResource("AnimationLibrary_r056b")
+}
+
+[node name="Meter" parent="LeftBuilding" instance=ExtResource("19_r28sc")]
+position = Vector2(1053, 67)
+
+[node name="Tree3" parent="LeftBuilding" instance=ExtResource("8_uw6ff")]
+position = Vector2(-1141, 12)
 
 [editable path="Crack"]

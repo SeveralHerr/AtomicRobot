@@ -1,4 +1,4 @@
-[gd_scene load_steps=90 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=85 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
@@ -63,8 +63,6 @@
 [ext_resource type="Script" uid="uid://dvdcq0lhqdrnd" path="res://scripts/under_world_kill_box.gd" id="58_qr2g0"]
 [ext_resource type="Texture2D" uid="uid://c1rfgsu0deewc" path="res://images/bean3.PNG" id="62_2yfl3"]
 [ext_resource type="Texture2D" uid="uid://bsfg8dpci5l12" path="res://images/crane4.png" id="63_2xtnq"]
-[ext_resource type="PackedScene" uid="uid://dj5v0xinrjdvu" path="res://scenes/meter.tscn" id="64_brcwu"]
-[ext_resource type="PackedScene" uid="uid://csis0b6hdasqr" path="res://scenes/meter_maid.tscn" id="65_fw04e"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("51_k4pk8")
@@ -157,15 +155,6 @@ shader_parameter/offset = 0.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k2mcc"]
 size = Vector2(431, 559)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_01ywe"]
-size = Vector2(729, 14)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_2p6wh"]
-size = Vector2(438, 9)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_64moy"]
-size = Vector2(24, 39)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lcs47"]
 atlas = ExtResource("21_euxwc")
@@ -427,16 +416,6 @@ texture = ExtResource("23_2xtnq")
 
 [node name="SceneItemsBackground" type="Node2D" parent="."]
 position = Vector2(1875, -1)
-
-[node name="Building5" type="Sprite2D" parent="SceneItemsBackground"]
-self_modulate = Color(0.489622, 0.489622, 0.489622, 1)
-position = Vector2(-1715, 448)
-texture = ExtResource("20_yhyvh")
-
-[node name="Building6" type="Sprite2D" parent="SceneItemsBackground"]
-self_modulate = Color(0.489622, 0.489622, 0.489622, 1)
-position = Vector2(-1017, -125)
-texture = ExtResource("21_sj8ng")
 
 [node name="BuildingGroup1" type="Node2D" parent="SceneItemsBackground"]
 position = Vector2(-1294, 0)
@@ -932,7 +911,7 @@ tile_set = ExtResource("41_01ywe")
 
 [node name="TileMapLayer2" type="TileMapLayer" parent="SceneItemsBackground/TileMapLayer"]
 z_index = 1
-tile_map_data = PackedByteArray("AAD3//f/BQAJAAAAAAD4//f/BQAJAAAAAAD7//b/BQAJAAAAAAD8//b/BQAJAAAAAADKAAAABQAJAAAAAADPAAAABQAKAAAAAADPAAEABQAKAAEAAADKAAEABQAJAAEAAAA=")
+tile_map_data = PackedByteArray("AADKAAAABQAJAAAAAADPAAAABQAKAAAAAADPAAEABQAKAAEAAADKAAEABQAJAAEAAAA=")
 tile_set = ExtResource("41_01ywe")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="SceneItemsBackground/TileMapLayer"]
@@ -981,10 +960,11 @@ position = Vector2(-25.5, 67.5)
 shape = SubResource("RectangleShape2D_k2mcc")
 
 [node name="LeftBoundary" type="Node2D" parent="SceneItemsBackground"]
-position = Vector2(-9996, 22)
+position = Vector2(-10154, -83)
 
 [node name="Building10" type="Sprite2D" parent="SceneItemsBackground/LeftBoundary"]
-position = Vector2(7535, -284)
+z_index = 1
+position = Vector2(6597, -264)
 texture = ExtResource("20_yhyvh")
 flip_h = true
 
@@ -999,78 +979,17 @@ shape = SubResource("RectangleShape2D_k2mcc")
 [node name="AtomicRobotBuildingGroup" type="Node2D" parent="SceneItemsBackground"]
 position = Vector2(-1875, 1)
 
-[node name="AtomicRobotBuilding" type="StaticBody2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup"]
-collision_layer = 32
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/AtomicRobotBuilding"]
-position = Vector2(498.5, -108)
-shape = SubResource("RectangleShape2D_01ywe")
-one_way_collision = true
-
-[node name="AtomicRobotRoof" type="StaticBody2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/AtomicRobotBuilding"]
-position = Vector2(-4, -77)
-collision_layer = 32
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/AtomicRobotBuilding/AtomicRobotRoof"]
-z_index = -1
-position = Vector2(498.5, -108)
-shape = SubResource("RectangleShape2D_01ywe")
-one_way_collision = true
-
-[node name="Platforms" type="Node2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup"]
-
-[node name="Platform" parent="SceneItemsBackground/AtomicRobotBuildingGroup/Platforms" instance=ExtResource("48_dy54k")]
-position = Vector2(933, -212)
-
-[node name="Platform2" parent="SceneItemsBackground/AtomicRobotBuildingGroup/Platforms" instance=ExtResource("48_dy54k")]
-position = Vector2(933, -276)
-
-[node name="Platform3" parent="SceneItemsBackground/AtomicRobotBuildingGroup/Platforms" instance=ExtResource("48_dy54k")]
-position = Vector2(933, -340)
-
-[node name="Platform4" parent="SceneItemsBackground/AtomicRobotBuildingGroup/Platforms" instance=ExtResource("48_dy54k")]
-position = Vector2(933, -404)
-
-[node name="StaticBody2D" type="StaticBody2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup"]
-position = Vector2(0, -1)
-collision_layer = 32
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/StaticBody2D"]
-position = Vector2(1180, -347.5)
-shape = SubResource("RectangleShape2D_2p6wh")
-
-[node name="StaticBody2D2" type="StaticBody2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup"]
-position = Vector2(0, -1)
-collision_layer = 32
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/StaticBody2D2"]
-position = Vector2(1180, -365)
-shape = SubResource("RectangleShape2D_64moy")
-
-[node name="StaticBody2D3" type="StaticBody2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup"]
-position = Vector2(-204, -5)
-collision_layer = 32
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/StaticBody2D3"]
-position = Vector2(1179, -362.5)
-shape = SubResource("RectangleShape2D_64moy")
-
 [node name="InteractiveMailbox" parent="SceneItemsBackground/AtomicRobotBuildingGroup" instance=ExtResource("49_7k40d")]
 position = Vector2(1494, -16)
 
-[node name="TestGroup" type="Node2D" parent="SceneItemsBackground"]
-position = Vector2(-3701, -106)
+[node name="TestGroup" type="Node2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup"]
+position = Vector2(-1826, -107)
 
-[node name="Node2D" parent="SceneItemsBackground/TestGroup" instance=ExtResource("54_2yfl3")]
-position = Vector2(2293, 9)
+[node name="Node2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/TestGroup" instance=ExtResource("54_2yfl3")]
+position = Vector2(1568, 10)
 
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
-position = Vector2(481, -31)
+position = Vector2(-704, -22)
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false
@@ -1082,58 +1001,9 @@ texture = SubResource("AtlasTexture_lcs47")
 [node name="SceneItems" type="Node2D" parent="."]
 z_index = 1
 
-[node name="Tree" parent="SceneItems" instance=ExtResource("25_vek1y")]
-position = Vector2(127, -84)
-
-[node name="Tree2" parent="SceneItems" instance=ExtResource("25_vek1y")]
-position = Vector2(-286, -86)
-
-[node name="Tree4" parent="SceneItems" instance=ExtResource("25_vek1y")]
-position = Vector2(893, -84)
-
-[node name="StreetSign" type="Sprite2D" parent="SceneItems"]
-position = Vector2(956, -49)
-texture = ExtResource("26_1mphf")
-
-[node name="StreetSign2" type="Sprite2D" parent="SceneItems"]
-position = Vector2(554, -49)
-texture = ExtResource("26_1mphf")
-
-[node name="Trashcan" type="Sprite2D" parent="SceneItems"]
-position = Vector2(853, -16)
-texture = ExtResource("21_0bwfm")
-
-[node name="Trashcan3" type="Sprite2D" parent="SceneItems"]
-position = Vector2(170, -17)
-texture = ExtResource("21_0bwfm")
-
-[node name="StaticBody2D" type="StaticBody2D" parent="SceneItems/Trashcan3"]
-collision_layer = 32
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItems/Trashcan3/StaticBody2D"]
-position = Vector2(0, -12)
-shape = SubResource("RectangleShape2D_dy54k")
-one_way_collision = true
-
 [node name="Trashcan2" type="Sprite2D" parent="SceneItems"]
 position = Vector2(1421, -16)
 texture = ExtResource("21_0bwfm")
-
-[node name="ParkingMeter" type="Sprite2D" parent="SceneItems"]
-position = Vector2(212, -28)
-texture = ExtResource("24_meefr")
-
-[node name="ParkingMeter2" type="Sprite2D" parent="SceneItems"]
-position = Vector2(368, -28)
-texture = ExtResource("24_meefr")
-
-[node name="ParkingMeter3" type="Sprite2D" parent="SceneItems"]
-position = Vector2(627, -29)
-texture = ExtResource("24_meefr")
-
-[node name="ParkingMeter4" type="Sprite2D" parent="SceneItems"]
-position = Vector2(1007, -32)
-texture = ExtResource("24_meefr")
 
 [node name="Intersection" type="Node2D" parent="SceneItems"]
 position = Vector2(1119, 0)
@@ -1250,15 +1120,6 @@ texture = ExtResource("62_2yfl3")
 visible = false
 position = Vector2(-2098, -348)
 texture = ExtResource("63_2xtnq")
-
-[node name="Meter" parent="." instance=ExtResource("64_brcwu")]
-position = Vector2(-121, -38)
-
-[node name="Meter2" parent="." instance=ExtResource("64_brcwu")]
-position = Vector2(273, -27)
-
-[node name="MeterMaid" parent="." instance=ExtResource("65_fw04e")]
-position = Vector2(721, -46)
 
 [editable path="SceneItemsBackground/BuildingGroup1/Tree5"]
 [editable path="SceneItemsBackground/BuildingGroup1/Tree6"]

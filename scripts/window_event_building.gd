@@ -22,7 +22,7 @@ func _ready() -> void:
 func _on_area_2d_body_entered(body: Node2D) -> void:
 	if body is Player:
 		area_2d.body_entered.disconnect(_on_area_2d_body_entered)
-		
+		area_2d.queue_free()	
 		# Start spawning meter maids
 		spawn_count = 0
 		spawn_timer.start()
@@ -30,12 +30,12 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 		
 		# Show the meter maid windows
 		meter_maid_window.trigger()
-		await get_tree().create_timer(0.2).timeout
+		await get_tree().create_timer(2).timeout
 		meter_maid_window_2.trigger()
-		await get_tree().create_timer(0.38).timeout
+		await get_tree().create_timer(4).timeout
 		meter_maid_window_3.trigger()
 
-		area_2d.queue_free()
+
 
 func _on_spawn_timer_timeout() -> void:
 	if spawn_count >= MAX_SPAWNS:
