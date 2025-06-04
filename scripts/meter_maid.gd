@@ -23,7 +23,7 @@ func _ready() -> void:
 	enemy_state_machine.add_state("PatrolState", PatrolState.new())
 	enemy_state_machine.add_state("ChasePlayerState", ChasePlayerState.new())
 	enemy_state_machine.add_state("DeadEnemyState", DeadEnemyState.new())
-	#enemy_state_machine.add_state("FindMeterState", FindMeterState.new())
+	enemy_state_machine.add_state("FindMeterState", FindMeterState.new())
 	#enemy_state_machine.add_state("AttackPlayerState", AttackPlayerState.new())
 	add_child(enemy_state_machine)
 	

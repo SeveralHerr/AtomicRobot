@@ -14,25 +14,22 @@ func enter_state(new_enemy: Enemy) -> void:
 	enemy = new_enemy
 	meter = Globals.nearest_meter(enemy.position)
 	stand_still = false
+	print("Finding meter")
+	enemy.animated_sprite_2d.play("walk")
 	
-	enemy.animated_sprite_2d.play("Walk")
+	#enemy.navigation_agent_2d.set_target_position(meter.position)
 	
-	enemy.navigation_agent_2d.set_target_position(meter.position)
-	
-	ChatBubble.create(enemy, "OH NO! I NEED MORE QUARTERS.")
+	#aChatBubble.create(enemy, "OH NO! I NEED MORE QUARTERS.")
 	
 func exit_state(enemy: Enemy) -> void:
 
 	#enemy.animated_sprite_2d.play("Idle")
 
 	stand_still= false
-	enemy.animated_sprite_2d.play("Walk")
+	enemy.animated_sprite_2d.play("walk")
 	enemy.coin_audio_player.stop()	
 
 
-func update(enemy: Enemy, delta: float) -> void:
-	if meter == null:
-		_handle_state()
 
 func physics_update(delta: float) -> void:
 	_update_sprite_direction(enemy)
@@ -46,29 +43,24 @@ func physics_update(delta: float) -> void:
 		
 
 	
-	var dist = enemy.position.distance_to(meter.position)
-	if dist < 5 and enemy.coins <= 0:
+	var dist = enemy.global_position.distance_to(meter.global_position)
+	dir = (meter.position - enemy.position).normalized()
+	if dist < 25 and enemy.coins <= 0:
 		stand_still = true
 		enemy.coins += 4
 		meter.play_animation()
-		enemy.navigation_agent_2d.set_target_position(enemy.global_position)
+		enemy.velocity.x = 0
 		
 		enemy.coin_audio_player.play()
-		enemy.animated_sprite_2d.play("ShakeMeter")
+		enemy.animated_sprite_2d.play("refill")
 		
-		enemy.velocity.x = 0
-		call_deferred("_delayed_handle_state")
+		await enemy.get_tree().create_timer(2).timeout
+		enemy.enemy_state_machine.change_state("ChasePlayerState")
 
 		return
 		
-	if not enemy.navigation_agent_2d.is_navigation_finished():
-		move_along_path(delta)
-		return
-		
-	dir = (meter.position - enemy.position).normalized()
-
-
-	enemy.velocity.x = move_toward(enemy.velocity.x, dir.x * 50, 2009 * delta)
+	var target_velocity = dir.x * enemy.move_speed 
+	enemy.velocity.x = move_toward(enemy.velocity.x, target_velocity, 2000 * delta)
 	
 func move_along_path(delta: float) -> void:
 	var target_position = enemy.navigation_agent_2d.get_next_path_position()

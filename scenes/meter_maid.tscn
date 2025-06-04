@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://ga543g2ttr1b" path="res://scripts/meter_maid.gd" id="1_wr56e"]
 [ext_resource type="Shader" uid="uid://6j4tcu38byit" path="res://shaders/flash.gdshader" id="3_w8qu0"]
 [ext_resource type="Script" uid="uid://dsbjs54db5oe8" path="res://scripts/line_of_sight.gd" id="3_whrlv"]
-[ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://sprites/metermaid_sprite_frames.tres" id="4_wykn1"]
+[ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://Sprites/metermaid_sprite_frames.tres" id="4_wykn1"]
 [ext_resource type="AudioStream" uid="uid://b55vbaakt0ib4" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_5b8kh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n43qx"]
@@ -107,9 +107,11 @@ shape = SubResource("RectangleShape2D_n43qx")
 
 [node name="CoinAudioPlayer" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamOggVorbis_vhpx8")
+volume_db = -10.624
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 simplify_path = true
+debug_enabled = true
 debug_path_custom_color = Color(1, 0, 1, 1)
 
 [node name="LineOfSight" type="RayCast2D" parent="."]
@@ -124,9 +126,8 @@ wait_time = 3.0
 material = SubResource("ShaderMaterial_engfn")
 position = Vector2(0, -6)
 sprite_frames = ExtResource("4_wykn1")
-animation = &"attack"
+animation = &"refill"
 autoplay = "idle"
-frame = 2
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

@@ -120,9 +120,9 @@ func _create_bullet() -> void:
 	if enemy.timer.is_stopped():
 		enemy.timer.start()
 	
-	#elif enemy.coins <= 0:
-		##enemy.enemy_state_machine.change_state("FindMeterState")
-		#return	
+	if enemy.coins <= 0:
+		enemy.enemy_state_machine.change_state("FindMeterState")
+		return	
 		
 	
 	stand_still = true
@@ -143,6 +143,7 @@ func throw_coin() -> void:
 	
 	var instance = enemy.COIN_BULLET.instantiate()
 	enemy.coins -= 1
+	print(enemy.coins)
 	enemy.node.add_child(instance)
 	#instance.position = enemy.position + enemy.coin_spawn_point.positiona
 	var pos = enemy.position + enemy.coin_spawn_point.position

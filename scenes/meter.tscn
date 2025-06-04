@@ -2,14 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://Tiles/custom_tiles.png" id="1_1fymc"]
 [ext_resource type="Script" uid="uid://d0nehjup8esyc" path="res://scripts/meter.gd" id="1_24d3b"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_wfqmv"]
-atlas = ExtResource("1_1fymc")
-region = Rect2(144, 64, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_vdtpf"]
-atlas = ExtResource("1_1fymc")
-region = Rect2(288, 0, 16, 32)
+[ext_resource type="Texture2D" uid="uid://bebxlupbocur" path="res://images/coin.png" id="2_0gs8c"]
+[ext_resource type="Texture2D" uid="uid://dkelg2q4oskqe" path="res://images/new/Parking_Meter.png" id="3_ejre1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tuchj"]
 atlas = ExtResource("1_1fymc")
@@ -27,7 +21,7 @@ region = Rect2(256, 64, 16, 32)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_vdtpf")
+"texture": ExtResource("3_ejre1")
 }],
 "loop": true,
 "name": &"Idle",
@@ -55,10 +49,11 @@ animations = [{
 script = ExtResource("1_24d3b")
 
 [node name="CoinParticles" type="CPUParticles2D" parent="."]
-visible = false
-position = Vector2(0, -9)
+position = Vector2(0, -21)
+emitting = false
 amount = 10
-texture = SubResource("AtlasTexture_wfqmv")
+texture = ExtResource("2_0gs8c")
+one_shot = true
 explosiveness = 1.0
 emission_shape = 1
 emission_sphere_radius = 2.0
@@ -69,10 +64,8 @@ initial_velocity_max = 35.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_t17im")
-animation = &"Trigger"
+animation = &"Idle"
 autoplay = "Idle"
-frame = 3
-frame_progress = 1.0
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 9.0

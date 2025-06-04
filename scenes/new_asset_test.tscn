@@ -1,4 +1,4 @@
-[gd_scene load_steps=88 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=90 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
@@ -63,6 +63,8 @@
 [ext_resource type="Script" uid="uid://dvdcq0lhqdrnd" path="res://scripts/under_world_kill_box.gd" id="58_qr2g0"]
 [ext_resource type="Texture2D" uid="uid://c1rfgsu0deewc" path="res://images/bean3.PNG" id="62_2yfl3"]
 [ext_resource type="Texture2D" uid="uid://bsfg8dpci5l12" path="res://images/crane4.png" id="63_2xtnq"]
+[ext_resource type="PackedScene" uid="uid://dj5v0xinrjdvu" path="res://scenes/meter.tscn" id="64_brcwu"]
+[ext_resource type="PackedScene" uid="uid://csis0b6hdasqr" path="res://scenes/meter_maid.tscn" id="65_fw04e"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("51_k4pk8")
@@ -1247,6 +1249,15 @@ texture = ExtResource("62_2yfl3")
 visible = false
 position = Vector2(-2098, -348)
 texture = ExtResource("63_2xtnq")
+
+[node name="Meter" parent="." instance=ExtResource("64_brcwu")]
+position = Vector2(-121, -38)
+
+[node name="Meter2" parent="." instance=ExtResource("64_brcwu")]
+position = Vector2(273, -27)
+
+[node name="MeterMaid" parent="." instance=ExtResource("65_fw04e")]
+position = Vector2(721, -46)
 
 [editable path="SceneItemsBackground/BuildingGroup1/Tree5"]
 [editable path="SceneItemsBackground/BuildingGroup1/Tree6"]
