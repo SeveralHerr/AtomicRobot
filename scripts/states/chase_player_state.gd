@@ -1,157 +1,141 @@
 extends EnemyState
 class_name ChasePlayerState
 
-const ACCELERATION = 5000.0 
+const ACCELERATION = 5000.0
 var dir: Vector2
-var stand_still: bool = false
+var is_attacking: bool = false
 
-func enter_state(new_enemy: Enemy) -> void:
-	enemy = new_enemy
+func enter_state(enemy: Enemy) -> void:
+	super.enter_state(enemy)
 	enemy.velocity.x = 0
-	stand_still = false
+	is_attacking = false
+	_setup_timers()
+	enemy.animated_sprite_2d.play("idle")
+
+func _setup_timers() -> void:
 	enemy.timer.one_shot = true
 	
-	if not enemy.timer.timeout.is_connected(_create_bullet):
-		enemy.timer.timeout.connect(_create_bullet)
+	if not enemy.timer.timeout.is_connected(_on_attack_ready):
+		enemy.timer.timeout.connect(_on_attack_ready)
 		
-	if not enemy.range_timer.timeout.is_connected(_check_range):
-		enemy.range_timer.timeout.connect(_check_range)
-	#enemy.timer.start()
-	#enemy.range_timer.start()
-	#ChatBubble.create(enemy, "I'LL GET YOU!")
-	enemy.animated_sprite_2d.play("idle")
+	if not enemy.range_timer.timeout.is_connected(_on_range_check):
+		enemy.range_timer.timeout.connect(_on_range_check)
 	
 func exit_state(enemy: Enemy) -> void:
+	_cleanup_timers()
+
+func _cleanup_timers() -> void:
 	enemy.timer.stop()
 	enemy.range_timer.stop()
-	pass
+	
+	if enemy.timer.timeout.is_connected(_on_attack_ready):
+		enemy.timer.timeout.disconnect(_on_attack_ready)
+		
+	if enemy.range_timer.timeout.is_connected(_on_range_check):
+		enemy.range_timer.timeout.disconnect(_on_range_check)
 
-func in_range() -> void:
-	if not enemy.timer.timeout.is_connected(_create_bullet):
-		enemy.timer.timeout.connect(_create_bullet)
-		
-	if not enemy.range_timer.timeout.is_connected(_check_range):
-		enemy.range_timer.timeout.connect(_check_range)
-		
-func out_of_range(enemy: Enemy) -> void:
-	if enemy.timer.timeout.is_connected(_create_bullet):
-		enemy.timer.timeout.disconnect(_create_bullet)
-		
-	if enemy.range_timer.timeout.is_connected(_check_range):
-		enemy.range_timer.timeout.disconnect(_check_range)
-		
-
-		
-func _check_range() -> void:
+func _on_range_check() -> void:
 	if Globals.player.is_dead:
 		return
 		
 	dir = (Globals.player.position - enemy.position).normalized()
 	var dist = enemy.position.distance_to(Globals.player.position)
-
 	
 	if dist > enemy.attack_range:
-		out_of_range(enemy)
-	#print("check range")
-	#if not enemy.line_of_sight.is_player_line_of_sight():
-		##ChatBubble.create(enemy, "LOST HIM.")
-		#enemy.enemy_state_machine.change_state("PatrolState")
+		pass # Handle out of range if needed
 
 
 		
 func physics_update(delta: float) -> void:
-	enemy.line_of_sight.is_player_line_of_sight()
-	if stand_still:
+	if is_attacking:
 		enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)
-		# Don't change animation when attacking - let the attack animation play
-		return 
-		
-	if not Globals.player.is_near_ground() and not enemy.persist_enabled:
-		enemy.enemy_state_machine.change_state("PatrolState")
 		return
 		
-
+	if _should_return_to_patrol():
+		enemy.enemy_state_machine.change_state("PatrolState")
+		return
 		
 	dir = (Globals.player.position - enemy.position).normalized()
 	var dist = enemy.position.distance_to(Globals.player.position)
-	if dist > 3650 and not enemy.persist_enabled:
-		print("way too far... removing enemy")
-		queue_free()
-	_update_sprite_direction(enemy)
-
-	if dist > 250 and enemy.persist_enabled:
-		enemy.enemy_state_machine.change_state("PatrolState")
-		return	
-	elif dist > enemy.attack_range and dist > 180:
-		var player_direction = (Globals.player.global_position - enemy.global_position).normalized()
-		var direction = sign(player_direction.x)
-		var target_velocity = direction * enemy.move_speed * 1.2
-		enemy.velocity.x = move_toward(enemy.velocity.x, target_velocity, 2000 * delta)
-	elif dist > enemy.attack_range:
-		var player_direction = (Globals.player.global_position - enemy.global_position).normalized()
-		var direction = sign(player_direction.x)
-		var target_velocity = direction * enemy.move_speed 
-		enemy.velocity.x = move_toward(enemy.velocity.x, target_velocity, 2000 * delta)
-	else:
-		in_range()
-		# Close to player - stop moving and attack if cooldown is finished
-		enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)	
-		
-		# Attack immediately if timer cooldown has finished
-		if enemy.timer.is_stopped():
-			_create_bullet()
 	
-	# Simple animation logic: if not moving, play idle. If moving, play walk.
-	# But don't override attack animation if it's currently playing
-	if enemy.animated_sprite_2d.animation != "attack":
-		if abs(enemy.velocity.x) < 5.0:  # Not moving (small threshold for floating point precision)
-			enemy.animated_sprite_2d.play("idle")
-		else:  # Moving
-			enemy.animated_sprite_2d.play("walk")
-
-func _update_sprite_direction(enemy: Enemy) -> void:
-
+	_handle_movement(dist, delta)
+	_handle_attack(dist)
+	_update_animation()
 	enemy._update_sprite_direction(dir.x)
 
-func _create_bullet() -> void:
+func _should_return_to_patrol() -> bool:
+	var dist = enemy.position.distance_to(Globals.player.position)
+	
+	# Player not near ground and persist disabled
+	if not Globals.player.is_near_ground() and not enemy.persist_enabled:
+		return true
+		
+	# Too far when persist enabled
+	if dist > 250 and enemy.persist_enabled:
+		return true
+		
+	# Extremely far - cleanup enemy
+	if dist > 3650 and not enemy.persist_enabled:
+		enemy.queue_free()
+		return true
+		
+	return false
+
+func _handle_movement(dist: float, delta: float) -> void:
+	if dist > enemy.attack_range:
+		var direction = sign(dir.x)
+		var speed_multiplier = 1.2 if dist > 180 else 1.0
+		var target_velocity = direction * enemy.move_speed * speed_multiplier
+		enemy.velocity.x = move_toward(enemy.velocity.x, target_velocity, 2000 * delta)
+	else:
+		enemy.velocity.x = move_toward(enemy.velocity.x, 0, 2000 * delta)
+
+func _handle_attack(dist: float) -> void:
+	if dist <= enemy.attack_range and enemy.timer.is_stopped():
+		_start_attack()
+
+func _update_animation() -> void:
+	if enemy.animated_sprite_2d.animation != "attack":
+		if abs(enemy.velocity.x) < 5.0:
+			enemy.animated_sprite_2d.play("idle")
+		else:
+			enemy.animated_sprite_2d.play("walk")
+
+func _start_attack() -> void:
 	if Globals.player.is_dead:
 		return
 		
-	if enemy.timer.is_stopped():
-		enemy.timer.start()
-	
 	if enemy.coins <= 0 and enemy.refills_enabled:
 		enemy.enemy_state_machine.change_state("FindMeterState")
-		return	
+		return
 		
-	
-	stand_still = true
+	enemy.timer.start()
+	is_attacking = true
 	enemy.animated_sprite_2d.play("attack")
-	
-	# Spawn coin halfway through attack animation instead of at the end
 	_spawn_coin_delayed()
-	
+
+func _on_attack_ready() -> void:
+	pass # Attack cooldown finished
+
 func _spawn_coin_delayed() -> void:
-	# Wait for roughly half the attack animation duration
 	await enemy.get_tree().create_timer(0.3).timeout
-	throw_coin()
+	_throw_coin()
 	
-func throw_coin() -> void:
+func _throw_coin() -> void:
 	if enemy == null:
 		return
-	stand_still = false
-	
+		
 	var instance = enemy.COIN_BULLET.instantiate()
 	enemy.coins -= 1
-	print(enemy.coins)
 	enemy.node.add_child(instance)
-	#instance.position = enemy.position + enemy.coin_spawn_point.positiona
-	var pos = enemy.position + enemy.coin_spawn_point.position
-	instance.start(pos,  (Globals.player.enemy_attack_position.global_position - pos).normalized())
 	
-	# Return to idle after throwing
+	var spawn_pos = enemy.position + enemy.coin_spawn_point.position
+	var target_pos = Globals.player.enemy_attack_position.global_position
+	instance.start(spawn_pos, (target_pos - spawn_pos).normalized())
+	
 	await enemy.animated_sprite_2d.animation_finished
 	if enemy == null or enemy.health <= 0: 
 		return
+		
+	is_attacking = false
 	enemy.animated_sprite_2d.play("idle")
-	_check_range()

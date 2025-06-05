@@ -1,59 +1,56 @@
 extends EnemyState
 class_name PatrolState
 
-
-
 var direction: int = -1
 var move_speed: float = 100.0
 var patrol_start_x: float
 var patrol_end_x: float
 
-func enter() -> void:
-	# Set up patrol boundaries when entering the state
+func enter_state(enemy: Enemy) -> void:
+	super.enter_state(enemy)
 	patrol_start_x = enemy.global_position.x
 	patrol_end_x = patrol_start_x + 500.0
 
 func physics_update(delta: float) -> void:
 	enemy.animated_sprite_2d.play("walk")
 	
-	# Check if player is in line of sight to chase
-	var dist = enemy.position.distance_to(Globals.player.position)
-	if dist < 50:
-		enemy.enemy_state_machine.change_state("ChasePlayerState")
-		return
-		
-	if dist < 250 and enemy.persist_enabled:
-		enemy.enemy_state_machine.change_state("ChasePlayerState")
-		return
-		
-	if Globals.player.is_near_ground() and not enemy.persist_enabled:
+	if _should_chase_player():
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
 		return
 	
-	# Check for walls and ledges
-	var should_turn = false
-	
-	if direction < 0: # Moving left
-		if enemy.ray_cast_2d_left_wall.is_colliding():# or not enemy.ray_cast_2d_left_down.is_colliding():
-			#print("Hit something on the left")
-			should_turn = true
-	elif direction > 0: # Moving right
-		if enemy.ray_cast_2d_right_wall.is_colliding() :#or not enemy.ray_cast_2d_right_down.is_colliding():
-			#print("hit something on the right")
-			should_turn = true
-	
-	# Check if we've reached patrol boundaries
-	var rand = randi_range(0, 130)
-	if rand == 2:
-		should_turn = true
-	
-	# Turn around if needed
-	if should_turn:
+	if _should_turn():
 		direction *= -1
 	
-	# Update sprite direction
-	enemy._update_sprite_direction(direction)
+	_move_and_animate(delta)
+
+func _should_chase_player() -> bool:
+	var dist = enemy.position.distance_to(Globals.player.position)
 	
-	# Move with smooth acceleration
+	# Close range detection
+	if dist < 50:
+		return true
+		
+	# Persist mode long range detection  
+	if dist < 250 and enemy.persist_enabled:
+		return true
+		
+	# Player near ground detection for non-persist enemies
+	if Globals.player.is_near_ground() and not enemy.persist_enabled:
+		return true
+		
+	return false
+
+func _should_turn() -> bool:
+	# Check for wall collisions
+	if direction < 0 and enemy.ray_cast_2d_left_wall.is_colliding():
+		return true
+	if direction > 0 and enemy.ray_cast_2d_right_wall.is_colliding():
+		return true
+	
+	# Random direction change for more natural patrolling
+	return randi_range(0, 130) == 2
+
+func _move_and_animate(delta: float) -> void:
+	enemy._update_sprite_direction(direction)
 	var target_velocity = direction * move_speed
 	enemy.velocity.x = move_toward(enemy.velocity.x, target_velocity, 2000 * delta)

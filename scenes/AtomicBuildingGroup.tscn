@@ -16,8 +16,8 @@
 [ext_resource type="Texture2D" uid="uid://djcyx273wjxf0" path="res://images/car2.png" id="14_x5r1p"]
 [ext_resource type="Texture2D" uid="uid://bcn27o4sktbhx" path="res://images/new/Building1.png" id="15_iyp3j"]
 [ext_resource type="Script" uid="uid://3wy4teiu0tsl" path="res://scripts/left_atomic_building.gd" id="15_x8eh4"]
-[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://sprites/Meter Maid.png" id="17_af66f"]
-[ext_resource type="Texture2D" uid="uid://c8bs0f5orsg10" path="res://sprites/middle_finger_meter_forward.png" id="18_af66f"]
+[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://Sprites/Meter Maid.png" id="17_af66f"]
+[ext_resource type="Texture2D" uid="uid://c8bs0f5orsg10" path="res://Sprites/middle_finger_meter_forward.png" id="18_af66f"]
 [ext_resource type="PackedScene" uid="uid://dj5v0xinrjdvu" path="res://scenes/meter.tscn" id="19_r28sc"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_r056b"]
@@ -107,6 +107,33 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_iyp3j"]
 radius = 131.1
 
+[sub_resource type="Animation" id="Animation_r28sc"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Bush6/MiddleFingerMeterMaid:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"walk"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Bush6/MiddleFingerMeterMaid:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
 [sub_resource type="Animation" id="Animation_af66f"]
 resource_name = "flip_off"
 length = 8.0
@@ -145,33 +172,6 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [false, true]
-}
-
-[sub_resource type="Animation" id="Animation_r28sc"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Bush6/MiddleFingerMeterMaid:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"walk"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Bush6/MiddleFingerMeterMaid:flip_h")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r056b"]
