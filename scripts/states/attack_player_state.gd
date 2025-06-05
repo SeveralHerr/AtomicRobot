@@ -44,20 +44,10 @@ func _start_attack() -> void:
 	_spawn_coin_delayed()
 
 func _spawn_coin_delayed() -> void:
-	await enemy.get_tree().create_timer(0.3).timeout
-	_throw_coin()
-
-func _throw_coin() -> void:
 	if enemy == null:
 		return
-		
-	var instance = enemy.COIN_BULLET.instantiate()
 	enemy.coins -= 1
-	enemy.node.add_child(instance)
-	
-	var spawn_pos = enemy.position + enemy.coin_spawn_point.position
-	var target_pos = Globals.player.enemy_attack_position.global_position
-	instance.start(spawn_pos, (target_pos - spawn_pos).normalized())
+	Utils.throw_coin_delayed(enemy, 0.3)
 	
 	await enemy.animated_sprite_2d.animation_finished
 	if enemy == null or enemy.health <= 0:

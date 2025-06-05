@@ -17,30 +17,34 @@ func physics_update(delta: float) -> void:
 		return
 		
 	var dir = (Globals.player.position - enemy.position).normalized()
-	var dist = enemy.position.distance_to(Globals.player.position)
+	var dist_squared = enemy.position.distance_squared_to(Globals.player.position)
+	var attack_range_squared = enemy.attack_range * enemy.attack_range
 	
 	# Check if close enough to attack
-	if dist <= enemy.attack_range:
+	if dist_squared <= attack_range_squared:
 		enemy.enemy_state_machine.change_state("AttackPlayerState")
 		return
 	
+	# For movement calculation, we need actual distance
+	var dist = sqrt(dist_squared)
 	_handle_movement(dist, delta)
 	_update_animation()
 	enemy._update_sprite_direction(dir.x)
 
 func _should_return_to_patrol() -> bool:
-	var dist = enemy.position.distance_to(Globals.player.position)
+	# Use squared distance for better performance
+	var dist_squared = enemy.position.distance_squared_to(Globals.player.position)
 	
 	# Player not near ground and persist disabled
 	if not Globals.player.is_near_ground() and not enemy.persist_enabled:
 		return true
 		
-	# Too far when persist enabled
-	if dist > 250 and enemy.persist_enabled:
+	# Too far when persist enabled (250^2 = 62500)
+	if dist_squared > 62500 and enemy.persist_enabled:
 		return true
 		
-	# Extremely far - cleanup enemy
-	if dist > 3650 and not enemy.persist_enabled:
+	# Extremely far - cleanup enemy (3650^2 = 13322500)
+	if dist_squared > 13322500 and not enemy.persist_enabled:
 		enemy.queue_free()
 		return true
 		

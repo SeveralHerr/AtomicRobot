@@ -1125,6 +1125,10 @@ texture = ExtResource("63_2xtnq")
 [node name="MeterMaid" parent="." instance=ExtResource("64_335wh")]
 position = Vector2(-98, -48)
 
+[node name="MeterMaidWindow" parent="." instance=ExtResource("48_64moy")]
+z_index = 5
+position = Vector2(-690, -164)
+
 [editable path="SceneItemsBackground/BuildingGroup1/Tree5"]
 [editable path="SceneItemsBackground/BuildingGroup1/Tree6"]
 [editable path="SceneItemsBackground/BuildingGroup1/Tree7"]

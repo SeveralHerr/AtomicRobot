@@ -34,10 +34,14 @@ func _on_player_death() -> void:
 	pass
 
 func _process(delta: float) -> void:
+	# Early return for better performance
+	if health <= 0 or not enemy_state_machine:
+		return
 	enemy_state_machine.update(delta)
 
 func _physics_process(delta: float) -> void:
-	if enemy_state_machine.enemy == null:
+	# Early returns for better performance
+	if health <= 0 or not enemy_state_machine or enemy_state_machine.enemy == null:
 		return
 		
 	_apply_gravity(delta)

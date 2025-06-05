@@ -24,14 +24,15 @@ func physics_update(delta: float) -> void:
 	_move_and_animate(delta)
 
 func _should_chase_player() -> bool:
-	var dist = enemy.position.distance_to(Globals.player.position)
+	# Use squared distance for better performance (avoid sqrt calculation)
+	var dist_squared = enemy.position.distance_squared_to(Globals.player.position)
 	
-	# Close range detection
-	if dist < 50:
+	# Close range detection (50^2 = 2500)
+	if dist_squared < 2500:
 		return true
 		
-	# Persist mode long range detection  
-	if dist < 250 and enemy.persist_enabled:
+	# Persist mode long range detection (250^2 = 62500)
+	if dist_squared < 62500 and enemy.persist_enabled:
 		return true
 		
 	# Player near ground detection for non-persist enemies

@@ -32,10 +32,11 @@ func physics_update(delta: float) -> void:
 	if enemy.enemy_state_machine.current_state is not FindMeterState:
 		return
 	
-	var dist = enemy.global_position.distance_to(meter.global_position)
+	# Use squared distance for better performance (20^2 = 400)
+	var dist_squared = enemy.global_position.distance_squared_to(meter.global_position)
 	dir = (meter.position - enemy.position).normalized()
 	
-	if dist < 20 and enemy.coins <= 0:
+	if dist_squared < 400 and enemy.coins <= 0:
 		_refill_at_meter()
 	else:
 		_move_to_meter(delta)

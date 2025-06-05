@@ -1,7 +1,7 @@
 extends CharacterBody2D
 class_name Boss
 
-const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
+# Coin bullet moved to Utils for shared access
 
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
@@ -100,16 +100,9 @@ func _create_bullet() -> void:
 func throw_coin() -> void:
 	animated_sprite_2d.animation_finished.disconnect(throw_coin)
 	for i in range(10):
-
-
-		
-		var instance = COIN_BULLET.instantiate()
-
-		#instance.player_only = true
-		#instance.scale = Vector2(4, 4)
-		node.add_child(instance)
-		var pos = position + coin_spawn_position.position
-		instance.start(pos,  (Globals.player.position - pos).normalized())
+		var spawn_pos = position + coin_spawn_position.position
+		var target_pos = Globals.player.position
+		Utils.throw_coin(spawn_pos, target_pos, node)
 	animated_sprite_2d.play("Idle")
 	stand_still = false
 func randomOffset() -> int:
