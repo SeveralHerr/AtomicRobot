@@ -15,8 +15,13 @@ func _setup_state_machine() -> void:
 	enemy_state_machine = EnemyStateMachine.new(self)
 	enemy_state_machine.add_state("PatrolState", PatrolState.new())
 	enemy_state_machine.add_state("ChasePlayerState", ChasePlayerState.new())
+	enemy_state_machine.add_state("AttackPlayerState", AttackPlayerState.new())
 	enemy_state_machine.add_state("DeadEnemyState", DeadEnemyState.new())
-	enemy_state_machine.add_state("FindMeterState", FindMeterState.new())
+	
+	# Only add refill state if refills are enabled
+	if refills_enabled:
+		enemy_state_machine.add_state("FindMeterState", FindMeterState.new())
+	
 	add_child(enemy_state_machine)
 	enemy_state_machine.change_state("PatrolState")
 
