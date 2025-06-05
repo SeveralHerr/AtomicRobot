@@ -15,11 +15,11 @@ func add_state(name: String, state: EnemyState) -> void:
 func change_state(name: String) -> void:
 	print("Enemy state", name)
 	if current_state:
-		current_state.exit_state(enemy)	
+		current_state.exit_state()	
 		
 	current_state = states[name]
 
-	current_state.enter_state(enemy)
+	current_state.enter_state()
 
 
 func update(delta: float) -> void:

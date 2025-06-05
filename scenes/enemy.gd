@@ -22,7 +22,7 @@ var enemy_state_machine: EnemyStateMachine
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var receive_hit_audio: AudioStreamPlayer = $ReceiveHitAudio
 
-
+var is_player_in_attack_range: bool = false
 
 # Stats
 var health: int = 3
@@ -51,23 +51,26 @@ var player: Node2D
 
 func _init() -> void:
 	enemy_state_machine = EnemyStateMachine.new(self)
+	add_child(enemy_state_machine)
 
 func _ready() -> void:
 	attack_timer.wait_time = attack_cooldown
 	player = get_tree().get_first_node_in_group("player")
+	
+	player_detection.body_entered.connect(func(body: Node2D): is_player_in_attack_range = true)
+	player_detection.body_exited.connect(func(body: Node2D): is_player_in_attack_range = false)
 
-	add_child(enemy_state_machine)
+
 	
 	
 func _process(delta: float) -> void:
-	enemy_state_machine.update(delta)
-	
 	if velocity.x <= 0:
 		var direction = (player.global_position - global_position).normalized()
 		_update_sprite_direction(direction.x)
 	
 func _physics_process(delta: float) -> void:
 	_apply_gravity(delta)
+	enemy_state_machine.update(delta)
 	move_and_slide()
 
 
@@ -80,6 +83,18 @@ func _physics_process(delta: float) -> void:
 func attack():
 	pass
 	
+#func move_towards_target(target_pos: Vector2, delta: float):
+	##var direction = sign(dir.x)
+	#var direction = (target_pos - global_position).normalized()
+	#var target_velocity = direction * move_speed
+	#_update_sprite_direction(direction.x)
+	#velocity.x = move_toward(velocity.x, target_velocity.x, 2000 * delta)
+	#pass
+#
+#
+
+
+
 func move_towards_target(target_pos: Vector2, delta: float):
 	#var direction = sign(dir.x)
 	var direction = (target_pos - global_position).normalized()
@@ -87,12 +102,6 @@ func move_towards_target(target_pos: Vector2, delta: float):
 	_update_sprite_direction(direction.x)
 	velocity.x = move_toward(velocity.x, target_velocity.x, 2000 * delta)
 	pass
-
-
-
-
-
-
 
 
 
@@ -165,14 +174,11 @@ func get_distance_to_player() -> float:
 
 func can_see_player() -> bool:
 	return get_distance_to_player() <= detection_range
-
-func is_in_attack_range() -> bool:
-	return get_distance_to_player() <= attack_range
 	
 func has_state(state: String) -> bool:
 	return enemy_state_machine.states.has(state)
 
 
 func can_attack() -> bool:
-	return attack_timer.is_stopped()
+	return attack_timer.is_stopped() and is_player_in_attack_range
 	

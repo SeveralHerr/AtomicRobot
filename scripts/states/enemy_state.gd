@@ -6,12 +6,15 @@ class_name EnemyState
 
 var enemy: Enemy
 
-## Called when entering this state
-func enter_state(enemy: Enemy) -> void:
+func _init(enemy: Enemy) -> void:
 	self.enemy = enemy
 
+## Called when entering this state
+func enter_state() -> void:
+	pass
+
 ## Called when exiting this state  
-func exit_state(enemy: Enemy) -> void:
+func exit_state() -> void:
 	pass
 
 
