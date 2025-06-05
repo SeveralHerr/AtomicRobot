@@ -19,7 +19,7 @@ func change_state(name: String) -> void:
 		current_state.exit_state(player)
 
 	current_state = states[name]
-	print("Player state: ", name)
+	#print("Player state: ", name)
 	current_state.enter_state(player)
 
 func handle_input(event: InputEvent) -> void:

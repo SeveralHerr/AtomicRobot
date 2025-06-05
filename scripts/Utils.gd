@@ -46,7 +46,7 @@ static func throw_coin_from_enemy(enemy: Node, use_arc: bool = false) -> void:
 		return
 	var spawn_pos = enemy.global_position + enemy.coin_spawn_point.position
 	var target_pos = Globals.player.enemy_attack_position.global_position
-	throw_coin(spawn_pos, target_pos, enemy.node, use_arc)
+	throw_coin(spawn_pos, target_pos, enemy.player.get_parent(), use_arc)
 
 static func throw_coin_delayed(enemy: Node, delay: float = 0.3, use_arc: bool = false) -> void:
 	if not enemy:

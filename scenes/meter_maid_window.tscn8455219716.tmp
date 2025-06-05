@@ -1,6 +1,5 @@
-[gd_scene load_steps=14 format=4 uid="uid://bxsksxhbmge8q"]
+[gd_scene load_steps=13 format=4 uid="uid://bxsksxhbmge8q"]
 
-[ext_resource type="Script" uid="uid://c5seb14eot5lp" path="res://scripts/meter_maid_window.gd" id="1_jidjv"]
 [ext_resource type="Script" uid="uid://dsbjs54db5oe8" path="res://scripts/line_of_sight.gd" id="2_ryn0f"]
 [ext_resource type="PackedScene" uid="uid://di2g4epq8sggc" path="res://scenes/broken_window.tscn" id="2_tir5r"]
 [ext_resource type="Shader" uid="uid://6j4tcu38byit" path="res://shaders/flash.gdshader" id="3_tir5r"]
@@ -66,7 +65,6 @@ _data = {
 [node name="MeterMaidWindow" type="CharacterBody2D"]
 collision_layer = 4
 collision_mask = 99
-script = ExtResource("1_jidjv")
 
 [node name="BrokenWindow" parent="." instance=ExtResource("2_tir5r")]
 

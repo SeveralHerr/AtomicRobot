@@ -989,6 +989,9 @@ position = Vector2(-1826, -107)
 [node name="Node2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/TestGroup" instance=ExtResource("54_2yfl3")]
 position = Vector2(1568, 10)
 
+[node name="Player" parent="." instance=ExtResource("2_5jk15")]
+position = Vector2(-704, -22)
+
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false
 z_index = 2
@@ -1121,10 +1124,6 @@ texture = ExtResource("63_2xtnq")
 
 [node name="MeterMaid" parent="." instance=ExtResource("64_335wh")]
 position = Vector2(-98, -48)
-
-[node name="Player" parent="." groups=["player"] instance=ExtResource("2_5jk15")]
-z_index = 1
-position = Vector2(-704, -22)
 
 [editable path="SceneItemsBackground/BuildingGroup1/Tree5"]
 [editable path="SceneItemsBackground/BuildingGroup1/Tree6"]
