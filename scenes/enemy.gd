@@ -68,7 +68,6 @@ func _process(delta: float) -> void:
 	
 func _physics_process(delta: float) -> void:
 	_apply_gravity(delta)
-	enemy_state_machine.physics_update(delta)
 	move_and_slide()
 
 

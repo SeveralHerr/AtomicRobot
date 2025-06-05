@@ -12,7 +12,7 @@ func enter_state(enemy: Enemy) -> void:
 	patrol_end_x = patrol_start_x + 500.0
 	enemy.animated_sprite_2d.play("walk")
 
-func physics_update(delta: float) -> void:
+func update(delta: float) -> void:
 	if enemy.has_state("ChasePlayerState"):
 		if enemy.can_see_player():
 			enemy.enemy_state_machine.change_state("ChasePlayerState")

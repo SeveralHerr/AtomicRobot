@@ -13,7 +13,7 @@ func enter_state(enemy: Enemy) -> void:
 #func exit_state(enemy: Enemy) -> void:
 	#_cleanup_timers()
 
-func physics_update(delta: float) -> void:
+func update(delta: float) -> void:
 	if enemy.has_state("ChasePlayerState"):
 		if not enemy.is_in_attack_range():
 			enemy.enemy_state_machine.change_state("ChasePlayerState")

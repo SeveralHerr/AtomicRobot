@@ -27,8 +27,5 @@ func update(delta: float) -> void:
 	#enemy.scale.x = sign((Globals.player.position - enemy.position).normalized().x)
 	
 	if current_state:
-		current_state.update(enemy, delta)
+		current_state.update( delta)
 		
-func physics_update(delta: float) -> void:
-	if current_state:
-		current_state.physics_update(delta)
