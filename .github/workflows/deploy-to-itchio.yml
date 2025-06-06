@@ -15,18 +15,18 @@ jobs:
 
     - name: Download Godot
       run: |
-        wget https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip -O godot.zip
+        wget https://github.com/godotengine/godot/releases/download/4.4.1-stable/Godot_v4.4.1-stable_linux.x86_64.zip -O godot.zip
         unzip godot.zip -d godot
-        mv godot/Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
+        mv godot/Godot_v4.4.1-stable_linux.x86_64 /usr/local/bin/godot
         chmod +x /usr/local/bin/godot
 
     - name: Download Godot Export Templates
       run: |
-        wget https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz -O templates.zip
-        mkdir -p ~/.local/share/godot/export_templates/4.3.stable
-        unzip templates.zip -d ~/.local/share/godot/export_templates/4.3.stable
-        mv ~/.local/share/godot/export_templates/4.3.stable/templates/* ~/.local/share/godot/export_templates/4.3.stable/
-        rmdir ~/.local/share/godot/export_templates/4.3.stable/templates
+        wget https://github.com/godotengine/godot/releases/download/4.4.1-stable/Godot_v4.4.1-stable_export_templates.tpz -O templates.zip
+        mkdir -p ~/.local/share/godot/export_templates/4.4.1.stable
+        unzip templates.zip -d ~/.local/share/godot/export_templates/4.4.1.stable
+        mv ~/.local/share/godot/export_templates/4.4.1.stable/templates/* ~/.local/share/godot/export_templates/4.4.1.stable/
+        rmdir ~/.local/share/godot/export_templates/4.4.1.stable/templates
 
     - name: Export project
       run: godot --headless --export-release "Web" "bin/index.html"
