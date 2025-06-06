@@ -15,14 +15,4 @@ func can_attack() -> bool:
 	return attack_timer.is_stopped()
 
 
-func attack() -> void:
-	if not attack_timer.is_stopped():
-		return
-
-
-	await animated_sprite_2d.animation_finished
-	if health <= 0:
-		return
-	velocity.x = 0
-	animated_sprite_2d.play("idle")
 	

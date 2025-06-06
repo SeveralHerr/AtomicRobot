@@ -1,4 +1,4 @@
-extends Enemy
+extends Node2D
 class_name MeterMaidWindow
 
 ## Stationary window meter maid that attacks from buildings

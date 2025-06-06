@@ -14,11 +14,10 @@ func update(delta: float) -> void:
 		enemy.enemy_state_machine.change_state("PatrolState")
 			
 	# Handle animationd
-	if enemy.velocity.x == 0:
-		enemy.animated_sprite_2d.play("idle")
-	else:
-		enemy.animated_sprite_2d.play("walk")
-			
 	if not enemy.is_player_in_attack_range:
 		enemy.move_towards_target(enemy.player.global_position, delta)
+		enemy.animated_sprite_2d.play("walk")
+	else:
+		enemy.animated_sprite_2d.play("idle")
+		enemy.velocity.x = 0	
 		

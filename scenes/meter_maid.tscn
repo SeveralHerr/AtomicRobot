@@ -129,7 +129,7 @@ wait_time = 3.0
 material = SubResource("ShaderMaterial_engfn")
 position = Vector2(0, -6)
 sprite_frames = ExtResource("4_wykn1")
-animation = &"refill"
+animation = &"idle"
 autoplay = "idle"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

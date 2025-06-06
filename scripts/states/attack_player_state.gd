@@ -5,6 +5,10 @@ var attack_finished: bool = false
 
 func enter_state() -> void:
 	attack_finished = false
+	call_deferred("attack")
+	
+	
+func attack() -> void:
 	enemy.velocity.x = 0
 	enemy.animated_sprite_2d.play("attack")
 
@@ -15,7 +19,6 @@ func enter_state() -> void:
 	await enemy.animated_sprite_2d.animation_finished
 	enemy.animated_sprite_2d.play("idle")
 	attack_finished = true
-
 func update(delta: float) -> void:
 	if not attack_finished:
 		return
