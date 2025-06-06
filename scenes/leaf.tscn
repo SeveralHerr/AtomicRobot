@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://bkacyqbt1p37k"]
+
+[ext_resource type="Script" uid="uid://bpyb2rrsicttv" path="res://scripts/leaf.gd" id="1_4r3pj"]
+[ext_resource type="Texture2D" uid="uid://b3qbng565i6ss" path="res://images/new/leaf.png" id="2_r6846"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_y2xad"]
+radius = 1.0
+
+[node name="Leaf" type="RigidBody2D"]
+collision_layer = 128
+collision_mask = 98
+gravity_scale = 0.1
+script = ExtResource("1_4r3pj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_y2xad")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_r6846")
+
+[node name="Floor Raycast" type="RayCast2D" parent="."]
+target_position = Vector2(0, 3)
+collision_mask = 2

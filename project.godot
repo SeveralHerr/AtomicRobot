@@ -91,6 +91,7 @@ Run={
 2d_physics/layer_3="Enemy"
 2d_physics/layer_6="Platforms"
 2d_physics/layer_7="wall"
+2d_physics/layer_8="Leaf"
 
 [rendering]
 

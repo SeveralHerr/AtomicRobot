@@ -20,6 +20,8 @@ func enter_state(player: Player) -> void:
 		if body is Enemy:
 			ScreenShake.apply_shake(5)
 			body.receive_hit(PLAYER_DAMAGE)
+		elif body is DroppedLeaf:
+			body.do_gust(13, player.global_position)
 			
 	var areas = player.area_2d.get_overlapping_areas()
 	for area in areas:
@@ -34,6 +36,7 @@ func enter_state(player: Player) -> void:
 			parent.receive_hit(PLAYER_DAMAGE)
 		elif parent is Crack: 
 			parent.receive_hit()
+
 			
 func handle_input(player: Player, event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept") and player.is_on_floor():

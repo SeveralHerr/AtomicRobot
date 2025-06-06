@@ -13,7 +13,7 @@ func attack() -> void:
 	enemy._face_player()
 	enemy.animated_sprite_2d.play("attack")
 
-	Utils.throw_coin_delayed(enemy, 0.3)
+	Utils.throw_coin_delayed(enemy, 0.55)
 	enemy.coins -= 1
 	enemy.attack_timer.start()
 	

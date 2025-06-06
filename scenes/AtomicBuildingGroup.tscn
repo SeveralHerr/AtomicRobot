@@ -16,8 +16,8 @@
 [ext_resource type="Texture2D" uid="uid://djcyx273wjxf0" path="res://images/car2.png" id="14_x5r1p"]
 [ext_resource type="Texture2D" uid="uid://bcn27o4sktbhx" path="res://images/new/Building1.png" id="15_iyp3j"]
 [ext_resource type="Script" uid="uid://3wy4teiu0tsl" path="res://scripts/left_atomic_building.gd" id="15_x8eh4"]
-[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://Sprites/Meter Maid.png" id="17_af66f"]
-[ext_resource type="Texture2D" uid="uid://c8bs0f5orsg10" path="res://Sprites/middle_finger_meter_forward.png" id="18_af66f"]
+[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://sprites/Meter Maid.png" id="17_af66f"]
+[ext_resource type="Texture2D" uid="uid://c8bs0f5orsg10" path="res://sprites/middle_finger_meter_forward.png" id="18_af66f"]
 [ext_resource type="PackedScene" uid="uid://dj5v0xinrjdvu" path="res://scenes/meter.tscn" id="19_r28sc"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_r056b"]
