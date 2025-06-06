@@ -112,7 +112,7 @@ func _update_sprite_direction(direction: float) -> void:
 	
 func _face_player() -> void:
 	var direction = (player.global_position - global_position).normalized()
-	animated_sprite_2d.flip_h = direction < 0.0
+	animated_sprite_2d.flip_h = direction.x < 0.0
 	
 	
 func _apply_gravity(delta: float) -> void:

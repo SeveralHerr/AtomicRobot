@@ -1,7 +1,9 @@
-[gd_resource type="SpriteFrames" load_steps=30 format=3 uid="uid://ckct5j2bt3fq7"]
+[gd_resource type="SpriteFrames" load_steps=32 format=3 uid="uid://ckct5j2bt3fq7"]
 
 [ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://Sprites/Meter Maid.png" id="1_8f8f2"]
+[ext_resource type="Texture2D" uid="uid://cf0qb7cj8nbpx" path="res://Sprites/meter maid melee1.png" id="2_d8u06"]
 [ext_resource type="Texture2D" uid="uid://c5t338lvqm8mh" path="res://Sprites/meter maid refill.png" id="2_uvsvq"]
+[ext_resource type="Texture2D" uid="uid://b4148jkj0h31i" path="res://Sprites/meter maid melee.png" id="2_x8kt1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uvsvq"]
 atlas = ExtResource("1_8f8f2")
@@ -184,6 +186,17 @@ animations = [{
 "loop": true,
 "name": &"idle",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_d8u06")
+}, {
+"duration": 1.5,
+"texture": ExtResource("2_x8kt1")
+}],
+"loop": false,
+"name": &"melee",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,

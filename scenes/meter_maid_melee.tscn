@@ -1,10 +1,13 @@
-[gd_scene load_steps=13 format=4 uid="uid://ct1xv7dk5rs7y"]
+[gd_scene load_steps=14 format=4 uid="uid://b0sf6pjquv5mj"]
 
 [ext_resource type="Script" uid="uid://b0d820x6rjder" path="res://scripts/meter_maid_melee.gd" id="1_xinuf"]
 [ext_resource type="Script" uid="uid://dsbjs54db5oe8" path="res://scripts/line_of_sight.gd" id="2_mdfou"]
 [ext_resource type="Shader" uid="uid://6j4tcu38byit" path="res://shaders/flash.gdshader" id="3_jtier"]
-[ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://sprites/metermaid_sprite_frames.tres" id="4_p2bng"]
+[ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://Sprites/metermaid_sprite_frames.tres" id="4_p2bng"]
 [ext_resource type="AudioStream" uid="uid://b55vbaakt0ib4" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_qy2r5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xinuf"]
+radius = 28.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n43qx"]
 size = Vector2(32, 48)
@@ -62,44 +65,46 @@ _data = {
 &"RESET": SubResource("Animation_av1nj")
 }
 
-[node name="MeterMaid" type="CharacterBody2D"]
+[node name="MeterMaidMelee" type="CharacterBody2D"]
 top_level = true
 collision_layer = 4
 collision_mask = 98
 script = ExtResource("1_xinuf")
 
 [node name="Area2D" type="Area2D" parent="."]
-collision_layer = 4
-collision_mask = 3
+collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(0, 2)
-shape = SubResource("RectangleShape2D_n43qx")
+shape = SubResource("CircleShape2D_xinuf")
 
 [node name="RayCast2D_LeftDown" type="RayCast2D" parent="."]
 position = Vector2(-25, -15)
+enabled = false
 collision_mask = 66
 
 [node name="RayCast2D_LeftWall" type="RayCast2D" parent="."]
 position = Vector2(0, 7)
 rotation = 1.5708
-target_position = Vector2(6.53267e-05, 18)
+target_position = Vector2(1.00009, 24)
 collision_mask = 98
 collide_with_areas = true
 
 [node name="RayCast2D_RightDown" type="RayCast2D" parent="."]
 position = Vector2(27, -15)
+enabled = false
 collision_mask = 66
 
 [node name="RayCast2D_RightWall" type="RayCast2D" parent="."]
 position = Vector2(5, 7)
 rotation = -1.5708
-target_position = Vector2(-4.72069e-05, 13)
+target_position = Vector2(-9.05991e-05, 25)
 collision_mask = 98
 collide_with_areas = true
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 3.0
+one_shot = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 2)
@@ -115,6 +120,9 @@ debug_enabled = true
 debug_path_custom_color = Color(1, 0, 1, 1)
 
 [node name="LineOfSight" type="RayCast2D" parent="."]
+enabled = false
+target_position = Vector2(-1, 300)
+collision_mask = 97
 script = ExtResource("2_mdfou")
 
 [node name="RangeTimer" type="Timer" parent="."]
@@ -126,8 +134,10 @@ wait_time = 3.0
 material = SubResource("ShaderMaterial_engfn")
 position = Vector2(0, -6)
 sprite_frames = ExtResource("4_p2bng")
-animation = &"refill"
+animation = &"melee"
 autoplay = "idle"
+frame = 1
+frame_progress = 1.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
