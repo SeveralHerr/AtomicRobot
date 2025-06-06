@@ -28,7 +28,9 @@ func update(delta: float) -> void:
 	
 	if enemy.has_state("ChasePlayerState") and not enemy.can_attack():
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
+		return
 			
 	if enemy.has_state("FindMeterState") and enemy.coins <= 0:
 		enemy.enemy_state_machine.change_state("FindMeterState")
+		return
 		

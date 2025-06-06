@@ -29,11 +29,11 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 		_spawn_enemy(true)
 		
 		# Show the meter maid windows
-		meter_maid_window.trigger()
+		#meter_maid_window.trigger()
 		await get_tree().create_timer(2).timeout
-		meter_maid_window_2.trigger()
+		#meter_maid_window_2.trigger()
 		await get_tree().create_timer(4).timeout
-		meter_maid_window_3.trigger()
+		#meter_maid_window_3.trigger()
 
 
 

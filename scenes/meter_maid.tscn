@@ -136,6 +136,7 @@ position = Vector2(0, -6)
 sprite_frames = ExtResource("4_wykn1")
 animation = &"idle"
 autoplay = "idle"
+frame_progress = 0.588376
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

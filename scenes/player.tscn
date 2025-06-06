@@ -153,8 +153,9 @@ shape = ExtResource("2_fjrip")
 material = SubResource("ShaderMaterial_mw4su")
 position = Vector2(2, 19)
 sprite_frames = ExtResource("3_y4r1p")
-animation = &"Attack"
+animation = &"idle"
 autoplay = "idle"
+frame_progress = 0.00171529
 offset = Vector2(0, -33.19)
 
 [node name="Area2D" type="Area2D" parent="."]

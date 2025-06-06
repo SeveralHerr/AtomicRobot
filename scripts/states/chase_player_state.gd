@@ -13,8 +13,11 @@ func exit_state() -> void:
 func update(delta: float) -> void:
 	if enemy.has_state("AttackPlayerState") and (enemy.can_attack() and enemy.is_player_in_line_of_sight()):
 		enemy.enemy_state_machine.change_state("AttackPlayerState")	
-	if enemy.has_state("PatrolState") and (not enemy.is_player_in_attack_range and not enemy.is_player_in_line_of_sight()):
+		return
+		
+	if enemy.has_state("PatrolState") and (not enemy.can_see_player() and not enemy.is_player_in_line_of_sight()):
 		enemy.enemy_state_machine.change_state("PatrolState")
+		return
 			
 	# Handle animationd
 	if not enemy.is_player_in_attack_range:

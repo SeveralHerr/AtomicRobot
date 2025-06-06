@@ -133,6 +133,9 @@ func receive_hit(damage: int) -> void:
 	_play_hit_effects()
 	_apply_damage(damage)
 	_apply_knockback()
+	
+	if health <= 0 and has_state("DeadEnemyState"):
+		enemy_state_machine.change_state("DeadEnemyState")
 
 func _play_hit_effects() -> void:
 	if animation_player.is_playing():
@@ -146,7 +149,7 @@ func _apply_damage(damage: int) -> void:
 		call_deferred("die")
 
 func _apply_knockback() -> void:
-	var knockback_direction = (position - Globals.player.position).normalized()
+	var knockback_direction = (global_position - Globals.player.global_position).normalized()
 	var knockback_strength = 300.0
 	velocity += knockback_direction * knockback_strength
 	velocity.y = -50.0

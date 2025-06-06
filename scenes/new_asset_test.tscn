@@ -63,7 +63,7 @@
 [ext_resource type="Script" uid="uid://dvdcq0lhqdrnd" path="res://scripts/under_world_kill_box.gd" id="58_qr2g0"]
 [ext_resource type="Texture2D" uid="uid://c1rfgsu0deewc" path="res://images/bean3.PNG" id="62_2yfl3"]
 [ext_resource type="Texture2D" uid="uid://bsfg8dpci5l12" path="res://images/crane4.png" id="63_2xtnq"]
-[ext_resource type="PackedScene" uid="uid://b0sf6pjquv5mj" path="res://scenes/meter_maid_melee.tscn" id="65_brcwu"]
+[ext_resource type="PackedScene" uid="uid://csis0b6hdasqr" path="res://scenes/meter_maid.tscn" id="64_335wh"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("51_k4pk8")
@@ -1123,8 +1123,8 @@ texture = ExtResource("63_2xtnq")
 z_index = 1
 position = Vector2(-704, -22)
 
-[node name="MeterMaidMelee" parent="." instance=ExtResource("65_brcwu")]
-position = Vector2(-252, -29)
+[node name="MeterMaid" parent="." instance=ExtResource("64_335wh")]
+position = Vector2(-147, -35)
 
 [editable path="SceneItemsBackground/BuildingGroup1/Tree5"]
 [editable path="SceneItemsBackground/BuildingGroup1/Tree6"]

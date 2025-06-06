@@ -1,6 +1,7 @@
-[gd_resource type="SpriteFrames" load_steps=35 format=3 uid="uid://ckct5j2bt3fq7"]
+[gd_resource type="SpriteFrames" load_steps=36 format=3 uid="uid://ckct5j2bt3fq7"]
 
 [ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://Sprites/Meter Maid.png" id="1_8f8f2"]
+[ext_resource type="Texture2D" uid="uid://b6l617g2ri0yv" path="res://Sprites/maid_idle.png" id="2_d8u06"]
 [ext_resource type="Texture2D" uid="uid://c5t338lvqm8mh" path="res://Sprites/meter maid refill.png" id="2_uvsvq"]
 [ext_resource type="Texture2D" uid="uid://ilva7532twtc" path="res://Sprites/meter maid melee3-sheet.png" id="2_x8kt1"]
 
@@ -197,10 +198,13 @@ animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_ckx63")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_d8u06")
 }],
 "loop": true,
 "name": &"idle",
-"speed": 10.0
+"speed": 4.0
 }, {
 "frames": [{
 "duration": 1.0,

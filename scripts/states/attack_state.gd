@@ -15,14 +15,20 @@ func enter_state(player: Player) -> void:
 
 	
 	await player.get_tree().create_timer(0.1).timeout
-	var areas = Globals.player.area_2d.get_overlapping_areas()
+	var bodies = player.area_2d.get_overlapping_bodies()
+	for body in bodies:
+		if body is Enemy:
+			ScreenShake.apply_shake(5)
+			body.receive_hit(PLAYER_DAMAGE)
+			
+	var areas = player.area_2d.get_overlapping_areas()
 	for area in areas:
 		ScreenShake.apply_shake(5)
 		var parent = area.get_parent()
 		print(parent.name)
 		if parent is Crate:
 			parent.receive_hit()
-		elif parent is MeterMaid:
+		elif area is Enemy:
 			parent.receive_hit(PLAYER_DAMAGE)
 		elif parent is Boss:
 			parent.receive_hit(PLAYER_DAMAGE)

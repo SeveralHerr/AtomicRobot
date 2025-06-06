@@ -6,24 +6,19 @@ var dir: Vector2
 var meter: Meter
 var stand_still: bool = false
 
-func _check(body: Node2D) -> void:
-	if body is Player:
-		enemy.enemy_state_machine.change_state("PatrolState")
-
-func enter_state(enemy: Enemy) -> void:
-	super.enter_state(enemy)
+func enter_state() -> void:
 	meter = Globals.nearest_meter(enemy.position)
 	stand_still = false
 	enemy.animated_sprite_2d.play("walk")
 	ChatBubble.create(enemy, "Out of ammo!")
 	
-func exit_state(enemy: Enemy) -> void:
+func exit_state() -> void:
 	stand_still = false
 	enemy.coin_audio_player.stop()
 
 
 
-func physics_update(delta: float) -> void:
+func update(delta: float) -> void:
 	if stand_still:
 		enemy.velocity.x = 0
 		enemy.animated_sprite_2d.pause()
@@ -32,11 +27,11 @@ func physics_update(delta: float) -> void:
 	if enemy.enemy_state_machine.current_state is not FindMeterState:
 		return
 	
-	# Use squared distance for better performance (20^2 = 400)
-	var dist_squared = enemy.global_position.distance_squared_to(meter.global_position)
-	dir = (meter.position - enemy.position).normalized()
+	var dist = enemy.global_position.distance_to(meter.global_position)
+	dir = (meter.global_position - enemy.global_position).normalized()
 	
-	if dist_squared < 400 and enemy.coins <= 0:
+
+	if dist < 30 and enemy.coins <= 0:
 		_refill_at_meter()
 	else:
 		_move_to_meter(delta)
@@ -52,24 +47,14 @@ func _refill_at_meter() -> void:
 	enemy.animated_sprite_2d.play("refill", 2)
 	Utils.shake_two_node2d(enemy.animated_sprite_2d, meter, 3)
 	await enemy.get_tree().create_timer(2).timeout
+	
 	enemy.enemy_state_machine.change_state("ChasePlayerState")
+	
 
 func _move_to_meter(delta: float) -> void:
-	var target_velocity = dir.x * enemy.move_speed
-	enemy.velocity.x = move_toward(enemy.velocity.x, target_velocity, 2000 * delta)
+	enemy.move_towards_target(meter.global_position, delta)
+	#enemy.velocity.x = move_toward(enemy.velocity.x, target_velocity, 2000 * delta)
 	
 # Unused navigation methods - can be removed if not needed
 func move_along_path(delta: float) -> void:
-	var target_position = enemy.navigation_agent_2d.get_next_path_position()
-	var path_dir = (target_position - enemy.position).normalized()
-	enemy.velocity.x = move_toward(enemy.velocity.x, path_dir.x * 50, 2000 * delta)
-
-func _delayed_handle_state() -> void:
-	await enemy.node.get_tree().create_timer(1).timeout
-	_handle_state()
-
-func _handle_state() -> void:
-	if enemy.line_of_sight.is_player_line_of_sight():
-		enemy.enemy_state_machine.change_state("ChasePlayerState")
-		return
-	enemy.enemy_state_machine.change_state("PatrolState")
+	enemy.move_towards_target(dir * 50, delta)

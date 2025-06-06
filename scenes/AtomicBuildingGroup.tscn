@@ -313,4 +313,7 @@ position = Vector2(1053, 67)
 [node name="Tree3" parent="LeftBuilding" instance=ExtResource("8_uw6ff")]
 position = Vector2(-1141, 12)
 
+[node name="Meter2" parent="LeftBuilding" instance=ExtResource("19_r28sc")]
+position = Vector2(-121, 68)
+
 [editable path="Crack"]
