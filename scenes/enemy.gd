@@ -34,19 +34,7 @@ var attack_range: int = 120
 var attack_cooldown: float = 4
 var detection_range: float = 300.0
 
-enum State {
-	IDLE,
-	PATROL,
-	CHASE,
-	ATTACK,
-	REFILL
-}
 
-# Deprecated - clean up unused variables
-# var direction: int = -1  # Use velocity direction instead
-# var speed: int = 50      # Use move_speed instead
-# var target: Node2D = null  # Use Globals.player instead
-# var last_dir: int = 0    # Not needed with proper state management
 
 # Runtime data
 var player: Node2D
@@ -83,16 +71,7 @@ func is_player_in_line_of_sight() -> bool:
 # Virtual methods to be overridden
 func attack():
 	pass
-	
-#func move_towards_target(target_pos: Vector2, delta: float):
-	##var direction = sign(dir.x)
-	#var direction = (target_pos - global_position).normalized()
-	#var target_velocity = direction * move_speed
-	#_update_sprite_direction(direction.x)
-	#velocity.x = move_toward(velocity.x, target_velocity.x, 2000 * delta)
-	#pass
-#
-#
+
 
 
 
