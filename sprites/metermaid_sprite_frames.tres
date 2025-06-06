@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=36 format=3 uid="uid://ckct5j2bt3fq7"]
+[gd_resource type="SpriteFrames" load_steps=38 format=3 uid="uid://ckct5j2bt3fq7"]
 
 [ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://Sprites/Meter Maid.png" id="1_8f8f2"]
 [ext_resource type="Texture2D" uid="uid://b6l617g2ri0yv" path="res://Sprites/maid_idle.png" id="2_d8u06"]
@@ -87,13 +87,21 @@ region = Rect2(0, 0, 100, 100)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4nm5r"]
 atlas = ExtResource("2_x8kt1")
-region = Rect2(100, 0, 100, 100)
+region = Rect2(200, 100, 100, 100)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_oxylw"]
 atlas = ExtResource("2_x8kt1")
-region = Rect2(200, 0, 100, 100)
+region = Rect2(300, 100, 100, 100)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hgni0"]
+atlas = ExtResource("2_x8kt1")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yu7fp"]
+atlas = ExtResource("2_x8kt1")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ledj5"]
 atlas = ExtResource("2_x8kt1")
 region = Rect2(0, 100, 100, 100)
 
@@ -211,7 +219,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_d8u06")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_d8u06")
+"texture": SubResource("AtlasTexture_4nm5r")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_4nm5r")
@@ -220,14 +228,26 @@ animations = [{
 "texture": SubResource("AtlasTexture_oxylw")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_hgni0")
+"texture": SubResource("AtlasTexture_oxylw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oxylw")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_hgni0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yu7fp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ledj5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ledj5")
 }],
 "loop": false,
 "name": &"melee",
-"speed": 13.0
+"speed": 15.0
 }, {
 "frames": [{
 "duration": 1.0,
