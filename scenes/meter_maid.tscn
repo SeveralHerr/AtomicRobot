@@ -80,23 +80,25 @@ shape = SubResource("CircleShape2D_5b8kh")
 
 [node name="RayCast2D_LeftDown" type="RayCast2D" parent="."]
 position = Vector2(-25, -15)
+enabled = false
 collision_mask = 66
 
 [node name="RayCast2D_LeftWall" type="RayCast2D" parent="."]
 position = Vector2(0, 7)
 rotation = 1.5708
-target_position = Vector2(6.53267e-05, 18)
+target_position = Vector2(1.00009, 24)
 collision_mask = 98
 collide_with_areas = true
 
 [node name="RayCast2D_RightDown" type="RayCast2D" parent="."]
 position = Vector2(27, -15)
+enabled = false
 collision_mask = 66
 
 [node name="RayCast2D_RightWall" type="RayCast2D" parent="."]
 position = Vector2(5, 7)
 rotation = -1.5708
-target_position = Vector2(-4.72069e-05, 13)
+target_position = Vector2(-9.05991e-05, 25)
 collision_mask = 98
 collide_with_areas = true
 
@@ -118,6 +120,9 @@ debug_enabled = true
 debug_path_custom_color = Color(1, 0, 1, 1)
 
 [node name="LineOfSight" type="RayCast2D" parent="."]
+enabled = false
+target_position = Vector2(-1, 300)
+collision_mask = 97
 script = ExtResource("3_whrlv")
 
 [node name="RangeTimer" type="Timer" parent="."]

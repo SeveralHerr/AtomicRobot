@@ -21,6 +21,8 @@ var enemy_state_machine: EnemyStateMachine
 @onready var range_timer: Timer = $RangeTimer
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var receive_hit_audio: AudioStreamPlayer = $ReceiveHitAudio
+@onready var line_of_sight: LineOfSight = $LineOfSight
+
 
 var is_player_in_attack_range: bool = false
 
@@ -63,18 +65,17 @@ func _ready() -> void:
 
 	
 	
-func _process(delta: float) -> void:
-	if velocity.x <= 0:
-		var direction = (player.global_position - global_position).normalized()
-		_update_sprite_direction(direction.x)
+
 	
 func _physics_process(delta: float) -> void:
 	_apply_gravity(delta)
 	enemy_state_machine.update(delta)
+
 	move_and_slide()
 
 
-
+func is_player_in_line_of_sight() -> bool:
+	return line_of_sight.is_player_line_of_sight()
 
 
 
@@ -107,6 +108,10 @@ func move_towards_target(target_pos: Vector2, delta: float):
 
 ## Efficiently update sprite direction with early return
 func _update_sprite_direction(direction: float) -> void:
+	animated_sprite_2d.flip_h = direction < 0.0
+	
+func _face_player() -> void:
+	var direction = (player.global_position - global_position).normalized()
 	animated_sprite_2d.flip_h = direction < 0.0
 	
 	
@@ -173,7 +178,7 @@ func get_distance_to_player() -> float:
 	return INF
 
 func can_see_player() -> bool:
-	return get_distance_to_player() <= detection_range
+	return  get_distance_to_player() <= detection_range
 	
 func has_state(state: String) -> bool:
 	return enemy_state_machine.states.has(state)

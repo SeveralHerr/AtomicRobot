@@ -10,6 +10,7 @@ func enter_state() -> void:
 	
 func attack() -> void:
 	enemy.velocity.x = 0
+	enemy._face_player()
 	enemy.animated_sprite_2d.play("attack")
 
 	Utils.throw_coin_delayed(enemy, 0.3)

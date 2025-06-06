@@ -1,37 +1,20 @@
 extends RayCast2D
 class_name LineOfSight
 
+var length 
 
-var raycast_distance = 110.0
+func _ready() -> void:
+	length = target_position.y
 
 func is_player_line_of_sight() -> bool:
 	var to_player = Globals.player.global_position - global_position
 	var distance = to_player.length()
-	target_position = to_player.normalized() * raycast_distance
-	force_raycast_update()
-
-
+	target_position = to_player.normalized() * length
 	
-	if distance > raycast_distance:
-		#enabled = false
-		#print("dist")
-		return false
 	if is_colliding():
 		var collider = get_collider()
-
 		if collider is Player:
-			#print("Player is in sight!")
-			#enabled = false
 			return true
-			pass
-			# Add your logic for when the player is in sight
-		else:
-			#print("Player is not	enemy.line_of_sight.force_raycast_update() in sight, something is blocking the view.")
-			#enabled = false
-			return false
-			pass
-	else:
-		#enabled = false
-		return false
-		#print("Player is not in sight, out of range.")
-		pass
+
+
+	return false

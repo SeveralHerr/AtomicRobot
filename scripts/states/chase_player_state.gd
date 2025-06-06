@@ -5,12 +5,15 @@ class_name ChasePlayerState
 
 func enter_state() -> void:
 	enemy.animated_sprite_2d.play("walk")
-
+	enemy.line_of_sight.enabled = true
+	
+func exit_state() -> void:
+	enemy.line_of_sight.enabled = false
 
 func update(delta: float) -> void:
-	if enemy.has_state("AttackPlayerState") and enemy.can_attack():
+	if enemy.has_state("AttackPlayerState") and (enemy.can_attack() and enemy.is_player_in_line_of_sight()):
 		enemy.enemy_state_machine.change_state("AttackPlayerState")	
-	if enemy.has_state("PatrolState") and not enemy.can_see_player():
+	if enemy.has_state("PatrolState") and (not enemy.is_player_in_attack_range and not enemy.is_player_in_line_of_sight()):
 		enemy.enemy_state_machine.change_state("PatrolState")
 			
 	# Handle animationd
@@ -21,3 +24,4 @@ func update(delta: float) -> void:
 		enemy.animated_sprite_2d.play("idle")
 		enemy.velocity.x = 0	
 		
+	
