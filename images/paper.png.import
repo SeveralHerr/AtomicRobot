@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b5almf5d8sicr"
-path="res://.godot/imported/middle_finger_meter maid melee.png-5f505e7216dd728e10a0b9ff12c2b231.ctex"
+uid="uid://odu0rabtbdyx"
+path="res://.godot/imported/paper.png-23d10f2f78a65e337dc35dcf1ad896b0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/middle_finger_meter maid melee.png"
-dest_files=["res://.godot/imported/middle_finger_meter maid melee.png-5f505e7216dd728e10a0b9ff12c2b231.ctex"]
+source_file="res://images/paper.png"
+dest_files=["res://.godot/imported/paper.png-23d10f2f78a65e337dc35dcf1ad896b0.ctex"]
 
 [params]
 

@@ -13,15 +13,15 @@ func enter_state(player: Player) -> void:
 	player.default_sprite.animation_finished.connect(_on_animation_finished)
 
 
-	
+
 	await player.get_tree().create_timer(0.1).timeout
+	Globals.gust.emit(player.collision_shape_2d.global_position, 40.0)
 	var bodies = player.area_2d.get_overlapping_bodies()
 	for body in bodies:
 		if body is Enemy:
 			ScreenShake.apply_shake(5)
 			body.receive_hit(PLAYER_DAMAGE)
-		elif body is DroppedLeaf:
-			body.do_gust(13, player.global_position)
+			
 			
 	var areas = player.area_2d.get_overlapping_areas()
 	for area in areas:

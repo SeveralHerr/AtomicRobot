@@ -7,6 +7,7 @@ signal unlocked(name: String, description: String)
 signal boss_fight(status: bool)
 signal event(status: bool)
 signal newspaper(status: bool)
+signal gust(position: Vector2, range: float)
 
 var selected_character: String = "Ryan"
 var character_dict = {

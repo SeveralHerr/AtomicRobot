@@ -23,6 +23,7 @@ ChatBubble="*res://scripts/chat_bubble.gd"
 ScreenShake="*res://scripts/screenshake.gd"
 AudioManager="*res://scripts/audio_manager.gd"
 EnemySpawner="*res://scripts/enemy_spawner.gd"
+LeafSystem="*res://autoload/leaf_system.gd"
 
 [debug]
 

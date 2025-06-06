@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bw8nx2c7jvd3m"]
+
+[ext_resource type="Script" uid="uid://duyqfjor1hb4v" path="res://scripts/leaf_manager.gd" id="1_h5k8x"]
+
+[node name="LeafManager" type="Node2D"]
+script = ExtResource("1_h5k8x")
