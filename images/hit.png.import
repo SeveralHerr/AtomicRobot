@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c5t338lvqm8mh"
-path="res://.godot/imported/meter maid refill.png-0bc9397ab8ecdc8e9df8d3c736f58521.ctex"
+uid="uid://bt66lcvg51yxy"
+path="res://.godot/imported/hit.png-94bc7489cb441af4a61226e004c66c9f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/meter maid refill.png"
-dest_files=["res://.godot/imported/meter maid refill.png-0bc9397ab8ecdc8e9df8d3c736f58521.ctex"]
+source_file="res://images/hit.png"
+dest_files=["res://.godot/imported/hit.png-94bc7489cb441af4a61226e004c66c9f.ctex"]
 
 [params]
 

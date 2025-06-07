@@ -2,15 +2,15 @@
 
 [ext_resource type="Script" uid="uid://b4j6tw0kgdavd" path="res://scripts/Player.gd" id="1_ncv2v"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_rc65t"]
-[ext_resource type="Shape2D" uid="uid://vgx6w6q5wbi" path="res://Sprites/player_normal_collision_shape.tres" id="2_fjrip"]
-[ext_resource type="SpriteFrames" uid="uid://c0258e88sc8p1" path="res://Sprites/cody_sprite_frames.tres" id="3_y4r1p"]
+[ext_resource type="Shape2D" uid="uid://vgx6w6q5wbi" path="res://sprites/player_normal_collision_shape.tres" id="2_fjrip"]
+[ext_resource type="SpriteFrames" uid="uid://c0258e88sc8p1" path="res://sprites/cody_sprite_frames.tres" id="3_y4r1p"]
 [ext_resource type="AudioStream" uid="uid://cu2ft4k3uwd2u" path="res://sounds/hurt.wav" id="4_mkmka"]
 [ext_resource type="AudioStream" uid="uid://ccylhocv0o0h7" path="res://sounds/678839__cartchaos__jump.wav" id="4_y4r1p"]
 [ext_resource type="AudioStream" uid="uid://c5gk8xvel2tsp" path="res://sounds/hit3.ogg" id="5_hoc3m"]
 [ext_resource type="AudioStream" uid="uid://lmc5q1bnqvxi" path="res://sounds/lightsaber.wav" id="8_smehm"]
 [ext_resource type="AudioStream" uid="uid://bj0im2h7popwj" path="res://sounds/422762__kierankeegan__footsteps_stone_4.wav" id="9_ur7pv"]
 [ext_resource type="AudioStream" uid="uid://chkw7wwwhbouc" path="res://sounds/515624__mrickey13__playerhurt2.wav" id="10_y4r1p"]
-[ext_resource type="Script" path="res://scripts/run_particles.gd" id="12_3v2ag"]
+[ext_resource type="Script" uid="uid://xo4s2my0m1b7" path="res://scripts/run_particles.gd" id="12_3v2ag"]
 
 [sub_resource type="Shader" id="Shader_27hpx"]
 code = "shader_type canvas_item;
@@ -99,7 +99,7 @@ animations = [{
 
 [sub_resource type="Animation" id="Animation_r035c"]
 resource_name = "Hit"
-length = 0.4
+length = 0.1333
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -107,10 +107,10 @@ tracks/0/path = NodePath("DefaultSprite:material:shader_parameter/flash_value")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.133333, 0.3, 0.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.1, 0.1333),
+"transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [1.0, 0.0, 1.0, 0.0]
+"values": [1.0, 1.0, 0.0]
 }
 
 [sub_resource type="Animation" id="Animation_1qcb3"]
@@ -204,6 +204,7 @@ position = Vector2(-1, -19)
 libraries = {
 &"": SubResource("AnimationLibrary_qxslq")
 }
+autoplay = "RESET"
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, 20)

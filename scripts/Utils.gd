@@ -1,6 +1,7 @@
 extends Node
 
 const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
+const HIT_FX = preload("res://scenes/hit_fx.tscn")
 
 static func shake_node2d(node: Node2D, strength: float = 10.0, duration: float = 0.3, frequency: float = 0.02) -> void:
 	var original_pos = node.position
@@ -14,6 +15,19 @@ static func shake_node2d(node: Node2D, strength: float = 10.0, duration: float =
 		tween.tween_property(node, "position", original_pos + random_offset, frequency)
 	# Ensure the last tween resets to the original position
 	tween.tween_property(node, "position", original_pos, frequency)
+	
+	
+static func apply_hit_pause(node: Node2D, duration := 0.06):
+	Engine.time_scale = 0.0
+	await node.get_tree().create_timer(duration, true, false).timeout
+	Engine.time_scale = 1.0
+
+	
+static func hit_effect(target: Node2D, hit_position: Vector2) -> void:
+	var instance = HIT_FX.instantiate()
+	target.add_child(instance)
+	instance.global_position = hit_position
+	instance.start()
 
 static func shake_two_node2d(node1: Node2D, node2: Node2D, strength1: float = 10.0, duration1: float = 0.3, strength2: float = 10.0, duration2: float = 0.3, frequency: float = 0.02) -> void:
 	var original_pos1 = node1.position

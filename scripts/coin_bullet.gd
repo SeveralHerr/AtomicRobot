@@ -21,7 +21,7 @@ func start(_position: Vector2, _direction: Vector2, is_arc: bool = false) -> voi
 	else: 
 		velocity = _direction * speed
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	#if has_hit_player and is_falling:
 		# Apply gravity when falling
 	gravity *= 1.05

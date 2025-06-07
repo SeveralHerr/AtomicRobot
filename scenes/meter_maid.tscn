@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://ga543g2ttr1b" path="res://scripts/meter_maid.gd" id="1_wr56e"]
 [ext_resource type="Shader" uid="uid://6j4tcu38byit" path="res://shaders/flash.gdshader" id="3_w8qu0"]
 [ext_resource type="Script" uid="uid://dsbjs54db5oe8" path="res://scripts/line_of_sight.gd" id="3_whrlv"]
-[ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://Sprites/metermaid_sprite_frames.tres" id="4_wykn1"]
+[ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://sprites/metermaid_sprite_frames.tres" id="4_wykn1"]
 [ext_resource type="AudioStream" uid="uid://b55vbaakt0ib4" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_5b8kh"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5b8kh"]
@@ -30,7 +30,7 @@ shader_parameter/flash_value = 0.0
 
 [sub_resource type="Animation" id="Animation_6plkg"]
 resource_name = "Hit"
-length = 0.4
+length = 0.1333
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -38,10 +38,10 @@ tracks/0/path = NodePath("AnimatedSprite2D:material:shader_parameter/flash_value
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.133333, 0.266667, 0.333333),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.1, 0.1333),
+"transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [1.0, 0.0, 1.0, 0.0]
+"values": [1.0, 1.0, 0.0]
 }
 
 [sub_resource type="Animation" id="Animation_av1nj"]
@@ -134,9 +134,8 @@ wait_time = 3.0
 material = SubResource("ShaderMaterial_engfn")
 position = Vector2(0, -6)
 sprite_frames = ExtResource("4_wykn1")
-animation = &"idle"
+animation = &"attack"
 autoplay = "idle"
-frame_progress = 0.588376
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

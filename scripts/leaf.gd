@@ -26,10 +26,10 @@ func randomize_properties() -> void:
 		sprite.modulate = Color(
 			rand, rand, rand
 		)
-		sprite.scale = original_scale *  randf_range(1.6, 2)
+		sprite.scale = original_scale *  randf_range(1.6, 2.2)
 		collision_shape_2d.scale = sprite.scale
 		floor_raycast.scale = collision_shape_2d.scale
-	rotate(deg_to_rad(randf_range(0, 90)))
+	rotate(deg_to_rad(randf_range(0, 190)))
 
 	
 

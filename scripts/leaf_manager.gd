@@ -35,10 +35,6 @@ var clump_size_max: int = 9  # Maximum leaves per clump
 var clump_radius: float = 30.0  # How spread out leaves are within a clump
 
 func _ready() -> void:
-	# Find player
-	#await get_tree().process_frame  # Wait for scene to be ready
-	#player = get_tree().get_first_node_in_group("player")
-	
 	if player:
 		camera = player.get_node("Camera2D") if player.has_node("Camera2D") else null
 		last_spawn_x = player.global_position.x
@@ -48,17 +44,6 @@ func _ready() -> void:
 		Globals.gust.connect(_on_gust)
 	else:
 		print("LeafManager: Could not find player!")
-
-
-#func find_node_by_class(node: Node, target_class) -> Node:
-	#if node.get_class() == target_class.get_class() or node is target_class:
-		#return node
-	#
-	#for child in node.get_children():
-		#var result = find_node_by_class(child, target_class)
-		#if result:
-			#return result
-	#return null
 
 func get_random_debris_type() -> Dictionary:
 	# Calculate total weight

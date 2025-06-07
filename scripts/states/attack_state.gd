@@ -20,6 +20,8 @@ func enter_state(player: Player) -> void:
 	for body in bodies:
 		if body is Enemy:
 			ScreenShake.apply_shake(5)
+			var dir = (player.global_position - body.global_position).normalized()
+			Utils.hit_effect(body, Vector2(body.position.x + (dir.x * 10) , body.position.y) )
 			body.receive_hit(PLAYER_DAMAGE)
 			
 			

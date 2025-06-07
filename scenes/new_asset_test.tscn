@@ -610,11 +610,11 @@ shape = SubResource("RectangleShape2D_k4pk8")
 one_way_collision = true
 
 [node name="StaticBody2D" type="StaticBody2D" parent="SceneItemsBackground/BuildingGroup1/StaticBody2D2"]
-collision_layer = 2
+collision_layer = 32
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup1/StaticBody2D2/StaticBody2D"]
-position = Vector2(-332, 74)
+position = Vector2(-328, 74)
 shape = SubResource("SegmentShape2D_64moy")
 one_way_collision = true
 
@@ -1047,8 +1047,20 @@ flip_h = true
 [node name="EnemyManager" type="Node2D" parent="."]
 script = ExtResource("38_ikgy1")
 
+[node name="MeterMaid" parent="EnemyManager" instance=ExtResource("64_335wh")]
+position = Vector2(-81, -27)
+
 [node name="LeafManager" parent="." groups=["leaf_manager"] instance=ExtResource("65_brcwu")]
 z_index = 0
+
+[node name="Player" parent="." groups=["player"] instance=ExtResource("2_5jk15")]
+top_level = true
+position = Vector2(-148, -22)
+
+[node name="DefaultSprite" parent="Player" index="1"]
+animation = &"Attack"
+frame = 5
+frame_progress = 0.0
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 visible = false
@@ -1122,17 +1134,6 @@ texture = ExtResource("62_2yfl3")
 visible = false
 position = Vector2(-2098, -348)
 texture = ExtResource("63_2xtnq")
-
-[node name="Player" parent="." groups=["player"] instance=ExtResource("2_5jk15")]
-position = Vector2(1316, -23)
-
-[node name="DefaultSprite" parent="Player" index="1"]
-animation = &"Attack"
-frame = 5
-frame_progress = 0.0
-
-[node name="MeterMaid" parent="." instance=ExtResource("64_335wh")]
-position = Vector2(-147, -35)
 
 [editable path="SceneItemsBackground/BuildingGroup1/Tree5"]
 [editable path="SceneItemsBackground/BuildingGroup1/Tree6"]

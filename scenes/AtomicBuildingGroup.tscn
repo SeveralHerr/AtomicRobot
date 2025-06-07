@@ -16,8 +16,8 @@
 [ext_resource type="Texture2D" uid="uid://djcyx273wjxf0" path="res://images/car2.png" id="14_x5r1p"]
 [ext_resource type="Texture2D" uid="uid://bcn27o4sktbhx" path="res://images/new/Building1.png" id="15_iyp3j"]
 [ext_resource type="Script" uid="uid://3wy4teiu0tsl" path="res://scripts/left_atomic_building.gd" id="15_x8eh4"]
-[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://Sprites/Meter Maid.png" id="17_af66f"]
-[ext_resource type="Texture2D" uid="uid://c8bs0f5orsg10" path="res://Sprites/middle_finger_meter_forward.png" id="18_af66f"]
+[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://sprites/Meter Maid.png" id="17_af66f"]
+[ext_resource type="Texture2D" uid="uid://c8bs0f5orsg10" path="res://sprites/middle_finger_meter_forward.png" id="18_af66f"]
 [ext_resource type="PackedScene" uid="uid://dj5v0xinrjdvu" path="res://scenes/meter.tscn" id="19_r28sc"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_r056b"]
@@ -112,7 +112,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Bush6/MiddleFingerMeterMaid:animation")
+tracks/0/path = NodePath("../Bush6/MiddleFingerMeterMaid:animation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -124,7 +124,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Bush6/MiddleFingerMeterMaid:flip_h")
+tracks/1/path = NodePath("../Bush6/MiddleFingerMeterMaid:flip_h")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -140,7 +140,7 @@ length = 8.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Bush6/MiddleFingerMeterMaid:position")
+tracks/0/path = NodePath("../Bush6/MiddleFingerMeterMaid:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -152,7 +152,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Bush6/MiddleFingerMeterMaid:animation")
+tracks/1/path = NodePath("../Bush6/MiddleFingerMeterMaid:animation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -164,7 +164,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Bush6/MiddleFingerMeterMaid:flip_h")
+tracks/2/path = NodePath("../Bush6/MiddleFingerMeterMaid:flip_h")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -200,6 +200,26 @@ texture = ExtResource("2_tjqi0")
 position = Vector2(492, 42)
 texture = ExtResource("1_moqmv")
 
+[node name="Bush5" type="Sprite2D" parent="."]
+show_behind_parent = true
+z_as_relative = false
+position = Vector2(-1069, 46)
+texture = ExtResource("2_tjqi0")
+flip_h = true
+
+[node name="Bush6" type="Sprite2D" parent="."]
+show_behind_parent = true
+position = Vector2(-1120, 43)
+texture = ExtResource("1_moqmv")
+
+[node name="MiddleFingerMeterMaid" type="AnimatedSprite2D" parent="Bush6"]
+show_behind_parent = true
+position = Vector2(77, 5)
+sprite_frames = SubResource("SpriteFrames_eqw4a")
+animation = &"walk"
+autoplay = "default"
+frame_progress = 0.183328
+
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAALAAIADQAAAAAAAAAMAAIADQAAAAAAAAANAAIADQAAAAAAAAAOAAIADQAAAAAAAAAPAAIADQAAAAAAAAAQAAIADQAAAAAAAAARAAIADQAAAAAAAAASAAIADQAAAAAAAAATAAIADQAAAAAAAAAUAAIADQAAAAAAAAAVAAIADQAAAAAAAAD0/wIADQAAAAAAAADz/wIADQAAAAAAAADy/wIADQAAAAAAAADx/wIADQAAAAAAAADw/wIADQAAAAAAAADv/wIADQAAAAAAAADu/wIADQAAAAAAAADt/wIADQAAAAAAAADs/wIADQAAAAAAAADr/wIADQAAAAAAAADq/wIADQAAAAAAAADp/wIADQAAAAAAAADo/wIADQAAAAAAAADn/wIADQAAAAAAAADm/wIADQAAAAAAAADl/wIADQAAAAAAAADk/wIADQAAAAAAAADj/wIADQAAAAAAAADi/wIADQAAAAAAAADh/wIADQAAAAAAAADg/wIADQAAAAAAAADf/wIADQAAAAAAAADe/wIADQAAAAAAAADd/wIADQAAAAAAAADc/wIADQAAAAAAAADb/wIADQAAAAAAAADa/wIADQAAAAAAAADZ/wIADQAAAAAAAAA=")
 tile_set = ExtResource("3_1ucss")
@@ -232,65 +252,12 @@ position = Vector2(337, -111)
 [node name="Crate3" parent="AtomicRobotBuilding/Crates" instance=ExtResource("6_tjqi0")]
 position = Vector2(330, -141)
 
-[node name="WindowEventBuilding" parent="." instance=ExtResource("5_07bf7")]
-position = Vector2(852, -208)
-
-[node name="WoodLedge2" parent="WindowEventBuilding" instance=ExtResource("7_1ucss")]
-show_behind_parent = true
-position = Vector2(-309, 140)
-
-[node name="Tree2" parent="WindowEventBuilding" instance=ExtResource("8_uw6ff")]
-position = Vector2(-119, 218)
-
-[node name="Trash2" type="Sprite2D" parent="WindowEventBuilding"]
-z_index = 1
-position = Vector2(113, 288)
-texture = ExtResource("10_c5bjw")
-
-[node name="Lamp" parent="WindowEventBuilding" instance=ExtResource("11_c5bjw")]
-position = Vector2(-329, 235)
-
-[node name="InteractiveMailbox" parent="WindowEventBuilding" instance=ExtResource("12_c5bjw")]
-position = Vector2(-288, 288)
-
-[node name="Crack" parent="." instance=ExtResource("13_ops16")]
-visible = false
-position = Vector2(647, -351)
-
-[node name="AnimatedSprite2D" parent="Crack" index="0"]
-position = Vector2(-2, 20)
-scale = Vector2(0.66, 1)
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-visible = false
-texture = ExtResource("14_x5r1p")
-
 [node name="LeftBuilding" type="Node2D" parent="."]
 script = ExtResource("15_x8eh4")
 
 [node name="Building" type="Sprite2D" parent="LeftBuilding"]
 position = Vector2(-714, -112)
 texture = ExtResource("15_iyp3j")
-
-[node name="Bush5" type="Sprite2D" parent="LeftBuilding"]
-show_behind_parent = true
-z_as_relative = false
-position = Vector2(-1069, 46)
-texture = ExtResource("2_tjqi0")
-flip_h = true
-
-[node name="Bush6" type="Sprite2D" parent="LeftBuilding"]
-show_behind_parent = true
-position = Vector2(-1120, 43)
-texture = ExtResource("1_moqmv")
-
-[node name="MiddleFingerMeterMaid" type="AnimatedSprite2D" parent="LeftBuilding/Bush6"]
-show_behind_parent = true
-position = Vector2(77, 5)
-sprite_frames = SubResource("SpriteFrames_eqw4a")
-animation = &"walk"
-autoplay = "default"
-frame_progress = 0.183328
 
 [node name="InteractiveMailbox" parent="LeftBuilding" instance=ExtResource("12_c5bjw")]
 position = Vector2(-521, 80)
@@ -315,5 +282,38 @@ position = Vector2(-1141, 12)
 
 [node name="Meter2" parent="LeftBuilding" instance=ExtResource("19_r28sc")]
 position = Vector2(-121, 68)
+
+[node name="WindowEventBuilding" parent="." instance=ExtResource("5_07bf7")]
+position = Vector2(852, -208)
+
+[node name="WoodLedge2" parent="WindowEventBuilding" instance=ExtResource("7_1ucss")]
+show_behind_parent = true
+position = Vector2(-309, 140)
+
+[node name="Tree2" parent="WindowEventBuilding" instance=ExtResource("8_uw6ff")]
+position = Vector2(-119, 219)
+
+[node name="Trash2" type="Sprite2D" parent="WindowEventBuilding"]
+z_index = 1
+position = Vector2(113, 288)
+texture = ExtResource("10_c5bjw")
+
+[node name="Lamp" parent="WindowEventBuilding" instance=ExtResource("11_c5bjw")]
+position = Vector2(-329, 235)
+
+[node name="InteractiveMailbox" parent="WindowEventBuilding" instance=ExtResource("12_c5bjw")]
+position = Vector2(-288, 288)
+
+[node name="Crack" parent="." instance=ExtResource("13_ops16")]
+visible = false
+position = Vector2(647, -351)
+
+[node name="AnimatedSprite2D" parent="Crack" index="0"]
+position = Vector2(-2, 20)
+scale = Vector2(0.66, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("14_x5r1p")
 
 [editable path="Crack"]

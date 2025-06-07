@@ -11,9 +11,9 @@ func _ready() -> void:
 	
 	enemy_state_machine.change_state("ChasePlayerState")
 	
-	
-func can_attack() -> bool: 
-	return attack_timer.is_stopped()
-
-
-	
+	#
+#func can_attack() -> bool: 
+	#return attack_timer.is_stopped()
+#
+#
+	#

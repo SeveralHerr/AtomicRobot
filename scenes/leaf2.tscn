@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://o5ontfriiuc4" path="res://images/new/leaf2.png" id="2_33eer"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_33eer"]
-size = Vector2(1, 1)
+size = Vector2(2, 4)
 
 [node name="Leaf" type="RigidBody2D"]
 collision_layer = 128
@@ -19,5 +19,5 @@ shape = SubResource("RectangleShape2D_33eer")
 texture = ExtResource("2_33eer")
 
 [node name="Floor Raycast" type="RayCast2D" parent="."]
-target_position = Vector2(0, 2)
+target_position = Vector2(0, 4)
 collision_mask = 2

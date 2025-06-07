@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bkacyqbt1p37k"]
 
 [ext_resource type="Script" uid="uid://bpyb2rrsicttv" path="res://scripts/leaf.gd" id="1_4r3pj"]
-[ext_resource type="Texture2D" uid="uid://b3qbng565i6ss" path="res://images/new/leaf.png" id="2_r6846"]
+[ext_resource type="Texture2D" uid="uid://dm2mg7don4aii" path="res://images/new/leaf3.png" id="2_4r3pj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4r3pj"]
 size = Vector2(1, 1)
@@ -16,7 +16,7 @@ script = ExtResource("1_4r3pj")
 shape = SubResource("RectangleShape2D_4r3pj")
 
 [node name="Sprite" type="Sprite2D" parent="."]
-texture = ExtResource("2_r6846")
+texture = ExtResource("2_4r3pj")
 
 [node name="Floor Raycast" type="RayCast2D" parent="."]
 target_position = Vector2(0, 2)

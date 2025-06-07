@@ -28,3 +28,8 @@ shape = SubResource("CircleShape2D_w4kev")
 top_level = true
 z_index = 9
 stream = ExtResource("3_vy3yn")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+lifetime = 0.25
+gravity = Vector2(0, 0)
+color = Color(1, 1, 0.858824, 1)

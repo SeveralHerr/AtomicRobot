@@ -8,15 +8,8 @@ func _ready():
 
 func setup_leaf_manager():
 	# Check if leaf manager already exists
-	if get_tree().get_first_node_in_group("leaf_manager"):
-		leaf_manager = get_tree().get_first_node_in_group("leaf_manager")
-		return
-	
-	# Create new leaf manager
-	var leaf_manager_scene = preload("res://scenes/leaf_manager.tscn")
-	leaf_manager = leaf_manager_scene.instantiate()
-	get_tree().current_scene.add_child(leaf_manager)
-	leaf_manager.add_to_group("leaf_manager")
+	leaf_manager = get_tree().get_first_node_in_group("leaf_manager")
+
 
 # Global interaction methods that other scripts can call
 func trigger_sword_swing(position: Vector2, range: float = 100.0):
