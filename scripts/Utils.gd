@@ -17,9 +17,14 @@ static func shake_node2d(node: Node2D, strength: float = 10.0, duration: float =
 	tween.tween_property(node, "position", original_pos, frequency)
 	
 	
-static func apply_hit_pause(node: Node2D, duration := 0.06):
+static func apply_hit_pause(node: Node2D, duration := 0.1):
+	var time_passed := 0.0
 	Engine.time_scale = 0.0
-	await node.get_tree().create_timer(duration, true, false).timeout
+	
+	while time_passed < duration:
+		await node.get_tree().process_frame
+		time_passed += 1.0 / ProjectSettings.get_setting("physics/common/physics_ticks_per_second")
+	
 	Engine.time_scale = 1.0
 
 	

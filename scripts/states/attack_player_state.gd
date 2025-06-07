@@ -4,16 +4,21 @@ class_name AttackPlayerState
 var attack_finished: bool = false
 
 func enter_state() -> void:
+	enemy.animated_sprite_2d.frame_changed.connect(_on_frame_changed.bind(enemy))
 	attack_finished = false
-	call_deferred("attack")
-	
-	
-func attack() -> void:
 	enemy.velocity.x = 0
 	enemy._face_player()
 	enemy.animated_sprite_2d.play("attack")
-
-	Utils.throw_coin_delayed(enemy, 0.55)
+	
+func exit_state() -> void:
+	enemy.animated_sprite_2d.frame_changed.disconnect(_on_frame_changed.bind(enemy))
+			
+func _on_frame_changed(enemy: Enemy):
+	if enemy.animated_sprite_2d.animation == "attack" and enemy.animated_sprite_2d.frame == 6:
+		attack()
+	
+func attack() -> void:
+	Utils.throw_coin_from_enemy(enemy)
 	enemy.coins -= 1
 	enemy.attack_timer.start()
 	
