@@ -4,7 +4,7 @@ class_name Bullet
 const HIT_FX = preload("res://scenes/hit_fx.tscn")
 @onready var area_2d: Area2D = $Area2D
 @onready var coin_audio_player: AudioStreamPlayer2D = $CoinAudioPlayer
-@onready var ground_area_2d: Area2D = $GroundArea2D
+
 
 var gravity: float = 100 #ProjectSettings.get_setting("physics/2d/default_gravity")
 var speed: float = 600.0

@@ -3,4 +3,5 @@
 [ext_resource type="Script" uid="uid://duyqfjor1hb4v" path="res://scripts/leaf_manager.gd" id="1_h5k8x"]
 
 [node name="LeafManager" type="Node2D"]
+z_index = 1
 script = ExtResource("1_h5k8x")

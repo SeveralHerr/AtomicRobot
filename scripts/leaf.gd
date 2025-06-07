@@ -2,32 +2,41 @@ extends RigidBody2D
 class_name DroppedLeaf
 @onready var sprite: Sprite2D = $Sprite
 @onready var floor_raycast: RayCast2D = $"Floor Raycast"
+@onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 
 var x_mult: float
 var y_mult: float
 var original_scale: Vector2
 var frames = 0
 var is_pooled: bool = false
+@export var change_color: bool = true
 
 func _ready() -> void:
 	original_scale = $Sprite.scale
+
 	randomize_properties()
 
 func randomize_properties() -> void:
 	x_mult = randf() * 0.65
 	y_mult = randf() * 0.65
-	# Add some visual variety
-	sprite.modulate = Color(
-		randf_range(0.5, 1.0),
-		randf_range(0.5, 1.0), 
-		randf_range(0.5, 0.9)
-	)
-	sprite.scale = original_scale * randf_range(0.8, 1.2)
+	
+	if change_color: 
+		var rand = randf_range(0.7, 1.0)
+		# Add some visual variety
+		sprite.modulate = Color(
+			rand, rand, rand
+		)
+		sprite.scale = original_scale *  randf_range(1.6, 2)
+		collision_shape_2d.scale = sprite.scale
+		floor_raycast.scale = collision_shape_2d.scale
+	rotate(deg_to_rad(randf_range(0, 90)))
+
+	
 
 
 func _physics_process(delta: float) -> void:
 	$"Floor Raycast".global_rotation = 0
-	if $"Floor Raycast".is_colliding() or not floor_raycast.enabled:
+	if $"Floor Raycast".is_colliding():
 		linear_damp = 8.0
 		angular_damp = 8.0
 		#$Sprite.scale = lerp($Sprite.scale, original_scale*0.8, 0.03)

@@ -1047,8 +1047,10 @@ flip_h = true
 [node name="EnemyManager" type="Node2D" parent="."]
 script = ExtResource("38_ikgy1")
 
+[node name="LeafManager" parent="." groups=["leaf_manager"] instance=ExtResource("65_brcwu")]
+z_index = 0
+
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
-visible = false
 modulate = Color(0.271682, 0.271682, 0.271682, 1)
 tile_set = ExtResource("41_01ywe")
 
@@ -1130,8 +1132,6 @@ frame_progress = 0.0
 
 [node name="MeterMaid" parent="." instance=ExtResource("64_335wh")]
 position = Vector2(-147, -35)
-
-[node name="LeafManager" parent="." groups=["leaf_manager"] instance=ExtResource("65_brcwu")]
 
 [editable path="SceneItemsBackground/BuildingGroup1/Tree5"]
 [editable path="SceneItemsBackground/BuildingGroup1/Tree6"]

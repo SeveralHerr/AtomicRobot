@@ -151,7 +151,7 @@ shape = ExtResource("2_fjrip")
 
 [node name="DefaultSprite" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_mw4su")
-position = Vector2(2, 19)
+position = Vector2(2, 20)
 sprite_frames = ExtResource("3_y4r1p")
 animation = &"idle"
 autoplay = "idle"

@@ -107,7 +107,7 @@ wait_time = 3.0
 one_shot = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 2)
+position = Vector2(0, 3)
 shape = SubResource("RectangleShape2D_n43qx")
 
 [node name="CoinAudioPlayer" type="AudioStreamPlayer2D" parent="."]

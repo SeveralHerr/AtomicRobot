@@ -3,8 +3,8 @@ class_name LeafManager
 
 signal leaf_interaction(leaf: DroppedLeaf, interaction_type: String)
 
-@export var spawn_distance: float = 400.0
-@export var despawn_distance: float = 500.0 
+@export var spawn_distance: float = 500.0
+@export var despawn_distance: float = 600.0 
 @export var leaf_density: float = 1  # leaves per pixel
 @export var ground_y_offset: float = 0  # offset from ground level
 @export var leaf_pool_size: int = 100
@@ -12,19 +12,27 @@ signal leaf_interaction(leaf: DroppedLeaf, interaction_type: String)
 
 @onready var player: Player = $"../Player"
 
+var ground_y = -1
 var leaf_pool: Array[DroppedLeaf] = []
 var active_leaves: Array[DroppedLeaf] = []
 var camera: Camera2D
 var last_spawn_x: float = 0.0
 var leaf_scene = preload("res://scenes/leaf.tscn")
 const LEAF_2 = preload("res://scenes/leaf2.tscn")
+const PAPER = preload("res://scenes/paper.tscn")
 
+# Spawn probability weights (higher = more common)
+var debris_types: Array[Dictionary] = [
+	{"scene": leaf_scene, "weight": 50.0, "name": "leaf1"},
+	{"scene": LEAF_2, "weight": 25.0, "name": "leaf2"},  # Half as common as leaf1
+	{"scene": PAPER, "weight": 10.0, "name": "paper"}    # Less common than leaves
+]
 # Clump-based spawning
-var min_clump_spacing: float = 40.0  # Minimum distance between clumps
+var min_clump_spacing: float = 60.0  # Minimum distance between clumps
 var max_clump_spacing: float = 200.0  # Maximum distance between clumps
 var clump_size_min: int = 2  # Minimum leaves per clump
-var clump_size_max: int = 8  # Maximum leaves per clump
-var clump_radius: float = 40.0  # How spread out leaves are within a clump
+var clump_size_max: int = 9  # Maximum leaves per clump
+var clump_radius: float = 30.0  # How spread out leaves are within a clump
 
 func _ready() -> void:
 	# Find player
@@ -52,13 +60,34 @@ func _ready() -> void:
 			#return result
 	#return null
 
+func get_random_debris_type() -> Dictionary:
+	# Calculate total weight
+	var total_weight = 0.0
+	for debris_type in debris_types:
+		total_weight += debris_type.weight
+	
+	# Pick random value in weight range
+	var random_value = randf() * total_weight
+	var current_weight = 0.0
+	
+	# Find which debris type this random value corresponds to
+	for debris_type in debris_types:
+		current_weight += debris_type.weight
+		if random_value <= current_weight:
+			return debris_type
+	
+	# Fallback to first type
+	return debris_types[0]
+
 func setup_leaf_pool() -> void:
+	# Create pool with mixed debris types based on weights
 	for i in range(leaf_pool_size):
-		var leaf = leaf_scene.instantiate() as DroppedLeaf
-		leaf.set_physics_process(false)
-		leaf.visible = false
-		add_child(leaf)
-		leaf_pool.append(leaf)
+		var selected_debris = get_random_debris_type()
+		var debris = selected_debris.scene.instantiate() as DroppedLeaf
+		debris.set_physics_process(false)
+		debris.visible = false
+		add_child(debris)
+		leaf_pool.append(debris)
 
 func _process(delta: float) -> void:
 	if not player:
@@ -111,8 +140,8 @@ func spawn_leaf_clump(center_x: float) -> void:
 		if leaf_pool.size() == 0:
 			break
 			
-		var leaf = leaf_pool.pop_back()
-		if not leaf:
+		var debris = leaf_pool.pop_back()
+		if not debris:
 			continue
 		
 		# Random position within clump radius
@@ -122,16 +151,16 @@ func spawn_leaf_clump(center_x: float) -> void:
 		var spawn_x = center_x + cos(angle) * distance
 		var spawn_y = base_y + sin(angle) * distance * 0.3  # Less vertical spread
 		
-		# Ensure leaf stays on ground
-		spawn_y = max(spawn_y, get_ground_level(spawn_x) + ground_y_offset)
+		# Ensure debris stays on ground
+		spawn_y = ground_y
 		
-		leaf.activate_from_pool(Vector2(spawn_x, spawn_y))
+		debris.activate_from_pool(Vector2(spawn_x, spawn_y))
 		
 		# Add some random initial velocity
-		leaf.linear_velocity = Vector2(randf_range(-5, 5), 0)
-		leaf.angular_velocity = randf_range(-0.5, 0.5)
+		debris.linear_velocity = Vector2(randf_range(-5, 5), 0)
+		debris.angular_velocity = randf_range(-0.5, 0.5)
 		
-		active_leaves.append(leaf)
+		active_leaves.append(debris)
 
 func get_ground_level(x: float) -> float:
 	# Simple ground detection - you may need to adjust this based on your level
