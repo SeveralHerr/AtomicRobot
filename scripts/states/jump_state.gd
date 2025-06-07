@@ -40,6 +40,7 @@ func enter_state(player: Player) -> void:
 	player.jump_fx.global_position = 	player.jump_start_position
 	player.jump_fx.emitting=true
 	player.default_sprite.play("Jump")
+	LeafSystem.trigger_area_gust(player.global_position, 40, 10)
 	player.jump_audio_player.play()
 	player.jumping_streak_sprite.show()
 	player.jumping_streak_sprite.play("default")

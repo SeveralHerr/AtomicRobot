@@ -6,6 +6,7 @@ var shaker: Shaker
 var start: bool = false
 var car_damage = 1
 var speed: int = 0
+var current_speed
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -26,7 +27,8 @@ func _physics_process(delta: float) -> void:
 			randomize()
 			speed = randi_range(150,450)
 			print("new speed ", speed)
-		position.x -= delta * speed
+		current_speed = delta * speed
+		position.x -= current_speed
 	
 func _process(delta: float) -> void:
 
@@ -44,6 +46,8 @@ func _hit(body: Node2D) -> void:
 		speed = 0
 		#await get_tree().create_timer(3).timeout
 		#start=false
+	if body is DroppedLeaf:
+		body.do_gust(8, Vector2(global_position.x - 450, 0))
 		
 func _enable_player_layer(can_hit: bool) -> void:
 	area_2d.set_collision_mask_value(1, can_hit)

@@ -21,7 +21,7 @@ func setup_leaf_manager():
 # Global interaction methods that other scripts can call
 func trigger_sword_swing(position: Vector2, range: float = 100.0):
 	if leaf_manager:
-		leaf_manager._on_player_attack(position, range)
+		leaf_manager._on_gust(position, range)
 
 func trigger_car_gust(car_position: Vector2, car_velocity: Vector2, gust_range: float = 150.0):
 	if leaf_manager:

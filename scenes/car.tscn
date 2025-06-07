@@ -20,6 +20,7 @@ texture = ExtResource("2_50v30")
 [node name="Area2D" type="Area2D" parent="."]
 position = Vector2(0.166694, -9.5)
 collision_layer = 16
+collision_mask = 129
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 z_index = -1
