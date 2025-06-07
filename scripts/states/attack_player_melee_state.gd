@@ -5,6 +5,8 @@ func enter_state() -> void:
 	enemy.animated_sprite_2d.frame_changed.connect(_on_frame_changed.bind(enemy))
 	enemy.velocity.x = 0
 	enemy._face_player()
+	
+	
 	enemy.animated_sprite_2d.play("melee")
 	enemy.attack_timer.start()
 func exit_state() -> void:

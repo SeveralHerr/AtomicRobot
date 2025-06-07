@@ -140,19 +140,19 @@ region = Rect2(384, 152, 128, 152)
 [resource]
 animations = [{
 "frames": [{
-"duration": 1.0,
+"duration": 6.0,
 "texture": SubResource("AtlasTexture_uvsvq")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_osw62")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_nx70l")
+"texture": SubResource("AtlasTexture_osw62")
 }, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_nx70l")
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_osw62")
 }, {
-"duration": 1.0,
+"duration": 1.5,
 "texture": SubResource("AtlasTexture_nx70l")
 }, {
 "duration": 1.0,
@@ -175,7 +175,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"attack",
-"speed": 10.0
+"speed": 7.95
 }, {
 "frames": [{
 "duration": 1.0,
