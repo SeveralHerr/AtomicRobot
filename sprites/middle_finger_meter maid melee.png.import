@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b5almf5d8sicr"
-path="res://.godot/imported/middle_finger_meter maid melee.png-5f505e7216dd728e10a0b9ff12c2b231.ctex"
+path="res://.godot/imported/middle_finger_meter maid melee.png-9117af726b13236551a8579fddb73941.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/middle_finger_meter maid melee.png"
-dest_files=["res://.godot/imported/middle_finger_meter maid melee.png-5f505e7216dd728e10a0b9ff12c2b231.ctex"]
+source_file="res://sprites/middle_finger_meter maid melee.png"
+dest_files=["res://.godot/imported/middle_finger_meter maid melee.png-9117af726b13236551a8579fddb73941.ctex"]
 
 [params]
 

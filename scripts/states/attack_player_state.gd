@@ -7,9 +7,7 @@ func enter_state() -> void:
 	enemy.animated_sprite_2d.frame_changed.connect(_on_frame_changed.bind(enemy))
 	attack_finished = false
 	enemy.velocity.x = 0
-	enemy._face_player()
-	#enemy.animated_sprite_2d.material.set_shader_parameter("flash_value", 1)
-	#enemy.animated_sprite_2d.material.set_shader_parameter("flash_color", Color(1.5, 1.5, 0.5))
+
 	enemy.animated_sprite_2d.play("attack")
 	
 func exit_state() -> void:
@@ -20,8 +18,7 @@ func _on_frame_changed(enemy: Enemy):
 		attack()
 	
 func attack() -> void:
-	#enemy.animated_sprite_2d.material.set_shader_parameter("flash_value", 0)
-	#enemy.animated_sprite_2d.material.set_shader_parameter("flash_color", Color(1, 1, 1))
+	enemy._face_player()
 	Utils.throw_coin_from_enemy(enemy)
 	enemy.coins -= 1
 	enemy.attack_timer.start()
