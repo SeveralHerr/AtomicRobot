@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://dg72alaxq1lp7"]
+
+[ext_resource type="Texture2D" uid="uid://lrnhbs5m3c3w" path="res://images/new/scaffolding_foreground.png" id="1_hf6xj"]
+[ext_resource type="Texture2D" uid="uid://bur1o0vxhglei" path="res://images/new/Scaffold_Back.png" id="2_vrrw6"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vrrw6"]
+atlas = ExtResource("1_hf6xj")
+region = Rect2(192, 0, 96, 96)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uylhs"]
+size = Vector2(96, 9)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uylhs"]
+atlas = ExtResource("2_vrrw6")
+region = Rect2(192, 0, 96, 96)
+
+[node name="Scaffolding" type="Sprite2D"]
+texture = SubResource("AtlasTexture_vrrw6")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_uylhs")
+one_way_collision = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = -1
+texture = SubResource("AtlasTexture_uylhs")

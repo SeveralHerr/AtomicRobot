@@ -48,7 +48,6 @@
 [ext_resource type="Texture2D" uid="uid://dos02h3f2rxj6" path="res://images/spike.png" id="35_7k40d"]
 [ext_resource type="Shader" uid="uid://fc8uls4asel3" path="res://shaders/sway.gdshader" id="37_2p6wh"]
 [ext_resource type="Texture2D" uid="uid://ds6dn0qq2gslf" path="res://images/new/Black_Trashcan.png" id="37_k2mcc"]
-[ext_resource type="Script" uid="uid://dv0rbnba2864c" path="res://scripts/enemy_manager.gd" id="38_ikgy1"]
 [ext_resource type="TileSet" uid="uid://dnk1onf4fhpgp" path="res://Tiles/tileset.tres" id="41_01ywe"]
 [ext_resource type="PackedScene" uid="uid://bxsksxhbmge8q" path="res://scenes/meter_maid_window.tscn" id="48_64moy"]
 [ext_resource type="PackedScene" uid="uid://bxtldf7fn5fty" path="res://scenes/platform.tscn" id="48_dy54k"]
@@ -65,6 +64,7 @@
 [ext_resource type="Texture2D" uid="uid://bsfg8dpci5l12" path="res://images/crane4.png" id="63_2xtnq"]
 [ext_resource type="PackedScene" uid="uid://csis0b6hdasqr" path="res://scenes/meter_maid.tscn" id="64_335wh"]
 [ext_resource type="PackedScene" uid="uid://bw8nx2c7jvd3m" path="res://scenes/leaf_manager.tscn" id="65_brcwu"]
+[ext_resource type="PackedScene" uid="uid://dg72alaxq1lp7" path="res://scenes/scaffolding1.tscn" id="65_fw04e"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("51_k4pk8")
@@ -305,7 +305,7 @@ theme_override_font_sizes/font_size = 31
 text = "Restart"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(884, -348)
+position = Vector2(967, -231)
 scale = Vector2(15.7757, 1.22348)
 texture = ExtResource("1_haqju")
 
@@ -437,7 +437,7 @@ position = Vector2(2026, -270)
 texture = ExtResource("3_lfwgu")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="SceneItemsBackground/BuildingGroup1"]
-tile_map_data = PackedByteArray("AAAwAP//CAAHAAEAAAAxAP7/CAAIAAAAAAAxAP//CgAIAAEAAAAyAP7/CgAJAAAAAAAyAP//CgAJAAEAAAAzAP7/CAAAAAAAAAAzAP//CAAAAAEAAAA0AP7/CAAAAAAAAAA0AP//CAAAAAEAAAA1AP7/CAAAAAAAAAA1AP//CAAAAAEAAAA2AP7/CAAAAAAAAAA2AP//CAAAAAEAAAA3AP7/CAAAAAAAAAA3AP//CAAAAAEAAAA4AP7/CAAAAAAAAAA4AP//CAAAAAEAAAA5AP7/CAAAAAAAAAA5AP//CAAAAAEAAAA6AP7/CAAAAAAAAAA6AP//CAAAAAEAAAA7AP7/CAAAAAAAAAA7AP//CAAAAAEAAAA8AP7/CAAAAAAAAAA8AP//CAAAAAEAAAA9AP7/CAAAAAAAAAA9AP//CAAAAAEAAAA+AP7/CAAAAAAAAAA+AP//CAAAAAEAAAA/AP7/CAAAAAAAAAA/AP//CAAAAAEAAABAAP7/CAAAAAAAAABAAP//CAAAAAEAAABBAP7/CAAAAAAAAABBAP//CAAAAAEAAABCAP7/CAAAAAAAAABCAP//CAAAAAEAAABDAP7/CAAAAAAAAABDAP//CAAAAAEAAABEAP7/CAAAAAAAAABEAP//CAAAAAEAAABFAP7/CAAAAAAAAABFAP//CAAAAAEAAABGAP7/CAAAAAAAAABGAP//CAAAAAEAAABHAP7/CAAAAAAAAABHAP//CAAAAAEAAABIAP7/CAAAAAAAAABIAP//CAAAAAEAAABJAP7/CAAAAAAAAABJAP//CAAAAAEAAABKAP7/CAAAAAAAAABKAP//CAAAAAEAAABLAP7/CAAAAAAAAABLAP//CAAAAAEAAABMAP7/CAAEAAAAAABMAP//CAAEAAEAAABNAP7/CAAFAAAAAABNAP//CAAFAAEAAABOAP//CAAGAAEAAAA=")
+tile_map_data = PackedByteArray("AAAwAP//CAAHAAEAAAAxAP7/CAAIAAAAAAAxAP//CgAIAAEAAAAyAP7/CgAJAAAAAAAyAP//CgAJAAEAAAAzAP7/CAAAAAAAAAAzAP//CAAAAAEAAAA0AP7/CAAAAAAAAAA0AP//CAAAAAEAAAA1AP7/CAAAAAAAAAA1AP//CAAAAAEAAAA2AP7/CAAAAAAAAAA2AP//CAAAAAEAAAA3AP7/CAAAAAAAAAA3AP//CAAAAAEAAAA4AP7/CAAAAAAAAAA4AP//CAAAAAEAAAA5AP7/CAAAAAAAAAA5AP//CAAAAAEAAAA6AP7/CAAAAAAAAAA6AP//CAAAAAEAAAA7AP7/CAAAAAAAAAA7AP//CAAAAAEAAAA8AP7/CAAAAAAAAAA8AP//CAAAAAEAAAA9AP7/CAAAAAAAAAA9AP//CAAAAAEAAAA+AP7/CAAAAAAAAAA+AP//CAAAAAEAAAA/AP7/CAAAAAAAAAA/AP//CAAAAAEAAABAAP7/CAAAAAAAAABAAP//CAAAAAEAAABBAP7/CAAAAAAAAABBAP//CAAAAAEAAABCAP7/CAAAAAAAAABCAP//CAAAAAEAAABDAP7/CAAAAAAAAABDAP//CAAAAAEAAABEAP7/CAAAAAAAAABEAP//CAAAAAEAAABFAP7/CAAAAAAAAABFAP//CAAAAAEAAABGAP7/CAAAAAAAAABGAP//CAAAAAEAAABHAP7/CAAAAAAAAABHAP//CAAAAAEAAABIAP7/CAAAAAAAAABIAP//CAAAAAEAAABJAP7/CAAAAAAAAABJAP//CAAAAAEAAABKAP7/CAAAAAAAAABKAP//CAAAAAEAAABLAP7/CAAAAAAAAABLAP//CAAAAAEAAABMAP7/CAAEAAAAAABMAP//CAAEAAEAAABNAP7/CAAFAAAAAABNAP//CAAFAAEAAABOAP//CAAGAAEAAADd//j/DAACAAAAAADd//X/DAACAAAAAADj//j/DAACAAAAAAA=")
 tile_set = ExtResource("41_01ywe")
 
 [node name="Building8" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
@@ -1045,7 +1045,6 @@ texture = ExtResource("25_k35ai")
 flip_h = true
 
 [node name="EnemyManager" type="Node2D" parent="."]
-script = ExtResource("38_ikgy1")
 
 [node name="MeterMaid" parent="EnemyManager" instance=ExtResource("64_335wh")]
 position = Vector2(-81, -27)
@@ -1053,9 +1052,17 @@ position = Vector2(-81, -27)
 [node name="LeafManager" parent="." groups=["leaf_manager"] instance=ExtResource("65_brcwu")]
 z_index = 0
 
+[node name="ForegroundTileMapLayer" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray("AADv//j/DgAAAAAAAADv//X/DgAAAAAAAAD1//j/DgAAAAAAAAD1//X/DgAMAAAAAADv//L/DgAMAAAAAAA=")
+tile_set = ExtResource("41_01ywe")
+
+[node name="Scaffolding" parent="." instance=ExtResource("65_fw04e")]
+z_index = 1
+position = Vector2(-210, -241)
+
 [node name="Player" parent="." groups=["player"] instance=ExtResource("2_5jk15")]
 top_level = true
-position = Vector2(-148, -22)
+position = Vector2(-456, -215)
 
 [node name="DefaultSprite" parent="Player" index="1"]
 frame = 5

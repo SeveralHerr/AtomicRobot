@@ -1,20 +1,18 @@
 [gd_scene load_steps=5 format=3 uid="uid://n5akfit43i"]
 
 [ext_resource type="Script" uid="uid://c5amjsstwbqgg" path="res://scripts/car.gd" id="1_sparu"]
-[ext_resource type="Texture2D" uid="uid://djcyx273wjxf0" path="res://images/car2.png" id="2_50v30"]
+[ext_resource type="Texture2D" uid="uid://yxd6tloelilq" path="res://images/new/Car_Red.png" id="2_50v30"]
 [ext_resource type="AudioStream" uid="uid://ldr7etppdvw1" path="res://sounds/car.ogg" id="3_1d6nu"]
 
 [sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_jtldb"]
-points = PackedVector2Array(-57.5, 11, -54.5, -5, -26.5, -8, -18.5, -16, 21.5, -15, 39.5, -6, 39.5, 16, -48.5, 15)
+points = PackedVector2Array(-59.1111, 24.8333, -56.3334, 1.5, -34.6667, -3.5, -23.5556, -24.6111, 19.2222, -26.2778, 31.4444, -2.38889, 44.2222, 3.72222, 44.7778, 26.5)
 
 [node name="Car" type="Node2D"]
 z_index = 1
-scale = Vector2(1.8, 1.8)
 script = ExtResource("1_sparu")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-2.83331, -3.5)
-scale = Vector2(0.1, 0.1)
 texture = ExtResource("2_50v30")
 
 [node name="Area2D" type="Area2D" parent="."]
@@ -23,14 +21,13 @@ collision_layer = 16
 collision_mask = 129
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-z_index = -1
 position = Vector2(4.5, 8)
 shape = SubResource("ConvexPolygonShape2D_jtldb")
 debug_color = Color(0, 0.6, 0.701961, 0)
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
 modulate = Color(1, 1, 1, 0)
-position = Vector2(41.1667, 1.5)
+position = Vector2(73.3333, 10)
 scale = Vector2(19.45, 14.15)
 enable_node_path = NodePath("../AudioStreamPlayer2D")
 
