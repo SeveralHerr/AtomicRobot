@@ -2,6 +2,7 @@ extends Node
 
 const METER_MAID = preload("res://scenes/meter_maid.tscn")
 
+
 static func spawn_enemy(parent: Node2D, player: Node2D, viewport_size: Vector2, offset: float = 50.0, force_spawn_right: bool = false) -> Node2D:
 	var enemy = METER_MAID.instantiate()
 	parent.call_deferred("add_child",enemy)

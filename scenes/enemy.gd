@@ -32,7 +32,7 @@ var move_speed: float = 100.0
 var coins: int = 1
 var attack_range: int = 120
 var attack_cooldown: float = 4
-var detection_range: float = 300.0
+var detection_range: float = 600.0
 
 
 
