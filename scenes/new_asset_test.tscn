@@ -1058,6 +1058,7 @@ position = Vector2(-293, -23)
 
 [node name="DefaultSprite" parent="Player" index="1"]
 frame = 1
+frame_progress = 0.0
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 visible = false

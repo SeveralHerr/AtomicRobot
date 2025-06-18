@@ -87,6 +87,10 @@ func _ready() -> void:
 	default_sprite.sprite_frames = Globals.character_dict[Globals.selected_character].sprite_frames
 
 	Globals.event.connect(_event_started)
+	
+
+	if LeafSystem.leaf_manager == null: 
+		LeafSystem.leaf_manager =  get_tree().get_first_node_in_group("leaf_manager")
 
 func _event_started(status: bool) -> void:
 	if status:
