@@ -1,16 +1,17 @@
-[gd_scene load_steps=28 format=3 uid="uid://yevc5esw132y"]
+[gd_scene load_steps=30 format=3 uid="uid://yevc5esw132y"]
 
 [ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="1_uhull"]
 [ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://styles/font_v2.tres" id="2_m77mk"]
 [ext_resource type="Script" uid="uid://chic8djxflbae" path="res://scripts/sway.gd" id="2_oya25"]
 [ext_resource type="Script" uid="uid://6ek3ot0hh754" path="res://scripts/CharacterSlot.gd" id="2_p1ay4"]
 [ext_resource type="Texture2D" uid="uid://dmv708vklptwo" path="res://images/ARTBot-Web-Header.png" id="3_0sghn"]
-[ext_resource type="Texture2D" uid="uid://cdr1pqjg00fa7" path="res://sprites/Cody.png" id="6_0sghn"]
 [ext_resource type="Material" uid="uid://bbeo0ug80m7w3" path="res://shaders/rays_shader_mat.tres" id="6_fqvby"]
 [ext_resource type="Texture2D" uid="uid://ww1jxoogbja4" path="res://images/backdrop.png" id="6_xmudk"]
 [ext_resource type="Texture2D" uid="uid://degiutq3ukb4w" path="res://images/Logo_small.png" id="7_0sghn"]
 [ext_resource type="Texture2D" uid="uid://bnjygxsayqp0m" path="res://images/locked.png" id="9_f0ux6"]
+[ext_resource type="Texture2D" uid="uid://cmr8elkjwdcuf" path="res://sprites/Cody2.png" id="9_pj2qx"]
 [ext_resource type="Texture2D" uid="uid://c2hqjpgo48hjx" path="res://sprites/Ryan2.png" id="11_qokh3"]
+[ext_resource type="Texture2D" uid="uid://b5cx35js3wwmv" path="res://sprites/sarah_idle.png" id="12_ckm5t"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="12_qokh3"]
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="14_pj2qx"]
 [ext_resource type="Texture2D" uid="uid://bh61iiq15jejg" path="res://images/check_square_grey_checkmark.png" id="15_ckm5t"]
@@ -24,11 +25,15 @@ expand_margin_right = 30.0
 expand_margin_bottom = 80.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qokh3"]
-atlas = ExtResource("6_0sghn")
+atlas = ExtResource("9_pj2qx")
 region = Rect2(63, 56, 82, 53)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pj2qx"]
 atlas = ExtResource("11_qokh3")
+region = Rect2(63, 56, 77, 53)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qgi8m"]
+atlas = ExtResource("12_ckm5t")
 region = Rect2(63, 56, 77, 53)
 
 [sub_resource type="LabelSettings" id="LabelSettings_c5qsv"]
@@ -271,6 +276,76 @@ expand_mode = 3
 stretch_mode = 5
 
 [node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot2"]
+self_modulate = Color(1, 1, 1, 0)
+texture_filter = 1
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Slot3" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(250, 250)
+layout_mode = 2
+script = ExtResource("2_p1ay4")
+character = "Sarah"
+
+[node name="Background" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot3"]
+self_modulate = Color(1, 1, 1, 0.752941)
+custom_minimum_size = Vector2(0, 115)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -63.0
+offset_top = -228.0
+offset_right = 177.0
+offset_bottom = 12.0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("6_xmudk")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="TextureRect" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot3/Background"]
+material = ExtResource("6_fqvby")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_yxv22")
+
+[node name="Character" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot3"]
+custom_minimum_size = Vector2(0, 115)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("AtlasTexture_qgi8m")
+expand_mode = 5
+stretch_mode = 5
+
+[node name="Locked" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot3"]
+visible = false
+custom_minimum_size = Vector2(0, 115)
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 123.0
+offset_bottom = 120.0
+mouse_filter = 2
+texture = ExtResource("9_f0ux6")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Slot3"]
 self_modulate = Color(1, 1, 1, 0)
 texture_filter = 1
 custom_minimum_size = Vector2(128, 128)

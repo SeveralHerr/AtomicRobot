@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://b4j6tw0kgdavd" path="res://scripts/Player.gd" id="1_ncv2v"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_rc65t"]
 [ext_resource type="Shape2D" uid="uid://vgx6w6q5wbi" path="res://sprites/player_normal_collision_shape.tres" id="2_fjrip"]
-[ext_resource type="SpriteFrames" uid="uid://c0258e88sc8p1" path="res://sprites/cody_sprite_frames.tres" id="3_y4r1p"]
+[ext_resource type="SpriteFrames" uid="uid://cyu43ntf0g8u2" path="res://sprites/sarah_sprite_frames.tres" id="3_d2wvv"]
 [ext_resource type="AudioStream" uid="uid://cu2ft4k3uwd2u" path="res://sounds/hurt.wav" id="4_mkmka"]
 [ext_resource type="AudioStream" uid="uid://ccylhocv0o0h7" path="res://sounds/678839__cartchaos__jump.wav" id="4_y4r1p"]
 [ext_resource type="AudioStream" uid="uid://c5gk8xvel2tsp" path="res://sounds/hit3.ogg" id="5_hoc3m"]
@@ -152,9 +152,9 @@ shape = ExtResource("2_fjrip")
 [node name="DefaultSprite" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_mw4su")
 position = Vector2(2, 20)
-sprite_frames = ExtResource("3_y4r1p")
-animation = &"Attack"
-autoplay = "idle"
+sprite_frames = ExtResource("3_d2wvv")
+animation = &"idle"
+frame_progress = 0.99217
 offset = Vector2(0, -33.19)
 
 [node name="Area2D" type="Area2D" parent="."]
