@@ -4,8 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_rc65t"]
 [ext_resource type="Shape2D" uid="uid://vgx6w6q5wbi" path="res://Sprites/player_normal_collision_shape.tres" id="2_fjrip"]
 [ext_resource type="SpriteFrames" uid="uid://cyu43ntf0g8u2" path="res://Sprites/sarah_sprite_frames.tres" id="3_d2wvv"]
+[ext_resource type="AudioStream" uid="uid://deagk8ivl3ch6" path="res://sounds/ryan_jump.wav" id="4_d2wvv"]
 [ext_resource type="AudioStream" uid="uid://cu2ft4k3uwd2u" path="res://sounds/hurt.wav" id="4_mkmka"]
-[ext_resource type="AudioStream" uid="uid://ccylhocv0o0h7" path="res://sounds/678839__cartchaos__jump.wav" id="4_y4r1p"]
 [ext_resource type="AudioStream" uid="uid://c5gk8xvel2tsp" path="res://sounds/hit3.ogg" id="5_hoc3m"]
 [ext_resource type="AudioStream" uid="uid://lmc5q1bnqvxi" path="res://sounds/lightsaber.wav" id="8_smehm"]
 [ext_resource type="AudioStream" uid="uid://bj0im2h7popwj" path="res://sounds/422762__kierankeegan__footsteps_stone_4.wav" id="9_ur7pv"]
@@ -170,7 +170,7 @@ shape = SubResource("CircleShape2D_sv8s5")
 
 [node name="JumpAudioPlayer" type="AudioStreamPlayer2D" parent="."]
 position = Vector2(0, 20)
-stream = ExtResource("4_y4r1p")
+stream = ExtResource("4_d2wvv")
 
 [node name="HurtAudioPlayer" type="AudioStreamPlayer2D" parent="."]
 position = Vector2(0, 20)

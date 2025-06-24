@@ -5,7 +5,7 @@ class_name MeterMaid
 
 func _ready() -> void:
 	super._ready()
-	coins = 1
+	coins = 10
 	enemy_state_machine.add_state("PatrolState", PatrolState.new(self))
 	enemy_state_machine.add_state("ChasePlayerState", ChasePlayerState.new(self))
 	enemy_state_machine.add_state("AttackPlayerState", AttackPlayerState.new(self))

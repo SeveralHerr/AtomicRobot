@@ -24,6 +24,7 @@ func update(delta: float) -> void:
 		enemy.move_towards_target(enemy.player.global_position, delta)
 		enemy.animated_sprite_2d.play("walk")
 	else:
+		enemy._face_player()
 		enemy.animated_sprite_2d.play("idle")
 		enemy.velocity.x = 0	
 		

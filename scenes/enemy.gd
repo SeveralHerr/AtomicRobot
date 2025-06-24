@@ -50,10 +50,6 @@ func _ready() -> void:
 	player_detection.body_entered.connect(func(body: Node2D): is_player_in_attack_range = true)
 	player_detection.body_exited.connect(func(body: Node2D): is_player_in_attack_range = false)
 
-
-	
-	
-
 	
 func _physics_process(delta: float) -> void:
 	_apply_gravity(delta)
@@ -150,7 +146,7 @@ func _apply_damage(damage: int) -> void:
 
 func _apply_knockback() -> void:
 	var knockback_direction = (global_position - Globals.player.global_position).normalized()
-	var knockback_strength = 300.0
+	var knockback_strength = 10.0
 	velocity += knockback_direction * knockback_strength
 	velocity.y = -50.0
 	

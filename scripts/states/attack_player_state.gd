@@ -27,16 +27,17 @@ func attack() -> void:
 	enemy.animated_sprite_2d.play("idle")
 	attack_finished = true
 func update(delta: float) -> void:
+	enemy._face_player()
 	if not attack_finished:
 		return
-		
+	if enemy.has_state("FindMeterState") and enemy.coins <= 0:
+		enemy.enemy_state_machine.change_state("FindMeterState")
+		return		
 	
-	
+
 	if enemy.has_state("ChasePlayerState") and not enemy.can_attack():
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
 		return
 			
-	if enemy.has_state("FindMeterState") and enemy.coins <= 0:
-		enemy.enemy_state_machine.change_state("FindMeterState")
-		return
+
 		
