@@ -13,8 +13,8 @@ var selected_character: String = "Ryan"
 var character_dict = {
 		"Robot": Unlockable.new("Robot", "ROBOT IS NOW PLAYABLE", true, "Atomic Robot Tattoo Mascot", preload("res://sprites/cody_sprite_frames.tres"), ""),
 		"Cody": Unlockable.new("Cody", "CODY IS NOW PLAYABLE", true, "Owner of Atomic Robot Tattoo", preload("res://Sprites/cody_sprite_frames.tres"), ""),
-		"Ryan": Unlockable.new("Ryan", "RYAN IS NOW PLAYABLE", true, "Employee of Atomic Robot Tatoo", preload("res://Sprites/ryan_sprite_frames.tres"), ""),
-		"Sarah": Unlockable.new("Sarah", "SARAH IS NOW PLAYABLE", true, "Employee of Atomic Robot Tatoo", preload("res://Sprites/sarah_sprite_frames.tres"), ""),
+		"Ryan": Unlockable.new("Ryan", "RYAN IS NOW PLAYABLE", true, "Employee of Atomic Robot Tattoo", preload("res://Sprites/ryan_sprite_frames.tres"), ""),
+		"Sara": Unlockable.new("Sara", "SARA IS NOW PLAYABLE", true, "Employee of Atomic Robot Tattoo", preload("res://Sprites/sarah_sprite_frames.tres"), ""),
 	}
 
 var player: Player
