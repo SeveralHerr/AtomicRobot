@@ -6,6 +6,7 @@ func enter_state(player: Player) -> void:
 	player.velocity.x = 0
 
 func update(player: Player, delta: float) -> void:
+	player.default_sprite.play("idle")
 	var direction := Input.get_axis("ui_left", "ui_right")
 	if direction != 0:
 		if Input.is_action_pressed("Run"):

@@ -179,6 +179,7 @@ stream = ExtResource("4_mkmka")
 [node name="AttackAudioPlayer" type="AudioStreamPlayer2D" parent="."]
 position = Vector2(0, 20)
 stream = ExtResource("5_hoc3m")
+volume_db = 6.141
 
 [node name="CodySprite" type="AnimatedSprite2D" parent="."]
 visible = false

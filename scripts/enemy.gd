@@ -55,6 +55,8 @@ func _ready() -> void:
 	
 	player_detection.body_entered.connect(func(body: Node2D): is_player_in_attack_range = true)
 	player_detection.body_exited.connect(func(body: Node2D): is_player_in_attack_range = false)
+	
+	
 
 	
 func _physics_process(delta: float) -> void:
