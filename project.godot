@@ -17,13 +17,13 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Globals="*res://scripts/Globals.gd"
-Utils="*res://scripts/Utils.gd"
-ChatBubble="*res://scripts/chat_bubble.gd"
-ScreenShake="*res://scripts/screenshake.gd"
-AudioManager="*res://scripts/audio_manager.gd"
-EnemySpawner="*res://scripts/enemy_spawner.gd"
-LeafSystem="*res://autoload/leaf_system.gd"
+Globals="*res://scripts/autoload/globals.gd"
+Utils="*res://scripts/autoload/utils.gd"
+ChatBubble="*res://scripts/autoload/chat_bubble.gd"
+ScreenShake="*res://scripts/autoload/screenshake.gd"
+AudioManager="*res://scripts/autoload/audio_manager.gd"
+EnemySpawner="*res://scripts/autoload/enemy_spawner.gd"
+LeafSystem="*res://scripts/autoload/leaf_system.gd"
 
 [debug]
 
