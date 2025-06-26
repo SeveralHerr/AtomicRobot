@@ -22,6 +22,8 @@ var enemy_state_machine: EnemyStateMachine
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var receive_hit_audio: AudioStreamPlayer = $ReceiveHitAudio
 @onready var line_of_sight: LineOfSight = $LineOfSight
+@onready var meter_line_of_sight: LineOfSight = $MeterLineOfSight
+
 
 
 var is_player_in_attack_range: bool = false
@@ -66,7 +68,8 @@ func _physics_process(delta: float) -> void:
 func is_player_in_line_of_sight() -> bool:
 	return line_of_sight.is_player_line_of_sight()
 
-
+func is_meter_in_line_of_sight() -> bool:
+	return meter_line_of_sight.is_meter_line_of_sight(Globals.nearest_meter(global_position).global_position)
 
 
 # Virtual methods to be overridden

@@ -18,3 +18,19 @@ func is_player_line_of_sight() -> bool:
 
 
 	return false
+
+
+func is_meter_line_of_sight(meter_position: Vector2) -> bool:
+	enabled = true
+	var to_meter = meter_position - global_position
+	var distance = to_meter.length()
+	target_position = to_meter.normalized() * length
+	
+	if is_colliding():
+		var collider = get_collider()
+		if collider is Meter:
+			enabled = false
+			return true
+
+	enabled = false
+	return false

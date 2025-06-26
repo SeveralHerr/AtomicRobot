@@ -1,4 +1,4 @@
-[gd_scene load_steps=85 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=86 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
@@ -27,7 +27,7 @@
 [ext_resource type="Texture2D" uid="uid://cfe6he8i4dnb0" path="res://images/new/Background_David.png" id="19_62krv"]
 [ext_resource type="Texture2D" uid="uid://biiglmxbmaihn" path="res://images/new/tall_building.png" id="20_yhyvh"]
 [ext_resource type="Texture2D" uid="uid://bv1ony8p1mlcx" path="res://images/new/Blue_Trashcan.png" id="21_0bwfm"]
-[ext_resource type="Texture2D" uid="uid://dr4h2bc6ecmy3" path="res://Tiles/mp_cs_tilemap_all.png" id="21_euxwc"]
+[ext_resource type="Texture2D" uid="uid://dr4h2bc6ecmy3" path="res://tiles/mp_cs_tilemap_all.png" id="21_euxwc"]
 [ext_resource type="Texture2D" uid="uid://dc1a5p03kl1vo" path="res://images/new/Building_glass.png" id="21_sj8ng"]
 [ext_resource type="Texture2D" uid="uid://ibkloxrt0asn" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_01/PixelcityFullHD01_layer03.png" id="22_335wh"]
 [ext_resource type="Texture2D" uid="uid://cxlmma5joa6la" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_01/PixelcityFullHD01_layer04.png" id="22_brcwu"]
@@ -48,14 +48,15 @@
 [ext_resource type="Texture2D" uid="uid://dos02h3f2rxj6" path="res://images/spike.png" id="35_7k40d"]
 [ext_resource type="Shader" uid="uid://fc8uls4asel3" path="res://shaders/sway.gdshader" id="37_2p6wh"]
 [ext_resource type="Texture2D" uid="uid://ds6dn0qq2gslf" path="res://images/new/Black_Trashcan.png" id="37_k2mcc"]
-[ext_resource type="TileSet" uid="uid://dnk1onf4fhpgp" path="res://Tiles/tileset.tres" id="41_01ywe"]
+[ext_resource type="TileSet" uid="uid://dnk1onf4fhpgp" path="res://tiles/tileset.tres" id="41_01ywe"]
+[ext_resource type="PackedScene" uid="uid://dj5v0xinrjdvu" path="res://scenes/meter.tscn" id="43_335wh"]
 [ext_resource type="PackedScene" uid="uid://bxsksxhbmge8q" path="res://scenes/meter_maid_window.tscn" id="48_64moy"]
 [ext_resource type="PackedScene" uid="uid://bxtldf7fn5fty" path="res://scenes/platform.tscn" id="48_dy54k"]
 [ext_resource type="PackedScene" uid="uid://bi5pyhjxtocqc" path="res://scenes/interactive_mailbox.tscn" id="49_7k40d"]
 [ext_resource type="Texture2D" uid="uid://b7c3ulm6ps4bi" path="res://images/new/Tree.png" id="51_2p6wh"]
 [ext_resource type="Texture2D" uid="uid://bdjs24506sg7i" path="res://images/crate.png" id="51_64moy"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="51_k4pk8"]
-[ext_resource type="PackedScene" uid="uid://d4hesyanxo8l" path="res://scenes/AtomicBuildingGroup.tscn" id="54_2yfl3"]
+[ext_resource type="PackedScene" uid="uid://d4hesyanxo8l" path="res://scenes/atomic_robot_building_group.tscn" id="54_2yfl3"]
 [ext_resource type="PackedScene" uid="uid://xnc3xl36cxv" path="res://scenes/crack.tscn" id="55_wvjmt"]
 [ext_resource type="Shader" uid="uid://b3nk82nwgcmxy" path="res://shaders/water.gdshader" id="56_fndef"]
 [ext_resource type="Texture2D" uid="uid://c3klbois75lr4" path="res://images/Light.png" id="57_qr2g0"]
@@ -529,45 +530,10 @@ position = Vector2(-9, 81)
 [node name="InteractiveMailbox" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("49_7k40d")]
 position = Vector2(2637, -16)
 
-[node name="Meter" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
-z_index = 1
-position = Vector2(2673, -29)
-texture = ExtResource("24_meefr")
-
-[node name="Meter7" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
-z_index = 1
-position = Vector2(2833, -29)
-texture = ExtResource("24_meefr")
-
-[node name="Meter8" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
-z_index = 1
-position = Vector2(3037, -29)
-texture = ExtResource("24_meefr")
-
-[node name="Meter6" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
-z_index = 1
-position = Vector2(2486, -29)
-texture = ExtResource("24_meefr")
-
-[node name="Meter2" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
-z_index = 1
-position = Vector2(2365, -29)
-texture = ExtResource("24_meefr")
-
 [node name="Bollard" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
 z_index = 1
 position = Vector2(2214, -17)
 texture = ExtResource("27_gdeaw")
-
-[node name="Meter4" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
-z_index = 1
-position = Vector2(2053, -28)
-texture = ExtResource("24_meefr")
-
-[node name="Meter5" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
-z_index = 1
-position = Vector2(1863, -29)
-texture = ExtResource("24_meefr")
 
 [node name="Trash" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
 z_index = 1
@@ -714,6 +680,27 @@ position = Vector2(3136, -557)
 position = Vector2(2, 0)
 scale = Vector2(0.77, 1)
 
+[node name="Meter3" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("43_335wh")]
+position = Vector2(1874, -28)
+
+[node name="Meter4" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("43_335wh")]
+position = Vector2(2368, -28)
+
+[node name="Meter5" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("43_335wh")]
+position = Vector2(2488, -28)
+
+[node name="Meter10" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("43_335wh")]
+position = Vector2(2676, -29)
+
+[node name="Meter11" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("43_335wh")]
+position = Vector2(2833, -28)
+
+[node name="Meter12" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("43_335wh")]
+position = Vector2(3037, -29)
+
+[node name="Meter9" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("43_335wh")]
+position = Vector2(2055, -28)
+
 [node name="BuildingGroup2" type="Node2D" parent="SceneItemsBackground"]
 position = Vector2(2549, 0)
 
@@ -762,21 +749,6 @@ texture = ExtResource("27_gdeaw")
 [node name="Lamp3" parent="SceneItemsBackground/BuildingGroup2" instance=ExtResource("28_dbsfu")]
 position = Vector2(576, -69)
 
-[node name="Meter4" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup2"]
-z_index = 1
-position = Vector2(675, -28)
-texture = ExtResource("24_meefr")
-
-[node name="Meter5" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup2"]
-z_index = 1
-position = Vector2(489, -28)
-texture = ExtResource("24_meefr")
-
-[node name="Meter6" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup2"]
-z_index = 1
-position = Vector2(336, -28)
-texture = ExtResource("24_meefr")
-
 [node name="EnemyEvent" type="Area2D" parent="SceneItemsBackground/BuildingGroup2"]
 collision_layer = 0
 script = ExtResource("32_bjc77")
@@ -784,6 +756,15 @@ script = ExtResource("32_bjc77")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup2/EnemyEvent"]
 position = Vector2(576.5, -12)
 shape = SubResource("RectangleShape2D_dbsfu")
+
+[node name="Meter" parent="SceneItemsBackground/BuildingGroup2" instance=ExtResource("43_335wh")]
+position = Vector2(339, -28)
+
+[node name="Meter2" parent="SceneItemsBackground/BuildingGroup2" instance=ExtResource("43_335wh")]
+position = Vector2(492, -28)
+
+[node name="Meter3" parent="SceneItemsBackground/BuildingGroup2" instance=ExtResource("43_335wh")]
+position = Vector2(677, -28)
 
 [node name="BuildingGroup3" type="Node2D" parent="SceneItemsBackground"]
 

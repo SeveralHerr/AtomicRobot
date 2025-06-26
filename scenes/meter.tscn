@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://dj5v0xinrjdvu"]
 
-[ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://Tiles/custom_tiles.png" id="1_1fymc"]
+[ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://tiles/custom_tiles.png" id="1_1fymc"]
 [ext_resource type="Script" uid="uid://d0nehjup8esyc" path="res://scripts/meter.gd" id="1_24d3b"]
 [ext_resource type="Texture2D" uid="uid://bebxlupbocur" path="res://images/coin.png" id="2_0gs8c"]
 [ext_resource type="Texture2D" uid="uid://dkelg2q4oskqe" path="res://images/new/Parking_Meter.png" id="3_ejre1"]
@@ -46,6 +46,7 @@ animations = [{
 }]
 
 [node name="Meter" type="Node2D"]
+z_index = 1
 script = ExtResource("1_24d3b")
 
 [node name="CoinParticles" type="CPUParticles2D" parent="."]

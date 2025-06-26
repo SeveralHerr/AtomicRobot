@@ -1,59 +1,59 @@
 [gd_scene load_steps=34 format=4 uid="uid://d4hesyanxo8l"]
 
-[ext_resource type="Texture2D" uid="uid://jo0qmhfs7b8r" path="res://images/new/Background_bush2.png" id="1_moqmv"]
-[ext_resource type="Texture2D" uid="uid://biqvjni2xn7rp" path="res://images/new/Background_Bushes.png" id="2_tjqi0"]
-[ext_resource type="TileSet" uid="uid://dnk1onf4fhpgp" path="res://Tiles/tileset.tres" id="3_1ucss"]
-[ext_resource type="PackedScene" uid="uid://e6jpmakf8sa0" path="res://scenes/atomic_robot_building.tscn" id="4_uw6ff"]
-[ext_resource type="PackedScene" uid="uid://yomdf011c10y" path="res://scenes/window_event_building.tscn" id="5_07bf7"]
-[ext_resource type="PackedScene" uid="uid://bttbaymvxp2ts" path="res://scenes/crate2.tscn" id="6_tjqi0"]
-[ext_resource type="PackedScene" uid="uid://dwd6lyrgrnp0h" path="res://scenes/wood_ledge.tscn" id="7_1ucss"]
-[ext_resource type="PackedScene" uid="uid://c86dda1gnhixs" path="res://scenes/tree.tscn" id="8_uw6ff"]
-[ext_resource type="Texture2D" uid="uid://ds6dn0qq2gslf" path="res://images/new/Black_Trashcan.png" id="9_07bf7"]
-[ext_resource type="Texture2D" uid="uid://bv1ony8p1mlcx" path="res://images/new/Blue_Trashcan.png" id="10_c5bjw"]
-[ext_resource type="PackedScene" uid="uid://bn6uk4y67s804" path="res://scenes/lamp.tscn" id="11_c5bjw"]
-[ext_resource type="PackedScene" uid="uid://bi5pyhjxtocqc" path="res://scenes/interactive_mailbox.tscn" id="12_c5bjw"]
-[ext_resource type="PackedScene" uid="uid://xnc3xl36cxv" path="res://scenes/crack.tscn" id="13_ops16"]
-[ext_resource type="Texture2D" uid="uid://djcyx273wjxf0" path="res://images/car2.png" id="14_x5r1p"]
-[ext_resource type="Texture2D" uid="uid://bcn27o4sktbhx" path="res://images/new/Building1.png" id="15_iyp3j"]
-[ext_resource type="Script" uid="uid://3wy4teiu0tsl" path="res://scripts/left_atomic_building.gd" id="15_x8eh4"]
-[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://sprites/Meter Maid.png" id="17_af66f"]
-[ext_resource type="Texture2D" uid="uid://c8bs0f5orsg10" path="res://sprites/middle_finger_meter_forward.png" id="18_af66f"]
-[ext_resource type="PackedScene" uid="uid://dj5v0xinrjdvu" path="res://scenes/meter.tscn" id="19_r28sc"]
+[ext_resource type="Texture2D" uid="uid://biqvjni2xn7rp" path="res://images/new/Background_Bushes.png" id="1_j1q5a"]
+[ext_resource type="Texture2D" uid="uid://jo0qmhfs7b8r" path="res://images/new/Background_bush2.png" id="2_bb4wt"]
+[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://sprites/Meter Maid.png" id="3_j0y8s"]
+[ext_resource type="Texture2D" uid="uid://c8bs0f5orsg10" path="res://sprites/middle_finger_meter_forward.png" id="4_aip1n"]
+[ext_resource type="TileSet" uid="uid://dnk1onf4fhpgp" path="res://tiles/tileset.tres" id="5_1cvds"]
+[ext_resource type="PackedScene" uid="uid://e6jpmakf8sa0" path="res://scenes/atomic_robot_building.tscn" id="6_tr6ax"]
+[ext_resource type="Texture2D" uid="uid://ds6dn0qq2gslf" path="res://images/new/Black_Trashcan.png" id="7_mdre2"]
+[ext_resource type="PackedScene" uid="uid://dwd6lyrgrnp0h" path="res://scenes/wood_ledge.tscn" id="8_wdpji"]
+[ext_resource type="PackedScene" uid="uid://c86dda1gnhixs" path="res://scenes/tree.tscn" id="9_s6vr1"]
+[ext_resource type="PackedScene" uid="uid://bttbaymvxp2ts" path="res://scenes/crate2.tscn" id="10_sn4cc"]
+[ext_resource type="Script" uid="uid://3wy4teiu0tsl" path="res://scripts/left_atomic_building.gd" id="11_m3d5e"]
+[ext_resource type="Texture2D" uid="uid://bcn27o4sktbhx" path="res://images/new/Building1.png" id="12_b5nkc"]
+[ext_resource type="PackedScene" uid="uid://bi5pyhjxtocqc" path="res://scenes/interactive_mailbox.tscn" id="13_ea281"]
+[ext_resource type="PackedScene" uid="uid://dj5v0xinrjdvu" path="res://scenes/meter.tscn" id="14_wlkfp"]
+[ext_resource type="PackedScene" uid="uid://yomdf011c10y" path="res://scenes/window_event_building.tscn" id="15_lk56p"]
+[ext_resource type="Texture2D" uid="uid://bv1ony8p1mlcx" path="res://images/new/Blue_Trashcan.png" id="16_vt8m3"]
+[ext_resource type="PackedScene" uid="uid://bn6uk4y67s804" path="res://scenes/lamp.tscn" id="17_6rwn7"]
+[ext_resource type="PackedScene" uid="uid://xnc3xl36cxv" path="res://scenes/crack.tscn" id="18_nf1n6"]
+[ext_resource type="Texture2D" uid="uid://djcyx273wjxf0" path="res://images/car2.png" id="19_8w0sk"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_r056b"]
-atlas = ExtResource("17_af66f")
+atlas = ExtResource("3_j0y8s")
 region = Rect2(0, 0, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_r28sc"]
-atlas = ExtResource("17_af66f")
+atlas = ExtResource("3_j0y8s")
 region = Rect2(256, 0, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nmp4y"]
-atlas = ExtResource("17_af66f")
+atlas = ExtResource("3_j0y8s")
 region = Rect2(384, 0, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_k1ki3"]
-atlas = ExtResource("17_af66f")
+atlas = ExtResource("3_j0y8s")
 region = Rect2(512, 0, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1v2x3"]
-atlas = ExtResource("17_af66f")
+atlas = ExtResource("3_j0y8s")
 region = Rect2(640, 0, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yh2w1"]
-atlas = ExtResource("17_af66f")
+atlas = ExtResource("3_j0y8s")
 region = Rect2(0, 152, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dautr"]
-atlas = ExtResource("17_af66f")
+atlas = ExtResource("3_j0y8s")
 region = Rect2(128, 152, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2j72i"]
-atlas = ExtResource("17_af66f")
+atlas = ExtResource("3_j0y8s")
 region = Rect2(256, 152, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_llsel"]
-atlas = ExtResource("17_af66f")
+atlas = ExtResource("3_j0y8s")
 region = Rect2(384, 152, 128, 152)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_eqw4a"]
@@ -68,7 +68,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("18_af66f")
+"texture": ExtResource("4_aip1n")
 }],
 "loop": true,
 "name": &"middle_finger",
@@ -185,40 +185,40 @@ _data = {
 [node name="Bush3" type="Sprite2D" parent="."]
 show_behind_parent = true
 position = Vector2(-471.5, 42.5)
-texture = ExtResource("2_tjqi0")
+texture = ExtResource("1_j1q5a")
 
 [node name="Bush4" type="Sprite2D" parent="."]
 show_behind_parent = true
 position = Vector2(-450.5, 41.5)
-texture = ExtResource("1_moqmv")
+texture = ExtResource("2_bb4wt")
 
 [node name="Bush2" type="Sprite2D" parent="."]
 position = Vector2(471, 43)
-texture = ExtResource("2_tjqi0")
+texture = ExtResource("1_j1q5a")
 
 [node name="Bush" type="Sprite2D" parent="."]
 position = Vector2(492, 42)
-texture = ExtResource("1_moqmv")
+texture = ExtResource("2_bb4wt")
 
 [node name="Bush7" type="Sprite2D" parent="."]
 position = Vector2(1208, 82)
-texture = ExtResource("2_tjqi0")
+texture = ExtResource("1_j1q5a")
 
 [node name="Bush8" type="Sprite2D" parent="."]
 position = Vector2(1229, 81)
-texture = ExtResource("1_moqmv")
+texture = ExtResource("2_bb4wt")
 
 [node name="Bush5" type="Sprite2D" parent="."]
 show_behind_parent = true
 z_as_relative = false
 position = Vector2(-1069, 46)
-texture = ExtResource("2_tjqi0")
+texture = ExtResource("1_j1q5a")
 flip_h = true
 
 [node name="Bush6" type="Sprite2D" parent="."]
 show_behind_parent = true
 position = Vector2(-1120, 43)
-texture = ExtResource("1_moqmv")
+texture = ExtResource("2_bb4wt")
 
 [node name="MiddleFingerMeterMaid" type="AnimatedSprite2D" parent="Bush6"]
 show_behind_parent = true
@@ -230,44 +230,44 @@ frame_progress = 0.183328
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAALAAIADQAAAAAAAAAMAAIADQAAAAAAAAANAAIADQAAAAAAAAAOAAIADQAAAAAAAAAPAAIADQAAAAAAAAAQAAIADQAAAAAAAAARAAIADQAAAAAAAAASAAIADQAAAAAAAAATAAIADQAAAAAAAAAUAAIADQAAAAAAAAAVAAIADQAAAAAAAAD0/wIADQAAAAAAAADz/wIADQAAAAAAAADy/wIADQAAAAAAAADx/wIADQAAAAAAAADw/wIADQAAAAAAAADv/wIADQAAAAAAAADu/wIADQAAAAAAAADt/wIADQAAAAAAAADs/wIADQAAAAAAAADr/wIADQAAAAAAAADq/wIADQAAAAAAAADp/wIADQAAAAAAAADo/wIADQAAAAAAAADn/wIADQAAAAAAAADm/wIADQAAAAAAAADl/wIADQAAAAAAAADk/wIADQAAAAAAAADj/wIADQAAAAAAAADi/wIADQAAAAAAAADh/wIADQAAAAAAAADg/wIADQAAAAAAAADf/wIADQAAAAAAAADe/wIADQAAAAAAAADd/wIADQAAAAAAAADc/wIADQAAAAAAAADb/wIADQAAAAAAAADa/wIADQAAAAAAAADZ/wIADQAAAAAAAAAjAAIADQAAAAAAAAAkAAIADQAAAAAAAAAlAAIADQAAAAAAAAAmAAIADQAAAAAAAAAnAAIADQAAAAAAAAAoAAIADQAAAAAAAAApAAIADQAAAAAAAAAqAAIADQAAAAAAAAArAAIADQAAAAAAAAAsAAIADQABAAAAAAA=")
-tile_set = ExtResource("3_1ucss")
+tile_set = ExtResource("5_1cvds")
 
-[node name="AtomicRobotBuilding" parent="." instance=ExtResource("4_uw6ff")]
+[node name="AtomicRobotBuilding" parent="." instance=ExtResource("6_tr6ax")]
 
 [node name="Trash" type="Sprite2D" parent="AtomicRobotBuilding"]
 z_index = 1
 position = Vector2(288, 81)
-texture = ExtResource("9_07bf7")
+texture = ExtResource("7_mdre2")
 
-[node name="WoodLedge3" parent="AtomicRobotBuilding" instance=ExtResource("7_1ucss")]
+[node name="WoodLedge3" parent="AtomicRobotBuilding" instance=ExtResource("8_wdpji")]
 show_behind_parent = true
 position = Vector2(406, -69)
 rotation = 3.14159
 scale = Vector2(1, -1)
 
-[node name="Tree" parent="AtomicRobotBuilding" instance=ExtResource("8_uw6ff")]
+[node name="Tree" parent="AtomicRobotBuilding" instance=ExtResource("9_s6vr1")]
 position = Vector2(320, 11)
 
 [node name="Crates" type="Node2D" parent="AtomicRobotBuilding"]
 position = Vector2(-2, -1)
 
-[node name="Crate" parent="AtomicRobotBuilding/Crates" instance=ExtResource("6_tjqi0")]
+[node name="Crate" parent="AtomicRobotBuilding/Crates" instance=ExtResource("10_sn4cc")]
 position = Vector2(306, -111)
 
-[node name="Crate2" parent="AtomicRobotBuilding/Crates" instance=ExtResource("6_tjqi0")]
+[node name="Crate2" parent="AtomicRobotBuilding/Crates" instance=ExtResource("10_sn4cc")]
 position = Vector2(337, -111)
 
-[node name="Crate3" parent="AtomicRobotBuilding/Crates" instance=ExtResource("6_tjqi0")]
+[node name="Crate3" parent="AtomicRobotBuilding/Crates" instance=ExtResource("10_sn4cc")]
 position = Vector2(330, -141)
 
 [node name="LeftBuilding" type="Node2D" parent="."]
-script = ExtResource("15_x8eh4")
+script = ExtResource("11_m3d5e")
 
 [node name="Building" type="Sprite2D" parent="LeftBuilding"]
 position = Vector2(-714, -112)
-texture = ExtResource("15_iyp3j")
+texture = ExtResource("12_b5nkc")
 
-[node name="InteractiveMailbox" parent="LeftBuilding" instance=ExtResource("12_c5bjw")]
+[node name="InteractiveMailbox" parent="LeftBuilding" instance=ExtResource("13_ea281")]
 position = Vector2(-521, 80)
 
 [node name="Area2D" type="Area2D" parent="LeftBuilding"]
@@ -282,43 +282,49 @@ libraries = {
 &"": SubResource("AnimationLibrary_r056b")
 }
 
-[node name="Meter" parent="LeftBuilding" instance=ExtResource("19_r28sc")]
-position = Vector2(1053, 67)
+[node name="Meter" parent="LeftBuilding" instance=ExtResource("14_wlkfp")]
+position = Vector2(1053, 68)
 
-[node name="Tree3" parent="LeftBuilding" instance=ExtResource("8_uw6ff")]
+[node name="Meter4" parent="LeftBuilding" instance=ExtResource("14_wlkfp")]
+position = Vector2(1441, 68)
+
+[node name="Tree3" parent="LeftBuilding" instance=ExtResource("9_s6vr1")]
 position = Vector2(-1141, 12)
 
-[node name="Meter2" parent="LeftBuilding" instance=ExtResource("19_r28sc")]
+[node name="Meter2" parent="LeftBuilding" instance=ExtResource("14_wlkfp")]
 position = Vector2(-121, 68)
 
-[node name="WindowEventBuilding" parent="." instance=ExtResource("5_07bf7")]
+[node name="Meter3" parent="LeftBuilding" instance=ExtResource("14_wlkfp")]
+position = Vector2(-654, 68)
+
+[node name="WindowEventBuilding" parent="." instance=ExtResource("15_lk56p")]
 position = Vector2(852, -208)
 
-[node name="WoodLedge2" parent="WindowEventBuilding" instance=ExtResource("7_1ucss")]
+[node name="WoodLedge2" parent="WindowEventBuilding" instance=ExtResource("8_wdpji")]
 show_behind_parent = true
 position = Vector2(-309, 140)
 
-[node name="Tree2" parent="WindowEventBuilding" instance=ExtResource("8_uw6ff")]
+[node name="Tree2" parent="WindowEventBuilding" instance=ExtResource("9_s6vr1")]
 position = Vector2(-119, 219)
 
-[node name="Tree3" parent="WindowEventBuilding" instance=ExtResource("8_uw6ff")]
+[node name="Tree3" parent="WindowEventBuilding" instance=ExtResource("9_s6vr1")]
 position = Vector2(450, 219)
 
-[node name="Tree4" parent="WindowEventBuilding" instance=ExtResource("8_uw6ff")]
+[node name="Tree4" parent="WindowEventBuilding" instance=ExtResource("9_s6vr1")]
 position = Vector2(651, 219)
 
 [node name="Trash2" type="Sprite2D" parent="WindowEventBuilding"]
 z_index = 1
 position = Vector2(113, 288)
-texture = ExtResource("10_c5bjw")
+texture = ExtResource("16_vt8m3")
 
-[node name="Lamp" parent="WindowEventBuilding" instance=ExtResource("11_c5bjw")]
+[node name="Lamp" parent="WindowEventBuilding" instance=ExtResource("17_6rwn7")]
 position = Vector2(-329, 235)
 
-[node name="InteractiveMailbox" parent="WindowEventBuilding" instance=ExtResource("12_c5bjw")]
+[node name="InteractiveMailbox" parent="WindowEventBuilding" instance=ExtResource("13_ea281")]
 position = Vector2(-288, 288)
 
-[node name="Crack" parent="." instance=ExtResource("13_ops16")]
+[node name="Crack" parent="." instance=ExtResource("18_nf1n6")]
 visible = false
 position = Vector2(647, -351)
 
@@ -328,6 +334,6 @@ scale = Vector2(0.66, 1)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
-texture = ExtResource("14_x5r1p")
+texture = ExtResource("19_8w0sk")
 
 [editable path="Crack"]
