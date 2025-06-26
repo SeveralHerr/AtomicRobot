@@ -28,7 +28,7 @@ func is_meter_line_of_sight(meter_position: Vector2) -> bool:
 	
 	if is_colliding():
 		var collider = get_collider()
-		if collider is Meter:
+		if collider.get_parent() is Meter:
 			enabled = false
 			return true
 

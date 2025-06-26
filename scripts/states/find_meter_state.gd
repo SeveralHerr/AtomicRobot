@@ -7,17 +7,19 @@ var meter: Meter
 var stand_still: bool = false
 
 func enter_state() -> void:
-	meter = Globals.nearest_meter(enemy.position)
+	meter = Globals.nearest_meter(enemy.global_position)
 	stand_still = false
 	var dist = enemy.global_position.distance_to(meter.global_position)
-	if dist >= 300 or not enemy.is_meter_in_line_of_sight():
-		print("Meter too far away, replenish coins ")
-		enemy.coins += 1
+	if dist >= 200:
+		enemy.coins += 2
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
 		return
-
 	enemy.animated_sprite_2d.play("walk")
 	ChatBubble.create(enemy, "Out of ammo!")
+	return
+		
+
+
 
 
 	
@@ -42,6 +44,12 @@ func update(delta: float) -> void:
 
 	if dist < 30 and enemy.coins <= 0:
 		_refill_at_meter()
+	elif dist >= 200 and not  enemy.is_meter_in_line_of_sight():
+		print("Meter too far away, replenish coins ")
+		enemy.coins += 1
+		enemy.enemy_state_machine.change_state("ChasePlayerState")
+		return
+
 	else:
 		_move_to_meter(delta)
 	
