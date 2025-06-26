@@ -13,12 +13,16 @@ var original_position: Vector2
 var is_shaking: bool = false
 var shake_duration: float = 1.0
 var elapsed_time: float = 0.0
+var player: Player
 
+func _ready() -> void:
+	player = get_tree().get_first_node_in_group("player")
+	
 func apply_shake(_randomStrength: float = 1.0, _duration: float = 1.0):
 	if is_shaking:
 		elapsed_time = 0
 		return
-	var player = get_tree().get_first_node_in_group("player")
+
 	if not player:
 		return
 	original_position = Vector2(player.camera_2d.offset)
@@ -33,7 +37,6 @@ func _process(delta: float) -> void:
 		
 		if elapsed_time < shake_duration - 0.8:
 			# Apply shake effect
-			var player = get_tree().get_first_node_in_group("player")
 			if not player:
 				return
 			shake_strength = lerpf(shake_strength, 0, shakeFade * delta)
@@ -41,7 +44,6 @@ func _process(delta: float) -> void:
 			player.camera_2d.offset.y  = original_position.y +  randomOffset()
 		else:
 			# Restore the original position and stop shaking
-			var player = get_tree().get_first_node_in_group("player")
 			if player:
 				player.camera_2d.offset.x = original_position.x
 				player.camera_2d.offset.y  = original_position.y 

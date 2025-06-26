@@ -13,6 +13,7 @@ var is_activated: bool = false
 func _ready() -> void:
 	health = 3
 	detection_range = 450
+	attack_range = 250
 	attack_cooldown = 2
 	super._ready()
 

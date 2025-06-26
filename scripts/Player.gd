@@ -113,12 +113,10 @@ func _event_started(status: bool) -> void:
 func move_player() -> void:
 	camera_2d.position_smoothing_enabled = false
 
-	position = Globals.player_last_position
-
 	await get_tree().create_timer(0.5).timeout
 	camera_2d.position_smoothing_enabled = true
 	camera_2d.position_smoothing_speed = 5
-	Globals.player_last_position = null
+
 		
 func _physics_process(delta: float) -> void:
 	# Track coyote time

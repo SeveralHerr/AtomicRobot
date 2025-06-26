@@ -13,7 +13,7 @@ func add_state(name: String, state: EnemyState) -> void:
 	states[name] = state
 
 func change_state(name: String) -> void:
-	print("Enemy state", name)
+	#print("Enemy state", name)
 	if current_state:
 		current_state.exit_state()	
 		
@@ -23,9 +23,6 @@ func change_state(name: String) -> void:
 
 
 func update(delta: float) -> void:
-	#func _process(delta: float) -> void:
-	#enemy.scale.x = sign((Globals.player.position - enemy.position).normalized().x)
-	
 	if current_state:
 		current_state.update( delta)
 		

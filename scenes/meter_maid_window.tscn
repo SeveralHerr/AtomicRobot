@@ -9,7 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://deontu0qgstsu" path="res://sounds/glass_break.wav" id="7_tir5r"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ryn0f"]
-radius = 130.0
+radius = 210.002
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n43qx"]
 size = Vector2(32, 48)

@@ -2,12 +2,13 @@ extends RayCast2D
 class_name LineOfSight
 
 var length 
+var player: Player
 
 func _ready() -> void:
 	length = target_position.y
-
+	player = get_tree().get_first_node_in_group("player")
+	
 func is_player_line_of_sight() -> bool:
-	var player = get_tree().get_first_node_in_group("player")
 	if not player:
 		return false
 	var to_player = player.global_position - global_position

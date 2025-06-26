@@ -77,7 +77,6 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 	)
 }
 
-var player_last_position
 var meters: Array
 var meter_maids_killed: int = 0
 var meter_maid_boss_killed: int = 0
@@ -93,8 +92,7 @@ func is_node_destroyed(node_name: String) -> bool:
 func reset() -> void:
 	meters.clear()
 	meter_maids_killed = 0
-	player_last_position = null
-	
+
 
 func nearest_meter(pos: Vector2) -> Node2D:
 	var lowest_distance = 32323  

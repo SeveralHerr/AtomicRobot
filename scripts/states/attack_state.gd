@@ -9,9 +9,7 @@ func enter_state(player: Player) -> void:
 	player.attack_audio.play()
 	player.attack_audio_player.play()
 	player.velocity = Vector2.ZERO
-	#_handle_offset(player, 1)
-	
-	#player.area_2d.monitoring = true
+
 	player.default_sprite.animation_finished.connect(_on_animation_finished)
 	
 
@@ -22,8 +20,6 @@ func trigger_attack(player: Player)-> void:
 		if body is Enemy:
 			ScreenShake.apply_shake(5)
 			var dir = (player.global_position - body.global_position).normalized()
-			#Utils.hit_effect(body, Vector2(body.position.x + (dir.x * 10) , body.position.y) )
-#			Utils.apply_hit_pause(player)
 			body.receive_hit(PLAYER_DAMAGE)
 			
 			
@@ -49,21 +45,10 @@ func handle_input(player: Player, event: InputEvent) -> void:
 		player.state_machine.change_state("CrouchState")
 
 func exit_state(player: Player) -> void:
-	#_handle_offset(player, -1)
-	#player.collision_shape_2d.position.x = 0
-	#player.area_2d.monitoring = false
-	player.default_sprite.animation_finished.disconnect(_on_animation_finished)
+	player.default_sprite.animation_finished.disconnect(_on_animation_finished.bind(player))
 	player.default_sprite.frame_changed.disconnect(_on_frame_changed.bind(player))
 
-func _on_animation_finished() -> void:
-	Globals.player.state_machine.change_state("IdleState")
-	
-#func _handle_offset(player: Player, value: int) -> void:
-	#if player.default_sprite.flip_h:
-		#player.default_sprite.offset.x -= 8 * value
-		##player.collision_shape_2d.position.x = -6
-	#else:
-		#player.default_sprite.offset.x += 8 * value
-		##player.collision_shape_2d.position.x = 6
-		
+func _on_animation_finished(player: Player) -> void:
+	player.state_machine.change_state("IdleState")
+
 		
