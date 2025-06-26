@@ -31,7 +31,7 @@ const RunState = preload("res://scripts/states/run_state.gd")
 
 var jump_fx_offset: float = 0
 var is_dead: bool = false
-var health: int = 4
+var health: int = 3
 var is_event_active: bool = false
 var SPEED = 170.0
 const JUMP_VELOCITY = -1250.0

@@ -1,7 +1,7 @@
 extends Node2D
 
 @onready var player_detection: Area2D = $Area2D
-@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var sprite: Sprite2D = $AnimatedSprite2D
 @onready var pickup_audio: AudioStreamPlayer = $PickupAudio
 
 var heal_amount: int = 1
@@ -31,5 +31,5 @@ func collect_heart(player: Player) -> void:
 		sprite.modulate = Color.TRANSPARENT
 	
 	# Wait a moment for sound then remove
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(0.1).timeout
 	queue_free()

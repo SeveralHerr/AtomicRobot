@@ -269,7 +269,7 @@ position = Vector2(-714, -112)
 texture = ExtResource("12_b5nkc")
 
 [node name="InteractiveMailbox" parent="LeftBuilding" instance=ExtResource("13_ea281")]
-position = Vector2(-521, 80)
+position = Vector2(-521, 72)
 
 [node name="Area2D" type="Area2D" parent="LeftBuilding"]
 collision_layer = 0
@@ -326,7 +326,7 @@ texture = ExtResource("16_vt8m3")
 position = Vector2(-329, 235)
 
 [node name="InteractiveMailbox" parent="WindowEventBuilding" instance=ExtResource("13_ea281")]
-position = Vector2(-288, 288)
+position = Vector2(-288, 281)
 
 [node name="Crack" parent="." instance=ExtResource("18_nf1n6")]
 visible = false

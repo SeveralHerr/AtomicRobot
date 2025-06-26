@@ -29,7 +29,7 @@ shadow_color = Color(0, 0, 0, 0.392157)
 
 [node name="InteractiveMailbox" type="Sprite2D"]
 z_index = 1
-position = Vector2(0, -8)
+position = Vector2(0, -24)
 texture = ExtResource("1_uwo4u")
 script = ExtResource("2_uwo4u")
 

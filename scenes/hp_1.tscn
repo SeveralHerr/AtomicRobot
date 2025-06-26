@@ -8,6 +8,7 @@ texture_filter = 4
 custom_minimum_size = Vector2(40, 40)
 offset_right = 40.0
 offset_bottom = 40.0
+pivot_offset = Vector2(20, 20)
 texture = ExtResource("1_p5stn")
 expand_mode = 3
 stretch_mode = 5
