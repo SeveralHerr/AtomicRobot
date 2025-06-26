@@ -4,11 +4,11 @@ extends Control
 @onready var story_label_3: Label = $CenterContainer/StoryLabel3
 @onready var story_label_4: Label = $CenterContainer/StoryLabel4
 @onready var story_label_5: Label = $CenterContainer/StoryLabel5
-@onready var story_label_6: Label = $CenterContainer/StoryLabel6
+
 @onready var continue_label: Label = $MarginContainer/ContinueLabel
 @onready var fade_overlay: FadeOverlay = $FadeOverlay
 
-const GAME: PackedScene = preload("res://scenes/new_asset_test.tscn")
+const GAME: PackedScene = preload("res://scenes/main.tscn")
 var current_label_index: int = 0
 var labels: Array[Label]
 var can_proceed: bool = false
@@ -16,23 +16,19 @@ var current_tween: Tween
 
 func _ready() -> void:
 	# Initialize labels array
-	labels = [story_label_1, story_label_2, story_label_3, story_label_4, story_label_5, story_label_6]
+	labels = [story_label_1, story_label_2, story_label_3, story_label_4, story_label_5]
 	
 	# Hide all labels initially and set their modulate alpha to 0
 	for label in labels:
 		label.show()
 		label.modulate.a = 0
-	
+
 	continue_label.show()
 	continue_label.modulate.a = 0
 	
 	# Wait for initial fade in to complete before starting story
-	fade_overlay.fade_finished.connect(_on_fade_finished)
+	#await fade_overlay.fade_finished
 	show_next_label()
-
-func _on_fade_finished() -> void:
-	if current_label_index >= labels.size():
-		get_tree().change_scene_to_packed(GAME)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey or event is InputEventMouseButton:
@@ -61,7 +57,11 @@ func transition_to_game() -> void:
 	await current_tween.finished
 	
 	# Fade to black
-	fade_overlay.fade_out()
+	await fade_overlay.fade_out()
+	await get_tree().create_timer(1).timeout
+	
+	# Change scene
+	get_tree().change_scene_to_packed(GAME)
 
 func show_next_label() -> void:
 	if current_label_index < labels.size():

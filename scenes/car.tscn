@@ -12,11 +12,11 @@ z_index = 1
 script = ExtResource("1_sparu")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-2.83331, -3.5)
+position = Vector2(-3.66661, -17)
 texture = ExtResource("2_50v30")
 
 [node name="Area2D" type="Area2D" parent="."]
-position = Vector2(0.166694, -9.5)
+position = Vector2(-0.666604, -23)
 collision_layer = 16
 collision_mask = 129
 
@@ -27,11 +27,11 @@ debug_color = Color(0, 0.6, 0.701961, 0)
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
 modulate = Color(1, 1, 1, 0)
-position = Vector2(73.3333, 10)
+position = Vector2(72.5, -3.5)
 scale = Vector2(19.45, 14.15)
 enable_node_path = NodePath("../AudioStreamPlayer2D")
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(0.166694, -9.5)
+position = Vector2(-0.666604, -23)
 stream = ExtResource("3_1d6nu")
 autoplay = true

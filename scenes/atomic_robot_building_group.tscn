@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://ds6dn0qq2gslf" path="res://images/new/Black_Trashcan.png" id="7_mdre2"]
 [ext_resource type="PackedScene" uid="uid://dwd6lyrgrnp0h" path="res://scenes/wood_ledge.tscn" id="8_wdpji"]
 [ext_resource type="PackedScene" uid="uid://c86dda1gnhixs" path="res://scenes/tree.tscn" id="9_s6vr1"]
-[ext_resource type="PackedScene" uid="uid://bttbaymvxp2ts" path="res://scenes/crate2.tscn" id="10_sn4cc"]
+[ext_resource type="PackedScene" uid="uid://bttbaymvxp2ts" path="res://scenes/crate.tscn" id="10_sn4cc"]
 [ext_resource type="Script" uid="uid://3wy4teiu0tsl" path="res://scripts/left_atomic_building.gd" id="11_m3d5e"]
 [ext_resource type="Texture2D" uid="uid://bcn27o4sktbhx" path="res://images/new/Building1.png" id="12_b5nkc"]
 [ext_resource type="PackedScene" uid="uid://bi5pyhjxtocqc" path="res://scenes/interactive_mailbox.tscn" id="13_ea281"]

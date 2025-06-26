@@ -11,7 +11,7 @@ var description: String
 @onready var button: Button = $Button
 @onready var texture_rect: PanelContainer = $Background/TextureRect
 @onready var check_box: CheckBox = $"../../../../MarginContainer2/HBoxContainer/CheckBox"
-const NEW_ASSET_TEST = preload("res://scenes/new_asset_test.tscn")
+const NEW_ASSET_TEST = preload("res://scenes/main.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

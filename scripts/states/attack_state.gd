@@ -32,11 +32,7 @@ func trigger_attack(player: Player)-> void:
 		ScreenShake.apply_shake(5)
 		var parent = area.get_parent()
 		print(parent.name)
-		if parent is Crate:
-			parent.receive_hit()
-		elif area is Enemy:
-			parent.receive_hit(PLAYER_DAMAGE)
-		elif parent is Boss:
+		if area is Enemy:
 			parent.receive_hit(PLAYER_DAMAGE)
 		elif parent is Crack: 
 			parent.receive_hit()
