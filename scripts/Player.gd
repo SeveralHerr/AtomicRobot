@@ -58,6 +58,12 @@ func take_damage(amount: int) -> void:
 	if health <= 0:
 		death()
 
+func add_heart(amount: int) -> void:
+	health += amount
+	health = min(health, 10)  # Cap at 10 hearts for now
+	print("Healed! Current health: ", health)
+	player_health_updated.emit(health)
+
 func _input(event: InputEvent) -> void:
 	state_machine.handle_input(event)
 	

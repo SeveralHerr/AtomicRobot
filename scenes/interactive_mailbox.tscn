@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://bi5pyhjxtocqc"]
 
-[ext_resource type="Texture2D" uid="uid://bscwynmlxfbo7" path="res://images/new/Mailbox.png" id="1_nhryr"]
+[ext_resource type="Texture2D" uid="uid://qktjjix6saih" path="res://images/new/newspaperstand.png" id="1_uwo4u"]
 [ext_resource type="Script" uid="uid://cfhair3py7sgq" path="res://scripts/interactive_mailbox.gd" id="2_uwo4u"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="3_u7wxk"]
 [ext_resource type="FontFile" uid="uid://bfxvyxd0g1s31" path="res://styles/KomikaTitlePaint-D3x.ttf" id="3_uwo4u"]
@@ -29,10 +29,12 @@ shadow_color = Color(0, 0, 0, 0.392157)
 
 [node name="InteractiveMailbox" type="Sprite2D"]
 z_index = 1
-texture = ExtResource("1_nhryr")
+position = Vector2(0, -8)
+texture = ExtResource("1_uwo4u")
 script = ExtResource("2_uwo4u")
 
 [node name="Area2D" type="Area2D" parent="."]
+position = Vector2(0, 6)
 collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]

@@ -1,10 +1,9 @@
-[gd_scene load_steps=86 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=85 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://m6osgl3gkqxy" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
 [ext_resource type="Texture2D" uid="uid://5n1wfynio4tv" path="res://images/new/Background_Really_Far_Buildings.png" id="2_n5jul"]
 [ext_resource type="Script" uid="uid://dc00l4kuir5j0" path="res://scripts/health_container.gd" id="2_vq1rx"]
-[ext_resource type="PackedScene" uid="uid://btaphps6ps5mq" path="res://scenes/hp_1.tscn" id="3_4dtmh"]
 [ext_resource type="Texture2D" uid="uid://grr2bmq732dp" path="res://images/new/Background_Bridge.png" id="3_62krv"]
 [ext_resource type="Texture2D" uid="uid://bcn27o4sktbhx" path="res://images/new/Building1.png" id="3_lfwgu"]
 [ext_resource type="Texture2D" uid="uid://dl0af8uvy0y6w" path="res://images/new/Background_Big_Sculpture.png" id="4_27y8j"]
@@ -194,18 +193,6 @@ label_settings = SubResource("LabelSettings_ikgy1")
 layout_mode = 2
 theme_override_constants/separation = -2
 script = ExtResource("2_vq1rx")
-
-[node name="HP1" parent="UI/HealthContainer/Health/HBoxContainer" instance=ExtResource("3_4dtmh")]
-layout_mode = 2
-
-[node name="HP2" parent="UI/HealthContainer/Health/HBoxContainer" instance=ExtResource("3_4dtmh")]
-layout_mode = 2
-
-[node name="HP3" parent="UI/HealthContainer/Health/HBoxContainer" instance=ExtResource("3_4dtmh")]
-layout_mode = 2
-
-[node name="HP4" parent="UI/HealthContainer/Health/HBoxContainer" instance=ExtResource("3_4dtmh")]
-layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="UI"]
 anchors_preset = 1
