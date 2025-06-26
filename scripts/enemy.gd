@@ -176,6 +176,9 @@ func get_distance_to_player() -> float:
 
 func can_see_player() -> bool:
 	return  get_distance_to_player() <= detection_range
+
+func can_see_player_threshold(threshold_multiplier: float) -> bool:
+	return get_distance_to_player() <= detection_range * threshold_multiplier
 	
 func has_state(state: String) -> bool:
 	return enemy_state_machine.states.has(state)

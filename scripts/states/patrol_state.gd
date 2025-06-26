@@ -13,7 +13,7 @@ func exit_state() -> void:
 	enemy.line_of_sight.enabled = false
 	
 func update(delta: float) -> void:
-	if enemy.has_state("ChasePlayerState") and (enemy.can_see_player() and enemy.is_player_in_line_of_sight()):
+	if enemy.has_state("ChasePlayerState") and (enemy.can_see_player_threshold(0.8) and enemy.is_player_in_line_of_sight()):
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
 
 	enemy._face_player()
