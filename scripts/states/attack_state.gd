@@ -7,6 +7,7 @@ func enter_state(player: Player) -> void:
 	player.default_sprite.frame_changed.connect(_on_frame_changed.bind(player))
 	player.default_sprite.play("Attack")
 	player.attack_audio.play()
+	player.attack_audio_player.play()
 	player.velocity = Vector2.ZERO
 	#_handle_offset(player, 1)
 	
@@ -42,7 +43,7 @@ func trigger_attack(player: Player)-> void:
 			
 			
 func _on_frame_changed(player: Player):
-	if player.default_sprite.animation == "Attack" and player.default_sprite.frame == 2:
+	if player.default_sprite.animation == "Attack" and player.default_sprite.frame == Globals.get_current_character_attack_frame():
 		trigger_attack(player)
 			
 func handle_input(player: Player, event: InputEvent) -> void:

@@ -19,10 +19,11 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		preload("res://sprites/cody_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
-			preload("res://sounds/jump.wav"),
-			preload("res://sounds/hurt.wav"),
+			preload("res://sounds/Voice_Male_V2_Jump_Mono_05.wav"),
+			preload("res://sounds/Voice_Male_V1_Hit_Short_Mono_07.wav"),
 			preload("res://sounds/Retro FootStep Grass 01.wav"),
-			preload("res://sounds/lightsaber.wav")
+			preload("res://sounds/Voice_Male_V2_Attack_Short_Mono_07.wav"),
+			preload("res://sounds/sword_attack.wav")  # weapon sound
 		),
 		2  # Attack frame
 	),
@@ -34,12 +35,13 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		preload("res://sprites/cody_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
-			preload("res://sounds/jump.wav"),
-			preload("res://sounds/hurt.wav"),
+			preload("res://sounds/Voice_Male_V2_Jump_Mono_05.wav"),
+			preload("res://sounds/Voice_Male_V1_Hit_Short_Mono_07.wav"),
 			preload("res://sounds/Retro FootStep Grass 01.wav"),
-			preload("res://sounds/lightsaber.wav")
+			preload("res://sounds/Voice_Male_V2_Attack_Short_Mono_07.wav"),
+			preload("res://sounds/lightsaber.wav")  # weapon sound
 		),
-		3  # Attack frame
+		2  # Attack frame
 	),
 	"Ryan": CharacterConfig.new(
 		"Ryan",
@@ -49,12 +51,13 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		preload("res://sprites/ryan_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
-			preload("res://sounds/ryan_jump.wav"),
-			preload("res://sounds/hurt.wav"),
+			preload("res://sounds/Voice_Male_V2_Jump_Mono_05.wav"),
+			preload("res://sounds/Voice_Male_V1_Hit_Short_Mono_07.wav"),
 			preload("res://sounds/Retro FootStep Grass 01.wav"),
-			preload("res://sounds/lightsaber.wav")
+			preload("res://sounds/Voice_Male_V2_Attack_Short_Mono_07.wav"),
+			preload("res://sounds/sword_attack.wav")  # weapon sound
 		),
-		1  # Attack frame
+		3  # Attack frame
 	),
 	"Sara": CharacterConfig.new(
 		"Sara",
@@ -67,9 +70,10 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/Voice_Female_V2_Jump_Mono_01.wav"),
 			preload("res://sounds/Voice_Female_V1_Hit_Short_Mono_07.wav"),
 			preload("res://sounds/Voice_Female_V2_Land_Mono_01.wav"),
-			preload("res://sounds/Voice_Female_V2_Attack_Mono_01.wav")
+			preload("res://sounds/Voice_Female_V2_Attack_Mono_01.wav"),
+			preload("res://sounds/sword_attack.wav")  # weapon sound
 		),
-		2  # Attack frame
+		5  # Attack frame
 	)
 }
 

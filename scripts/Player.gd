@@ -90,7 +90,12 @@ func _ready() -> void:
 	state_machine.change_state("IdleState")
 	jumping_streak_sprite.hide()
 	jump_fx_offset = jump_fx.position.y
-	default_sprite.sprite_frames = Globals.character_dict[Globals.selected_character].sprite_frames
+	default_sprite.sprite_frames = Globals.get_current_character().get_sprite_frames()
+	attack_audio.stream = Globals.get_current_character().get_weapon_sound()
+	jump_audio_player.stream = Globals.get_current_character().get_jump_sound()
+	hurt_audio.stream = Globals.get_current_character().get_hit_sound()
+	attack_audio_player.stream = Globals.get_current_character().get_attack_sound()
+
 
 	Globals.event.connect(_event_started)
 	
