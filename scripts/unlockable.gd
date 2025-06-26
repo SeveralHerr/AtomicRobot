@@ -1,16 +1,13 @@
 extends Node
-class_name Unlockable
+class_name CharacterSounds
 
-var unlock_text: String
-var unlocked: bool = false
-var description: String
-var sprite_frames: Resource
-var unlock_hint: String
+var jump_sound: AudioStream
+var hit_sound: AudioStream  
+var land_sound: AudioStream
+var attack_sound: AudioStream
 
-func _init(_name: String, _unlock_text: String, _unlocked: bool, _description: String, _sprite_frames: Resource, _unlock_hint: String) -> void:
-		name = _name
-		unlock_text = _unlock_text
-		unlocked = _unlocked
-		description = _description
-		sprite_frames = _sprite_frames
-		unlock_hint = _unlock_hint
+func _init(_jump_sound: AudioStream, _hit_sound: AudioStream, _land_sound: AudioStream, _attack_sound: AudioStream) -> void:
+	jump_sound = _jump_sound
+	hit_sound = _hit_sound
+	land_sound = _land_sound
+	attack_sound = _attack_sound

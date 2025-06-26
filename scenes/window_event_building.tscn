@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://yomdf011c10y"]
+[gd_scene load_steps=10 format=3 uid="uid://yomdf011c10y"]
 
 [ext_resource type="Script" uid="uid://dw6hmroaf4k4r" path="res://scripts/window_event_building.gd" id="1_55ooh"]
 [ext_resource type="Texture2D" uid="uid://ci6x7l4g5mh5l" path="res://images/new/Building2.png" id="1_won0d"]
@@ -14,9 +14,6 @@ size = Vector2(569, 9)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fdjp5"]
 size = Vector2(445, 9)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_oetyi"]
-size = Vector2(24, 39)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3t3vt"]
 size = Vector2(21, 177)
@@ -75,17 +72,9 @@ shape = SubResource("RectangleShape2D_fdjp5")
 collision_layer = 32
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Collisions/StaticBody2D2"]
-position = Vector2(204, -60)
-shape = SubResource("RectangleShape2D_oetyi")
-
 [node name="StaticBody2D3" type="StaticBody2D" parent="Collisions"]
 collision_layer = 32
 collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Collisions/StaticBody2D3"]
-position = Vector2(-209, -60)
-shape = SubResource("RectangleShape2D_oetyi")
 
 [node name="Platforms" type="Node2D" parent="."]
 

@@ -299,7 +299,7 @@ position = Vector2(-121, 68)
 position = Vector2(-654, 68)
 
 [node name="AtomicHeartPickup" parent="LeftBuilding" instance=ExtResource("15_bb4wt")]
-position = Vector2(-1117, 55)
+position = Vector2(-1152, 71)
 
 [node name="WindowEventBuilding" parent="." instance=ExtResource("15_lk56p")]
 position = Vector2(852, -208)
