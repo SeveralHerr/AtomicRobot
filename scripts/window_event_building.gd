@@ -8,10 +8,11 @@ extends Node2D
 var spawn_timer: Timer
 var spawn_count: int = 0
 const MAX_SPAWNS: int = 3
+var player: Player
 
 func _ready() -> void:
 	area_2d.body_entered.connect(_on_area_2d_body_entered)
-	
+	player = get_tree().get_first_node_in_group("player")
 	# Initialize spawn timer
 	spawn_timer = Timer.new()
 	spawn_timer.wait_time = 7.0
@@ -47,7 +48,7 @@ func _on_spawn_timer_timeout() -> void:
 
 func _spawn_enemy(force_right_spawn: bool = false) -> void:
 	var viewport_size = get_viewport_rect().size
-	if Globals.player:
-		EnemySpawner.spawn_enemy(self, Globals.player, viewport_size, 0, force_right_spawn)
+	if player:
+		EnemySpawner.spawn_enemy(self, player, viewport_size, 0, force_right_spawn)
 		spawn_count += 1
 		
