@@ -60,9 +60,11 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="StoryLabel1" type="Label" parent="CenterContainer"]
-custom_minimum_size = Vector2(1300, 0)
+custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
-text = "SomethIng’s gone wrong IN downtown sIoux falls"
+text = "Something strange is happening in downtown Sioux Falls
+
+The meter maids have gone off-script"
 label_settings = ExtResource("3_md1pp")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -70,13 +72,11 @@ autowrap_mode = 3
 
 [node name="StoryLabel2" type="Label" parent="CenterContainer"]
 visible = false
-custom_minimum_size = Vector2(1300, 0)
+custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
-text = "THE METER MAIDS HAVE GONE ROGUE
+text = "They’re tossing quarters like it’s personal, and the rules keep changing
 
-USING QUARTERS AS WEAPONS AND ENFORCING CHAOS UNDER THE DIRECTION OF THE...
-
-SIOUX FALLS CITY COUNCIL"
+all under pressure from the establishment."
 label_settings = ExtResource("3_md1pp")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -84,9 +84,11 @@ autowrap_mode = 3
 
 [node name="StoryLabel3" type="Label" parent="CenterContainer"]
 visible = false
-custom_minimum_size = Vector2(1300, 0)
+custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
-text = "ATOMIC ROBOT TATTOO WON’T STAND BY"
+text = "Atomic Robot Tattoo isn’t just watching from the sidelines.
+
+From their ink-stained studio, a crew of bold artists is stepping up."
 label_settings = ExtResource("3_md1pp")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -94,13 +96,11 @@ autowrap_mode = 3
 
 [node name="StoryLabel4" type="Label" parent="CenterContainer"]
 visible = false
-custom_minimum_size = Vector2(1300, 0)
+custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
-text = "FROM THEIR INK-STAINED STRONGHOLD, A CREW OF BOLD ARTISTS RISES UP
+text = "With custom gear and a deep love for their block
 
-ARMED WITH CUSTOM GEAR AND A DRIVE TO DEFEND THEIR BLOCK
-
-THEY’RE READY TO TAKE A STAND"
+they’re drawing the line"
 label_settings = SubResource("LabelSettings_he5lq")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -108,22 +108,11 @@ autowrap_mode = 3
 
 [node name="StoryLabel5" type="Label" parent="CenterContainer"]
 visible = false
-custom_minimum_size = Vector2(1300, 0)
+custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
-text = "IT'S TIME TO CONFRONT 
-CITY HALL"
-label_settings = ExtResource("3_md1pp")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
+text = "This isn’t just about parking anymore
 
-[node name="StoryLabel6" type="Label" parent="CenterContainer"]
-visible = false
-custom_minimum_size = Vector2(1300, 0)
-layout_mode = 2
-text = "THIS ISN’T ABOUT PARKING ANYMORE
-
-THIS IS WAR"
+It’s about standing up for your neighborhood"
 label_settings = ExtResource("3_md1pp")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -153,5 +142,6 @@ text = "PRESS ANY BUTTON TO CONTINUE"
 label_settings = SubResource("LabelSettings_d52np")
 
 [node name="FadeOverlay" parent="." instance=ExtResource("6_d52np")]
+visible = false
 layout_mode = 1
 color = Color(0, 0, 0, 1)

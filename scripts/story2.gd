@@ -4,7 +4,7 @@ extends Control
 @onready var story_label_3: Label = $CenterContainer/StoryLabel3
 @onready var story_label_4: Label = $CenterContainer/StoryLabel4
 @onready var story_label_5: Label = $CenterContainer/StoryLabel5
-@onready var story_label_6: Label = $CenterContainer/StoryLabel6
+
 @onready var continue_label: Label = $MarginContainer/ContinueLabel
 @onready var fade_overlay: FadeOverlay = $FadeOverlay
 
@@ -16,7 +16,7 @@ var current_tween: Tween
 
 func _ready() -> void:
 	# Initialize labels array
-	labels = [story_label_1, story_label_2, story_label_3, story_label_4, story_label_5, story_label_6]
+	labels = [story_label_1, story_label_2, story_label_3, story_label_4, story_label_5]
 	
 	# Hide all labels initially and set their modulate alpha to 0
 	for label in labels:
