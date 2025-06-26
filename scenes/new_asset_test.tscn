@@ -948,7 +948,7 @@ shape = SubResource("RectangleShape2D_k2mcc")
 position = Vector2(-1875, 1)
 
 [node name="InteractiveMailbox" parent="SceneItemsBackground/AtomicRobotBuildingGroup" instance=ExtResource("49_7k40d")]
-position = Vector2(1494, -16)
+position = Vector2(1494, -25)
 
 [node name="AtomicBuildingGroup" parent="SceneItemsBackground/AtomicRobotBuildingGroup" instance=ExtResource("54_2yfl3")]
 position = Vector2(-258, -97)
