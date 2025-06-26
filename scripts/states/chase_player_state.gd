@@ -19,13 +19,17 @@ func update(delta: float) -> void:
 		enemy.enemy_state_machine.change_state("PatrolState")
 		return
 			
-	# Handle animationd
+	# Handle animation and movement (but don't override knockback)
 	if not enemy.is_player_in_attack_range:
-		enemy.move_towards_target(enemy.player.global_position, delta)
+		# Only move if not being knocked back
+		if abs(enemy.knockback_velocity.x) < 10.0:
+			enemy.move_towards_target(enemy.player.global_position, delta)
 		enemy.animated_sprite_2d.play("walk")
 	else:
 		enemy._face_player()
 		enemy.animated_sprite_2d.play("idle")
-		enemy.velocity.x = 0	
+		# Only stop movement if not being knocked back
+		if abs(enemy.knockback_velocity.x) < 10.0:
+			enemy.velocity.x = 0	
 		
 	

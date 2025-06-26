@@ -34,6 +34,10 @@ var attack_range: int = 120
 var attack_cooldown: float = 4
 var detection_range: float = 600.0
 
+# Knockback variables
+var knockback_velocity: Vector2 = Vector2.ZERO
+var knockback_decay: float = 8.0  # How fast knockback decays
+
 
 
 # Runtime data
@@ -53,6 +57,7 @@ func _ready() -> void:
 	
 func _physics_process(delta: float) -> void:
 	_apply_gravity(delta)
+	_apply_knockback_decay(delta)
 	enemy_state_machine.update(delta)
 
 	move_and_slide()
@@ -146,9 +151,20 @@ func _apply_damage(damage: int) -> void:
 
 func _apply_knockback() -> void:
 	var knockback_direction = (global_position - Globals.player.global_position).normalized()
-	var knockback_strength = 10.0
-	velocity += knockback_direction * knockback_strength
+	var knockback_strength = 200.0  # Increased for more noticeable effect
+	knockback_velocity = knockback_direction * knockback_strength
 	velocity.y = -50.0
+
+func _apply_knockback_decay(delta: float) -> void:
+	# Apply knockback to velocity
+	velocity.x += knockback_velocity.x * delta
+	
+	# Decay knockback over time
+	knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_decay * delta * 100)
+	
+	# Apply friction to horizontal movement when not being controlled by states
+	if abs(knockback_velocity.x) < 10.0:  # Only apply friction when knockback is minimal
+		velocity.x = move_toward(velocity.x, 0.0, 300.0 * delta)
 	
 func get_distance_to_player() -> float:
 	if player:
