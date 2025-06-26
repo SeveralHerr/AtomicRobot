@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b5cx35js3wwmv"
-path="res://.godot/imported/sarah_idle.png-a5a3f604743749aac70838d2fd29b1fb.ctex"
+path="res://.godot/imported/sarah_idle.png-9decae282e07a88eaccc9021b60da8f9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/sarah_idle.png"
-dest_files=["res://.godot/imported/sarah_idle.png-a5a3f604743749aac70838d2fd29b1fb.ctex"]
+source_file="res://sprites/sarah_idle.png"
+dest_files=["res://.godot/imported/sarah_idle.png-9decae282e07a88eaccc9021b60da8f9.ctex"]
 
 [params]
 

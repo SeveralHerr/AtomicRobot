@@ -20,7 +20,7 @@ func _ready() -> void:
 	$Button.mouse_exited.connect(_on_focus_exit)
 	
 	texture_rect.hide()
-
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	character_name_label.text = ""
 	character_description_label.text = ""
 	

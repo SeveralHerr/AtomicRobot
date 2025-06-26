@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dy1rs7pn0yjd7"
-path="res://.godot/imported/Sarah.png-280a27403067e34373feaa1da5dad012.ctex"
+path="res://.godot/imported/Sarah.png-8a05076be5909e2f71652c28c638ba58.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Sarah.png"
-dest_files=["res://.godot/imported/Sarah.png-280a27403067e34373feaa1da5dad012.ctex"]
+source_file="res://sprites/Sarah.png"
+dest_files=["res://.godot/imported/Sarah.png-8a05076be5909e2f71652c28c638ba58.ctex"]
 
 [params]
 
