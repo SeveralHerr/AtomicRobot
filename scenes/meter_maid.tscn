@@ -152,4 +152,4 @@ libraries = {
 
 [node name="ReceiveHitAudio" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_5b8kh")
-volume_db = -12.381
+volume_db = -6.239

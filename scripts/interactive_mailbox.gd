@@ -57,7 +57,7 @@ func fade_out(duration: float = 1.0) -> void:
 	notification_label.show()
 	notification_header.show()
 	newpaper.show()
-	var tween = create_tween().parallel()
+	var tween = create_tween().set_parallel(true)
 	tween.tween_property(notification_label, "modulate:a", 0.0, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(notification_header, "modulate:a", 0.0, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(newpaper, "modulate:a", 0.0, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
