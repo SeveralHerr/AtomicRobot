@@ -10,9 +10,9 @@ func enter_state() -> void:
 	meter = Globals.nearest_meter(enemy.position)
 	stand_still = false
 	var dist = enemy.global_position.distance_to(meter.global_position)
-	if dist >= 300: # or enemy.is_meter_in_line_of_sight():
+	if dist >= 300 or not enemy.is_meter_in_line_of_sight():
 		print("Meter too far away, replenish coins ")
-		enemy.coins += 10
+		enemy.coins += 1
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
 		return
 
