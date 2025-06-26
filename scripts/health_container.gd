@@ -65,10 +65,10 @@ func _play_heart_pickup_effect(heart_node: Node) -> void:
 	tween.tween_property(heart_node, "modulate", Color.WHITE, 0.1)
 	tween.tween_property(heart_node, "modulate", original_modulate, 0.4).set_delay(0.1)
 	
-	# Optional: Slight rotation wobble
-	tween.tween_property(heart_node, "rotation_degrees", 10.0, 0.1)
-	tween.tween_property(heart_node, "rotation_degrees", -10.0, 0.2).set_delay(0.1)
-	tween.tween_property(heart_node, "rotation_degrees", 0.0, 0.2).set_delay(0.3)
+	# # Optional: Slight rotation wobble
+	# tween.tween_property(heart_node, "rotation_degrees", 10.0, 0.1)
+	# tween.tween_property(heart_node, "rotation_degrees", -10.0, 0.2).set_delay(0.1)
+	# tween.tween_property(heart_node, "rotation_degrees", 0.0, 0.2).set_delay(0.3)
 
 
 

@@ -28,6 +28,7 @@ const RunState = preload("res://scripts/states/run_state.gd")
 @onready var hurt_audio: AudioStreamPlayer = $HurtAudio
 @onready var jump_fx: CPUParticles2D = $JumpFx
 @onready var run_particles: CPUParticles2D = $RunParticles
+@onready var pickup_audio: AudioStreamPlayer = $PickupAudio
 
 var jump_fx_offset: float = 0
 var is_dead: bool = false
@@ -62,6 +63,7 @@ func add_heart(amount: int) -> void:
 	health += amount
 	health = min(health, 10)  # Cap at 10 hearts for now
 	print("Healed! Current health: ", health)
+	pickup_audio.play()
 	player_health_updated.emit(health)
 
 func _input(event: InputEvent) -> void:

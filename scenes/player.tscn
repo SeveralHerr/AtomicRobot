@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://csmg52xs05d1e"]
+[gd_scene load_steps=29 format=3 uid="uid://csmg52xs05d1e"]
 
 [ext_resource type="Script" uid="uid://b4j6tw0kgdavd" path="res://scripts/Player.gd" id="1_ncv2v"]
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="1_rc65t"]
@@ -11,6 +11,7 @@
 [ext_resource type="AudioStream" uid="uid://bj0im2h7popwj" path="res://sounds/422762__kierankeegan__footsteps_stone_4.wav" id="9_ur7pv"]
 [ext_resource type="AudioStream" uid="uid://chkw7wwwhbouc" path="res://sounds/515624__mrickey13__playerhurt2.wav" id="10_y4r1p"]
 [ext_resource type="Script" uid="uid://xo4s2my0m1b7" path="res://scripts/run_particles.gd" id="12_3v2ag"]
+[ext_resource type="AudioStream" uid="uid://cmt7dnjqgsuy5" path="res://sounds/power_up.wav" id="12_jej6c"]
 
 [sub_resource type="Shader" id="Shader_27hpx"]
 code = "shader_type canvas_item;
@@ -263,3 +264,6 @@ script = ExtResource("12_3v2ag")
 
 [node name="Timer" type="Timer" parent="RunParticles"]
 wait_time = 0.1
+
+[node name="PickupAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("12_jej6c")

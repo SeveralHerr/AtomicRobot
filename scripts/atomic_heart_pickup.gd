@@ -2,7 +2,7 @@ extends Node2D
 
 @onready var player_detection: Area2D = $Area2D
 @onready var sprite: Sprite2D = $Sprite2D
-@onready var pickup_audio: AudioStreamPlayer = $PickupAudio
+
 
 var heal_amount: int = 1
 var is_collected: bool = false
@@ -13,6 +13,7 @@ func _ready() -> void:
 
 func _on_player_entered(body: Node2D) -> void:
 	if body is Player and not is_collected:
+		player_detection.body_entered.disconnect(_on_player_entered)
 		collect_heart(body)
 
 func collect_heart(player: Player) -> void:
@@ -20,10 +21,6 @@ func collect_heart(player: Player) -> void:
 	
 	# Heal the player
 	player.add_heart(heal_amount)
-	
-	# Play pickup sound
-	if pickup_audio:
-		pickup_audio.play()
 	
 	# Visual feedback - could add particles or tween here
 	if sprite:

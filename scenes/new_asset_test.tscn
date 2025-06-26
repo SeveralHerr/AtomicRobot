@@ -950,11 +950,8 @@ position = Vector2(-1875, 1)
 [node name="InteractiveMailbox" parent="SceneItemsBackground/AtomicRobotBuildingGroup" instance=ExtResource("49_7k40d")]
 position = Vector2(1494, -16)
 
-[node name="TestGroup" type="Node2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup"]
-position = Vector2(-1826, -107)
-
-[node name="Node2D" parent="SceneItemsBackground/AtomicRobotBuildingGroup/TestGroup" instance=ExtResource("54_2yfl3")]
-position = Vector2(1568, 10)
+[node name="AtomicBuildingGroup" parent="SceneItemsBackground/AtomicRobotBuildingGroup" instance=ExtResource("54_2yfl3")]
+position = Vector2(-258, -97)
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false

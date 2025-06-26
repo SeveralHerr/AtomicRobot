@@ -1,8 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://qijrchhej6f6"]
+[gd_scene load_steps=7 format=3 uid="uid://qijrchhej6f6"]
 
 [ext_resource type="Script" uid="uid://dhofvcpkbxpk2" path="res://scripts/atomic_heart_pickup.gd" id="1_8lpob"]
 [ext_resource type="Texture2D" uid="uid://degiutq3ukb4w" path="res://images/Logo_small.png" id="1_if7nb"]
-[ext_resource type="AudioStream" uid="uid://cmt7dnjqgsuy5" path="res://sounds/power_up.wav" id="3_l8j2k"]
 
 [sub_resource type="Animation" id="Animation_if7nb"]
 resource_name = "spin"
@@ -86,6 +85,3 @@ autoplay = "spin"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_l8j2k")
-
-[node name="PickupAudio" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3_l8j2k")
