@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://bxsksxhbmge8q"]
+[gd_scene load_steps=16 format=4 uid="uid://bxsksxhbmge8q"]
 
 [ext_resource type="Script" uid="uid://c5seb14eot5lp" path="res://scripts/meter_maid_window.gd" id="1_jidjv"]
 [ext_resource type="Script" uid="uid://dsbjs54db5oe8" path="res://scripts/line_of_sight.gd" id="2_ryn0f"]
@@ -6,6 +6,10 @@
 [ext_resource type="Shader" uid="uid://6j4tcu38byit" path="res://shaders/flash.gdshader" id="3_tir5r"]
 [ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://sprites/metermaid_sprite_frames.tres" id="4_6va75"]
 [ext_resource type="AudioStream" uid="uid://b55vbaakt0ib4" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_8m6mi"]
+[ext_resource type="AudioStream" uid="uid://deontu0qgstsu" path="res://sounds/glass_break.wav" id="7_tir5r"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ryn0f"]
+radius = 130.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n43qx"]
 size = Vector2(32, 48)
@@ -82,7 +86,7 @@ collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(0, 2)
-shape = SubResource("RectangleShape2D_n43qx")
+shape = SubResource("CircleShape2D_ryn0f")
 
 [node name="RayCast2D_LeftDown" type="RayCast2D" parent="."]
 position = Vector2(-25, -15)
@@ -107,7 +111,8 @@ collision_mask = 98
 collide_with_areas = true
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 3.0
+wait_time = 2.0
+one_shot = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 2)
@@ -121,6 +126,11 @@ simplify_path = true
 debug_path_custom_color = Color(1, 0, 1, 1)
 
 [node name="LineOfSight" type="RayCast2D" parent="."]
+target_position = Vector2(0, 200)
+script = ExtResource("2_ryn0f")
+
+[node name="MeterLineOfSight" type="RayCast2D" parent="."]
+enabled = false
 script = ExtResource("2_ryn0f")
 
 [node name="RangeTimer" type="Timer" parent="."]
@@ -142,5 +152,9 @@ libraries = {
 
 [node name="ReceiveHitAudio" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_8m6mi")
+
+[node name="GlassBreakAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_tir5r")
+volume_db = 12.284
 
 [editable path="BrokenWindow"]

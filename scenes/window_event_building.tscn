@@ -38,7 +38,7 @@ position = Vector2(224, 193)
 
 [node name="MeterMaidWindow3" parent="." instance=ExtResource("2_55ooh")]
 visible = false
-position = Vector2(149, 75)
+position = Vector2(47, 75)
 
 [node name="Collisions" type="Node2D" parent="."]
 
