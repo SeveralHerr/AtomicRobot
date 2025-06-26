@@ -1018,7 +1018,7 @@ z_index = 0
 z_index = 1
 position = Vector2(-210, -241)
 
-[node name="Player" parent="." groups=["player"] instance=ExtResource("2_5jk15")]
+[node name="Player" parent="." instance=ExtResource("2_5jk15")]
 top_level = true
 position = Vector2(-293, -23)
 

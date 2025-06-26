@@ -7,7 +7,10 @@ func _ready() -> void:
 	length = target_position.y
 
 func is_player_line_of_sight() -> bool:
-	var to_player = Globals.player.global_position - global_position
+	var player = get_tree().get_first_node_in_group("player")
+	if not player:
+		return false
+	var to_player = player.global_position - global_position
 	var distance = to_player.length()
 	target_position = to_player.normalized() * length
 	

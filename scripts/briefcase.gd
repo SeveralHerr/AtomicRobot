@@ -10,7 +10,8 @@ var _direction: Vector2 = Vector2.LEFT
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	var start_pos = global_position
-	var target_pos = Globals.player.global_position
+	var player = get_tree().get_first_node_in_group("player")
+	var target_pos = player.global_position if player else global_position
 
 	# Calculate the distance and height difference
 	var distance_x = target_pos.x - start_pos.x

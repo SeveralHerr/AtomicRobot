@@ -18,7 +18,10 @@ func apply_shake(_randomStrength: float = 1.0, _duration: float = 1.0):
 	if is_shaking:
 		elapsed_time = 0
 		return
-	original_position = Vector2(Globals.player.camera_2d.offset)
+	var player = get_tree().get_first_node_in_group("player")
+	if not player:
+		return
+	original_position = Vector2(player.camera_2d.offset)
 	shake_strength = _randomStrength
 	shake_duration = _duration
 	elapsed_time = 0.0
@@ -30,13 +33,18 @@ func _process(delta: float) -> void:
 		
 		if elapsed_time < shake_duration - 0.8:
 			# Apply shake effect
+			var player = get_tree().get_first_node_in_group("player")
+			if not player:
+				return
 			shake_strength = lerpf(shake_strength, 0, shakeFade * delta)
-			Globals.player.camera_2d.offset.x = original_position.x + randomOffset()
-			Globals.player.camera_2d.offset.y  = original_position.y +  randomOffset()
+			player.camera_2d.offset.x = original_position.x + randomOffset()
+			player.camera_2d.offset.y  = original_position.y +  randomOffset()
 		else:
 			# Restore the original position and stop shaking
-			Globals.player.camera_2d.offset.x = original_position.x
-			Globals.player.camera_2d.offset.y  = original_position.y 
+			var player = get_tree().get_first_node_in_group("player")
+			if player:
+				player.camera_2d.offset.x = original_position.x
+				player.camera_2d.offset.y  = original_position.y 
 			is_shaking = false
 			print("ready")
 

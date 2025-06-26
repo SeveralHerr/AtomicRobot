@@ -24,9 +24,10 @@ func _setup_initial_state() -> void:
 	hide() # Start hidden
 
 func _setup_sprite_direction() -> void:
-	if not Globals.player:
+	var player = get_tree().get_first_node_in_group("player")
+	if not player:
 		return
-	var direction_to_player = (Globals.player.global_position - global_position).normalized().x
+	var direction_to_player = (player.global_position - global_position).normalized().x
 	_update_sprite_direction(direction_to_player)
 
 func trigger() -> void:

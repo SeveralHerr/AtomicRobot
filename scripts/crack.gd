@@ -20,7 +20,9 @@ func _process(_delta: float) -> void:
 	if interact_label.visible and Input.is_action_just_pressed("Interact"):
 		area_2d.body_entered.disconnect(_on_area_entered)
 		area_2d.body_exited.disconnect(_on_area_exited)
-		Globals.player.add_heart(1)
+		var player = get_tree().get_first_node_in_group("player")
+		if player:
+			player.add_heart(1)
 		interact_label.hide()
 	
 func _on_area_exited(body: Node2D) -> void:

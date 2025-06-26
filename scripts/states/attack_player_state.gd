@@ -8,7 +8,8 @@ func enter_state() -> void:
 	enemy.animated_sprite_2d.frame_changed.connect(_on_frame_changed.bind(enemy))
 	attack_finished = false
 	enemy.velocity.x = 0
-	is_player_crouched = Globals.player.state_machine.current_state is CrouchState
+	var player = enemy.get_tree().get_first_node_in_group("player")
+	is_player_crouched = player.state_machine.current_state is CrouchState
 	enemy.animated_sprite_2d.play("attack")
 	
 func exit_state() -> void:

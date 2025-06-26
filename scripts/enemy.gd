@@ -155,7 +155,7 @@ func _apply_damage(damage: int) -> void:
 		call_deferred("die")
 
 func _apply_knockback() -> void:
-	var knockback_direction = (global_position - Globals.player.global_position).normalized()
+	var knockback_direction = (global_position - player.global_position).normalized()
 	var knockback_strength = 200.0  # Increased for more noticeable effect
 	knockback_velocity = knockback_direction * knockback_strength
 	velocity.y = -50.0

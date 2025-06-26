@@ -11,7 +11,7 @@ class_name Boss
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
-@export var player: Player
+var player: Player
 
 var health: int = 3
 var direction: int = -1
@@ -25,8 +25,9 @@ var stand_still: bool = false
 
 
 func _ready() -> void:
-	node = Globals.player.get_parent()
-	position = Globals.player.boss_spawn_position.position + Globals.player.position
+	player = get_tree().get_first_node_in_group("player")
+	node = player.get_parent()
+	position = player.boss_spawn_position.position + player.position
 
 	Globals.player_death.connect(_on_player_death)
 	timer.timeout.connect(_create_bullet)
@@ -38,7 +39,7 @@ func _on_player_death() -> void:
 	#enemy_state_machine.change_state("PatrolState")
 
 func _process(delta: float) -> void:
-	dir = (Globals.player.position - position).normalized()
+	dir = (player.position - position).normalized()
 	_update_sprite_direction()
 	if not is_on_floor():
 		velocity.y += 300 * delta
@@ -50,7 +51,7 @@ func _process(delta: float) -> void:
 		return
 
 
-	var dist = position.distance_to(Globals.player.position)
+	var dist = position.distance_to(player.position)
 	if dist > 100:
 		animated_sprite_2d.play("Walk")
 		velocity.x = move_toward(velocity.x, dir.x * 50, 2009 * delta)
@@ -78,7 +79,7 @@ func receive_hit(damage: int) -> void:
 		call_deferred("queue_free")
 	
 	# Calculate knockback direction based on the player's position
-	var knockback_direction = (position - Globals.player.position).normalized()
+	var knockback_direction = (position - player.position).normalized()
 	
 	# Apply knockback force
 	var knockback_strength = 200.0  # Adjust this value as needed
@@ -88,7 +89,7 @@ func receive_hit(damage: int) -> void:
 	velocity.y = -100.0  # Adjust this value as needed for vertical knockback
 	
 func _create_bullet() -> void:
-	if Globals.player.is_dead:
+	if player.is_dead:
 		return
 
 		
@@ -101,7 +102,7 @@ func throw_coin() -> void:
 	animated_sprite_2d.animation_finished.disconnect(throw_coin)
 	for i in range(10):
 		var spawn_pos = position + coin_spawn_position.position
-		var target_pos = Globals.player.position
+		var target_pos = player.position
 		Utils.throw_coin(spawn_pos, target_pos, node)
 	animated_sprite_2d.play("Idle")
 	stand_still = false

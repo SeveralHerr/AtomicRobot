@@ -33,9 +33,10 @@ func physics_update(delta: float) -> void:
 		if enemy.timer.is_stopped():
 			enemy.timer.start()
 func _player_in_range() -> bool:
-	if not enemy or Globals.player.is_dead:
+	var player = get_tree().get_first_node_in_group("player")
+	if not enemy or not player or player.is_dead:
 		return false
-	var dist = enemy.global_position.distance_to(Globals.player.global_position)
+	var dist = enemy.global_position.distance_to(player.global_position)
 	return dist <= enemy.attack_range
 
 func _setup_timers() -> void:
@@ -73,9 +74,10 @@ func _spawn_coin_delayed() -> void:
 	enemy.animated_sprite_2d.play("idle")
 
 func _update_facing_direction() -> void:
-	if not enemy or not Globals.player:
+	var player = get_tree().get_first_node_in_group("player")
+	if not enemy or not player:
 		return
-	var direction_to_player = (Globals.player.global_position - enemy.global_position).normalized().x
+	var direction_to_player = (player.global_position - enemy.global_position).normalized().x
 	enemy._update_sprite_direction(direction_to_player)
 
 func _on_attack_ready() -> void:

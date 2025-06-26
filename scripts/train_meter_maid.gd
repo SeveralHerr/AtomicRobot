@@ -15,7 +15,8 @@ func _setup_state_machine() -> void:
 	enemy_state_machine.change_state("EnemyAttackState")
 
 func _setup_initial_state() -> void:
-	node = Globals.player.get_parent()
+	var player = get_tree().get_first_node_in_group("player")
+	node = player.get_parent()
 
 func _on_player_death() -> void:
 	# Reset to attack state when player dies

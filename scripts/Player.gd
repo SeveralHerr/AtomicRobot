@@ -75,8 +75,6 @@ func is_near_ground() -> bool:
 	return false
 var h
 func _ready() -> void:
-	print("grav, ", gravity)
-	Globals.player = self
 	state_machine = StateMachine.new(self)
 	state_machine.add_state("IdleState", IdleState.new())
 	state_machine.add_state("JumpState", JumpState.new())

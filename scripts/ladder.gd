@@ -28,9 +28,10 @@ func _change_scene() -> void:
 
 	
 func _input(event: InputEvent) -> void:
-	if event.is_action("Interact") and can_climb and Globals.player.is_on_floor():
-		Globals.player.state_machine.change_state("ClimbState")
-		Globals.player.position.x = spawn_point.position.x
+	var player = get_tree().get_first_node_in_group("player")
+	if event.is_action("Interact") and can_climb and player and player.is_on_floor():
+		player.state_machine.change_state("ClimbState")
+		player.position.x = spawn_point.position.x
 		
 func _on_exit(body: Node2D) -> void:
 	if body is Player: 
