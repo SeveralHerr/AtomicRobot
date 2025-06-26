@@ -1,7 +1,7 @@
 [gd_scene load_steps=15 format=3 uid="uid://xnc3xl36cxv"]
 
 [ext_resource type="Script" uid="uid://cjneuqcn3517v" path="res://scripts/crack.gd" id="1_elxik"]
-[ext_resource type="Texture2D" uid="uid://cq2lxw1ffcp33" path="res://Sprites/crack.png" id="1_yn26b"]
+[ext_resource type="Texture2D" uid="uid://cq2lxw1ffcp33" path="res://sprites/crack.png" id="1_yn26b"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="3_5gd2i"]
 [ext_resource type="AudioStream" uid="uid://bchxd4dbwsr28" path="res://sounds/711657__discofield__stone-crash.wav" id="4_xg7p5"]
 

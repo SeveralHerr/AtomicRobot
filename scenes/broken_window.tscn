@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://di2g4epq8sggc"]
 
 [ext_resource type="Texture2D" uid="uid://c12aaib43riwl" path="res://images/window_break.png" id="1_kp7ub"]
-[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://Sprites/Meter Maid.png" id="2_eqofk"]
+[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://sprites/Meter Maid.png" id="2_eqofk"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_r3t6l"]
 atlas = ExtResource("1_kp7ub")

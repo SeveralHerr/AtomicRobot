@@ -20,7 +20,7 @@
 [ext_resource type="Script" path="res://scripts/notification.gd" id="11_nfecv"]
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://font_variation.tres" id="11_pdi35"]
 [ext_resource type="FontVariation" uid="uid://rdj5e70hecho" path="res://new_font_variation_6.tres" id="12_meour"]
-[ext_resource type="StyleBox" uid="uid://vb5n0pdp6vf" path="res://Sprites/mobile_button_normal.tres" id="12_uujj7"]
+[ext_resource type="StyleBox" uid="uid://vb5n0pdp6vf" path="res://sprites/mobile_button_normal.tres" id="12_uujj7"]
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="13_gq4oo"]
 [ext_resource type="FontFile" uid="uid://ckvc6tgc84urj" path="res://AldotheApache.ttf" id="13_qf0uw"]
 [ext_resource type="Script" path="res://scripts/secret_sign.gd" id="13_u2sts"]
