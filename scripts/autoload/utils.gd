@@ -60,11 +60,12 @@ static func throw_coin(spawn_position: Vector2, target_position: Vector2, parent
 	var direction = (target_position - spawn_position).normalized()
 	instance.start(spawn_position, direction, use_arc)
 
-static func throw_coin_from_enemy(enemy: Node, use_arc: bool = false) -> void:
+static func throw_coin_from_enemy(enemy: Node, use_arc: bool = false, offset: int = 0) -> void:
 	if not enemy or not Globals.player:
 		return
 	var spawn_pos = enemy.global_position + enemy.coin_spawn_point.position
 	var target_pos = Globals.player.enemy_attack_position.global_position
+	target_pos.y += offset
 	throw_coin(spawn_pos, target_pos, enemy.player.get_parent(), use_arc)
 
 static func throw_coin_delayed(enemy: Node, delay: float = 0.3, use_arc: bool = false) -> void:

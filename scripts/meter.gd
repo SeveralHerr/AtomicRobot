@@ -10,8 +10,6 @@ func _ready() -> void:
 	#timer.timeout.connect(_timer)
 	pass # Replace with function body.
 	
-func _timer() -> void: 
-	Globals.meters.append(self)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

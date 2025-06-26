@@ -95,7 +95,6 @@ func is_node_destroyed(node_name: String) -> bool:
 	return destroyed_nodes.get(node_name, false)
 
 func reset() -> void:
-	selected_character = "Robot"
 	meters.clear()
 	meter_maids_killed = 0
 	player_last_position = null
