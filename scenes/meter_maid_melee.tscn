@@ -141,7 +141,7 @@ wait_time = 3.0
 material = SubResource("ShaderMaterial_engfn")
 position = Vector2(0, -6)
 sprite_frames = ExtResource("4_xinuf")
-animation = &"melee_idle"
+animation = &"melee"
 autoplay = "idle"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
