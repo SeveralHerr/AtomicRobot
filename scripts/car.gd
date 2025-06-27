@@ -1,6 +1,10 @@
 extends Node2D
 
+const CAR_BLUE = preload("res://images/new/Car_Blue.png")
+const CAR_RED = preload("res://images/new/Car_Red.png")
+
 @onready var area_2d: Area2D = $Area2D
+@onready var sprite_2d: Sprite2D = $Sprite2D
 
 var shaker: Shaker
 var start: bool = false
@@ -10,7 +14,12 @@ var current_speed
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-
+	var rand = randi_range(0, 1)
+	if rand == 1:
+		sprite_2d.texture = CAR_BLUE
+	else:
+		sprite_2d.texture = CAR_RED
+		
 	area_2d.body_entered.connect(_hit)
 	shaker = Shaker.new(self)
 	speed = randi_range(150,450)

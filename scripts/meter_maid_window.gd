@@ -1,7 +1,6 @@
 extends Enemy
 class_name MeterMaidWindow
 
-## Stationary window meter maid that attacks from buildings
 
 @onready var cpu_particles_2d: CPUParticles2D = $BrokenWindow/CPUParticles2D
 @export var is_event: bool = false

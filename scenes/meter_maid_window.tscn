@@ -5,8 +5,14 @@
 [ext_resource type="PackedScene" uid="uid://di2g4epq8sggc" path="res://scenes/broken_window.tscn" id="2_tir5r"]
 [ext_resource type="Shader" uid="uid://6j4tcu38byit" path="res://shaders/flash.gdshader" id="3_tir5r"]
 [ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://sprites/metermaid_sprite_frames.tres" id="4_6va75"]
-[ext_resource type="AudioStream" uid="uid://b55vbaakt0ib4" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_8m6mi"]
-[ext_resource type="AudioStream" uid="uid://deontu0qgstsu" path="res://sounds/glass_break.wav" id="7_tir5r"]
+[ext_resource type="AudioStream" uid="uid://ry56uulsrmpj" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_8m6mi"]
+[ext_resource type="AudioStream" uid="uid://cdasvjnc4mbka" path="res://sounds/glass_break.wav" id="7_tir5r"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_engfn"]
+resource_local_to_scene = true
+shader = ExtResource("3_tir5r")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_value = 0.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ryn0f"]
 radius = 210.002
@@ -23,12 +29,6 @@ sampling_rate = 44100.0
 packet_sequence = SubResource("OggPacketSequence_k2k1p")
 loop = true
 loop_offset = 5.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_engfn"]
-resource_local_to_scene = true
-shader = ExtResource("3_tir5r")
-shader_parameter/flash_color = Color(1, 1, 1, 1)
-shader_parameter/flash_value = 0.0
 
 [sub_resource type="Animation" id="Animation_6plkg"]
 resource_name = "Hit"
@@ -72,7 +72,15 @@ collision_layer = 4
 collision_mask = 99
 script = ExtResource("1_jidjv")
 
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_engfn")
+position = Vector2(0, -6)
+sprite_frames = ExtResource("4_6va75")
+animation = &"idle"
+autoplay = "idle"
+
 [node name="BrokenWindow" parent="." instance=ExtResource("2_tir5r")]
+show_behind_parent = true
 
 [node name="BottomWindow" parent="BrokenWindow" index="3"]
 z_index = 1
@@ -137,13 +145,6 @@ script = ExtResource("2_ryn0f")
 wait_time = 3.0
 
 [node name="CoinSpawnPoint" type="Node2D" parent="."]
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-material = SubResource("ShaderMaterial_engfn")
-position = Vector2(0, -6)
-sprite_frames = ExtResource("4_6va75")
-animation = &"idle"
-autoplay = "idle"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

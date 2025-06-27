@@ -9,6 +9,6 @@ func _ready() -> void:
 	#enemy_state_machine.add_state("ChasePlayerState", ChasePlayerState.new(self))
 	enemy_state_machine.add_state("PlatformPatrolState", PlatformPatrolState.new(self))
 	enemy_state_machine.add_state("AttackPlayerState", AttackPlayerState.new(self))
-	
+	enemy_state_machine.add_state("DeadEnemyState", DeadEnemyState.new(self))
 	enemy_state_machine.change_state("PlatformPatrolState")
 	

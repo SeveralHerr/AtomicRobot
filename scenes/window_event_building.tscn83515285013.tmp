@@ -31,14 +31,17 @@ texture = ExtResource("3_16jtx")
 [node name="MeterMaidWindow" parent="." instance=ExtResource("2_55ooh")]
 visible = false
 position = Vector2(-55, -85)
+is_event = false
 
 [node name="MeterMaidWindow2" parent="." instance=ExtResource("2_55ooh")]
 visible = false
 position = Vector2(224, 193)
+is_event = false
 
 [node name="MeterMaidWindow3" parent="." instance=ExtResource("2_55ooh")]
 visible = false
-position = Vector2(149, -85)
+position = Vector2(47, 6)
+is_event = false
 
 [node name="Collisions" type="Node2D" parent="."]
 

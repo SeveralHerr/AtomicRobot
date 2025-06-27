@@ -16,7 +16,7 @@ func exit_state() -> void:
 func update(delta: float) -> void:
 	if enemy.should_turn():
 		direction *= -1
-		enemy._handle_direction(direction * -1)
+	enemy._handle_direction(direction * -1)
 		
 	if enemy.has_state("AttackPlayerState") and (enemy.can_attack() and enemy.is_player_in_line_of_sight()):
 		enemy.enemy_state_machine.change_state("AttackPlayerState")	

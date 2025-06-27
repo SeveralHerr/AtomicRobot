@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://n5akfit43i"]
 
 [ext_resource type="Script" uid="uid://c5amjsstwbqgg" path="res://scripts/car.gd" id="1_sparu"]
-[ext_resource type="Texture2D" uid="uid://yxd6tloelilq" path="res://images/new/Car_Red.png" id="2_50v30"]
-[ext_resource type="AudioStream" uid="uid://ldr7etppdvw1" path="res://sounds/car.ogg" id="3_1d6nu"]
+[ext_resource type="Texture2D" uid="uid://br8ab7gcg3wcx" path="res://images/new/Car_Red.png" id="2_50v30"]
+[ext_resource type="AudioStream" uid="uid://dh8m8p86rnlgp" path="res://sounds/car.ogg" id="3_1d6nu"]
 
 [sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_jtldb"]
 points = PackedVector2Array(-59.1111, 24.8333, -56.3334, 1.5, -34.6667, -3.5, -23.5556, -24.6111, 19.2222, -26.2778, 31.4444, -2.38889, 44.2222, 3.72222, 44.7778, 26.5)
