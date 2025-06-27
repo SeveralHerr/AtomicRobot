@@ -1,4 +1,4 @@
-[gd_scene load_steps=86 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=84 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://too4th2nyq2s" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
@@ -49,7 +49,6 @@
 [ext_resource type="Texture2D" uid="uid://c7vqyu7iidwvg" path="res://images/new/Black_Trashcan.png" id="37_k2mcc"]
 [ext_resource type="TileSet" uid="uid://dnk1onf4fhpgp" path="res://tiles/tileset.tres" id="41_01ywe"]
 [ext_resource type="PackedScene" uid="uid://dj5v0xinrjdvu" path="res://scenes/meter.tscn" id="43_335wh"]
-[ext_resource type="PackedScene" uid="uid://bxsksxhbmge8q" path="res://scenes/meter_maid_window.tscn" id="48_64moy"]
 [ext_resource type="PackedScene" uid="uid://bxtldf7fn5fty" path="res://scenes/platform.tscn" id="48_dy54k"]
 [ext_resource type="PackedScene" uid="uid://bi5pyhjxtocqc" path="res://scenes/interactive_mailbox.tscn" id="49_7k40d"]
 [ext_resource type="Texture2D" uid="uid://hmt1akcxpo2r" path="res://images/new/Tree.png" id="51_2p6wh"]
@@ -61,7 +60,6 @@
 [ext_resource type="Texture2D" uid="uid://bi085heummtn" path="res://images/Light.png" id="57_qr2g0"]
 [ext_resource type="Script" uid="uid://dv0rbnba2864c" path="res://scripts/enemy_manager.gd" id="58_335wh"]
 [ext_resource type="Script" uid="uid://dvdcq0lhqdrnd" path="res://scripts/under_world_kill_box.gd" id="58_qr2g0"]
-[ext_resource type="PackedScene" uid="uid://ct1xv7dk5rs7y" path="res://scenes/meter_maid_melee.tscn" id="64_od4ux"]
 [ext_resource type="PackedScene" uid="uid://bw8nx2c7jvd3m" path="res://scenes/leaf_manager.tscn" id="65_brcwu"]
 [ext_resource type="PackedScene" uid="uid://dg72alaxq1lp7" path="res://scenes/scaffolding1.tscn" id="65_fw04e"]
 
@@ -545,11 +543,6 @@ flip_h = true
 
 [node name="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Tree9" index="2"]
 position = Vector2(9, 81)
-
-[node name="MeterMaidWindow" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("48_64moy")]
-visible = false
-top_level = true
-position = Vector2(3088, -107)
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="SceneItemsBackground/BuildingGroup1"]
 position = Vector2(1938, -135)
@@ -1089,9 +1082,6 @@ collision_mask = 0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UnderWorldKillBox/StaticBody2D"]
 position = Vector2(174, 0)
 shape = SubResource("RectangleShape2D_m5f86")
-
-[node name="MeterMaidMelee" parent="." instance=ExtResource("64_od4ux")]
-position = Vector2(-680, -92)
 
 [editable path="SceneItemsBackground/BuildingGroup1/Tree5"]
 [editable path="SceneItemsBackground/BuildingGroup1/Tree6"]

@@ -1,10 +1,15 @@
 extends Node
 
 const METER_MAID = preload("res://scenes/meter_maid.tscn")
-
+const METER_MAID_MELEE = preload("res://scenes/meter_maid_melee.tscn")
 
 static func spawn_enemy(parent: Node2D, player: Node2D, viewport_size: Vector2, offset: float = 50.0, force_spawn_right: bool = false) -> Node2D:
-	var enemy = METER_MAID.instantiate()
+	var enemy 
+	var rand = randi_range(0, 1)
+	if rand == 1: 
+		enemy = METER_MAID.instantiate()
+	else: 
+		enemy = METER_MAID_MELEE.instantiate()
 	parent.call_deferred("add_child",enemy)
 	
 	# Randomly choose left or right side
