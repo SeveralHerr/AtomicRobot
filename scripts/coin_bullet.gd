@@ -18,7 +18,7 @@ func start(_position: Vector2, _direction: Vector2, is_arc: bool = false) -> voi
 	# Configure physics properties for projectile behavior
 	gravity_scale = 0.55  # Reduced gravity for better projectile arc
 	mass = 0.38  # Light mass like a real coin
-	linear_damp = 1.0  # Damping to slow down movement over time
+	linear_damp = 0.7  # Damping to slow down movement over time
 	angular_damp = 2.0  # Damping to slow down rotation
 	
 	# Create physics material for bouncing
@@ -63,7 +63,7 @@ func _on_body_entered(body: Node) -> void:
 		
 		var p = PhysicsMaterial.new()
 		p.bounce = 0.1
-		p.friction = 1
+		p.friction = 0.9
 		physics_material_override = p
 		
 		# Clean up after hitting player
