@@ -1,13 +1,16 @@
-[gd_scene load_steps=14 format=4 uid="uid://ct1xv7dk5rs7y"]
+[gd_scene load_steps=15 format=4 uid="uid://ct1xv7dk5rs7y"]
 
 [ext_resource type="Script" uid="uid://b0d820x6rjder" path="res://scripts/meter_maid_melee.gd" id="1_xinuf"]
 [ext_resource type="Script" uid="uid://dsbjs54db5oe8" path="res://scripts/line_of_sight.gd" id="2_mdfou"]
 [ext_resource type="Shader" uid="uid://6j4tcu38byit" path="res://shaders/flash.gdshader" id="3_jtier"]
-[ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://sprites/metermaid_sprite_frames.tres" id="4_p2bng"]
-[ext_resource type="AudioStream" uid="uid://b55vbaakt0ib4" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_qy2r5"]
+[ext_resource type="SpriteFrames" uid="uid://duteluxbf0l40" path="res://sprites/metermaid_melee_sprite_frames.tres" id="4_xinuf"]
+[ext_resource type="AudioStream" uid="uid://ry56uulsrmpj" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_qy2r5"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xinuf"]
 radius = 36.4966
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mdfou"]
+radius = 16.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n43qx"]
 size = Vector2(32, 48)
@@ -78,6 +81,13 @@ collision_layer = 0
 position = Vector2(0, 2)
 shape = SubResource("CircleShape2D_xinuf")
 
+[node name="AttackArea" type="Area2D" parent="."]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+position = Vector2(27, -6)
+shape = SubResource("CircleShape2D_mdfou")
+
 [node name="RayCast2D_LeftDown" type="RayCast2D" parent="."]
 position = Vector2(-25, -15)
 enabled = false
@@ -120,7 +130,6 @@ debug_enabled = true
 debug_path_custom_color = Color(1, 0, 1, 1)
 
 [node name="LineOfSight" type="RayCast2D" parent="."]
-enabled = false
 target_position = Vector2(-1, 300)
 collision_mask = 97
 script = ExtResource("2_mdfou")
@@ -133,8 +142,8 @@ wait_time = 3.0
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_engfn")
 position = Vector2(0, -6)
-sprite_frames = ExtResource("4_p2bng")
-animation = &"melee"
+sprite_frames = ExtResource("4_xinuf")
+animation = &"melee_idle"
 autoplay = "idle"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -145,3 +154,10 @@ autoplay = "RESET"
 
 [node name="ReceiveHitAudio" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_qy2r5")
+
+[node name="MeterLineOfSight" type="RayCast2D" parent="."]
+enabled = false
+target_position = Vector2(-1, 300)
+collision_mask = 104
+collide_with_areas = true
+script = ExtResource("2_mdfou")

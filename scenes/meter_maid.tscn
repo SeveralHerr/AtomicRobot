@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://ga543g2ttr1b" path="res://scripts/meter_maid.gd" id="1_wr56e"]
 [ext_resource type="Shader" uid="uid://6j4tcu38byit" path="res://shaders/flash.gdshader" id="3_w8qu0"]
 [ext_resource type="Script" uid="uid://dsbjs54db5oe8" path="res://scripts/line_of_sight.gd" id="3_whrlv"]
-[ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://sprites/metermaid_sprite_frames.tres" id="4_wykn1"]
-[ext_resource type="AudioStream" uid="uid://b55vbaakt0ib4" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_5b8kh"]
+[ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://sprites/metermaid_sprite_frames.tres" id="4_5b8kh"]
+[ext_resource type="AudioStream" uid="uid://ry56uulsrmpj" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_5b8kh"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5b8kh"]
 radius = 130.0
@@ -140,11 +140,9 @@ wait_time = 3.0
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_engfn")
 position = Vector2(0, -6)
-sprite_frames = ExtResource("4_wykn1")
+sprite_frames = ExtResource("4_5b8kh")
 animation = &"attack"
 autoplay = "idle"
-frame = 10
-frame_progress = 1.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

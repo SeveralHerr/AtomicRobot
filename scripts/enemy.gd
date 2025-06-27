@@ -35,7 +35,7 @@ var coins: int = 1
 var attack_range: int = 120
 var attack_cooldown: float = 4
 var detection_range: float = 600.0
-
+var last_dir: int = -1
 # Knockback variables
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 8.0  # How fast knockback decays
@@ -85,19 +85,33 @@ func move_towards_target(target_pos: Vector2, delta: float):
 	#var direction = sign(dir.x)
 	var direction = (target_pos - global_position).normalized()
 	var target_velocity = direction * move_speed
-	_update_sprite_direction(direction.x)
+	#_update_sprite_direction(direction.x)
 	velocity.x = move_toward(velocity.x, target_velocity.x, 2000 * delta)
 	pass
 
 
 
-## Efficiently update sprite direction with early return
-func _update_sprite_direction(direction: float) -> void:
-	animated_sprite_2d.flip_h = direction < 0.0
+
 	
 func _face_player() -> void:
-	var direction = (player.global_position - global_position).normalized()
-	animated_sprite_2d.flip_h = direction.x < 0.0
+	var direction = (global_position - player.global_position ).normalized()
+	_handle_direction( direction.x  )
+	
+func _handle_direction(direction) -> void:
+	if direction:
+		if direction < 0:
+			if last_dir != -1:
+				if scale.x == -1:
+					scale.x *= -1
+					last_dir = -1
+					return
+				scale.x *= -1
+				last_dir = -1
+
+		elif direction > 0:
+			if last_dir != 1 :
+				scale.x *= -1
+				last_dir = 1
 	
 	
 func _apply_gravity(delta: float) -> void:
@@ -172,19 +186,51 @@ func _apply_knockback_decay(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0.0, 300.0 * delta)
 	
 func get_distance_to_player() -> float:
-	if player:
-		return global_position.distance_to(player.global_position)
-	return INF
+	return global_position.distance_to(player.global_position)
 
 func can_see_player() -> bool:
 	return  get_distance_to_player() <= detection_range
 
+func is_too_far() -> bool:
+	return  get_distance_to_player() >= 1500
+
 func can_see_player_threshold(threshold_multiplier: float) -> bool:
 	return get_distance_to_player() <= detection_range * threshold_multiplier
+	
+func is_the_player_in_attack_range() -> bool:
+	return is_player_in_attack_range
 	
 func has_state(state: String) -> bool:
 	return enemy_state_machine.states.has(state)
 
+
+func chase_player(delta: float) -> void: 
+	# Handle animation and movement (but don't override knockback)
+	if not is_the_player_in_attack_range()  and is_player_in_line_of_sight():
+		# Only move if not being knocked back
+		if abs(knockback_velocity.x) < 10.0:
+			move_towards_target(player.global_position, delta)
+		animated_sprite_2d.play("walk")
+	else:
+		_face_player()
+		animated_sprite_2d.play("idle")
+		# Only stop movement if not being knocked back
+		if abs(knockback_velocity.x) < 10.0:
+			velocity.x = 0	
+			
+func chase_player_melee(delta: float) -> void: 
+	# Handle animation and movement (but don't override knockback)
+	if not is_the_player_in_attack_range()  and is_player_in_line_of_sight():
+		# Only move if not being knocked back
+		if abs(knockback_velocity.x) < 10.0:
+			move_towards_target(player.global_position, delta)
+		animated_sprite_2d.play("walk")
+	else:
+		_face_player()
+		animated_sprite_2d.play("idle")
+		# Only stop movement if not being knocked back
+		if abs(knockback_velocity.x) < 10.0:
+			velocity.x = 0	
 
 func can_attack() -> bool:
 	return attack_timer.is_stopped() and is_player_in_attack_range

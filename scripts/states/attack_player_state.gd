@@ -27,6 +27,7 @@ func attack() -> void:
 	await enemy.animated_sprite_2d.animation_finished
 	enemy.animated_sprite_2d.play("idle")
 	attack_finished = true
+	
 func update(delta: float) -> void:
 	enemy._face_player()
 	if not attack_finished:

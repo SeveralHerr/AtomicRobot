@@ -10,7 +10,7 @@ func enter_state(player: Player) -> void:
 	player.attack_audio_player.play()
 	player.velocity = Vector2.ZERO
 
-	player.default_sprite.animation_finished.connect(_on_animation_finished)
+	player.default_sprite.animation_finished.connect(_on_animation_finished.bind(player))
 	
 
 func trigger_attack(player: Player)-> void:

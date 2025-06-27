@@ -1,9 +1,9 @@
 [gd_scene load_steps=10 format=3 uid="uid://dj5v0xinrjdvu"]
 
-[ext_resource type="Texture2D" uid="uid://mkmjflocyl7e" path="res://tiles/custom_tiles.png" id="1_1fymc"]
+[ext_resource type="Texture2D" uid="uid://wynitp3lsplq" path="res://tiles/custom_tiles.png" id="1_1fymc"]
 [ext_resource type="Script" uid="uid://d0nehjup8esyc" path="res://scripts/meter.gd" id="1_24d3b"]
-[ext_resource type="Texture2D" uid="uid://bebxlupbocur" path="res://images/coin.png" id="2_0gs8c"]
-[ext_resource type="Texture2D" uid="uid://dkelg2q4oskqe" path="res://images/new/Parking_Meter.png" id="3_ejre1"]
+[ext_resource type="Texture2D" uid="uid://bcgcuypcs0pl6" path="res://images/coin.png" id="2_0gs8c"]
+[ext_resource type="Texture2D" uid="uid://cwm5wohy2h7bi" path="res://images/new/Parking_Meter.png" id="3_ejre1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tuchj"]
 atlas = ExtResource("1_1fymc")

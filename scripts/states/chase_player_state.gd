@@ -20,7 +20,12 @@ func update(delta: float) -> void:
 		return
 			
 	# Handle animation and movement (but don't override knockback)
-	if not enemy.is_player_in_attack_range  and enemy.is_player_in_line_of_sight():
+	
+	if enemy.is_too_far():
+		print("enemy too far, purgiing....")
+		enemy.queue_free()
+	
+	if not enemy.is_the_player_in_attack_range()  and enemy.is_player_in_line_of_sight():
 		# Only move if not being knocked back
 		if abs(enemy.knockback_velocity.x) < 10.0:
 			enemy.move_towards_target(enemy.player.global_position, delta)

@@ -1,7 +1,7 @@
 extends EnemyState
 class_name FindMeterState
 
-const ACCELERATION = 5000.0 
+const ACCELERATION = 5000.0
 var dir: Vector2
 var meter: Meter
 var stand_still: bool = false
@@ -19,14 +19,9 @@ func enter_state() -> void:
 	return
 		
 
-
-
-
-	
 func exit_state() -> void:
 	stand_still = false
 	enemy.coin_audio_player.stop()
-
 
 
 func update(delta: float) -> void:
@@ -44,16 +39,16 @@ func update(delta: float) -> void:
 
 	if dist < 30 and enemy.coins <= 0:
 		_refill_at_meter()
-	elif dist >= 200 and not  enemy.is_meter_in_line_of_sight():
+	elif dist >= 200 and not enemy.is_meter_in_line_of_sight():
 		print("Meter too far away, replenish coins ")
-		enemy.coins += 1
+		enemy.coins += 2
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
 		return
 
 	else:
 		_move_to_meter(delta)
 	
-	enemy._update_sprite_direction(dir.x)
+	enemy._handle_direction(dir.x)
 
 func _refill_at_meter() -> void:
 	stand_still = true

@@ -28,8 +28,8 @@ func _setup_sprite_direction() -> void:
 	var player = get_tree().get_first_node_in_group("player")
 	if not player:
 		return
-	var direction_to_player = (player.global_position - global_position).normalized().x
-	_update_sprite_direction(direction_to_player)
+	#var direction_to_player = (player.global_position - global_position).normalized().x
+	#_hand(direction_to_player)
 
 func trigger() -> void:
 	"""Manually trigger the window meter maid to appear"""
