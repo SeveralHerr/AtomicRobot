@@ -50,6 +50,8 @@ func _physics_process(delta: float) -> void:
 		freeze = true
 
 func _on_body_entered(body: Node) -> void:
+	if body is not Player:
+		set_collision_mask_value(1, false)
 	if body is Player and not has_hit_player:
 		print("Coin hit player")
 		body.receive_hit(global_position, 1)

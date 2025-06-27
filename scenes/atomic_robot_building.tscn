@@ -1,11 +1,11 @@
 [gd_scene load_steps=9 format=3 uid="uid://e6jpmakf8sa0"]
 
-[ext_resource type="Texture2D" uid="uid://dax3brqylomy8" path="res://images/new/Shop.png" id="1_7jqx2"]
+[ext_resource type="Texture2D" uid="uid://cgtviyh75mvta" path="res://images/new/Shop.png" id="1_7jqx2"]
 [ext_resource type="PackedScene" uid="uid://bn6uk4y67s804" path="res://scenes/lamp.tscn" id="2_5left"]
-[ext_resource type="Texture2D" uid="uid://364i7jx70r62" path="res://images/new/Streetsign.png" id="3_lv8oj"]
+[ext_resource type="Texture2D" uid="uid://c8rlxj0dsjhdx" path="res://images/new/Streetsign.png" id="3_lv8oj"]
 [ext_resource type="PackedScene" uid="uid://dwd6lyrgrnp0h" path="res://scenes/wood_ledge.tscn" id="4_lv8oj"]
-[ext_resource type="Texture2D" uid="uid://2bgc082ojri5" path="res://images/new/chimney.png" id="5_cjlxv"]
-[ext_resource type="Texture2D" uid="uid://cr26kkqhl6qlm" path="res://images/new/vent.png" id="6_3b0um"]
+[ext_resource type="Texture2D" uid="uid://cbryv70ga0ydi" path="res://images/new/chimney.png" id="5_cjlxv"]
+[ext_resource type="Texture2D" uid="uid://dgtli3pe3bdby" path="res://images/new/vent.png" id="6_3b0um"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6vx1g"]
 size = Vector2(758, 5)
@@ -46,7 +46,7 @@ one_way_collision = true
 
 [node name="Sign" type="Sprite2D" parent="."]
 z_index = 1
-position = Vector2(191, 48)
+position = Vector2(88, 48)
 texture = ExtResource("3_lv8oj")
 
 [node name="WoodLedge" parent="." instance=ExtResource("4_lv8oj")]
