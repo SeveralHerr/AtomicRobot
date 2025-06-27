@@ -57,6 +57,10 @@ func _ready() -> void:
 	player_detection.body_entered.connect(func(body: Node2D): is_player_in_attack_range = true)
 	player_detection.body_exited.connect(func(body: Node2D): is_player_in_attack_range = false)
 	
+	Globals.player_death.connect(func(): 
+		animated_sprite_2d.play("idle")
+		set_physics_process(false)
+		set_process(false))
 	
 
 	
