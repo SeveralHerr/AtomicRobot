@@ -29,6 +29,7 @@ const RunState = preload("res://scripts/states/run_state.gd")
 @onready var jump_fx: CPUParticles2D = $JumpFx
 @onready var run_particles: CPUParticles2D = $RunParticles
 @onready var pickup_audio: AudioStreamPlayer = $PickupAudio
+@onready var land_audio: AudioStreamPlayer = $LandAudio
 
 var jump_fx_offset: float = 0
 var is_dead: bool = false
@@ -104,6 +105,7 @@ func _ready() -> void:
 	jump_audio_player.stream = current_character.get_jump_sound()
 	hurt_audio.stream = current_character.get_hit_sound()
 	attack_audio_player.stream = current_character.get_attack_sound()
+	land_audio.stream = current_character.get_land_sound()
 	Globals.event.connect(_event_started)
 	
 

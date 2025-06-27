@@ -38,7 +38,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		CharacterSounds.new(
 			preload("res://sounds/Voice_Male_V2_Jump_Mono_05.wav"),
 			preload("res://sounds/Voice_Male_V1_Hit_Short_Mono_07.wav"),
-			preload("res://sounds/Retro FootStep Grass 01.wav"),
+			preload("res://sounds/Voice_Male_V2_Jump_Mono_05.wav"),
 			preload("res://sounds/Voice_Male_V2_Attack_Short_Mono_07.wav"),
 			preload("res://sounds/lightsaber.wav")  # weapon sound
 		),
@@ -58,7 +58,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		CharacterSounds.new(
 			preload("res://sounds/Voice_Male_V2_Jump_Mono_05.wav"),
 			preload("res://sounds/Voice_Male_V1_Hit_Short_Mono_07.wav"),
-			preload("res://sounds/Retro FootStep Grass 01.wav"),
+			preload("res://sounds/Voice_Male_V2_Jump_Mono_05.wav"),
 			preload("res://sounds/Voice_Male_V2_Attack_Short_Mono_07.wav"),
 			preload("res://sounds/sword_attack.wav")  # weapon sound
 		),

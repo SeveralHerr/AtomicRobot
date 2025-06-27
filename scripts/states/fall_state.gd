@@ -17,7 +17,7 @@ func exit_state(player: Player) -> void:
 func update(player: Player, delta: float) -> void:
 	if not player.is_on_floor():
 		return
-		
+	#player.land_audio.play()
 	squash_and_stretch(player)
 	if abs(player.velocity.x) <= 0:
 		
