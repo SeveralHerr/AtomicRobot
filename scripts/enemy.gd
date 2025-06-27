@@ -29,7 +29,7 @@ var enemy_state_machine: EnemyStateMachine
 var is_player_in_attack_range: bool = false
 
 # Stats
-var health: int = 3
+var health: int = 2
 var move_speed: float = 100.0
 var coins: int = 1
 var attack_range: int = 120

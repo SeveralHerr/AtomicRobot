@@ -31,7 +31,8 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"Cody",
 		"CODY IS NOW PLAYABLE",
 		true, 
-		"Owner of Atomic Robot Tattoo",
+		"Owner of Atomic Robot Tattoo
+		+2 hp    +2 dmg",
 		preload("res://sprites/cody_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -41,13 +42,17 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/Voice_Male_V2_Attack_Short_Mono_07.wav"),
 			preload("res://sounds/lightsaber.wav")  # weapon sound
 		),
-		2  # Attack frame
+		2,  # Attack frame,
+		2, # hp
+		2 # dmg
+		
 	),
 	"Ryan": CharacterConfig.new(
 		"Ryan",
 		"RYAN IS NOW PLAYABLE",
 		true,
-		"Employee of Atomic Robot Tattoo", 
+		"Employee of Atomic Robot Tattoo
+		+3 hp    +1 dmg", 
 		preload("res://sprites/ryan_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -57,13 +62,16 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/Voice_Male_V2_Attack_Short_Mono_07.wav"),
 			preload("res://sounds/sword_attack.wav")  # weapon sound
 		),
-		3  # Attack frame
+		3,  # Attack frame
+		3, # hp
+		1 # dmg
 	),
 	"Sara": CharacterConfig.new(
 		"Sara",
 		"SARA IS NOW PLAYABLE",
 		true,
-		"Employee of Atomic Robot Tattoo",
+		"Employee of Atomic Robot Tattoo
+		+3 hp    +1 dmg", 
 		preload("res://sprites/sarah_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -73,7 +81,9 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/Voice_Female_V2_Attack_Mono_01.wav"),
 			preload("res://sounds/sword_attack.wav")  # weapon sound
 		),
-		5  # Attack frame
+		5,  # Attack frame
+		3, # hp
+		1 # dmg
 	)
 }
 
@@ -109,6 +119,9 @@ func nearest_meter(pos: Vector2) -> Node2D:
 # Character configuration helper methods
 func get_current_character() -> CharacterConfig:
 	return character_dict.get(selected_character)
+	
+func get_current_character_by_name(_name: String) -> CharacterConfig:
+	return character_dict.get(_name)
 
 func get_character_sound(character_name: String, sound_type: String) -> AudioStream:
 	var character_config = character_dict.get(character_name)

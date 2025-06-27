@@ -1,7 +1,6 @@
 extends State
 class_name AttackState
 
-const PLAYER_DAMAGE = 2
 
 func enter_state(player: Player) -> void:
 	player.default_sprite.frame_changed.connect(_on_frame_changed.bind(player))
@@ -20,7 +19,7 @@ func trigger_attack(player: Player)-> void:
 		if body is Enemy:
 			ScreenShake.apply_shake(5)
 			var dir = (player.global_position - body.global_position).normalized()
-			body.receive_hit(PLAYER_DAMAGE)
+			body.receive_hit(player.damage)
 			
 			
 	var areas = player.area_2d.get_overlapping_areas()
@@ -29,7 +28,7 @@ func trigger_attack(player: Player)-> void:
 		var parent = area.get_parent()
 		print(parent.name)
 		if area is Enemy:
-			parent.receive_hit(PLAYER_DAMAGE)
+			parent.receive_hit(player.damage)
 		elif parent is Crack: 
 			parent.receive_hit()
 			

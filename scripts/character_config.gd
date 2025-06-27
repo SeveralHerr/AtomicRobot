@@ -9,8 +9,10 @@ var sprite_frames: SpriteFrames
 var unlock_hint: String
 var sounds: CharacterSounds
 var attack_frame: int = 0  # Which frame of attack animation triggers the attack
+var starting_health: int = 3
+var starting_damage: int = 2
 
-func _init(_name: String, _unlock_text: String, _unlocked: bool, _description: String, _sprite_frames: SpriteFrames, _unlock_hint: String, _sounds: CharacterSounds, _attack_frame: int = 0) -> void:
+func _init(_name: String, _unlock_text: String, _unlocked: bool, _description: String, _sprite_frames: SpriteFrames, _unlock_hint: String, _sounds: CharacterSounds, _attack_frame: int = 0, _starting_health: int = 2, _starting_damage: int = 1) -> void:
 	character_name = _name
 	unlock_text = _unlock_text
 	unlocked = _unlocked
@@ -19,6 +21,8 @@ func _init(_name: String, _unlock_text: String, _unlocked: bool, _description: S
 	unlock_hint = _unlock_hint
 	sounds = _sounds
 	attack_frame = _attack_frame
+	starting_health = _starting_health
+	starting_damage = _starting_damage
 
 func get_character_name() -> String:
 	return character_name
@@ -61,3 +65,9 @@ func get_weapon_sound() -> AudioStream:
 
 func get_attack_frame() -> int:
 	return attack_frame
+
+func get_starting_health() -> int: 
+	return starting_health
+	
+func get_starting_damage() -> int: 
+	return starting_damage

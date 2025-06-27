@@ -33,6 +33,7 @@ const RunState = preload("res://scripts/states/run_state.gd")
 var jump_fx_offset: float = 0
 var is_dead: bool = false
 var health: int = 3
+var damage: int = 1
 var is_event_active: bool = false
 var SPEED = 170.0
 const JUMP_VELOCITY = -1250.0
@@ -74,6 +75,12 @@ func is_near_ground() -> bool:
 		return true
 	return false
 var h
+
+func _init() -> void:
+	var current_character = Globals.get_current_character()
+	health = current_character.get_starting_health()
+	damage = current_character.get_starting_damage()
+
 func _ready() -> void:
 	state_machine = StateMachine.new(self)
 	state_machine.add_state("IdleState", IdleState.new())
@@ -90,13 +97,13 @@ func _ready() -> void:
 	state_machine.change_state("IdleState")
 	jumping_streak_sprite.hide()
 	jump_fx_offset = jump_fx.position.y
-	default_sprite.sprite_frames = Globals.get_current_character().get_sprite_frames()
-	attack_audio.stream = Globals.get_current_character().get_weapon_sound()
-	jump_audio_player.stream = Globals.get_current_character().get_jump_sound()
-	hurt_audio.stream = Globals.get_current_character().get_hit_sound()
-	attack_audio_player.stream = Globals.get_current_character().get_attack_sound()
 
-
+	var current_character = Globals.get_current_character()
+	default_sprite.sprite_frames = current_character.get_sprite_frames()
+	attack_audio.stream = current_character.get_weapon_sound()
+	jump_audio_player.stream = current_character.get_jump_sound()
+	hurt_audio.stream = current_character.get_hit_sound()
+	attack_audio_player.stream = current_character.get_attack_sound()
 	Globals.event.connect(_event_started)
 	
 

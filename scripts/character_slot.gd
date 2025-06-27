@@ -40,11 +40,11 @@ func _on_press() -> void:
 
 func _on_focus() -> void:
 	texture_rect.show()
-	var focus_character = Globals.character_dict[character]
+	var focus_character = Globals.get_current_character_by_name(character)
 	var unlocked = focus_character.unlocked
 	button.disabled = !unlocked
-	character_name_label.text = focus_character.name if unlocked else "Locked"
-	character_description_label.text = focus_character.description if unlocked else focus_character.unlock_hint
+	character_name_label.text = focus_character.get_character_name() if unlocked else "Locked"
+	character_description_label.text = focus_character.get_description() if unlocked else focus_character.unlock_hint
 
 func _on_focus_exit() -> void:
 	texture_rect.hide()

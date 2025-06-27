@@ -1,21 +1,21 @@
 [gd_scene load_steps=30 format=3 uid="uid://yevc5esw132y"]
 
-[ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="1_uhull"]
+[ext_resource type="Texture2D" uid="uid://jjgsnhucqk7" path="res://images/ARTBG.png" id="1_uhull"]
 [ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://styles/font_v2.tres" id="2_m77mk"]
 [ext_resource type="Script" uid="uid://chic8djxflbae" path="res://scripts/sway.gd" id="2_oya25"]
 [ext_resource type="Script" uid="uid://6ek3ot0hh754" path="res://scripts/character_slot.gd" id="2_p1ay4"]
-[ext_resource type="Texture2D" uid="uid://dmv708vklptwo" path="res://images/ARTBot-Web-Header.png" id="3_0sghn"]
+[ext_resource type="Texture2D" uid="uid://dem26qjos8uw3" path="res://images/ARTBot-Web-Header.png" id="3_0sghn"]
 [ext_resource type="Material" uid="uid://bbeo0ug80m7w3" path="res://shaders/rays_shader_mat.tres" id="6_fqvby"]
-[ext_resource type="Texture2D" uid="uid://ww1jxoogbja4" path="res://images/backdrop.png" id="6_xmudk"]
-[ext_resource type="Texture2D" uid="uid://degiutq3ukb4w" path="res://images/Logo_small.png" id="7_0sghn"]
-[ext_resource type="Texture2D" uid="uid://bnjygxsayqp0m" path="res://images/locked.png" id="9_f0ux6"]
-[ext_resource type="Texture2D" uid="uid://cmr8elkjwdcuf" path="res://sprites/Cody2.png" id="9_pj2qx"]
-[ext_resource type="Texture2D" uid="uid://c2hqjpgo48hjx" path="res://sprites/Ryan2.png" id="11_qokh3"]
-[ext_resource type="Texture2D" uid="uid://b5cx35js3wwmv" path="res://sprites/sarah_idle.png" id="12_ckm5t"]
+[ext_resource type="Texture2D" uid="uid://dbl34cmjyt1np" path="res://images/backdrop.png" id="6_xmudk"]
+[ext_resource type="Texture2D" uid="uid://bsli4eqs51a0q" path="res://images/Logo_small.png" id="7_0sghn"]
+[ext_resource type="Texture2D" uid="uid://vsnwk4lbip0v" path="res://images/locked.png" id="9_f0ux6"]
+[ext_resource type="Texture2D" uid="uid://t4sxav2nl58h" path="res://sprites/Cody2.png" id="9_pj2qx"]
+[ext_resource type="Texture2D" uid="uid://c63uey2vxpqfq" path="res://sprites/Ryan2.png" id="11_qokh3"]
+[ext_resource type="Texture2D" uid="uid://cb5kofkk6a7wm" path="res://sprites/sarah_idle.png" id="12_ckm5t"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="12_qokh3"]
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="14_pj2qx"]
-[ext_resource type="Texture2D" uid="uid://bh61iiq15jejg" path="res://images/check_square_grey_checkmark.png" id="15_ckm5t"]
-[ext_resource type="Texture2D" uid="uid://tr5mt6lm8paj" path="res://images/check_square_grey.png" id="16_qgi8m"]
+[ext_resource type="Texture2D" uid="uid://bx86hxhc0wrbf" path="res://images/check_square_grey_checkmark.png" id="15_ckm5t"]
+[ext_resource type="Texture2D" uid="uid://nuqkkqejgfby" path="res://images/check_square_grey.png" id="16_qgi8m"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yxv22"]
 texture = ExtResource("7_0sghn")
@@ -357,23 +357,21 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel3" type="Panel" parent="MarginContainer/VBoxContainer"]
+visible = false
 self_modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 
 [node name="CharacterNameLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 99)
 layout_mode = 2
 text = "Cody"
 label_settings = SubResource("LabelSettings_c5qsv")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Panel4" type="Panel" parent="MarginContainer/VBoxContainer"]
-self_modulate = Color(1, 1, 1, 0)
-custom_minimum_size = Vector2(100, 25)
-layout_mode = 2
-
 [node name="CharacterDescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
 text = "something something  test
 testtest i ftest;da"
