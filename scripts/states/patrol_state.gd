@@ -22,14 +22,9 @@ func update(delta: float) -> void:
 	turn_cooldown -= delta
 	
 	# Only check for turning if cooldown has expired
-	if turn_cooldown <= 0.0 and _should_turn():
+	if turn_cooldown <= 0.0 and (enemy.should_turn() or enemy.is_near_edge()):
 		direction *= -1
 		turn_cooldown = turn_cooldown_duration  # Reset cooldown
 
 	enemy.animated_sprite_2d.play("walk")
 	enemy.move_towards_target(enemy.global_position + Vector2(direction, 0), delta)
-
-
-func _should_turn() -> bool:
-	# Check for wall collisions
-	return enemy.ray_cast_2d_left_wall.is_colliding() or enemy.ray_cast_2d_right_wall.is_colliding() or randi_range(0, 130) == 2

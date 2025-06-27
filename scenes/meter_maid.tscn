@@ -80,8 +80,7 @@ shape = SubResource("CircleShape2D_5b8kh")
 
 [node name="RayCast2D_LeftDown" type="RayCast2D" parent="."]
 position = Vector2(-25, -15)
-enabled = false
-collision_mask = 66
+collision_mask = 34
 
 [node name="RayCast2D_LeftWall" type="RayCast2D" parent="."]
 position = Vector2(0, 7)
@@ -92,8 +91,7 @@ collide_with_areas = true
 
 [node name="RayCast2D_RightDown" type="RayCast2D" parent="."]
 position = Vector2(27, -15)
-enabled = false
-collision_mask = 66
+collision_mask = 34
 
 [node name="RayCast2D_RightWall" type="RayCast2D" parent="."]
 position = Vector2(5, 7)

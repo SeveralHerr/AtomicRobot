@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bttbaymvxp2ts"]
 
-[ext_resource type="Texture2D" uid="uid://bwxg327x1l0ls" path="res://images/crate2.png" id="1_8h41p"]
+[ext_resource type="Texture2D" uid="uid://ccp50bmgntltd" path="res://images/crate2.png" id="1_8h41p"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fdh13"]
 size = Vector2(32, 30)
@@ -11,7 +11,7 @@ size = Vector2(32, 30)
 texture = ExtResource("1_8h41p")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
-collision_layer = 2
+collision_layer = 64
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]

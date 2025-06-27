@@ -1,4 +1,4 @@
-[gd_scene load_steps=84 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=85 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://too4th2nyq2s" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
@@ -54,6 +54,7 @@
 [ext_resource type="Texture2D" uid="uid://hmt1akcxpo2r" path="res://images/new/Tree.png" id="51_2p6wh"]
 [ext_resource type="Texture2D" uid="uid://vrlenx4kmmvl" path="res://images/crate.png" id="51_64moy"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="51_k4pk8"]
+[ext_resource type="PackedScene" uid="uid://dop1x6rd1qr7k" path="res://scenes/meter_maid_platform.tscn" id="53_ro3en"]
 [ext_resource type="PackedScene" uid="uid://d4hesyanxo8l" path="res://scenes/atomic_robot_building_group.tscn" id="54_2yfl3"]
 [ext_resource type="PackedScene" uid="uid://xnc3xl36cxv" path="res://scenes/crack.tscn" id="55_wvjmt"]
 [ext_resource type="Shader" uid="uid://b3nk82nwgcmxy" path="res://shaders/water.gdshader" id="56_fndef"]
@@ -946,6 +947,9 @@ position = Vector2(1494, -25)
 
 [node name="AtomicBuildingGroup" parent="SceneItemsBackground/AtomicRobotBuildingGroup" instance=ExtResource("54_2yfl3")]
 position = Vector2(-258, -97)
+
+[node name="MeterMaid" parent="SceneItemsBackground/AtomicRobotBuildingGroup" instance=ExtResource("53_ro3en")]
+position = Vector2(-405, -259)
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false

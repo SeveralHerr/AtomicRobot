@@ -39,7 +39,8 @@ var last_dir: int = -1
 # Knockback variables
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 8.0  # How fast knockback decays
-
+var turn_cooldown: float = 0.0
+var turn_cooldown_duration: float = 0.5
 
 
 # Runtime data
@@ -63,6 +64,8 @@ func _physics_process(delta: float) -> void:
 	_apply_gravity(delta)
 	_apply_knockback_decay(delta)
 	enemy_state_machine.update(delta)
+	turn_cooldown -= delta
+	
 
 	move_and_slide()
 
@@ -90,7 +93,14 @@ func move_towards_target(target_pos: Vector2, delta: float):
 	pass
 
 
+func is_near_edge() -> bool:
+	# Check for wall collisions
+	return not ray_cast_2d_left_down.is_colliding() or not ray_cast_2d_right_down.is_colliding()
 
+
+func is_near_wall() -> bool:
+	# Check for wall collisions
+	return ray_cast_2d_left_wall.is_colliding() or ray_cast_2d_right_wall.is_colliding()
 
 	
 func _face_player() -> void:
@@ -147,6 +157,14 @@ func die() -> void:
 	# Wait for blinking to finish, then free the self
 	await tween.finished
 	queue_free()	
+
+func should_turn() -> bool: 
+	# Only check for turning if cooldown has expired
+	if turn_cooldown <= 0.0 and (is_near_wall() or is_near_edge()):
+		_handle_direction(last_dir * -1)
+		turn_cooldown = turn_cooldown_duration  # Reset cooldown
+		return true
+	return false
 
 
 func receive_hit(damage: int) -> void:

@@ -1,16 +1,13 @@
-[gd_scene load_steps=15 format=4 uid="uid://ct1xv7dk5rs7y"]
+[gd_scene load_steps=14 format=4 uid="uid://dop1x6rd1qr7k"]
 
-[ext_resource type="Script" uid="uid://b0d820x6rjder" path="res://scripts/meter_maid_melee.gd" id="1_xinuf"]
-[ext_resource type="Script" uid="uid://dsbjs54db5oe8" path="res://scripts/line_of_sight.gd" id="2_mdfou"]
-[ext_resource type="Shader" uid="uid://6j4tcu38byit" path="res://shaders/flash.gdshader" id="3_jtier"]
-[ext_resource type="SpriteFrames" uid="uid://duteluxbf0l40" path="res://sprites/metermaid_melee_sprite_frames.tres" id="4_xinuf"]
-[ext_resource type="AudioStream" uid="uid://ry56uulsrmpj" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_qy2r5"]
+[ext_resource type="Script" uid="uid://knd66vfk5t6c" path="res://scripts/meter_maid_platform_patrol.gd" id="1_2bmn7"]
+[ext_resource type="Script" uid="uid://dsbjs54db5oe8" path="res://scripts/line_of_sight.gd" id="2_txw4m"]
+[ext_resource type="Shader" uid="uid://6j4tcu38byit" path="res://shaders/flash.gdshader" id="3_0nofd"]
+[ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://sprites/metermaid_sprite_frames.tres" id="4_vdeqb"]
+[ext_resource type="AudioStream" uid="uid://ry56uulsrmpj" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_xef4f"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_xinuf"]
-radius = 36.4966
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_mdfou"]
-radius = 16.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_5b8kh"]
+radius = 130.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n43qx"]
 size = Vector2(32, 48)
@@ -27,7 +24,7 @@ loop_offset = 5.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_engfn"]
 resource_local_to_scene = true
-shader = ExtResource("3_jtier")
+shader = ExtResource("3_0nofd")
 shader_parameter/flash_color = Color(1, 1, 1, 1)
 shader_parameter/flash_value = 0.0
 
@@ -68,25 +65,18 @@ _data = {
 &"RESET": SubResource("Animation_av1nj")
 }
 
-[node name="MeterMaidMelee" type="CharacterBody2D"]
+[node name="MeterMaid" type="CharacterBody2D"]
 top_level = true
 collision_layer = 4
 collision_mask = 98
-script = ExtResource("1_xinuf")
+script = ExtResource("1_2bmn7")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(0, 2)
-shape = SubResource("CircleShape2D_xinuf")
-
-[node name="AttackArea" type="Area2D" parent="."]
-collision_layer = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
-position = Vector2(27, -6)
-shape = SubResource("CircleShape2D_mdfou")
+shape = SubResource("CircleShape2D_5b8kh")
 
 [node name="RayCast2D_LeftDown" type="RayCast2D" parent="."]
 position = Vector2(-25, -15)
@@ -128,9 +118,17 @@ debug_enabled = true
 debug_path_custom_color = Color(1, 0, 1, 1)
 
 [node name="LineOfSight" type="RayCast2D" parent="."]
-target_position = Vector2(-1, 300)
+enabled = false
+target_position = Vector2(-1, 450)
 collision_mask = 97
-script = ExtResource("2_mdfou")
+script = ExtResource("2_txw4m")
+
+[node name="MeterLineOfSight" type="RayCast2D" parent="."]
+enabled = false
+target_position = Vector2(-1, 300)
+collision_mask = 104
+collide_with_areas = true
+script = ExtResource("2_txw4m")
 
 [node name="RangeTimer" type="Timer" parent="."]
 wait_time = 3.0
@@ -140,22 +138,15 @@ wait_time = 3.0
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_engfn")
 position = Vector2(0, -6)
-sprite_frames = ExtResource("4_xinuf")
-animation = &"melee_idle"
+sprite_frames = ExtResource("4_vdeqb")
+animation = &"attack"
 autoplay = "idle"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_8l5a7")
 }
-autoplay = "RESET"
 
 [node name="ReceiveHitAudio" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("5_qy2r5")
-
-[node name="MeterLineOfSight" type="RayCast2D" parent="."]
-enabled = false
-target_position = Vector2(-1, 300)
-collision_mask = 104
-collide_with_areas = true
-script = ExtResource("2_mdfou")
+stream = ExtResource("5_xef4f")
+volume_db = -6.239

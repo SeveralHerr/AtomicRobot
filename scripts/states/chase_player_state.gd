@@ -25,7 +25,7 @@ func update(delta: float) -> void:
 		print("enemy too far, purgiing....")
 		enemy.queue_free()
 	
-	if not enemy.is_the_player_in_attack_range()  and enemy.is_player_in_line_of_sight():
+	if not enemy.is_the_player_in_attack_range()  and enemy.is_player_in_line_of_sight() and not enemy.is_near_edge():
 		# Only move if not being knocked back
 		if abs(enemy.knockback_velocity.x) < 10.0:
 			enemy.move_towards_target(enemy.player.global_position, delta)

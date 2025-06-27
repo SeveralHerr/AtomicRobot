@@ -32,6 +32,11 @@ func update(delta: float) -> void:
 	enemy._face_player()
 	if not attack_finished:
 		return
+		
+	if enemy.has_state("PlatformPatrolState"):
+		enemy.enemy_state_machine.change_state("PlatformPatrolState")
+		return
+		
 	if enemy.has_state("FindMeterState") and enemy.coins <= 0:
 		enemy.enemy_state_machine.change_state("FindMeterState")
 		return		
