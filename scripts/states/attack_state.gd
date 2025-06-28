@@ -17,14 +17,14 @@ func trigger_attack(player: Player)-> void:
 	var bodies = player.area_2d.get_overlapping_bodies()
 	for body in bodies:
 		if body is Enemy:
-			ScreenShake.apply_shake(5)
+			ScreenShake.apply_shake(7)
 			var dir = (player.global_position - body.global_position).normalized()
 			body.receive_hit(player.damage)
 			
 			
 	var areas = player.area_2d.get_overlapping_areas()
 	for area in areas:
-		ScreenShake.apply_shake(5)
+		ScreenShake.apply_shake(7)
 		var parent = area.get_parent()
 		print(parent.name)
 		if area is Enemy:

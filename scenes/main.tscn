@@ -1070,6 +1070,9 @@ position = Vector2(-293, -23)
 frame = 1
 frame_progress = 0.0
 
+[node name="JumpingStreakSprite" parent="Player" index="7"]
+position = Vector2(0, 44)
+
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 visible = false
 modulate = Color(0.271682, 0.271682, 0.271682, 1)

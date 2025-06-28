@@ -32,10 +32,6 @@ texture = ExtResource("3_16jtx")
 visible = false
 position = Vector2(-55, -85)
 
-[node name="MeterMaidWindow2" parent="." instance=ExtResource("2_55ooh")]
-visible = false
-position = Vector2(224, 193)
-
 [node name="MeterMaidWindow3" parent="." instance=ExtResource("2_55ooh")]
 visible = false
 position = Vector2(149, -85)

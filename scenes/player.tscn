@@ -10,7 +10,7 @@
 [ext_resource type="AudioStream" uid="uid://cjdlt2gywxnpn" path="res://sounds/lightsaber.wav" id="8_smehm"]
 [ext_resource type="AudioStream" uid="uid://bqqnkr73hsf0v" path="res://sounds/422762__kierankeegan__footsteps_stone_4.wav" id="9_ur7pv"]
 [ext_resource type="AudioStream" uid="uid://c1o4g0qfxouyt" path="res://sounds/515624__mrickey13__playerhurt2.wav" id="10_y4r1p"]
-[ext_resource type="Script" uid="uid://xo4s2my0m1b7" path="res://scripts/run_particles.gd" id="12_3v2ag"]
+[ext_resource type="Script" path="res://scripts/run_particles.gd" id="12_3v2ag"]
 [ext_resource type="AudioStream" uid="uid://cdpyidiydmygd" path="res://sounds/power_up.wav" id="12_jej6c"]
 
 [sub_resource type="Shader" id="Shader_27hpx"]
@@ -162,7 +162,7 @@ offset = Vector2(0, -33.19)
 [node name="Area2D" type="Area2D" parent="."]
 position = Vector2(0, 20)
 collision_layer = 0
-collision_mask = 140
+collision_mask = 652
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]

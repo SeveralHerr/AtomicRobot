@@ -95,6 +95,9 @@ Run={
 2d_physics/layer_6="Platforms"
 2d_physics/layer_7="wall"
 2d_physics/layer_8="Leaf"
+2d_physics/layer_9="coin"
+2d_physics/layer_10="melee_enemy"
+2d_physics/layer_11="enemy_overlap"
 
 [rendering]
 

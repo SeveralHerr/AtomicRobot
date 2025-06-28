@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=4 uid="uid://d4hesyanxo8l"]
+[gd_scene load_steps=36 format=4 uid="uid://d4hesyanxo8l"]
 
 [ext_resource type="Texture2D" uid="uid://ditm4c2uiiiss" path="res://images/new/Background_Bushes.png" id="1_j1q5a"]
 [ext_resource type="Texture2D" uid="uid://dleqjpxk6chya" path="res://images/new/Background_bush2.png" id="2_bb4wt"]
@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://dj5v0xinrjdvu" path="res://scenes/meter.tscn" id="14_wlkfp"]
 [ext_resource type="PackedScene" uid="uid://qijrchhej6f6" path="res://scenes/atomic_heart_pickup.tscn" id="15_bb4wt"]
 [ext_resource type="PackedScene" uid="uid://yomdf011c10y" path="res://scenes/window_event_building.tscn" id="15_lk56p"]
+[ext_resource type="Texture2D" uid="uid://br8ab7gcg3wcx" path="res://images/new/Car_Red.png" id="16_j0y8s"]
 [ext_resource type="Texture2D" uid="uid://cn5l1q8yw2bwu" path="res://images/new/Blue_Trashcan.png" id="16_vt8m3"]
 [ext_resource type="PackedScene" uid="uid://bn6uk4y67s804" path="res://scenes/lamp.tscn" id="17_6rwn7"]
 [ext_resource type="PackedScene" uid="uid://xnc3xl36cxv" path="res://scenes/crack.tscn" id="18_nf1n6"]
@@ -300,6 +301,11 @@ position = Vector2(-654, 68)
 
 [node name="AtomicHeartPickup" parent="LeftBuilding" instance=ExtResource("15_bb4wt")]
 position = Vector2(-1152, 71)
+
+[node name="Car" type="Sprite2D" parent="LeftBuilding"]
+z_index = 2
+position = Vector2(1542, 90)
+texture = ExtResource("16_j0y8s")
 
 [node name="WindowEventBuilding" parent="." instance=ExtResource("15_lk56p")]
 position = Vector2(852, -208)

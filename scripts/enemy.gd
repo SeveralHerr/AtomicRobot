@@ -137,6 +137,7 @@ func _apply_gravity(delta: float) -> void:
 
 func die() -> void:
 	set_collision_mask_value(3, false )
+	set_collision_mask_value(10, false )
 	velocity = Vector2.ZERO
 	Globals.meter_maids_killed += 1
 	Globals.meter_maid_death.emit()
