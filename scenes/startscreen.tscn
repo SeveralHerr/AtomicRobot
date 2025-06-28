@@ -1,10 +1,10 @@
 [gd_scene load_steps=8 format=3 uid="uid://cpy1hjrs74exh"]
 
 [ext_resource type="Script" uid="uid://b83abuljn111m" path="res://scripts/startscreen.gd" id="1_kmkkq"]
-[ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="2_nsuis"]
+[ext_resource type="Texture2D" uid="uid://jjgsnhucqk7" path="res://images/ARTBG.png" id="2_nsuis"]
 [ext_resource type="Script" uid="uid://chic8djxflbae" path="res://scripts/sway.gd" id="3_dovlk"]
-[ext_resource type="Texture2D" uid="uid://54wohi1aav3k" path="res://images/ART-Mobile-logo (1).png" id="4_l106y"]
-[ext_resource type="FontFile" uid="uid://bfxvyxd0g1s31" path="res://styles/KomikaTitlePaint-D3x.ttf" id="5_7nbyq"]
+[ext_resource type="Texture2D" uid="uid://ckjkhxmr7gcw2" path="res://images/ART-Mobile-logo (1).png" id="4_l106y"]
+[ext_resource type="FontFile" uid="uid://dwhttvy37ixvt" path="res://styles/KomikaTitlePaint-D3x.ttf" id="5_7nbyq"]
 
 [sub_resource type="FontVariation" id="FontVariation_qt0oh"]
 base_font = ExtResource("5_7nbyq")

@@ -1,18 +1,34 @@
-[gd_scene load_steps=16 format=4 uid="uid://bxsksxhbmge8q"]
+[gd_scene load_steps=20 format=4 uid="uid://bxsksxhbmge8q"]
 
 [ext_resource type="Script" uid="uid://c5seb14eot5lp" path="res://scripts/meter_maid_window.gd" id="1_jidjv"]
 [ext_resource type="Script" uid="uid://dsbjs54db5oe8" path="res://scripts/line_of_sight.gd" id="2_ryn0f"]
-[ext_resource type="PackedScene" uid="uid://di2g4epq8sggc" path="res://scenes/broken_window.tscn" id="2_tir5r"]
+[ext_resource type="Texture2D" uid="uid://crc41rfwkmwf2" path="res://images/window_break.png" id="2_tir5r"]
 [ext_resource type="Shader" uid="uid://6j4tcu38byit" path="res://shaders/flash.gdshader" id="3_tir5r"]
 [ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://sprites/metermaid_sprite_frames.tres" id="4_6va75"]
 [ext_resource type="AudioStream" uid="uid://ry56uulsrmpj" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_8m6mi"]
 [ext_resource type="AudioStream" uid="uid://cdasvjnc4mbka" path="res://sounds/glass_break.wav" id="7_tir5r"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6va75"]
+atlas = ExtResource("2_tir5r")
+region = Rect2(0, 0, 59, 58)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8m6mi"]
+atlas = ExtResource("2_tir5r")
+region = Rect2(62, 0, 60, 55)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_engfn"]
 resource_local_to_scene = true
 shader = ExtResource("3_tir5r")
 shader_parameter/flash_color = Color(1, 1, 1, 1)
 shader_parameter/flash_value = 0.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6pl3l"]
+atlas = ExtResource("2_tir5r")
+region = Rect2(125, 46, 60, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lr2ga"]
+atlas = ExtResource("2_tir5r")
+region = Rect2(190, 25, 13, 22)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ryn0f"]
 radius = 210.002
@@ -72,6 +88,14 @@ collision_layer = 4
 collision_mask = 99
 script = ExtResource("1_jidjv")
 
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(0, -0.5)
+texture = SubResource("AtlasTexture_6va75")
+
+[node name="TopWindow" type="Sprite2D" parent="."]
+position = Vector2(0, -3.5)
+texture = SubResource("AtlasTexture_8m6mi")
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_engfn")
 position = Vector2(0, -6)
@@ -79,20 +103,30 @@ sprite_frames = ExtResource("4_6va75")
 animation = &"idle"
 autoplay = "idle"
 
-[node name="BrokenWindow" parent="." instance=ExtResource("2_tir5r")]
-show_behind_parent = true
+[node name="BottomWindow" type="Sprite2D" parent="."]
+position = Vector2(0, 21.5)
+texture = SubResource("AtlasTexture_6pl3l")
 
-[node name="BottomWindow" parent="BrokenWindow" index="3"]
-z_index = 1
-
-[node name="CPUParticles2D" parent="BrokenWindow" index="4"]
-z_index = 1
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 14
+texture = SubResource("AtlasTexture_lr2ga")
+emission_shape = 1
+emission_sphere_radius = 20.0
+direction = Vector2(0, -1)
+gravity = Vector2(0, 400)
+initial_velocity_min = 44.0
+initial_velocity_max = 44.0
+angular_velocity_max = 297.96
+scale_amount_min = 0.4
+scale_amount_max = 1.5
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 4
 collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+z_index = -1
 position = Vector2(0, 2)
 shape = SubResource("CircleShape2D_ryn0f")
 
@@ -123,6 +157,7 @@ wait_time = 2.0
 one_shot = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+z_index = -1
 position = Vector2(0, 2)
 shape = SubResource("RectangleShape2D_n43qx")
 
@@ -157,5 +192,3 @@ stream = ExtResource("5_8m6mi")
 [node name="GlassBreakAudio" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_tir5r")
 volume_db = 12.284
-
-[editable path="BrokenWindow"]

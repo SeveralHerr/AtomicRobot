@@ -1,7 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://di2g4epq8sggc"]
+[gd_scene load_steps=6 format=3 uid="uid://di2g4epq8sggc"]
 
 [ext_resource type="Texture2D" uid="uid://crc41rfwkmwf2" path="res://images/window_break.png" id="1_kp7ub"]
-[ext_resource type="Texture2D" uid="uid://dkagwsaapsh85" path="res://sprites/Meter Maid.png" id="2_eqofk"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_r3t6l"]
 atlas = ExtResource("1_kp7ub")
@@ -10,10 +9,6 @@ region = Rect2(0, 0, 59, 58)
 [sub_resource type="AtlasTexture" id="AtlasTexture_lqxer"]
 atlas = ExtResource("1_kp7ub")
 region = Rect2(62, 0, 60, 55)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_63y1g"]
-atlas = ExtResource("2_eqofk")
-region = Rect2(48, 50, 37, 59)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_61l77"]
 atlas = ExtResource("1_kp7ub")
@@ -32,11 +27,6 @@ texture = SubResource("AtlasTexture_r3t6l")
 [node name="TopWindow" type="Sprite2D" parent="."]
 position = Vector2(0, -3.5)
 texture = SubResource("AtlasTexture_lqxer")
-
-[node name="MM" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(1, -1)
-texture = SubResource("AtlasTexture_63y1g")
 
 [node name="BottomWindow" type="Sprite2D" parent="."]
 position = Vector2(0, 21.5)

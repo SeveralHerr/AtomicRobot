@@ -24,7 +24,7 @@ var enemy_state_machine: EnemyStateMachine
 @onready var line_of_sight: LineOfSight = $LineOfSight
 @onready var meter_line_of_sight: LineOfSight = $MeterLineOfSight
 
-
+@export var persist: bool = false
 
 var is_player_in_attack_range: bool = false
 
@@ -62,7 +62,10 @@ func _ready() -> void:
 		set_physics_process(false)
 		set_process(false))
 	
-
+func _process(delta: float) -> void:
+	if is_too_far() and not persist:
+		print("enemy too far, purgiing....")
+		queue_free()
 	
 func _physics_process(delta: float) -> void:
 	_apply_gravity(delta)
@@ -133,6 +136,7 @@ func _apply_gravity(delta: float) -> void:
 		velocity.y += 300 * delta
 
 func die() -> void:
+	set_collision_mask_value(3, false )
 	velocity = Vector2.ZERO
 	Globals.meter_maids_killed += 1
 	Globals.meter_maid_death.emit()
@@ -177,11 +181,15 @@ func receive_hit(damage: int) -> void:
 	_apply_knockback()
 	
 	if health <= 0 and has_state("DeadEnemyState"):
+		var random_delay = randf_range(0, 0.2)
+		await get_tree().create_timer(random_delay).timeout
 		enemy_state_machine.change_state("DeadEnemyState")
 
 func _play_hit_effects() -> void:
 	if animation_player.is_playing():
 		animation_player.stop()
+	var random_delay = randf_range(0, 0.2)
+	await get_tree().create_timer(random_delay).timeout
 	animation_player.play("Hit")
 	receive_hit_audio.play()
 

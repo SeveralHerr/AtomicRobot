@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cqts8pn5pcvnf"]
 
 [ext_resource type="Script" uid="uid://bpyb2rrsicttv" path="res://scripts/leaf.gd" id="1_33eer"]
-[ext_resource type="Texture2D" uid="uid://o5ontfriiuc4" path="res://images/new/leaf2.png" id="2_33eer"]
+[ext_resource type="Texture2D" uid="uid://bfo0obn1ouw32" path="res://images/new/leaf2.png" id="2_33eer"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_33eer"]
 size = Vector2(2, 4)

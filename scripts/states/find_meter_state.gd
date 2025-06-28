@@ -36,7 +36,7 @@ func update(delta: float) -> void:
 	var dist = enemy.global_position.distance_to(meter.global_position)
 	dir = (meter.global_position - enemy.global_position).normalized()
 	
-
+	enemy._handle_direction(dir.x)
 	if dist < 30 and enemy.coins <= 0:
 		_refill_at_meter()
 	elif dist >= 200 and not enemy.is_meter_in_line_of_sight():
@@ -48,7 +48,7 @@ func update(delta: float) -> void:
 	else:
 		_move_to_meter(delta)
 	
-	enemy._handle_direction(dir.x)
+
 
 func _refill_at_meter() -> void:
 	stand_still = true

@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://c86dda1gnhixs"]
 
 [ext_resource type="Material" uid="uid://bdaa2m466o4m2" path="res://shaders/tree_shader.tres" id="1_qd6xs"]
-[ext_resource type="Texture2D" uid="uid://b7c3ulm6ps4bi" path="res://images/new/Tree.png" id="2_ake3r"]
+[ext_resource type="Texture2D" uid="uid://hmt1akcxpo2r" path="res://images/new/Tree.png" id="2_ake3r"]
 [ext_resource type="Script" uid="uid://bba7sf7x7u3kk" path="res://scripts/tree.gd" id="3_18mvg"]
-[ext_resource type="Texture2D" uid="uid://b3qbng565i6ss" path="res://images/new/leaf.png" id="4_dmmp0"]
-[ext_resource type="Texture2D" uid="uid://b6sp6fstgl30b" path="res://images/new/Curb_white.png" id="5_ake3r"]
+[ext_resource type="Texture2D" uid="uid://chyofcbcwuo8p" path="res://images/new/leaf.png" id="4_dmmp0"]
+[ext_resource type="Texture2D" uid="uid://bwg4t474aqs0r" path="res://images/new/Curb_white.png" id="5_ake3r"]
 
 [node name="Tree" type="Sprite2D"]
 z_index = 1

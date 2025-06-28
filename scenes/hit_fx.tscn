@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://d1u1epaft6bri"]
 
-[ext_resource type="Texture2D" uid="uid://bt66lcvg51yxy" path="res://images/hit.png" id="1_bpp0j"]
+[ext_resource type="Texture2D" uid="uid://b1hs2p0rmbyu3" path="res://images/hit.png" id="1_bpp0j"]
 [ext_resource type="Script" uid="uid://d1odkvwy3oc35" path="res://scripts/hit_fx.gd" id="2_03tr3"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_b8bno"]

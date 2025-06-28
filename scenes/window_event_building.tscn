@@ -91,7 +91,7 @@ position = Vector2(-251, -35)
 position = Vector2(-251, -99)
 
 [node name="Area2D" type="Area2D" parent="."]
-position = Vector2(-157, 284)
+position = Vector2(-325, 284)
 collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]

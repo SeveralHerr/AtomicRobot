@@ -1,4 +1,4 @@
-[gd_scene load_steps=85 format=4 uid="uid://d2jsdjdehljbp"]
+[gd_scene load_steps=88 format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://too4th2nyq2s" path="res://images/new/Sky.png" id="1_haqju"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
@@ -48,7 +48,9 @@
 [ext_resource type="Shader" uid="uid://fc8uls4asel3" path="res://shaders/sway.gdshader" id="37_2p6wh"]
 [ext_resource type="Texture2D" uid="uid://c7vqyu7iidwvg" path="res://images/new/Black_Trashcan.png" id="37_k2mcc"]
 [ext_resource type="TileSet" uid="uid://dnk1onf4fhpgp" path="res://tiles/tileset.tres" id="41_01ywe"]
+[ext_resource type="PackedScene" uid="uid://qijrchhej6f6" path="res://scenes/atomic_heart_pickup.tscn" id="42_od4ux"]
 [ext_resource type="PackedScene" uid="uid://dj5v0xinrjdvu" path="res://scenes/meter.tscn" id="43_335wh"]
+[ext_resource type="Texture2D" uid="uid://dwwp5m8heut68" path="res://images/new/Car_Blue.png" id="44_1epgm"]
 [ext_resource type="PackedScene" uid="uid://bxtldf7fn5fty" path="res://scenes/platform.tscn" id="48_dy54k"]
 [ext_resource type="PackedScene" uid="uid://bi5pyhjxtocqc" path="res://scenes/interactive_mailbox.tscn" id="49_7k40d"]
 [ext_resource type="Texture2D" uid="uid://hmt1akcxpo2r" path="res://images/new/Tree.png" id="51_2p6wh"]
@@ -61,6 +63,7 @@
 [ext_resource type="Texture2D" uid="uid://bi085heummtn" path="res://images/Light.png" id="57_qr2g0"]
 [ext_resource type="Script" uid="uid://dv0rbnba2864c" path="res://scripts/enemy_manager.gd" id="58_335wh"]
 [ext_resource type="Script" uid="uid://dvdcq0lhqdrnd" path="res://scripts/under_world_kill_box.gd" id="58_qr2g0"]
+[ext_resource type="PackedScene" uid="uid://ct1xv7dk5rs7y" path="res://scenes/meter_maid_melee.tscn" id="64_od4ux"]
 [ext_resource type="PackedScene" uid="uid://bw8nx2c7jvd3m" path="res://scenes/leaf_manager.tscn" id="65_brcwu"]
 [ext_resource type="PackedScene" uid="uid://dg72alaxq1lp7" path="res://scenes/scaffolding1.tscn" id="65_fw04e"]
 
@@ -488,7 +491,7 @@ position = Vector2(19, -95)
 shape = SubResource("RectangleShape2D_wvjmt")
 
 [node name="Tree5" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("25_vek1y")]
-position = Vector2(2432, -85)
+position = Vector2(2353, -85)
 flip_h = true
 
 [node name="Sprite2D" parent="SceneItemsBackground/BuildingGroup1/Tree5" index="2"]
@@ -665,9 +668,6 @@ scale = Vector2(0.77, 1)
 [node name="Meter3" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("43_335wh")]
 position = Vector2(1874, -28)
 
-[node name="Meter4" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("43_335wh")]
-position = Vector2(2368, -28)
-
 [node name="Meter5" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("43_335wh")]
 position = Vector2(2488, -28)
 
@@ -682,6 +682,27 @@ position = Vector2(3037, -29)
 
 [node name="Meter9" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("43_335wh")]
 position = Vector2(2055, -28)
+
+[node name="MeterMaid" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("53_ro3en")]
+position = Vector2(2610, -95)
+persist = true
+
+[node name="MeterMaid2" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("53_ro3en")]
+position = Vector2(3068, -277)
+persist = true
+
+[node name="AtomicHeartPickup" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("42_od4ux")]
+position = Vector2(2363, -43)
+
+[node name="MeterMaidMelee" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("64_od4ux")]
+position = Vector2(2988, -29)
+persist = true
+
+[node name="Car" type="Sprite2D" parent="SceneItemsBackground/BuildingGroup1"]
+z_index = 2
+position = Vector2(2092, -8)
+texture = ExtResource("44_1epgm")
+flip_h = true
 
 [node name="BuildingGroup2" type="Node2D" parent="SceneItemsBackground"]
 position = Vector2(2549, 0)
@@ -866,6 +887,24 @@ z_index = 1
 position = Vector2(4355, -15)
 texture = ExtResource("37_k2mcc")
 
+[node name="EnemyEvent" type="Area2D" parent="SceneItemsBackground/BuildingGroup3"]
+position = Vector2(3636, 9)
+collision_layer = 0
+script = ExtResource("32_bjc77")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup3/EnemyEvent"]
+position = Vector2(576.5, -12)
+shape = SubResource("RectangleShape2D_dbsfu")
+
+[node name="EnemyEvent2" type="Area2D" parent="SceneItemsBackground/BuildingGroup3"]
+position = Vector2(4942, -56)
+collision_layer = 0
+script = ExtResource("32_bjc77")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup3/EnemyEvent2"]
+position = Vector2(576.5, -12)
+shape = SubResource("RectangleShape2D_dbsfu")
+
 [node name="TileMapLayer" type="TileMapLayer" parent="SceneItemsBackground"]
 z_index = 1
 position = Vector2(-1875, 0)
@@ -950,6 +989,14 @@ position = Vector2(-258, -97)
 
 [node name="MeterMaid" parent="SceneItemsBackground/AtomicRobotBuildingGroup" instance=ExtResource("53_ro3en")]
 position = Vector2(-405, -259)
+
+[node name="MeterMaidMelee" parent="SceneItemsBackground/AtomicRobotBuildingGroup" instance=ExtResource("64_od4ux")]
+position = Vector2(1410, -81)
+persist = true
+
+[node name="MeterMaidMelee3" parent="SceneItemsBackground/AtomicRobotBuildingGroup" instance=ExtResource("64_od4ux")]
+position = Vector2(1475, -47)
+persist = true
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false

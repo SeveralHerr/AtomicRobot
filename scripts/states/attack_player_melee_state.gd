@@ -21,6 +21,7 @@ func attack() -> void:
 	for body in enemy.attack_area.get_overlapping_bodies():
 		if body is Player:
 			enemy.player.receive_hit(enemy.global_position, 1)
-	enemy.animated_sprite_2d.play("idle")
+	if not enemy.enemy_state_machine.current_state is DeadEnemyState:
+		enemy.animated_sprite_2d.play("idle")
 	attack_finished = true
 	enemy.attack_timer.start()

@@ -25,7 +25,9 @@ func attack() -> void:
 	enemy.attack_timer.start()
 	
 	await enemy.animated_sprite_2d.animation_finished
-	enemy.animated_sprite_2d.play("idle")
+	
+	if not enemy.enemy_state_machine.current_state is DeadEnemyState:
+		enemy.animated_sprite_2d.play("idle")
 	attack_finished = true
 	
 func update(delta: float) -> void:

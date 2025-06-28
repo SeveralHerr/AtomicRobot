@@ -13,7 +13,7 @@ func add_state(name: String, state: EnemyState) -> void:
 	states[name] = state
 
 func change_state(name: String) -> void:
-	if current_state is DeadEnemyState and states.has("DeadEnemyState"):
+	if current_state is DeadEnemyState:
 		return
 	
 	print("Enemy state", name)

@@ -2,7 +2,7 @@ extends Enemy
 class_name MeterMaidWindow
 
 
-@onready var cpu_particles_2d: CPUParticles2D = $BrokenWindow/CPUParticles2D
+@onready var cpu_particles_2d: CPUParticles2D = $CPUParticles2D
 @export var is_event: bool = false
 
 var is_attacking: bool = false

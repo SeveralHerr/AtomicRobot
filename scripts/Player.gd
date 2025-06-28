@@ -114,10 +114,10 @@ func _ready() -> void:
 
 func _event_started(status: bool) -> void:
 	if status:
-		print("event active... lowering player speed")
 		SPEED /= 3
-	else:
+		await get_tree().create_timer(1.5).timeout
 		SPEED *= 3
+
 	
 func move_player() -> void:
 	camera_2d.position_smoothing_enabled = false

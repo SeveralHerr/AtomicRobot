@@ -1,12 +1,12 @@
 [gd_scene load_steps=12 format=3 uid="uid://dv58hcp37fnri"]
 
-[ext_resource type="Script" path="res://scripts/mobile_ui.gd" id="1_rvv1d"]
+[ext_resource type="Script" uid="uid://dgfrky70ry3v" path="res://scripts/mobile_ui.gd" id="1_rvv1d"]
 [ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="2_snoiw"]
-[ext_resource type="Texture2D" uid="uid://do55skr27qvfd" path="res://images/arrow_n.png" id="3_nee3u"]
+[ext_resource type="Texture2D" uid="uid://gqseg7u2yjga" path="res://images/arrow_n.png" id="3_nee3u"]
 [ext_resource type="StyleBox" uid="uid://vb5n0pdp6vf" path="res://sprites/mobile_button_normal.tres" id="4_m1a23"]
-[ext_resource type="Texture2D" uid="uid://b2y7hrpauia37" path="res://images/mobile_button.png" id="5_pwq8n"]
-[ext_resource type="Texture2D" uid="uid://b3yvdhkilwb4o" path="res://images/tool_sword_b.png" id="6_qsdwx"]
-[ext_resource type="Script" path="res://scripts/restart_ui.gd" id="7_050ly"]
+[ext_resource type="Texture2D" uid="uid://firbhng0q0fb" path="res://images/mobile_button.png" id="5_pwq8n"]
+[ext_resource type="Texture2D" uid="uid://cqpxsdqygl0yd" path="res://images/tool_sword_b.png" id="6_qsdwx"]
+[ext_resource type="Script" uid="uid://bna8dk6v2yaok" path="res://scripts/restart_ui.gd" id="7_050ly"]
 [ext_resource type="PackedScene" uid="uid://cgu2unw740vuf" path="res://scenes/notification.tscn" id="8_ijt5e"]
 [ext_resource type="PackedScene" uid="uid://c37vas4dihnt4" path="res://scenes/health_ui.tscn" id="9_begv2"]
 
