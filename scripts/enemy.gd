@@ -138,15 +138,17 @@ func _apply_gravity(delta: float) -> void:
 func die() -> void:
 	set_collision_mask_value(3, false )
 	set_collision_mask_value(10, false )
+	attack_timer.stop()
+	range_timer.stop()
 	velocity = Vector2.ZERO
 	Globals.meter_maids_killed += 1
 	Globals.meter_maid_death.emit()
 	animated_sprite_2d.play("death")
-	attack_timer.stop()
-	range_timer.stop()
+
 	player_detection.monitorable = false
 	player_detection.monitoring = false
 	set_collision_layer_value(3, false)
+	set_collision_layer_value(10, false)
 	set_collision_mask_value(1, false)
 	await get_tree().create_timer(1.5).timeout
 	
@@ -196,8 +198,7 @@ func _play_hit_effects() -> void:
 
 func _apply_damage(damage: int) -> void:
 	health -= damage
-	if health <= 0:
-		call_deferred("die")
+
 
 func _apply_knockback() -> void:
 	var knockback_direction = (global_position - player.global_position).normalized()

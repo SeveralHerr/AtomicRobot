@@ -1,7 +1,6 @@
 extends Node2D
 
 @onready var meter_maid_window: MeterMaidWindow = $MeterMaidWindow
-@onready var meter_maid_window_2: MeterMaidWindow = $MeterMaidWindow2
 @onready var meter_maid_window_3: MeterMaidWindow = $MeterMaidWindow3
 @onready var area_2d: Area2D = $Area2D
 

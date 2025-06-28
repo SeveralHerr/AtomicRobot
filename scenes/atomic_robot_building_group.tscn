@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=4 uid="uid://d4hesyanxo8l"]
+[gd_scene load_steps=38 format=4 uid="uid://d4hesyanxo8l"]
 
 [ext_resource type="Texture2D" uid="uid://ditm4c2uiiiss" path="res://images/new/Background_Bushes.png" id="1_j1q5a"]
 [ext_resource type="Texture2D" uid="uid://dleqjpxk6chya" path="res://images/new/Background_bush2.png" id="2_bb4wt"]
@@ -21,6 +21,8 @@
 [ext_resource type="PackedScene" uid="uid://bn6uk4y67s804" path="res://scenes/lamp.tscn" id="17_6rwn7"]
 [ext_resource type="PackedScene" uid="uid://xnc3xl36cxv" path="res://scenes/crack.tscn" id="18_nf1n6"]
 [ext_resource type="Texture2D" uid="uid://dyj5vh4ha4tqy" path="res://images/car2.png" id="19_8w0sk"]
+[ext_resource type="PackedScene" uid="uid://dg72alaxq1lp7" path="res://scenes/scaffolding1.tscn" id="22_aip1n"]
+[ext_resource type="PackedScene" uid="uid://hvltuyesp547" path="res://scenes/scaffolding2.tscn" id="23_1cvds"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_r056b"]
 atlas = ExtResource("3_j0y8s")
@@ -345,5 +347,11 @@ scale = Vector2(0.66, 1)
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
 texture = ExtResource("19_8w0sk")
+
+[node name="Scaffolding" parent="." instance=ExtResource("23_1cvds")]
+position = Vector2(1356, 48)
+
+[node name="Scaffolding2" parent="." instance=ExtResource("22_aip1n")]
+position = Vector2(1441, 48)
 
 [editable path="Crack"]

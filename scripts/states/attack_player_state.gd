@@ -17,6 +17,10 @@ func exit_state() -> void:
 func _on_frame_changed(enemy: Enemy):
 	if enemy.animated_sprite_2d.animation == "attack" and enemy.animated_sprite_2d.frame == 6:
 		attack()
+	elif enemy.animated_sprite_2d.animation == "attack" and enemy.animated_sprite_2d.frame == 4:
+		await enemy.get_tree().create_timer(0.2).timeout
+		Utils.shake_node2d(enemy, 2, 0.2)
+
 	
 func attack() -> void:
 	enemy._face_player()

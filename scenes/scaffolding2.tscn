@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://hvltuyesp547"]
 
-[ext_resource type="Texture2D" uid="uid://lrnhbs5m3c3w" path="res://images/new/scaffolding_foreground.png" id="1_cobom"]
+[ext_resource type="Texture2D" uid="uid://do71tyslfg4bv" path="res://images/new/scaffolding_foreground.png" id="1_cobom"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vrrw6"]
 atlas = ExtResource("1_cobom")
@@ -13,6 +13,8 @@ size = Vector2(96, 9)
 texture = SubResource("AtlasTexture_vrrw6")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 32
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(0, 0.5)
