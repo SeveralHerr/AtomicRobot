@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=4 uid="uid://ct1xv7dk5rs7y"]
+[gd_scene load_steps=16 format=4 uid="uid://ct1xv7dk5rs7y"]
 
 [ext_resource type="Script" uid="uid://b0d820x6rjder" path="res://scripts/meter_maid_melee.gd" id="1_xinuf"]
 [ext_resource type="Script" uid="uid://dsbjs54db5oe8" path="res://scripts/line_of_sight.gd" id="2_mdfou"]
 [ext_resource type="Shader" uid="uid://6j4tcu38byit" path="res://shaders/flash.gdshader" id="3_jtier"]
 [ext_resource type="SpriteFrames" uid="uid://duteluxbf0l40" path="res://sprites/metermaid_melee_sprite_frames.tres" id="4_xinuf"]
 [ext_resource type="AudioStream" uid="uid://ry56uulsrmpj" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_qy2r5"]
+[ext_resource type="AudioStream" uid="uid://c65da5spubjka" path="res://sounds/Voice_Male_V2_Attack_Short_Mono_07.wav" id="6_mdfou"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xinuf"]
 radius = 36.4966
@@ -160,3 +161,7 @@ target_position = Vector2(-1, 300)
 collision_mask = 104
 collide_with_areas = true
 script = ExtResource("2_mdfou")
+
+[node name="AttackPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_mdfou")
+pitch_scale = 1.1

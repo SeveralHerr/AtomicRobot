@@ -19,6 +19,7 @@ func _on_frame_changed(enemy: Enemy):
 	elif enemy.animated_sprite_2d.animation == "melee" and enemy.animated_sprite_2d.frame == 3:
 		Utils.shake_node2d(enemy, 2, 0.2)
 		await enemy.get_tree().create_timer(0.2).timeout
+		enemy.attack_player.play()
 	elif enemy.animated_sprite_2d.animation == "melee" and enemy.animated_sprite_2d.frame == 7:
 		if not enemy.enemy_state_machine.current_state is DeadEnemyState:
 			enemy.animated_sprite_2d.play("idle")
@@ -26,6 +27,7 @@ func _on_frame_changed(enemy: Enemy):
 			enemy.attack_timer.start()
 
 func attack() -> void:
+
 	for body in enemy.attack_area.get_overlapping_bodies():
 		if body is Player:
 			enemy.player.receive_hit(enemy.global_position, 1)

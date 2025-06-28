@@ -1122,6 +1122,8 @@ texture = ExtResource("51_2p6wh")
 
 [node name="UnderWorldKillBox" type="Area2D" parent="."]
 position = Vector2(2, 99)
+collision_layer = 32
+collision_mask = 517
 script = ExtResource("58_qr2g0")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UnderWorldKillBox"]
@@ -1131,7 +1133,7 @@ shape = SubResource("RectangleShape2D_g4yhg")
 [node name="StaticBody2D" type="StaticBody2D" parent="UnderWorldKillBox"]
 position = Vector2(6394, 162)
 collision_layer = 32
-collision_mask = 0
+collision_mask = 517
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UnderWorldKillBox/StaticBody2D"]
 position = Vector2(174, 0)

@@ -3,6 +3,7 @@ class_name MeterMaidMelee
 
 const METERMAID_MELEE_SPRITE_FRAMES = preload("res://sprites/metermaid_melee_sprite_frames.tres")
 @onready var attack_area: Area2D = $AttackArea
+@onready var attack_player: AudioStreamPlayer = $AttackPlayer
 
 func _ready() -> void:
 	animated_sprite_2d.sprite_frames = METERMAID_MELEE_SPRITE_FRAMES

@@ -44,7 +44,7 @@ var turn_cooldown_duration: float = 0.5
 
 
 # Runtime data
-var player: Node2D
+var player: Player
 
 func _init() -> void:
 	enemy_state_machine = EnemyStateMachine.new(self)
@@ -53,12 +53,15 @@ func _init() -> void:
 func _ready() -> void:
 	attack_timer.wait_time = attack_cooldown
 	player = get_tree().get_first_node_in_group("player")
+	if player.is_dead:
+		queue_free()
 	
 	player_detection.body_entered.connect(func(body: Node2D): is_player_in_attack_range = true)
 	player_detection.body_exited.connect(func(body: Node2D): is_player_in_attack_range = false)
 	
 	Globals.player_death.connect(func(): 
-		animated_sprite_2d.play("idle")
+		if not enemy_state_machine.current_state is DeadEnemyState:
+			animated_sprite_2d.play("idle")
 		set_physics_process(false)
 		set_process(false))
 	
