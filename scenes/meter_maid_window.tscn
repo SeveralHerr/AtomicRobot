@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://c5seb14eot5lp" path="res://scripts/meter_maid_window.gd" id="1_jidjv"]
 [ext_resource type="Script" uid="uid://dsbjs54db5oe8" path="res://scripts/line_of_sight.gd" id="2_ryn0f"]
-[ext_resource type="Texture2D" uid="uid://crc41rfwkmwf2" path="res://images/window_break.png" id="2_tir5r"]
+[ext_resource type="Texture2D" uid="uid://c12aaib43riwl" path="res://images/window_break.png" id="2_tir5r"]
 [ext_resource type="Shader" uid="uid://6j4tcu38byit" path="res://shaders/flash.gdshader" id="3_tir5r"]
 [ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://sprites/metermaid_sprite_frames.tres" id="4_6va75"]
-[ext_resource type="AudioStream" uid="uid://ry56uulsrmpj" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_8m6mi"]
-[ext_resource type="AudioStream" uid="uid://cdasvjnc4mbka" path="res://sounds/glass_break.wav" id="7_tir5r"]
+[ext_resource type="AudioStream" uid="uid://b55vbaakt0ib4" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_8m6mi"]
+[ext_resource type="AudioStream" uid="uid://deontu0qgstsu" path="res://sounds/glass_break.wav" id="7_tir5r"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6va75"]
 atlas = ExtResource("2_tir5r")

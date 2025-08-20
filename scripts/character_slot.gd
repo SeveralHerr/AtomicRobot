@@ -1,4 +1,4 @@
-extends TextureRect
+extends Control
 
 const STORY: PackedScene = preload("res://scenes/story.tscn")
 @export var character: String

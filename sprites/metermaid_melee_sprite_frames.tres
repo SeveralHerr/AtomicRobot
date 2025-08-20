@@ -1,10 +1,8 @@
-[gd_resource type="SpriteFrames" load_steps=41 format=3 uid="uid://duteluxbf0l40"]
+[gd_resource type="SpriteFrames" load_steps=39 format=3 uid="uid://duteluxbf0l40"]
 
-[ext_resource type="Texture2D" uid="uid://dkagwsaapsh85" path="res://sprites/Meter Maid.png" id="1_veojc"]
-[ext_resource type="Texture2D" uid="uid://dxu7xrjm5t1hp" path="res://sprites/maid_melee_idle.png" id="2_crlbk"]
-[ext_resource type="Texture2D" uid="uid://cqimb3v8gtrk" path="res://sprites/Meter Maidmelee2.png" id="3_uusnt"]
-[ext_resource type="Texture2D" uid="uid://baggghk3goypd" path="res://sprites/meter maid melee3-sheet.png" id="3_v136v"]
-[ext_resource type="Texture2D" uid="uid://5c1gng6h5575" path="res://sprites/meter maid refill.png" id="4_uusnt"]
+[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://sprites/Meter Maid.png" id="1_veojc"]
+[ext_resource type="Texture2D" uid="uid://ilva7532twtc" path="res://sprites/meter maid melee3-sheet.png" id="3_v136v"]
+[ext_resource type="Texture2D" uid="uid://c5t338lvqm8mh" path="res://sprites/meter maid refill.png" id="4_uusnt"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uvsvq"]
 atlas = ExtResource("1_veojc")
@@ -79,11 +77,9 @@ atlas = ExtResource("1_veojc")
 region = Rect2(640, 608, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_oydi3"]
-atlas = ExtResource("2_crlbk")
 region = Rect2(0, 0, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1cwvk"]
-atlas = ExtResource("3_uusnt")
 region = Rect2(0, 0, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s51vj"]
@@ -115,35 +111,27 @@ atlas = ExtResource("3_v136v")
 region = Rect2(0, 100, 100, 100)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_p7qa8"]
-atlas = ExtResource("3_uusnt")
 region = Rect2(256, 0, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f8wmm"]
-atlas = ExtResource("3_uusnt")
 region = Rect2(384, 0, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_78twv"]
-atlas = ExtResource("3_uusnt")
 region = Rect2(512, 0, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vtmhb"]
-atlas = ExtResource("3_uusnt")
 region = Rect2(640, 0, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cj6lh"]
-atlas = ExtResource("3_uusnt")
 region = Rect2(0, 152, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ocwkm"]
-atlas = ExtResource("3_uusnt")
 region = Rect2(128, 152, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gfowf"]
-atlas = ExtResource("3_uusnt")
 region = Rect2(256, 152, 128, 152)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_w5hjj"]
-atlas = ExtResource("3_uusnt")
 region = Rect2(384, 152, 128, 152)
 
 [resource]

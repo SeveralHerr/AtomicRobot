@@ -11,22 +11,6 @@ signal gust(position: Vector2, range: float)
 
 var selected_character: String = "Ryan"
 var character_dict: Dictionary[String, CharacterConfig] = {
-	"Robot": CharacterConfig.new(
-		"Robot",
-		"ROBOT IS NOW PLAYABLE", 
-		true,
-		"Atomic Robot Tattoo Mascot",
-		preload("res://sprites/cody_sprite_frames.tres"),
-		"",
-		CharacterSounds.new(
-			preload("res://sounds/Voice_Male_V2_Jump_Mono_05.wav"),
-			preload("res://sounds/Voice_Male_V1_Hit_Short_Mono_07.wav"),
-			preload("res://sounds/Retro FootStep Grass 01.wav"),
-			preload("res://sounds/Voice_Male_V2_Attack_Short_Mono_07.wav"),
-			preload("res://sounds/sword_attack.wav")  # weapon sound
-		),
-		2  # Attack frame
-	),
 	"Cody": CharacterConfig.new(
 		"Cody",
 		"CODY IS NOW PLAYABLE",
@@ -79,6 +63,63 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/Voice_Female_V1_Hit_Short_Mono_07.wav"),
 			preload("res://sounds/Voice_Female_V2_Land_Mono_01.wav"),
 			preload("res://sounds/Voice_Female_V2_Attack_Mono_01.wav"),
+			preload("res://sounds/sword_attack.wav")  # weapon sound
+		),
+		5,  # Attack frame
+		3, # hp
+		1 # dmg
+	),
+	"Cass": CharacterConfig.new(
+		"Cass",
+		"Cass IS NOW PLAYABLE",
+		true,
+		"Employee of Atomic Robot Tattoo
+		+3 hp    +1 dmg", 
+		preload("res://sprites/cass_sprite_frames.tres"),
+		"",
+		CharacterSounds.new(
+			preload("res://sounds/Voice_Female_V2_Jump_Mono_01.wav"),
+			preload("res://sounds/Voice_Female_V1_Hit_Short_Mono_07.wav"),
+			preload("res://sounds/Voice_Female_V2_Land_Mono_01.wav"),
+			preload("res://sounds/Voice_Female_V2_Attack_Mono_01.wav"),
+			preload("res://sounds/sword_attack.wav")  # weapon sound
+		),
+		5,  # Attack frame
+		3, # hp
+		1 # dmg
+	),
+	"Caitlyn": CharacterConfig.new(
+		"Caitlyn",
+		"Caitlyn IS NOW PLAYABLE",
+		true,
+		"Employee of Atomic Robot Tattoo
+		+3 hp    +1 dmg", 
+		preload("res://sprites/cait_sprite_frames.tres"),
+		"",
+		CharacterSounds.new(
+			preload("res://sounds/Voice_Female_V2_Jump_Mono_01.wav"),
+			preload("res://sounds/Voice_Female_V1_Hit_Short_Mono_07.wav"),
+			preload("res://sounds/Voice_Female_V2_Land_Mono_01.wav"),
+			preload("res://sounds/Voice_Female_V2_Attack_Mono_01.wav"),
+			preload("res://sounds/sword_attack.wav")  # weapon sound
+		),
+		5,  # Attack frame
+		3, # hp
+		1 # dmg
+	),
+	"Robot": CharacterConfig.new(
+		"Robot",
+		"Robot IS NOW PLAYABLE",
+		true,
+		"Mascot of Atomic Robot Tattoo
+		+3 hp    +1 dmg", 
+		preload("res://sprites/robot_sprite_frames.tres"),
+		"",
+		CharacterSounds.new(
+			preload("res://sounds/Voice_Male_V2_Jump_Mono_05.wav"),
+			preload("res://sounds/Voice_Male_V1_Hit_Short_Mono_07.wav"),
+			preload("res://sounds/Retro FootStep Grass 01.wav"),
+			preload("res://sounds/Voice_Male_V2_Attack_Short_Mono_07.wav"),
 			preload("res://sounds/sword_attack.wav")  # weapon sound
 		),
 		5,  # Attack frame
