@@ -1,0 +1,152 @@
+[gd_scene load_steps=19 format=3 uid="uid://6p6bt45jx3nl"]
+
+[ext_resource type="Texture2D" uid="uid://bnsi7wwkbqk5p" path="res://sprites/bossroom.png" id="1_3n20u"]
+[ext_resource type="Script" uid="uid://cv6mgxk7jdxle" path="res://scripts/city_council_boss.gd" id="2_673pk"]
+[ext_resource type="Texture2D" uid="uid://fqq8wolr8uui" path="res://sprites/CityCouncil.png" id="2_bpcqn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bpcqn"]
+size = Vector2(2462, 51)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3n20u"]
+size = Vector2(36, 1374)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_673pk"]
+atlas = ExtResource("2_bpcqn")
+region = Rect2(0, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g2a2m"]
+atlas = ExtResource("2_bpcqn")
+region = Rect2(128, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ee80j"]
+atlas = ExtResource("2_bpcqn")
+region = Rect2(256, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bggbs"]
+atlas = ExtResource("2_bpcqn")
+region = Rect2(384, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3ertg"]
+atlas = ExtResource("2_bpcqn")
+region = Rect2(512, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pmh52"]
+atlas = ExtResource("2_bpcqn")
+region = Rect2(640, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qub25"]
+atlas = ExtResource("2_bpcqn")
+region = Rect2(768, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e6q28"]
+atlas = ExtResource("2_bpcqn")
+region = Rect2(896, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_as4wm"]
+atlas = ExtResource("2_bpcqn")
+region = Rect2(1024, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gjdif"]
+atlas = ExtResource("2_bpcqn")
+region = Rect2(1152, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qvmem"]
+atlas = ExtResource("2_bpcqn")
+region = Rect2(1280, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_010di"]
+atlas = ExtResource("2_bpcqn")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_c7j7s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_673pk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g2a2m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ee80j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bggbs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3ertg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pmh52")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qub25")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e6q28")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_as4wm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gjdif")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qvmem")
+}],
+"loop": false,
+"name": &"Attack",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_010di")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]
+
+[node name="BossRoom" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("1_3n20u")
+
+[node name="GroundStaticBody" type="StaticBody2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundStaticBody"]
+position = Vector2(12, 606.5)
+shape = SubResource("RectangleShape2D_bpcqn")
+
+[node name="WallStaticBody" type="StaticBody2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallStaticBody"]
+position = Vector2(-1232, -55)
+shape = SubResource("RectangleShape2D_3n20u")
+
+[node name="WallStaticBody2" type="StaticBody2D" parent="."]
+position = Vector2(2475, 66)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallStaticBody2"]
+position = Vector2(-1232, -55)
+shape = SubResource("RectangleShape2D_3n20u")
+
+[node name="PlayerSpawnPosition" type="Node2D" parent="."]
+position = Vector2(-712, 579)
+
+[node name="CityCouncilBoss" type="Node2D" parent="."]
+position = Vector2(196, -277)
+script = ExtResource("2_673pk")
+
+[node name="BossSprite" type="AnimatedSprite2D" parent="CityCouncilBoss"]
+position = Vector2(-306, 451)
+sprite_frames = SubResource("SpriteFrames_c7j7s")
+animation = &"Attack"
+autoplay = "Idle"
