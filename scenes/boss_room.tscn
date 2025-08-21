@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://6p6bt45jx3nl"]
+[gd_scene load_steps=21 format=3 uid="uid://6p6bt45jx3nl"]
 
 [ext_resource type="Texture2D" uid="uid://bnsi7wwkbqk5p" path="res://sprites/bossroom.png" id="1_3n20u"]
 [ext_resource type="Script" uid="uid://cv6mgxk7jdxle" path="res://scripts/city_council_boss.gd" id="2_673pk"]
@@ -108,8 +108,11 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g2a2m"]
+bg_color = Color(0.0383972, 0.0383972, 0.0383971, 1)
+
 [node name="BossRoom" type="Node2D"]
-position = Vector2(392, -251)
+position = Vector2(19, -251)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.4, 0.4)
@@ -146,21 +149,43 @@ shape = SubResource("RectangleShape2D_3n20u")
 position = Vector2(-712, 579)
 
 [node name="CityCouncilBoss" type="Node2D" parent="."]
-position = Vector2(196, -277)
+position = Vector2(-104, 174)
 script = ExtResource("2_673pk")
 
 [node name="BossSprite" type="AnimatedSprite2D" parent="CityCouncilBoss"]
-position = Vector2(-306, 451)
 sprite_frames = SubResource("SpriteFrames_c7j7s")
 animation = &"Attack"
 autoplay = "Idle"
+frame = 10
+frame_progress = 1.0
 
 [node name="AttackTimer" type="Timer" parent="CityCouncilBoss"]
 wait_time = 3.0
 one_shot = true
 
 [node name="BulletSpawnPoint" type="Node2D" parent="CityCouncilBoss"]
-position = Vector2(-284, 461)
 
 [node name="Player" parent="." instance=ExtResource("4_g2a2m")]
 position = Vector2(-290, 211)
+
+[node name="Camera2D" parent="Player" index="11"]
+limit_left = -465
+limit_right = 475
+limit_bottom = 0
+
+[node name="Background" type="Panel" parent="."]
+z_index = -4
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -3000.0
+offset_top = -3000.0
+offset_right = 3000.0
+offset_bottom = 3000.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_g2a2m")
+
+[editable path="Player"]

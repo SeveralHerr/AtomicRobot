@@ -1,0 +1,43 @@
+[gd_scene load_steps=7 format=3 uid="uid://mv75v56773qo"]
+
+[ext_resource type="Script" uid="uid://b4dpl0l1gdtam" path="res://scripts/coin_bullet.gd" id="1_oe7oc"]
+[ext_resource type="Texture2D" uid="uid://fqq8wolr8uui" path="res://sprites/CityCouncil.png" id="2_oe7oc"]
+[ext_resource type="AudioStream" uid="uid://drkswtr5knn8q" path="res://sounds/coin.wav" id="3_umdmf"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_w4kev"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qwwic"]
+atlas = ExtResource("2_oe7oc")
+region = Rect2(0, 384, 128, 128)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_umdmf"]
+radius = 9.0
+
+[node name="BriefcaseBullet" type="RigidBody2D"]
+collision_layer = 256
+collision_mask = 275
+physics_material_override = SubResource("PhysicsMaterial_w4kev")
+script = ExtResource("1_oe7oc")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -1)
+texture = SubResource("AtlasTexture_qwwic")
+offset = Vector2(0, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("CircleShape2D_umdmf")
+disabled = true
+
+[node name="CoinAudioPlayer" type="AudioStreamPlayer2D" parent="."]
+top_level = true
+z_index = 9
+stream = ExtResource("3_umdmf")
+volume_db = -50.595
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 1
+lifetime = 0.25
+gravity = Vector2(0, 0)
+color = Color(1, 1, 0.858824, 1)

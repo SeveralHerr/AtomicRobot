@@ -2,7 +2,7 @@ extends Node
 
 const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
 const HIT_FX = preload("res://scenes/hit_fx.tscn")
-
+const BRIEFCASE_BULLET = preload("res://scenes/briefcase_bullet2.tscn")
 static func shake_node2d(node: Node2D, strength: float = 10.0, duration: float = 0.3, frequency: float = 0.02) -> void:
 	var original_pos = node.position
 	var tween = node.get_tree().create_tween()
@@ -68,6 +68,22 @@ static func throw_coin_from_enemy(enemy: Node, use_arc: bool = false, offset: in
 	var target_pos = player.enemy_attack_position.global_position
 	target_pos.y += offset
 	throw_coin(spawn_pos, target_pos, enemy.player.get_parent(), use_arc)
+	
+## Coin throwing factory methods
+static func throw_briefcase(spawn_position: Vector2, target_position: Vector2, parent_node: Node, use_arc: bool = false) -> void:
+	var instance = BRIEFCASE_BULLET.instantiate()
+	parent_node.add_child(instance)
+	var direction = (target_position - spawn_position).normalized()
+	instance.start(spawn_position, direction, use_arc)
+
+static func throw_briefcase_from_enemy(enemy: Node, use_arc: bool = false, offset: int = 0) -> void:
+	var player = enemy.get_tree().get_first_node_in_group("player")
+	if not enemy or not player:
+		return
+	var spawn_pos = enemy.global_position + enemy.briefcase_spawn_point.position
+	var target_pos = player.enemy_attack_position.global_position
+	target_pos.y += offset
+	throw_briefcase(spawn_pos, target_pos, enemy.player.get_parent(), use_arc)
 
 static func throw_coin_delayed(enemy: Node, delay: float = 0.3, use_arc: bool = false) -> void:
 	if not enemy:

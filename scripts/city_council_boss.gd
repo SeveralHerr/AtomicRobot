@@ -4,7 +4,7 @@ extends Node2D
 @onready var attack_timer: Timer = $AttackTimer
 @onready var briefcase_spawn_point: Node2D = $BulletSpawnPoint
 
-const BRIEFCASE_BULLET = preload("res://scenes/briefcase_bullet.tscn")
+const BRIEFCASE_BULLET = preload("res://scenes/briefcase_bullet2.tscn")
 
 var player: Player
 var is_attacking: bool = false
@@ -13,12 +13,45 @@ var briefcases_per_attack: int = 1
 var time_between_briefcases: float = 0.1
 var spiral_angle: float = 0.0
 var spiral_radius: float = 100.0
+var last_dir: int = -1
+
+
+func _face_player() -> void:
+	var direction = (global_position - player.global_position ).normalized()
+	_handle_direction( direction.x  )
+	
+func _handle_direction(direction) -> void:
+	if direction:
+		if direction < 0:
+			if last_dir != -1:
+				if scale.x == -1:
+					scale.x *= -1
+					last_dir = -1
+					return
+				scale.x *= -1
+				last_dir = -1
+
+		elif direction > 0:
+			if last_dir != 1 :
+				scale.x *= -1
+				last_dir = 1
 
 func _ready() -> void:
 	player = get_tree().get_first_node_in_group("player")
+	_face_player()
 	attack_timer.wait_time = attack_cooldown
 	attack_timer.timeout.connect(_on_attack_timer_timeout)
 	attack_timer.start()
+	boss_sprite.animation_finished.connect(func():
+		if boss_sprite.animation == "Attack":
+			boss_sprite.play("Idle")
+			is_attacking = false
+			# Return to idle animation
+			attack_timer.start()
+		)
+	
+func _process(delta: float) -> void:
+	_face_player()
 
 func _on_attack_timer_timeout() -> void:
 	if player and not player.is_dead and not is_attacking:
@@ -39,22 +72,13 @@ func _perform_briefcase_attack() -> void:
 		await get_tree().create_timer(time_between_briefcases).timeout
 		_spawn_briefcase_spiral(i)
 	
-	# Reset attack state and restart timer
-	await get_tree().create_timer(0.5).timeout  # Brief pause after last briefcase
-	is_attacking = false
-	boss_sprite.play("Idle")  # Return to idle animation
-	attack_timer.start()
+
 
 func _spawn_briefcase_spiral(index: int) -> void:
 	if not player or player.is_dead:
 		return
 		
-	var briefcase = BRIEFCASE_BULLET.instantiate()
-	get_tree().root.add_child(briefcase)
-	
-	# Position briefcase at spawn point
-	var spawn_position = briefcase_spawn_point.global_position if briefcase_spawn_point else global_position
-	briefcase.global_position = spawn_position
+	Utils.throw_briefcase_from_enemy(self,  false,  0)
 	
 	## Calculate spiral target position around player
 	#var angle_increment = PI * 0.5  # 90 degrees per briefcase for rapid spiral
@@ -72,4 +96,4 @@ func _spawn_briefcase_spiral(index: int) -> void:
 	#var direction = (target_position - spawn_position).normalized()
 	
 	# Start the briefcase movement
-	briefcase.start_movement()
+#	briefcase.start_movement()
