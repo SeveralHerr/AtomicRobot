@@ -15,7 +15,7 @@ func enter_state() -> void:
 		enemy.enemy_state_machine.change_state("ChasePlayerState")
 		return
 	enemy.animated_sprite_2d.play("walk")
-	ChatBubble.create(enemy, "Out of ammo!")
+	#ChatBubble.create(enemy, "Out of ammo!")
 	return
 		
 

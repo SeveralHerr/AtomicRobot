@@ -9,8 +9,10 @@ const BRIEFCASE_BULLET = preload("res://scenes/briefcase_bullet.tscn")
 var player: Player
 var is_attacking: bool = false
 var attack_cooldown: float = 2.0
-var briefcases_per_attack: int = 3
-var time_between_briefcases: float = 0.3
+var briefcases_per_attack: int = 1
+var time_between_briefcases: float = 0.1
+var spiral_angle: float = 0.0
+var spiral_radius: float = 100.0
 
 func _ready() -> void:
 	player = get_tree().get_first_node_in_group("player")
@@ -29,10 +31,13 @@ func _perform_briefcase_attack() -> void:
 	is_attacking = true
 	boss_sprite.play("Attack")  # Assumes attack animation exists
 	
-	# Spawn multiple briefcases like Hammer Bros
+	# Reset spiral for new attack
+	spiral_angle = 0.0
+	
+	# Spawn briefcases in rapid spiral pattern
 	for i in briefcases_per_attack:
 		await get_tree().create_timer(time_between_briefcases).timeout
-		_spawn_briefcase()
+		_spawn_briefcase_spiral(i)
 	
 	# Reset attack state and restart timer
 	await get_tree().create_timer(0.5).timeout  # Brief pause after last briefcase
@@ -40,7 +45,7 @@ func _perform_briefcase_attack() -> void:
 	boss_sprite.play("Idle")  # Return to idle animation
 	attack_timer.start()
 
-func _spawn_briefcase() -> void:
+func _spawn_briefcase_spiral(index: int) -> void:
 	if not player or player.is_dead:
 		return
 		
@@ -51,10 +56,20 @@ func _spawn_briefcase() -> void:
 	var spawn_position = briefcase_spawn_point.global_position if briefcase_spawn_point else global_position
 	briefcase.global_position = spawn_position
 	
-	# Calculate direction to player with some lead prediction
-	var target_position = player.global_position
-	# Add some vertical offset for arc trajectory
-	var direction = (target_position - spawn_position).normalized()
+	## Calculate spiral target position around player
+	#var angle_increment = PI * 0.5  # 90 degrees per briefcase for rapid spiral
+	#spiral_angle += angle_increment
+	#
+	## Calculate target position in spiral pattern around player
+	#var player_pos = player.global_position
+	#var spiral_offset = Vector2(
+		#cos(spiral_angle) * spiral_radius,
+		#sin(spiral_angle) * spiral_radius * 0.6  # Flatter spiral
+	#)
+	#var target_position = player_pos + spiral_offset
+	#
+	## Calculate direction from spawn to spiral target
+	#var direction = (target_position - spawn_position).normalized()
 	
 	# Start the briefcase movement
-	briefcase.start_movement(direction, target_position)
+	briefcase.start_movement()
