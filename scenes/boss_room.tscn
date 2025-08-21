@@ -1,8 +1,9 @@
-[gd_scene load_steps=19 format=3 uid="uid://6p6bt45jx3nl"]
+[gd_scene load_steps=20 format=3 uid="uid://6p6bt45jx3nl"]
 
 [ext_resource type="Texture2D" uid="uid://bnsi7wwkbqk5p" path="res://sprites/bossroom.png" id="1_3n20u"]
 [ext_resource type="Script" uid="uid://cv6mgxk7jdxle" path="res://scripts/city_council_boss.gd" id="2_673pk"]
 [ext_resource type="Texture2D" uid="uid://fqq8wolr8uui" path="res://sprites/CityCouncil.png" id="2_bpcqn"]
+[ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="4_g2a2m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bpcqn"]
 size = Vector2(2462, 51)
@@ -108,12 +109,14 @@ animations = [{
 }]
 
 [node name="BossRoom" type="Node2D"]
+position = Vector2(392, -251)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("1_3n20u")
 
 [node name="GroundStaticBody" type="StaticBody2D" parent="."]
+position = Vector2(2, -349)
 collision_layer = 2
 collision_mask = 0
 
@@ -122,6 +125,7 @@ position = Vector2(12, 606.5)
 shape = SubResource("RectangleShape2D_bpcqn")
 
 [node name="WallStaticBody" type="StaticBody2D" parent="."]
+position = Vector2(724, -54)
 collision_layer = 2
 collision_mask = 0
 
@@ -130,7 +134,7 @@ position = Vector2(-1232, -55)
 shape = SubResource("RectangleShape2D_3n20u")
 
 [node name="WallStaticBody2" type="StaticBody2D" parent="."]
-position = Vector2(2475, 66)
+position = Vector2(1739, 142)
 collision_layer = 2
 collision_mask = 0
 
@@ -150,3 +154,13 @@ position = Vector2(-306, 451)
 sprite_frames = SubResource("SpriteFrames_c7j7s")
 animation = &"Attack"
 autoplay = "Idle"
+
+[node name="AttackTimer" type="Timer" parent="CityCouncilBoss"]
+wait_time = 3.0
+one_shot = true
+
+[node name="BulletSpawnPoint" type="Node2D" parent="CityCouncilBoss"]
+position = Vector2(-284, 461)
+
+[node name="Player" parent="." instance=ExtResource("4_g2a2m")]
+position = Vector2(-290, 211)
