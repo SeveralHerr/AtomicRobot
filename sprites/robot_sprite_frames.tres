@@ -1,6 +1,6 @@
 [gd_resource type="SpriteFrames" load_steps=37 format=3 uid="uid://dntvyy8jt8mjk"]
 
-[ext_resource type="Texture2D" uid="uid://bbiwyilmiyc4f" path="res://sprites/Sarah.png" id="2_dd0ch"]
+[ext_resource type="Texture2D" uid="uid://dy1rs7pn0yjd7" path="res://sprites/Sarah.png" id="2_dd0ch"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dd0ch"]
 region = Rect2(0, 640, 128, 128)

@@ -1,8 +1,8 @@
 [gd_resource type="SpriteFrames" load_steps=39 format=3 uid="uid://duteluxbf0l40"]
 
-[ext_resource type="Texture2D" uid="uid://dkagwsaapsh85" path="res://sprites/Meter Maid.png" id="1_veojc"]
-[ext_resource type="Texture2D" uid="uid://baggghk3goypd" path="res://sprites/meter maid melee3-sheet.png" id="3_v136v"]
-[ext_resource type="Texture2D" uid="uid://5c1gng6h5575" path="res://sprites/meter maid refill.png" id="4_uusnt"]
+[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://sprites/Meter Maid.png" id="1_veojc"]
+[ext_resource type="Texture2D" uid="uid://ilva7532twtc" path="res://sprites/meter maid melee3-sheet.png" id="3_v136v"]
+[ext_resource type="Texture2D" uid="uid://c5t338lvqm8mh" path="res://sprites/meter maid refill.png" id="4_uusnt"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uvsvq"]
 atlas = ExtResource("1_veojc")

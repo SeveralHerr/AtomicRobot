@@ -70,11 +70,14 @@ static func throw_coin_from_enemy(enemy: Node, use_arc: bool = false, offset: in
 	throw_coin(spawn_pos, target_pos, enemy.player.get_parent(), use_arc)
 	
 ## Coin throwing factory methods
-static func throw_briefcase(spawn_position: Vector2, target_position: Vector2, parent_node: Node, use_arc: bool = false) -> void:
+static func throw_briefcase(spawn_position: Vector2, target_position: Vector2, parent_node: Node, use_arc: bool = false, gravity: float = 0.55, is_falling: bool = false) -> void:
 	var instance = BRIEFCASE_BULLET.instantiate()
 	parent_node.add_child(instance)
 	var direction = (target_position - spawn_position).normalized()
-	instance.start(spawn_position, direction, use_arc)
+	
+	if is_falling:
+		instance.enable_passthrough()
+	instance.start(spawn_position, direction, use_arc, gravity)
 
 static func throw_briefcase_from_enemy(enemy: Node, use_arc: bool = false, offset: int = 0) -> void:
 	var player = enemy.get_tree().get_first_node_in_group("player")

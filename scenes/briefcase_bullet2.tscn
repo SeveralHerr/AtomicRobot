@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://mv75v56773qo"]
 
 [ext_resource type="Script" uid="uid://b4dpl0l1gdtam" path="res://scripts/coin_bullet.gd" id="1_oe7oc"]
-[ext_resource type="Texture2D" uid="uid://fqq8wolr8uui" path="res://sprites/CityCouncil.png" id="2_oe7oc"]
-[ext_resource type="AudioStream" uid="uid://drkswtr5knn8q" path="res://sounds/coin.wav" id="3_umdmf"]
+[ext_resource type="Texture2D" uid="uid://fa0mae2jvuat" path="res://sprites/CityCouncil.png" id="2_oe7oc"]
+[ext_resource type="AudioStream" uid="uid://txxmsbx723pd" path="res://sounds/coin.wav" id="3_umdmf"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_w4kev"]
 
@@ -27,7 +27,6 @@ offset = Vector2(0, 1)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -1)
 shape = SubResource("CircleShape2D_umdmf")
-disabled = true
 
 [node name="CoinAudioPlayer" type="AudioStreamPlayer2D" parent="."]
 top_level = true

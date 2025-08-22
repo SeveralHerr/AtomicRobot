@@ -3,12 +3,14 @@ class_name Bullet
 
 const HIT_FX = preload("res://scenes/hit_fx.tscn")
 @onready var coin_audio_player: AudioStreamPlayer2D = $CoinAudioPlayer
+@onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 
 var initial_speed: float = 600.0
 var has_hit_player: bool = false
 var bounce_damping: float = 0.7
+var is_falling: bool = false
 
-func start(_position: Vector2, _direction: Vector2, is_arc: bool = false) -> void:
+func start(_position: Vector2, _direction: Vector2, is_arc: bool = false, gravity: float = 0.55) -> void:
 	global_position = _position
 	coin_audio_player.play()
 	
@@ -16,7 +18,7 @@ func start(_position: Vector2, _direction: Vector2, is_arc: bool = false) -> voi
 
 	
 	# Configure physics properties for projectile behavior
-	gravity_scale = 0.55  # Reduced gravity for better projectile arc
+	gravity_scale = gravity  # Reduced gravity for better projectile arc
 	mass = 0.38  # Light mass like a real coin
 	linear_damp = 0.7  # Damping to slow down movement over time
 	angular_damp = 2.0  # Damping to slow down rotation
@@ -39,6 +41,14 @@ func _ready() -> void:
 	# Clean up after 15 seconds if nothing happens
 	await get_tree().create_timer(15).timeout
 	queue_free()
+	
+func enable_passthrough() -> void:
+	#set_collision_mask_value(1, false)
+	set_collision_mask_value(2, false)
+	set_collision_mask_value(5, false)
+	set_collision_layer_value(9, false)
+	set_collision_mask_value(9, false)
+	is_falling = true
 
 func _physics_process(delta: float) -> void:
 	# Stop the coin if it's moving very slowly
@@ -53,7 +63,7 @@ func _on_body_entered(body: Node) -> void:
 	if body is not Player:
 		set_collision_mask_value(1, false)
 	if body is Player and not has_hit_player:
-		print("Coin hit player")
+		print("hit player")
 		body.receive_hit(global_position, 1)
 		var instance = HIT_FX.instantiate()
 		body.get_tree().root.add_child(instance)
@@ -63,10 +73,11 @@ func _on_body_entered(body: Node) -> void:
 		# Mark as hit and reduce bounce for more realistic behavior
 		has_hit_player = true
 		
-		var p = PhysicsMaterial.new()
-		p.bounce = 0.1
-		p.friction = 0.9
-		physics_material_override = p
+		if not is_falling:
+			var p = PhysicsMaterial.new()
+			p.bounce = 0.1
+			p.friction = 0.9
+			physics_material_override = p
 		
 		# Clean up after hitting player
 		await get_tree().create_timer(4).timeout
