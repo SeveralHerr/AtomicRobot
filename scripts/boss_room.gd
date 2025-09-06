@@ -8,7 +8,7 @@ func _ready():
 
 func start_briefcase_spawning():
 	var timer = Timer.new()
-	timer.wait_time = randf_range(0.5, 1)
+	timer.wait_time = 0.2
 	timer.one_shot = false
 	timer.timeout.connect(spawn_falling_briefcase)
 	add_child(timer)
@@ -29,4 +29,4 @@ func spawn_falling_briefcase():
 	# Target position below the sprite
 	var target_pos = Vector2(random_x, sprite_pos.y + sprite_size.y/2 + 200)
 	
-	Utils.throw_briefcase(spawn_pos, target_pos, self, false, 0.1, true)
+	Utils.throw_briefcase(spawn_pos, target_pos, self, false, 0.2, true)
