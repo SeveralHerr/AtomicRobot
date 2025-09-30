@@ -15,15 +15,16 @@ func exit_state() -> void:
 	enemy.animated_sprite_2d.frame_changed.disconnect(_on_frame_changed.bind(enemy))
 			
 func _on_frame_changed(enemy: Enemy):
-	if enemy.animated_sprite_2d.animation == "attack" and enemy.animated_sprite_2d.frame == 6:
+	if enemy.animated_sprite_2d.animation == "attack" and enemy.animated_sprite_2d.frame == 4:
 		attack()
-	elif enemy.animated_sprite_2d.animation == "attack" and enemy.animated_sprite_2d.frame == 4:
-		await enemy.get_tree().create_timer(0.2).timeout
-		Utils.shake_node2d(enemy, 2, 0.2)
+	#elif enemy.animated_sprite_2d.animation == "attack" and enemy.animated_sprite_2d.frame == 4:
+		#await enemy.get_tree().create_timer(0.2).timeout
+		#Utils.shake_node2d(enemy, 2, 0.2)
 
 	
 func attack() -> void:
 	enemy._face_player()
+	is_player_crouched = enemy.player.state_machine.current_state is CrouchState
 	Utils.throw_briefcase_from_enemy(enemy,  false,  10 if is_player_crouched else 0)#(enemy, false, 10 if is_player_crouched else 0)
 	enemy.coins -= 1
 	enemy.attack_timer.start()
@@ -33,6 +34,8 @@ func attack() -> void:
 	if not enemy.enemy_state_machine.current_state is DeadEnemyState:
 		enemy.animated_sprite_2d.play("idle")
 	attack_finished = true
+	await enemy.get_tree().create_timer(0.5).timeout
+	enemy.enemy_state_machine.change_state("BossAttackPlayerState")
 	
 func update(delta: float) -> void:
 	enemy._face_player()

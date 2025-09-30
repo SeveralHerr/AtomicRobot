@@ -201,6 +201,7 @@ func _play_hit_effects() -> void:
 
 func _apply_damage(damage: int) -> void:
 	health -= damage
+	print(health)
 
 
 func _apply_knockback() -> void:

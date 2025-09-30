@@ -10,6 +10,7 @@ func _ready() -> void:
 	coins = 2999
 	#enemy_state_machine.add_state("ChasePlayerState", ChasePlayerState.new(self))
 	enemy_state_machine.add_state("BossAttackPlayerState", BossAttackPlayerState.new(self))
+	enemy_state_machine.add_state("DeadEnemyState", DeadEnemyState.new(self))
 	
 	enemy_state_machine.change_state("BossAttackPlayerState")
 
