@@ -15,6 +15,10 @@ func update(delta: float) -> void:
 		enemy.enemy_state_machine.change_state("AttackPlayerState")	
 		return
 		
+	if enemy.has_state("BossAttackPlayerState") and (enemy.can_attack() and enemy.is_player_in_line_of_sight()):
+		enemy.enemy_state_machine.change_state("BossAttackPlayerState")	
+		return
+		
 	if enemy.has_state("PatrolState") and (not enemy.can_see_player_threshold(1.2) or not enemy.is_player_in_line_of_sight()):
 		enemy.enemy_state_machine.change_state("PatrolState")
 		return

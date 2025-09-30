@@ -1,10 +1,10 @@
-[gd_scene load_steps=22 format=3 uid="uid://6p6bt45jx3nl"]
+[gd_scene load_steps=10 format=3 uid="uid://6p6bt45jx3nl"]
 
 [ext_resource type="Texture2D" uid="uid://b3ym2lrg45u1g" path="res://sprites/bossroom.png" id="1_3n20u"]
 [ext_resource type="Script" uid="uid://6hy4cjr5j8bd" path="res://scripts/boss_room.gd" id="1_ee80j"]
-[ext_resource type="Script" uid="uid://cv6mgxk7jdxle" path="res://scripts/city_council_boss.gd" id="2_673pk"]
-[ext_resource type="Texture2D" uid="uid://fa0mae2jvuat" path="res://sprites/CityCouncil.png" id="2_bpcqn"]
+[ext_resource type="SpriteFrames" uid="uid://dol7bmjmxljvk" path="res://sprites/boss_ani.tres" id="4_bggbs"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="4_g2a2m"]
+[ext_resource type="PackedScene" uid="uid://dwxrgvnxfsrp" path="res://scenes/final_boss.tscn" id="5_3ertg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bpcqn"]
 size = Vector2(2462, 51)
@@ -12,102 +12,8 @@ size = Vector2(2462, 51)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3n20u"]
 size = Vector2(36, 1374)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_673pk"]
-atlas = ExtResource("2_bpcqn")
-region = Rect2(0, 256, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_g2a2m"]
-atlas = ExtResource("2_bpcqn")
-region = Rect2(128, 256, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ee80j"]
-atlas = ExtResource("2_bpcqn")
-region = Rect2(256, 256, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_bggbs"]
-atlas = ExtResource("2_bpcqn")
-region = Rect2(384, 256, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3ertg"]
-atlas = ExtResource("2_bpcqn")
-region = Rect2(512, 256, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_pmh52"]
-atlas = ExtResource("2_bpcqn")
-region = Rect2(640, 256, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_qub25"]
-atlas = ExtResource("2_bpcqn")
-region = Rect2(768, 256, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_e6q28"]
-atlas = ExtResource("2_bpcqn")
-region = Rect2(896, 256, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_as4wm"]
-atlas = ExtResource("2_bpcqn")
-region = Rect2(1024, 256, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_gjdif"]
-atlas = ExtResource("2_bpcqn")
-region = Rect2(1152, 256, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_qvmem"]
-atlas = ExtResource("2_bpcqn")
-region = Rect2(1280, 256, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_010di"]
-atlas = ExtResource("2_bpcqn")
-region = Rect2(0, 0, 128, 128)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_c7j7s"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_673pk")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_g2a2m")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ee80j")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_bggbs")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_3ertg")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_pmh52")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_qub25")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_e6q28")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_as4wm")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_gjdif")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_qvmem")
-}],
-"loop": false,
-"name": &"Attack",
-"speed": 8.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_010di")
-}],
-"loop": true,
-"name": &"Idle",
-"speed": 5.0
-}]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ee80j"]
+size = Vector2(24, 56)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g2a2m"]
 bg_color = Color(0.0383972, 0.0383972, 0.0383971, 1)
@@ -150,12 +56,22 @@ shape = SubResource("RectangleShape2D_3n20u")
 [node name="PlayerSpawnPosition" type="Node2D" parent="."]
 position = Vector2(-712, 579)
 
-[node name="CityCouncilBoss" type="Node2D" parent="."]
+[node name="Player" parent="." instance=ExtResource("4_g2a2m")]
+position = Vector2(-290, 211)
+
+[node name="Camera2D" parent="Player" index="11"]
+limit_left = -465
+limit_right = 475
+limit_bottom = 0
+
+[node name="CityCouncilBoss" type="CharacterBody2D" parent="."]
+visible = false
 position = Vector2(-104, 174)
-script = ExtResource("2_673pk")
+collision_layer = 4
+collision_mask = 102
 
 [node name="BossSprite" type="AnimatedSprite2D" parent="CityCouncilBoss"]
-sprite_frames = SubResource("SpriteFrames_c7j7s")
+sprite_frames = ExtResource("4_bggbs")
 animation = &"Attack"
 autoplay = "Idle"
 frame = 10
@@ -167,13 +83,12 @@ one_shot = true
 
 [node name="BulletSpawnPoint" type="Node2D" parent="CityCouncilBoss"]
 
-[node name="Player" parent="." instance=ExtResource("4_g2a2m")]
-position = Vector2(-290, 211)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CityCouncilBoss"]
+position = Vector2(2, 5)
+shape = SubResource("RectangleShape2D_ee80j")
 
-[node name="Camera2D" parent="Player" index="11"]
-limit_left = -465
-limit_right = 475
-limit_bottom = 0
+[node name="FinalBoss" parent="." instance=ExtResource("5_3ertg")]
+position = Vector2(-71, -71)
 
 [node name="Background" type="Panel" parent="."]
 z_index = -4
@@ -182,10 +97,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -3000.0
-offset_top = -3000.0
-offset_right = 3000.0
-offset_bottom = 3000.0
+offset_left = -3014.0
+offset_top = -3058.0
+offset_right = 2986.0
+offset_bottom = 2942.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_g2a2m")

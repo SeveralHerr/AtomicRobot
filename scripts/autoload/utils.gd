@@ -83,7 +83,7 @@ static func throw_briefcase_from_enemy(enemy: Node, use_arc: bool = false, offse
 	var player = enemy.get_tree().get_first_node_in_group("player")
 	if not enemy or not player:
 		return
-	var spawn_pos = enemy.global_position + enemy.briefcase_spawn_point.position
+	var spawn_pos = enemy.global_position + enemy.coin_spawn_point.position
 	var target_pos = player.enemy_attack_position.global_position
 	target_pos.y += offset
 	throw_briefcase(spawn_pos, target_pos, enemy.player.get_parent(), use_arc)
