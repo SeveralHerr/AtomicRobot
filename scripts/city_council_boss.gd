@@ -15,7 +15,9 @@ func _ready() -> void:
 	enemy_state_machine.change_state("BossAttackPlayerState")
 
 	
-
+func receive_hit(damage: int) -> void:
+	super.receive_hit(damage)
+	Globals.boss_death.emit()
 #@onready var attack_timer: Timer = $AttackTimer
 #@onready var briefcase_spawn_point: Node2D = $BulletSpawnPoint
 #

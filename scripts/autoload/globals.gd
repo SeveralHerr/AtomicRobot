@@ -1,6 +1,7 @@
 extends Node
 
 signal player_death
+signal boss_death
 signal meter_maid_death
 signal meter_maid_boss_death
 signal unlocked(name: String, description: String)

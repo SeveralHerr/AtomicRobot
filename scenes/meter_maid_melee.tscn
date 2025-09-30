@@ -145,7 +145,7 @@ position = Vector2(0, -6)
 sprite_frames = ExtResource("4_xinuf")
 animation = &"walk"
 autoplay = "idle"
-frame_progress = 0.0692479
+frame_progress = 0.482621
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
