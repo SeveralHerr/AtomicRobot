@@ -1,6 +1,6 @@
 extends Sprite2D
 
-const FINAL_BOSS = preload("res://scenes/final_boss.tscn")
+const FINAL_BOSS = preload("res://scenes/boss_room.tscn")
 
 @onready var area_2d: Area2D = $Area2D
 func _ready() -> void:
@@ -8,4 +8,7 @@ func _ready() -> void:
 	
 func _on_area_entered(body: Node2D) -> void:
 	if body is Player:
-		get_tree().change_scene_to_packed(FINAL_BOSS)
+		call_deferred("change_scene")
+		
+func change_scene(): 
+	get_tree().change_scene_to_packed(FINAL_BOSS)

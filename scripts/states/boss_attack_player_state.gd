@@ -5,6 +5,8 @@ var attack_finished: bool = false
 var is_player_crouched: bool = false
 
 func enter_state() -> void:
+	if not enemy.player:
+		enemy.player = enemy.get_tree().get_first_node_in_group("player")
 	enemy.animated_sprite_2d.frame_changed.connect(_on_frame_changed.bind(enemy))
 	attack_finished = false
 	enemy.velocity.x = 0

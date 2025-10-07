@@ -48,12 +48,14 @@ var player: Player
 
 func _init() -> void:
 	enemy_state_machine = EnemyStateMachine.new(self)
+	
 	add_child(enemy_state_machine)
 
 func _ready() -> void:
 	attack_timer.wait_time = attack_cooldown
 	player = get_tree().get_first_node_in_group("player")
-	if player.is_dead:
+	if player and player.is_dead:
+		print("Dead player detected")
 		queue_free()
 	
 	player_detection.body_entered.connect(func(body: Node2D): is_player_in_attack_range = true)

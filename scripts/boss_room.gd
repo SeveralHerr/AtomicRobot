@@ -1,10 +1,15 @@
 extends Node2D
 const BRIEFCASE_BULLET_2 = preload("res://scenes/briefcase_bullet2.tscn")
-
+const FINAL_BOSS = preload("res://scenes/final_boss.tscn")
 @onready var boss_room_background_sprite: Sprite2D = $BossRoomBackgroundSprite
 
 func _ready():
 	start_briefcase_spawning()
+	call_deferred("spawn_boss")
+	
+func spawn_boss():
+	var instance = FINAL_BOSS.instantiate()
+	add_child(instance)
 
 func start_briefcase_spawning():
 	var timer = Timer.new()
