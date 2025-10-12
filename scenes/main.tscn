@@ -65,10 +65,10 @@
 [ext_resource type="Texture2D" uid="uid://bi085heummtn" path="res://images/Light.png" id="57_qr2g0"]
 [ext_resource type="Script" uid="uid://dv0rbnba2864c" path="res://scripts/enemy_manager.gd" id="58_335wh"]
 [ext_resource type="Script" uid="uid://dvdcq0lhqdrnd" path="res://scripts/under_world_kill_box.gd" id="58_qr2g0"]
-[ext_resource type="SpriteFrames" uid="uid://dntvyy8jt8mjk" path="res://sprites/robot_sprite_frames.tres" id="64_152kg"]
 [ext_resource type="PackedScene" uid="uid://ct1xv7dk5rs7y" path="res://scenes/meter_maid_melee.tscn" id="64_od4ux"]
 [ext_resource type="PackedScene" uid="uid://bw8nx2c7jvd3m" path="res://scenes/leaf_manager.tscn" id="65_brcwu"]
 [ext_resource type="PackedScene" uid="uid://dg72alaxq1lp7" path="res://scenes/scaffolding1.tscn" id="65_fw04e"]
+[ext_resource type="SpriteFrames" uid="uid://dw2g4gosg8ilr" path="res://sprites/cass_sprite_frames.tres" id="66_y57op"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("51_k4pk8")
@@ -91,15 +91,15 @@ shadow_offset = Vector2(2, 2)
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_fndef"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_qr2g0"]
-seamless = true
 noise = SubResource("FastNoiseLite_fndef")
+seamless = true
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_g4yhg"]
 frequency = 0.1201
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_j0wti"]
-seamless = true
 noise = SubResource("FastNoiseLite_g4yhg")
+seamless = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_g4yhg"]
 shader = ExtResource("56_fndef")
@@ -1127,7 +1127,7 @@ top_level = true
 position = Vector2(-289, -21)
 
 [node name="DefaultSprite" parent="Player" index="1"]
-sprite_frames = ExtResource("64_152kg")
+sprite_frames = ExtResource("66_y57op")
 animation = &"idle"
 frame = 0
 frame_progress = 0.0
