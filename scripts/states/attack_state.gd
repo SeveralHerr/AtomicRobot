@@ -13,7 +13,26 @@ func enter_state(player: Player) -> void:
 	
 
 func trigger_attack(player: Player)-> void:
-	Globals.gust.emit(player.collision_shape_2d.global_position, 40.0)
+	Globals.gust.emit(player.collision_shape_2d.global_position, 40.0)	
+	if Globals.selected_character == "Robot":
+		var instance = player.ROBOT_BULLET.instantiate()
+		player.get_parent().add_child(instance)
+		instance.global_position = player.robot_attack_position.global_position
+		
+		var dir = player.last_dir
+		instance.dir = dir
+		instance.player = player
+		return
+	elif Globals.selected_character == "Cass":
+		var instance = player.FLIPFLOP_BULLET.instantiate()
+		player.get_parent().add_child(instance)
+		instance.global_position = player.robot_attack_position.global_position
+		
+		var dir = player.last_dir
+		instance.dir = dir
+		instance.player = player
+		return
+	
 	var bodies = player.area_2d.get_overlapping_bodies()
 	for body in bodies:
 		if body is Enemy:

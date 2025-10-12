@@ -24,7 +24,7 @@ func _on_frame_changed(enemy: Enemy):
 	
 func attack() -> void:
 	enemy._face_player()
-	Utils.throw_coin_from_enemy(enemy, false, 10 if is_player_crouched else 0)
+	Utils.throw_coin_from_enemy(enemy, false, 10 if is_player_crouched else 0) 
 	enemy.coins -= 1
 	enemy.attack_timer.start()
 	

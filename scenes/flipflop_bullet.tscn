@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://b2gx172dqadbi"]
+
+[ext_resource type="Script" uid="uid://bxkeqplw7x36o" path="res://scripts/flipflop_bullet.gd" id="1_y6p2t"]
+[ext_resource type="Texture2D" uid="uid://w1bkg2ujbir5" path="res://sprites/Cass.png" id="2_y6p2t"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ehk0o"]
+atlas = ExtResource("2_y6p2t")
+region = Rect2(0, 768, 128, 128)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7md1h"]
+radius = 5.9960055
+height = 25.98269
+
+[node name="Bullet" type="Node2D"]
+script = ExtResource("1_y6p2t")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-13, 0)
+texture = SubResource("AtlasTexture_ehk0o")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 516
+collision_mask = 516
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-1, 0)
+rotation = -0.023694038
+shape = SubResource("CapsuleShape2D_7md1h")

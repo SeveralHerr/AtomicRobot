@@ -117,11 +117,11 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		preload("res://sprites/robot_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
-			preload("res://sounds/Voice_Male_V2_Jump_Mono_05.wav"),
-			preload("res://sounds/Voice_Male_V1_Hit_Short_Mono_07.wav"),
+			preload("res://sounds/robot_noise.ogg"),
+			preload("res://sounds/robot_noise.ogg"),
 			preload("res://sounds/Retro FootStep Grass 01.wav"),
-			preload("res://sounds/Voice_Male_V2_Attack_Short_Mono_07.wav"),
-			preload("res://sounds/sword_attack.wav")  # weapon sound
+			preload("res://sounds/robot_noise.ogg"),
+			preload("res://sounds/robot_attack.ogg")  # weapon sound
 		),
 		5,  # Attack frame
 		3, # hp
