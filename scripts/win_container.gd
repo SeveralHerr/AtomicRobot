@@ -3,6 +3,7 @@ class_name  Win
 
 const CHARACTER_SELECT ="res://scenes/character_select.tscn"
 @onready var button: Button = $VBoxContainer/Button
+@onready var player: Player = $"../../Player"
 
 func _ready() -> void:
 	hide()
@@ -11,4 +12,7 @@ func _ready() -> void:
 		Globals.reset()
 		get_tree().change_scene_to_file(CHARACTER_SELECT))
 		
-	Globals.boss_death.connect(func(): show())
+	Globals.boss_death.connect(func(): 
+		player.set_process(false)
+		show())
+	

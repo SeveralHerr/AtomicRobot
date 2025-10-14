@@ -149,6 +149,7 @@ func die() -> void:
 	Globals.meter_maids_killed += 1
 	Globals.meter_maid_death.emit()
 	animated_sprite_2d.play("death")
+	print("dead af")
 
 	player_detection.monitorable = false
 	player_detection.monitoring = false
@@ -192,6 +193,7 @@ func receive_hit(damage: int) -> void:
 		var random_delay = randf_range(0, 0.2)
 		await get_tree().create_timer(random_delay).timeout
 		enemy_state_machine.change_state("DeadEnemyState")
+		
 
 func _play_hit_effects() -> void:
 	if animation_player.is_playing():

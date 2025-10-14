@@ -2,15 +2,16 @@ extends Node2D
 const BRIEFCASE_BULLET_2 = preload("res://scenes/briefcase_bullet2.tscn")
 const FINAL_BOSS = preload("res://scenes/final_boss.tscn")
 @onready var boss_room_background_sprite: Sprite2D = $BossRoomBackgroundSprite
-
 @onready var boss_words_label: Label = $UI/BossIntroContainer/BossWordsLabel
+@onready var player: Player = $Player
+
 @onready var final_boss_label: Label = $UI/BossIntroContainer/VBoxContainer/FinalBossLabel
 @onready var entrance_trigger: Area2D = $EntranceTrigger
 
 var intro_played: bool = false
 
 func _ready():
-
+	player.set_process(false)
 	# Set labels to invisible initially
 	boss_words_label.modulate.a = 0
 	final_boss_label.modulate.a = 0
@@ -42,6 +43,7 @@ func play_boss_intro_sequence():
 	await tween1.finished
 	spawn_boss()
 	start_briefcase_spawning()
+	player.set_process(true)
 	var tween2 = create_tween()
 	tween2.tween_property(boss_words_label, "modulate:a", 1.0, 0.5)
 	tween2.tween_interval(2.0)
