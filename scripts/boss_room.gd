@@ -9,9 +9,12 @@ const FINAL_BOSS = preload("res://scenes/final_boss.tscn")
 @onready var entrance_trigger: Area2D = $EntranceTrigger
 
 var intro_played: bool = false
+var is_player_dead: bool = false
 
 func _ready():
 	player.set_process(false)
+	player.set_physics_process(false)
+	player.set_process_input(false)
 	# Set labels to invisible initially
 	boss_words_label.modulate.a = 0
 	final_boss_label.modulate.a = 0
@@ -21,6 +24,11 @@ func _ready():
 	# Connect entrance trigger
 	if entrance_trigger:
 		entrance_trigger.body_entered.connect(_on_player_entered)
+		
+	Globals.player_death.connect(_on_player_death)
+	
+func _on_player_death(): 
+	is_player_dead = true
 	
 func _on_player_entered(body):
 	if intro_played:
@@ -44,6 +52,8 @@ func play_boss_intro_sequence():
 	spawn_boss()
 	start_briefcase_spawning()
 	player.set_process(true)
+	player.set_physics_process(true)
+	player.set_process_input(true)
 	var tween2 = create_tween()
 	tween2.tween_property(boss_words_label, "modulate:a", 1.0, 0.5)
 	tween2.tween_interval(2.0)
@@ -62,6 +72,9 @@ func start_briefcase_spawning():
 	timer.start()
 
 func spawn_falling_briefcase():
+	if is_player_dead:
+		return
+	
 	if not boss_room_background_sprite:
 		return
 	

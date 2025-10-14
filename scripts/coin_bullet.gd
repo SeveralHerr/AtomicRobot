@@ -60,8 +60,8 @@ func _physics_process(delta: float) -> void:
 		freeze = true
 
 func _on_body_entered(body: Node) -> void:
-	if body is not Player:
-		set_collision_mask_value(1, false)
+	#if body is not Player:
+		#set_collision_mask_value(1, false)
 	if body is Player and not has_hit_player:
 		print("hit player")
 		body.receive_hit(global_position, 1)
@@ -80,7 +80,6 @@ func _on_body_entered(body: Node) -> void:
 			physics_material_override = p
 		
 		# Clean up after hitting player
-		await get_tree().create_timer(4).timeout
 		queue_free()
 	
 	# For ground/wall collisions, just let physics handle it naturally

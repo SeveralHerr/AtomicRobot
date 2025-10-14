@@ -14,5 +14,7 @@ func _ready() -> void:
 		
 	Globals.boss_death.connect(func(): 
 		player.set_process(false)
+		player.set_physics_process(false)
+		player.set_process_input(false)
 		show())
 	
