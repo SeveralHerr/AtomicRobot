@@ -68,7 +68,7 @@
 [ext_resource type="PackedScene" uid="uid://ct1xv7dk5rs7y" path="res://scenes/meter_maid_melee.tscn" id="64_od4ux"]
 [ext_resource type="PackedScene" uid="uid://bw8nx2c7jvd3m" path="res://scenes/leaf_manager.tscn" id="65_brcwu"]
 [ext_resource type="PackedScene" uid="uid://dg72alaxq1lp7" path="res://scenes/scaffolding1.tscn" id="65_fw04e"]
-[ext_resource type="SpriteFrames" uid="uid://dw2g4gosg8ilr" path="res://sprites/cass_sprite_frames.tres" id="66_y57op"]
+[ext_resource type="SpriteFrames" uid="uid://bbdmg24cvolf2" path="res://sprites/cait_sprite_frames.tres" id="66_y57op"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("51_k4pk8")
@@ -1128,8 +1128,7 @@ position = Vector2(-292, -21)
 
 [node name="DefaultSprite" parent="Player" index="1"]
 sprite_frames = ExtResource("66_y57op")
-animation = &"idle"
-frame = 0
+frame = 6
 frame_progress = 0.0
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
