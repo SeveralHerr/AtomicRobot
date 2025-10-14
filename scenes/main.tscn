@@ -1124,7 +1124,7 @@ position = Vector2(-210, -241)
 
 [node name="Player" parent="." instance=ExtResource("2_5jk15")]
 top_level = true
-position = Vector2(8468, -28)
+position = Vector2(-292, -21)
 
 [node name="DefaultSprite" parent="Player" index="1"]
 sprite_frames = ExtResource("66_y57op")

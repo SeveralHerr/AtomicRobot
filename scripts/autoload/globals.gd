@@ -17,7 +17,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"CODY IS NOW PLAYABLE",
 		true, 
 		"Owner of Atomic Robot Tattoo
-		+2 hp    +2 dmg",
+		+1 hp    +2 dmg",
 		preload("res://sprites/cody_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -28,7 +28,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/lightsaber.wav")  # weapon sound
 		),
 		2,  # Attack frame,
-		2, # hp
+		1, # hp
 		2 # dmg
 		
 	),
@@ -75,7 +75,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"Cass IS NOW PLAYABLE",
 		true,
 		"Employee of Atomic Robot Tattoo
-		+3 hp    +1 dmg", 
+		+1 hp    +1 dmg", 
 		preload("res://sprites/cass_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -86,7 +86,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/sword_attack.wav")  # weapon sound
 		),
 		5,  # Attack frame
-		3, # hp
+		1, # hp
 		1 # dmg
 	),
 	"Caitlyn": CharacterConfig.new(
@@ -113,7 +113,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"Robot IS NOW PLAYABLE",
 		true,
 		"Mascot of Atomic Robot Tattoo
-		+3 hp    +1 dmg", 
+		+1 hp    +1 dmg", 
 		preload("res://sprites/robot_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -124,7 +124,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/robot_attack.ogg")  # weapon sound
 		),
 		5,  # Attack frame
-		3, # hp
+		1, # hp
 		1 # dmg
 	)
 }
