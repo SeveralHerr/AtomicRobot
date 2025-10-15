@@ -16,7 +16,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"Cody",
 		"CODY IS NOW PLAYABLE",
 		true, 
-		"Owner of Atomic Robot Tattoo
+		"Artist at Atomic Robot Tattoo
 		+1 hp    +2 dmg",
 		preload("res://sprites/cody_sprite_frames.tres"),
 		"",
@@ -36,7 +36,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"Ryan",
 		"RYAN IS NOW PLAYABLE",
 		true,
-		"Employee of Atomic Robot Tattoo
+		"Artist at Atomic Robot Tattoo
 		+3 hp    +1 dmg", 
 		preload("res://sprites/ryan_sprite_frames.tres"),
 		"",
@@ -55,7 +55,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"Sara",
 		"SARA IS NOW PLAYABLE",
 		true,
-		"Employee of Atomic Robot Tattoo
+		"Artist at Atomic Robot Tattoo
 		+3 hp    +1 dmg", 
 		preload("res://sprites/sarah_sprite_frames.tres"),
 		"",
@@ -74,7 +74,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"Cass",
 		"Cass IS NOW PLAYABLE",
 		true,
-		"Employee of Atomic Robot Tattoo
+		"Artist at Atomic Robot Tattoo
 		+1 hp    +1 dmg", 
 		preload("res://sprites/cass_sprite_frames.tres"),
 		"",
@@ -93,7 +93,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"Caitlyn",
 		"Caitlyn IS NOW PLAYABLE",
 		true,
-		"Employee of Atomic Robot Tattoo
+		"Artist at Atomic Robot Tattoo
 		+3 hp    +1 dmg", 
 		preload("res://sprites/cait_sprite_frames.tres"),
 		"",

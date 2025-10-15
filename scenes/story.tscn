@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://c1xoom8lmej7f"]
 
-[ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="1_46kfa"]
-[ext_resource type="Script" uid="uid://d2ugpbfa0gp6n" path="res://scripts/story.gd" id="1_d52np"]
+[ext_resource type="Texture2D" uid="uid://jjgsnhucqk7" path="res://images/ARTBG.png" id="1_46kfa"]
+[ext_resource type="Script" uid="uid://c42vpl7gcvpcq" path="res://scripts/story.gd" id="1_d52np"]
 [ext_resource type="Script" uid="uid://chic8djxflbae" path="res://scripts/sway.gd" id="2_l2ljf"]
 [ext_resource type="LabelSettings" uid="uid://dagx3yqrlt5ea" path="res://styles/story_white_label.tres" id="3_md1pp"]
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="5_d52np"]
@@ -55,9 +55,9 @@ grow_vertical = 2
 [node name="StoryLabel1" type="Label" parent="CenterContainer"]
 custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
-text = "Something strange is happening in downtown Sioux Falls
+text = "Something strange is happening in downtown Sioux Falls.
 
-The meter maids have gone off-script"
+The meter maids have gone off-script."
 label_settings = ExtResource("3_md1pp")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -67,7 +67,7 @@ autowrap_mode = 3
 visible = false
 custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
-text = "They’re tossing quarters like it’s personal, and the rules keep changing
+text = "They’re tossing quarters like it’s personal, and the rules keep changing.
 
 all under pressure from the establishment."
 label_settings = ExtResource("3_md1pp")
@@ -91,9 +91,9 @@ autowrap_mode = 3
 visible = false
 custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
-text = "With custom gear and a deep love for their block
+text = "With custom gear and a deep love for their block.
 
-they’re drawing the line"
+they’re drawing the line."
 label_settings = ExtResource("3_md1pp")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -103,9 +103,9 @@ autowrap_mode = 3
 visible = false
 custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
-text = "This isn’t just about parking anymore
+text = "This isn’t just about parking anymore.
 
-It’s about standing up for your neighborhood"
+It’s about standing up for your city."
 label_settings = ExtResource("3_md1pp")
 horizontal_alignment = 1
 vertical_alignment = 1
