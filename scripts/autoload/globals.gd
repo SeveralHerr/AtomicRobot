@@ -83,7 +83,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/Voice_Female_V1_Hit_Short_Mono_07.wav"),
 			preload("res://sounds/Voice_Female_V2_Land_Mono_01.wav"),
 			preload("res://sounds/Voice_Female_V2_Attack_Mono_01.wav"),
-			preload("res://sounds/sword_attack.wav")  # weapon sound
+			preload("res://sounds/throw.wav")  # weapon sound
 		),
 		5,  # Attack frame
 		1, # hp
