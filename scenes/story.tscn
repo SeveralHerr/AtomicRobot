@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://c1xoom8lmej7f"]
 
-[ext_resource type="Texture2D" uid="uid://jjgsnhucqk7" path="res://images/ARTBG.png" id="1_46kfa"]
+[ext_resource type="Texture2D" uid="uid://cgo717wdobj0f" path="res://images/ARTBG.png" id="1_46kfa"]
 [ext_resource type="Script" uid="uid://c42vpl7gcvpcq" path="res://scripts/story.gd" id="1_d52np"]
 [ext_resource type="Script" uid="uid://chic8djxflbae" path="res://scripts/sway.gd" id="2_l2ljf"]
 [ext_resource type="LabelSettings" uid="uid://dagx3yqrlt5ea" path="res://styles/story_white_label.tres" id="3_md1pp"]
@@ -55,57 +55,9 @@ grow_vertical = 2
 [node name="StoryLabel1" type="Label" parent="CenterContainer"]
 custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
-text = "Something strange is happening in downtown Sioux Falls.
+text = "Parking enforcement has reached new levels, issuing tickets around the clock. 
 
-The meter maids have gone off-script."
-label_settings = ExtResource("3_md1pp")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="StoryLabel2" type="Label" parent="CenterContainer"]
-visible = false
-custom_minimum_size = Vector2(1000, 0)
-layout_mode = 2
-text = "They’re tossing quarters like it’s personal, and the rules keep changing.
-
-all under pressure from the establishment."
-label_settings = ExtResource("3_md1pp")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="StoryLabel3" type="Label" parent="CenterContainer"]
-visible = false
-custom_minimum_size = Vector2(1000, 0)
-layout_mode = 2
-text = "Atomic Robot Tattoo isn’t just watching from the sidelines.
-
-From their ink-stained studio, a crew of bold artists is stepping up."
-label_settings = ExtResource("3_md1pp")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="StoryLabel4" type="Label" parent="CenterContainer"]
-visible = false
-custom_minimum_size = Vector2(1000, 0)
-layout_mode = 2
-text = "With custom gear and a deep love for their block.
-
-they’re drawing the line."
-label_settings = ExtResource("3_md1pp")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="StoryLabel5" type="Label" parent="CenterContainer"]
-visible = false
-custom_minimum_size = Vector2(1000, 0)
-layout_mode = 2
-text = "This isn’t just about parking anymore.
-
-It’s about standing up for your city."
+Join Atomic Robot Tattoo in their fight to keep downtown balanced."
 label_settings = ExtResource("3_md1pp")
 horizontal_alignment = 1
 vertical_alignment = 1
