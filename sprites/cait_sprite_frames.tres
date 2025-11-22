@@ -1,6 +1,6 @@
-[gd_resource type="SpriteFrames" load_steps=36 format=3 uid="uid://bbdmg24cvolf2"]
+[gd_resource type="SpriteFrames" load_steps=35 format=3 uid="uid://bbdmg24cvolf2"]
 
-[ext_resource type="Texture2D" uid="uid://bomg4hdhbmo2h" path="res://sprites/Caitlyn.png" id="1_embvm"]
+[ext_resource type="Texture2D" uid="uid://w34dcybju7ou" path="res://sprites/Caitlyn.png" id="1_embvm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5rqib"]
 atlas = ExtResource("1_embvm")
@@ -81,9 +81,6 @@ region = Rect2(768, 768, 128, 128)
 [sub_resource type="AtlasTexture" id="AtlasTexture_3b68w"]
 atlas = ExtResource("1_embvm")
 region = Rect2(896, 768, 128, 128)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_y3qsc"]
-region = Rect2(0, 512, 128, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_en2os"]
 atlas = ExtResource("1_embvm")
@@ -220,9 +217,6 @@ animations = [{
 "speed": 10.0
 }, {
 "frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_y3qsc")
-}, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_en2os")
 }],
