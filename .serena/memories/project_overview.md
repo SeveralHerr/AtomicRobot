@@ -1,10 +1,10 @@
 # AtomicRobot Project Overview
 
 ## Purpose
-AtomicRobot is a 2D side-scrolling action game built in Godot 4.4. The game features a character named Atomic Robot navigating through an urban environment, fighting meter maids and other enemies. The game includes character switching mechanics, a state-based AI system, and boss fights.
+AtomicRobot is a 2D side-scrolling action game built in Godot 4.7. The game features a character named Atomic Robot navigating through an urban environment, fighting meter maids and other enemies. The game includes character switching mechanics, a state-based AI system, and boss fights.
 
 ## Tech Stack
-- **Engine**: Godot 4.4
+- **Engine**: Godot 4.7
 - **Language**: GDScript
 - **Graphics**: 2D sprites with animation
 - **Physics**: Godot's built-in 2D physics system

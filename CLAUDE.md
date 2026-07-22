@@ -2,19 +2,43 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Environment (this machine)
+
+- Godot **4.7.1** is NOT on PATH. Use the full path:
+  `C:\Users\gotmi\Tools\Godot\Godot_v4.7.1-stable_win64_console.exe` (console build —
+  prefer it for CLI/headless; the windowed exe is beside it). Treat `godot` in any
+  command below as an alias for that path.
+- Python 3.12 is installed user-scope (`python`, not `python3`). If a shell can't find
+  it, it lives at `%LOCALAPPDATA%\Programs\Python\Python312\python.exe`.
+- After pulling changes that touch images/resources, run
+  `godot --headless --path . --import` once to refresh the import/UID cache.
+- If lint reports `uid mismatch` errors (stale `uid://` refs after reimports), run
+  `godot --headless --path . --script res://tools/fix_uids.gd` to rewrite them.
+
 ## Development Commands
 
 **Running the Game:**
 
 - Open project in Godot editor and press F5 to run
-- For command line: `godot --main-pack` (from project directory)
+- Command line: `godot --path .` (add `--mute` for automated runs)
 
 **Exporting:**
 
 - Web: `godot --export-release "Web" bin/index.html`
 - Windows: `godot --export-release "Windows Desktop" path/to/output.exe`
 
-**No formal build system, testing framework, or linting tools are configured.**
+**Testing/linting:** headless runners exist — see the Self-Test Harness section below.
+
+## Deep-dive docs (read these before non-trivial changes)
+
+- `docs/ARCHITECTURE.md` — scene flow, autoloads, signals, player/enemy state machines,
+  characters, physics layers, known quirks
+- `docs/LEVELS.md` — how main.tscn/boss_room are structured, where ground collision
+  actually lives (TileSet physics layers), how to inspect/edit tilemaps
+- `docs/LANE_REFACTOR.md` — planned TMNT-style multi-lane movement: complete catalogue
+  of single-ground-plane assumptions to change, plus pre-existing bugs to fix first
+- `tools/dump_level.gd` — headless JSON dump of any scene's geometry:
+  `godot --headless --path . --script res://tools/dump_level.gd -- --scene res://scenes/main.tscn --out dump.json`
 
 ## Architecture Overview
 
