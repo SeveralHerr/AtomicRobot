@@ -1,0 +1,10 @@
+{
+  "description": "Generic smoke sequence — documents the step schema using only engine-generic verbs. Replace the actions/asserts with ones for your project. Run: python3 tools/devtools.py input sequence test/sequences/smoke.json",
+  "steps": [
+    {"type": "wait", "seconds": 1.0, "comment": "let the scene settle"},
+    {"type": "screenshot", "filename": "smoke_initial.png"},
+    {"type": "wait_frames", "frames": 30},
+    {"type": "screenshot", "filename": "smoke_after_frames.png"},
+    {"type": "clear", "comment": "release any simulated inputs"}
+  ]
+}

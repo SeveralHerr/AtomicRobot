@@ -28,6 +28,7 @@ ScreenShake="*res://scripts/autoload/screenshake.gd"
 AudioManager="*res://scripts/autoload/audio_manager.gd"
 EnemySpawner="*res://scripts/autoload/enemy_spawner.gd"
 LeafSystem="*res://scripts/autoload/leaf_system.gd"
+DevTools="*res://addons/godot_selftest/dev_tools.gd"
 
 [debug]
 
