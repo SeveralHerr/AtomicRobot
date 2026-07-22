@@ -21,8 +21,12 @@ static func spawn_enemy(parent: Node2D, player: Node2D, viewport_size: Vector2, 
 	elif spawn_side == 0: # Left side
 		spawn_x = player.position.x - viewport_size.x / 3 - offset
 
-	# Set enemy position
+	# Set enemy position; spawn on the player's current lane so it can fight immediately
 	enemy.global_position = Vector2(spawn_x, player.position.y)
+	if player is Player and player.lane_baseline_y != INF:
+		enemy.lane = player.current_lane
+		enemy.lane_baseline_y = player.lane_baseline_y
+		enemy.z_index = Lanes.z_for(enemy.lane)
 	return enemy
 
 static func spawn_wave(parent: Node2D, player: Node2D, viewport_size: Vector2, count: int = 3, offset: float = 50.0) -> Array[Node2D]:

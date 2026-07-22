@@ -56,6 +56,19 @@ var fall_multiplier: float = 1.5 # Stronger gravity when falling
 var boost_speed: float = 0
 var jump_start_position: Vector2
 var last_dir = 1
+
+# --- LANE SYSTEM (virtual depth, see docs/LANE_REFACTOR.md) ---
+var current_lane: int = Lanes.FRONT_LANE
+# Node Y when physically grounded on the front lane; INF until first captured.
+var lane_baseline_y: float = INF
+var is_changing_lane: bool = false
+var _lane_tween: Tween
+# Seconds ui_down has been held this press; negative = not tracking a press.
+var _down_held: float = -1.0
+# Previous-frame pressed states, so lane input works on polled edges (injected
+# input and some devices don't deliver reliable just_released events).
+var _up_prev: bool = false
+var _down_prev: bool = false
 func take_damage(amount: int) -> void:
 	health -= amount
 	print(health)
@@ -100,6 +113,7 @@ func _ready() -> void:
 	state_machine.add_state("FallState", FallState.new())
 	
 	state_machine.change_state("IdleState")
+	z_index = Lanes.z_for(current_lane)
 	jumping_streak_sprite.hide()
 	jump_fx_offset = jump_fx.position.y
 
@@ -132,34 +146,124 @@ func move_player() -> void:
 
 		
 func _physics_process(delta: float) -> void:
+	_update_lane_floor()
+
 	# Track coyote time
-	if is_on_floor():
+	if is_grounded():
 		coyote_timer = COYOTE_TIME
 	else:
 		coyote_timer -= delta
 
-	# Apply gravity and fall multiplier
-	if not is_on_floor():
+	# Apply gravity and fall multiplier (suspended while tweening between lanes)
+	if not is_grounded() and not is_changing_lane:
 		if velocity.y > 0:
 			velocity.y += gravity * (fall_multiplier - 1.0) * delta
 		velocity.y += gravity * delta
 
 	# Switch to FallState if falling and not already in it or dead
-	if not is_on_floor() and velocity.y > 0:
+	if not is_grounded() and not is_changing_lane and velocity.y > 0:
 		if not (state_machine.current_state is FallState or state_machine.current_state is DeadState or state_machine.current_state is IdleState):
 			state_machine.change_state("FallState")
 
 	state_machine.physics_update(delta)
 	move_and_slide()
-	
-func can_jump() -> bool: 
-	return coyote_timer > 0 or is_on_floor()
+
+
+# --- Lane mechanics -------------------------------------------------------
+
+func lanes_active() -> bool:
+	return lane_baseline_y != INF and Lanes.scene_has_lanes(get_tree().current_scene.scene_file_path if get_tree().current_scene else "")
+
+func _update_lane_floor() -> void:
+	# The front lane rides real collision; capture its ground line as the baseline
+	# the virtual lane floors are measured from.
+	if is_on_floor() and current_lane == Lanes.FRONT_LANE and not is_changing_lane:
+		lane_baseline_y = global_position.y
+
+	# Deeper lanes have no physical floor: snap onto the lane's virtual floor line.
+	if lanes_active() and current_lane != Lanes.FRONT_LANE and not is_changing_lane:
+		var fy := Lanes.floor_y(lane_baseline_y, current_lane)
+		if velocity.y >= 0 and global_position.y >= fy:
+			global_position.y = fy
+			velocity.y = 0.0
+
+func _on_virtual_floor() -> bool:
+	if not lanes_active() or current_lane == Lanes.FRONT_LANE or is_changing_lane:
+		return false
+	return velocity.y >= 0 and global_position.y >= Lanes.floor_y(lane_baseline_y, current_lane) - 0.5
+
+## Lane-aware replacement for is_on_floor(): true on real ground OR a virtual lane floor.
+func is_grounded() -> bool:
+	return is_on_floor() or _on_virtual_floor()
+
+func _process_lane_input(delta: float) -> void:
+	if is_dead:
+		return
+	var up_now := Input.is_action_pressed("ui_up")
+	var down_now := Input.is_action_pressed("ui_down")
+
+	# W / up steps a lane deeper (up-screen).
+	if up_now and not _up_prev:
+		try_change_lane(-1)
+
+	# S / down: tap steps a lane toward the camera, hold crouches.
+	if down_now and not _down_prev:
+		_down_held = 0.0
+	elif down_now and _down_held >= 0.0:
+		_down_held += delta
+		if _down_held >= Lanes.CROUCH_HOLD_TIME:
+			_down_held = -1.0
+			_try_crouch()
+	elif _down_prev and not down_now:
+		if _down_held >= 0.0 and _down_held < Lanes.CROUCH_HOLD_TIME:
+			try_change_lane(1)
+		_down_held = -1.0
+
+	_up_prev = up_now
+	_down_prev = down_now
+
+func try_change_lane(dir: int) -> bool:
+	if is_changing_lane or not lanes_active() or not is_grounded():
+		return false
+	var st = state_machine.current_state
+	if not (st is IdleState or st is WalkState or st is RunState):
+		return false
+	var target := current_lane + dir
+	if not Lanes.is_valid_lane(target):
+		return false
+	_start_lane_change(target)
+	return true
+
+func _start_lane_change(target: int) -> void:
+	is_changing_lane = true
+	velocity.y = 0.0
+	if _lane_tween:
+		_lane_tween.kill()
+	_lane_tween = create_tween()
+	_lane_tween.tween_property(self, "global_position:y", Lanes.floor_y(lane_baseline_y, target), Lanes.CHANGE_DURATION)
+	_lane_tween.finished.connect(func() -> void:
+		current_lane = target
+		z_index = Lanes.z_for(target)
+		is_changing_lane = false)
+
+func _try_crouch() -> void:
+	if is_changing_lane or not is_grounded():
+		return
+	var st = state_machine.current_state
+	if st is IdleState or st is WalkState or st is RunState:
+		state_machine.change_state("CrouchState")
+
+# --------------------------------------------------------------------------
+
+func can_jump() -> bool:
+	return coyote_timer > 0 or is_grounded()
 
 func get_speed() -> float:
 	return SPEED + boost_speed
 	
 func _process(delta: float) -> void:
 	state_machine.update(delta)
+	_process_lane_input(delta)
 	#var frame = default_sprite.frame
 	#var x = frame / h
 	#var y = frame / h
@@ -201,7 +305,7 @@ func receive_hit(source_position: Vector2, damage: int) -> void:
 	velocity.x = knockback_direction.x * final_knockback_strength
 	
 	# Add slight upward velocity for more dramatic effect if on ground
-	if is_on_floor():
+	if is_grounded():
 		velocity.y = -100
 	else:
 		velocity.y = knockback_direction.y * final_knockback_strength * 0.5

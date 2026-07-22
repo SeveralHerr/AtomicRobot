@@ -15,9 +15,8 @@ func update(player: Player, delta: float) -> void:
 			player.state_machine.change_state("WalkState")
 
 func handle_input(player: Player, event: InputEvent) -> void:
-	if event.is_action_pressed("ui_accept") and player.is_on_floor():
+	if event.is_action_pressed("ui_accept") and player.is_grounded():
 		player.state_machine.change_state("JumpState")
 	elif event.is_action_pressed("Attack"):
 		player.state_machine.change_state("AttackState")
-	elif event.is_action_pressed("ui_down") and player.is_on_floor():
-		player.state_machine.change_state("CrouchState")
+	# ui_down is handled centrally by Player._process_lane_input (tap = lane, hold = crouch)

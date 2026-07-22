@@ -6,6 +6,36 @@ This doc catalogues every place the current code assumes a single ground plane,
 so the refactor can be planned and reviewed against it. Line numbers are as of
 commit `eceb471` (2026-07) — re-verify before editing.
 
+## STATUS — increment 1 SHIPPED (2026-07-21)
+
+The core system is implemented and runtime-verified on the street level:
+
+- **`scripts/lane_system.gd`** (`class_name Lanes`): 3 lanes, 16px spacing, front
+  lane (2) = original ground with real collision, lanes 1/0 up-screen on virtual
+  floors. All math static + unit-tested (`test/unit/test_lane_system.gd`).
+- **Player** (`Player.gd`): `current_lane`, baseline capture from the physical floor,
+  virtual-floor snap, `is_grounded()` replacing `is_on_floor()` across all states,
+  tap-W/S = lane step (polled edges, works with injected input), hold-S ≥0.25s =
+  crouch (CrouchState exit is now polled too). Jumping works within any lane.
+- **Enemies** (`enemy.gd`): `lane` + same virtual-floor logic; chase states step one
+  lane toward the player (0.7s cooldown); `can_attack()` requires same lane;
+  melee attack and all projectiles (robot/flipflop/coin) are lane-tagged and only
+  hit same-lane targets. Spawner spawns on the player's current lane.
+- **Draw order**: `z_index = 1 + lane` on lane entities (front draws on top).
+- Scene-gated via `Lanes.LANE_SCENES` — main.tscn only; boss room single-plane.
+- Also fixed here: KnockbackState enter/exit naming bug; DevTools input injection
+  now dispatches real InputEvents (event-driven handlers work under automation).
+
+### Known v1 limitations / next increments
+- Props (trashcans, meters, cars) don't occlude back-lane entities correctly yet
+  (props are z=1; proper fix is y-sort or lane-aware prop z). Street art is not
+  visually widened for depth; lanes play on the existing ground strip.
+- Back-lane jumps can land on real one-way platforms above (emergent, physically
+  consistent; revisit if it feels wrong).
+- Platform/window meter maids are lane-locked to FRONT; boss room untouched.
+- Hand-placed street enemies default to FRONT lane; no authored lane assignments.
+- `nearest_meter` / FindMeter is not lane-aware (maids may refill cross-lane).
+
 ## Recommended shape of the feature
 
 - Add a **virtual depth axis**: `current_lane: int` + `LANE_Y_OFFSETS: Array[float]` on a

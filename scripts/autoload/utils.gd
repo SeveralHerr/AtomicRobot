@@ -54,9 +54,10 @@ static func shake_two_node2d(node1: Node2D, node2: Node2D, strength1: float = 10
 	tween2.tween_property(node2, "position", original_pos2, frequency)
 
 ## Coin throwing factory methods
-static func throw_coin(spawn_position: Vector2, target_position: Vector2, parent_node: Node, use_arc: bool = false) -> void:
+static func throw_coin(spawn_position: Vector2, target_position: Vector2, parent_node: Node, use_arc: bool = false, lane: int = Lanes.FRONT_LANE) -> void:
 	var instance = COIN_BULLET.instantiate()
 	parent_node.add_child(instance)
+	instance.lane = lane
 	var direction = (target_position - spawn_position).normalized()
 	instance.start(spawn_position, direction, use_arc)
 
@@ -67,7 +68,7 @@ static func throw_coin_from_enemy(enemy: Node, use_arc: bool = false, offset: in
 	var spawn_pos = enemy.global_position + enemy.coin_spawn_point.position
 	var target_pos = player.enemy_attack_position.global_position
 	target_pos.y += offset
-	throw_coin(spawn_pos, target_pos, enemy.player.get_parent(), use_arc)
+	throw_coin(spawn_pos, target_pos, enemy.player.get_parent(), use_arc, enemy.lane if enemy is Enemy else Lanes.FRONT_LANE)
 	
 ## Coin throwing factory methods
 static func throw_briefcase(spawn_position: Vector2, target_position: Vector2, parent_node: Node, use_arc: bool = false, gravity: float = 0.55, is_falling: bool = false) -> void:

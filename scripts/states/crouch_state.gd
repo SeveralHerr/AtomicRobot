@@ -24,6 +24,7 @@ func exit_state(player: Player) -> void:
 func change_shape(player: Player) -> void:
 	player.collision_shape_2d_body.shape = player.PLAYER_NORMAL_COLLISION_SHAPE
 
-func handle_input(player: Player, event: InputEvent) -> void:
-	if event.is_action_released("ui_down"):
+func update(player: Player, delta: float) -> void:
+	# Polled (not event-based) so injected/synthetic input releases also uncrouch.
+	if not Input.is_action_pressed("ui_down"):
 		player.state_machine.change_state("IdleState")

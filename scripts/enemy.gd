@@ -42,6 +42,14 @@ var knockback_decay: float = 8.0  # How fast knockback decays
 var turn_cooldown: float = 0.0
 var turn_cooldown_duration: float = 0.5
 
+# --- LANE SYSTEM (virtual depth, see docs/LANE_REFACTOR.md) ---
+var lane: int = Lanes.FRONT_LANE
+var lane_baseline_y: float = INF
+var is_changing_lane: bool = false
+var _lane_tween: Tween
+var lane_change_cooldown: float = 0.0
+const LANE_CHANGE_COOLDOWN := 0.7
+const LANE_CHANGE_DURATION := 0.2
 
 # Runtime data
 var player: Player
@@ -73,11 +81,12 @@ func _process(delta: float) -> void:
 		queue_free()
 	
 func _physics_process(delta: float) -> void:
+	_update_lane_floor()
 	_apply_gravity(delta)
 	_apply_knockback_decay(delta)
 	enemy_state_machine.update(delta)
 	turn_cooldown -= delta
-	
+	lane_change_cooldown -= delta
 
 	move_and_slide()
 
@@ -137,8 +146,53 @@ func _handle_direction(direction) -> void:
 	
 	
 func _apply_gravity(delta: float) -> void:
+	if is_changing_lane:
+		return
+	# Deeper lanes stand on a virtual floor above the real ground.
+	if lane != Lanes.FRONT_LANE and lane_baseline_y != INF:
+		var fy := Lanes.floor_y(lane_baseline_y, lane)
+		if velocity.y >= 0 and global_position.y >= fy:
+			global_position.y = fy
+			velocity.y = 0.0
+			return
 	if not is_on_floor():
 		velocity.y += 300 * delta
+
+
+func _update_lane_floor() -> void:
+	# Capture the front-lane ground line whenever physically standing on it.
+	if is_on_floor() and lane == Lanes.FRONT_LANE and not is_changing_lane:
+		lane_baseline_y = global_position.y
+
+
+func is_same_lane_as_player() -> bool:
+	return player != null and player.current_lane == lane
+
+
+## Step one lane toward the player's lane (used while chasing).
+func _lane_chase() -> void:
+	if is_changing_lane or lane_change_cooldown > 0.0 or lane_baseline_y == INF:
+		return
+	if player == null or player.current_lane == lane or player.is_changing_lane:
+		return
+	_start_lane_change(lane + signi(player.current_lane - lane))
+
+
+func _start_lane_change(target: int) -> void:
+	target = Lanes.clamp_lane(target)
+	if target == lane or lane_baseline_y == INF:
+		return
+	is_changing_lane = true
+	lane_change_cooldown = LANE_CHANGE_COOLDOWN
+	velocity.y = 0.0
+	if _lane_tween:
+		_lane_tween.kill()
+	_lane_tween = create_tween()
+	_lane_tween.tween_property(self, "global_position:y", Lanes.floor_y(lane_baseline_y, target), LANE_CHANGE_DURATION)
+	_lane_tween.finished.connect(func() -> void:
+		lane = target
+		z_index = Lanes.z_for(target)
+		is_changing_lane = false)
 
 func die() -> void:
 	set_collision_mask_value(3, false )
@@ -244,34 +298,40 @@ func has_state(state: String) -> bool:
 	return enemy_state_machine.states.has(state)
 
 
-func chase_player(delta: float) -> void: 
+func chase_player(delta: float) -> void:
 	# Handle animation and movement (but don't override knockback)
-	if not is_the_player_in_attack_range()  and is_player_in_line_of_sight():
+	if not is_the_player_in_attack_range() and is_player_in_line_of_sight():
 		# Only move if not being knocked back
 		if abs(knockback_velocity.x) < 10.0:
+			_lane_chase()
 			move_towards_target(player.global_position, delta)
 		animated_sprite_2d.play("walk")
 	else:
+		if not is_same_lane_as_player():
+			_lane_chase()
 		_face_player()
 		animated_sprite_2d.play("idle")
 		# Only stop movement if not being knocked back
 		if abs(knockback_velocity.x) < 10.0:
-			velocity.x = 0	
-			
-func chase_player_melee(delta: float) -> void: 
+			velocity.x = 0
+
+func chase_player_melee(delta: float) -> void:
 	# Handle animation and movement (but don't override knockback)
-	if not is_the_player_in_attack_range()  and is_player_in_line_of_sight():
+	if not is_the_player_in_attack_range() and is_player_in_line_of_sight():
 		# Only move if not being knocked back
 		if abs(knockback_velocity.x) < 10.0:
+			_lane_chase()
 			move_towards_target(player.global_position, delta)
 		animated_sprite_2d.play("walk")
 	else:
+		if not is_same_lane_as_player():
+			_lane_chase()
 		_face_player()
 		animated_sprite_2d.play("idle")
 		# Only stop movement if not being knocked back
 		if abs(knockback_velocity.x) < 10.0:
-			velocity.x = 0	
+			velocity.x = 0
 
 func can_attack() -> bool:
-	return attack_timer.is_stopped() and is_player_in_attack_range
+	return attack_timer.is_stopped() and is_player_in_attack_range and is_same_lane_as_player()
 	

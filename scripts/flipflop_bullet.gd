@@ -5,6 +5,7 @@ extends Node2D
 
 var dir = 0
 var player: Player
+var lane: int = Lanes.FRONT_LANE
 
 func _ready() -> void:
 	area_2d.body_entered.connect(_hit)
@@ -21,8 +22,8 @@ func _process(delta: float) -> void:
 	await get_tree().create_timer(1).timeout
 	queue_free()
 
-func _hit(body: Node2D): 
-	if body is Enemy:
+func _hit(body: Node2D):
+	if body is Enemy and body.lane == lane:
 		ScreenShake.apply_shake(7)
 		body.receive_hit(player.damage)
 		queue_free()

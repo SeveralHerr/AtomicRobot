@@ -532,6 +532,17 @@ func _node_matches(node: Node, group: String, method: String, cls: String) -> bo
 
 # --- Input Simulation Handlers ---
 
+## Input.action_press/action_release only update the polled action state; they never
+## dispatch an InputEvent, so game code driven by _input/_unhandled_input (event-based
+## handlers) would not see simulated input. Dispatch a matching InputEventAction too.
+func _dispatch_action_event(action: String, pressed: bool, strength: float = 1.0) -> void:
+	var ev := InputEventAction.new()
+	ev.action = action
+	ev.pressed = pressed
+	ev.strength = strength
+	Input.parse_input_event(ev)
+
+
 func _cmd_input_press(args: Dictionary) -> Dictionary:
 	var action: String = args.get("action", "")
 	if action.is_empty():
@@ -542,6 +553,7 @@ func _cmd_input_press(args: Dictionary) -> Dictionary:
 
 	var strength: float = args.get("strength", 1.0)
 	Input.action_press(action, strength)
+	_dispatch_action_event(action, true, strength)
 	if action not in _active_simulated_inputs:
 		_active_simulated_inputs.append(action)
 
@@ -561,6 +573,7 @@ func _cmd_input_release(args: Dictionary) -> Dictionary:
 		return {"success": false, "message": "Unknown input action: %s" % action}
 
 	Input.action_release(action)
+	_dispatch_action_event(action, false)
 	_active_simulated_inputs.erase(action)
 
 	return {
@@ -582,10 +595,12 @@ func _cmd_input_tap(args: Dictionary) -> Dictionary:
 	var strength: float = args.get("strength", 1.0)
 
 	Input.action_press(action, strength)
+	_dispatch_action_event(action, true, strength)
 	_active_simulated_inputs.append(action)
 
 	get_tree().create_timer(maxf(hold, 0.0)).timeout.connect(func() -> void:
 		Input.action_release(action)
+		_dispatch_action_event(action, false)
 		_active_simulated_inputs.erase(action)
 	)
 
@@ -682,11 +697,13 @@ func _execute_sequence(sequence_id: String, steps: Array, timeout: float) -> voi
 				var action: String = step["action"]
 				var strength: float = step.get("strength", 1.0)
 				Input.action_press(action, strength)
+				_dispatch_action_event(action, true, strength)
 				_active_simulated_inputs.append(action)
 
 			"release":
 				var action: String = step["action"]
 				Input.action_release(action)
+				_dispatch_action_event(action, false)
 				_active_simulated_inputs.erase(action)
 
 			"tap":
@@ -694,18 +711,22 @@ func _execute_sequence(sequence_id: String, steps: Array, timeout: float) -> voi
 				var hold: float = step.get("seconds", step.get("hold", 0.0))
 				var strength: float = step.get("strength", 1.0)
 				Input.action_press(action, strength)
+				_dispatch_action_event(action, true, strength)
 				_active_simulated_inputs.append(action)
 				await get_tree().create_timer(maxf(hold, get_process_delta_time())).timeout
 				Input.action_release(action)
+				_dispatch_action_event(action, false)
 				_active_simulated_inputs.erase(action)
 
 			"hold":
 				var action: String = step["action"]
 				var strength: float = step.get("strength", 1.0)
 				Input.action_press(action, strength)
+				_dispatch_action_event(action, true, strength)
 				_active_simulated_inputs.append(action)
 				await get_tree().create_timer(step["seconds"]).timeout
 				Input.action_release(action)
+				_dispatch_action_event(action, false)
 				_active_simulated_inputs.erase(action)
 
 			"wait":
@@ -1311,6 +1332,7 @@ func _clear_all_simulated_inputs() -> Array[String]:
 	var cleared: Array[String] = _active_simulated_inputs.duplicate()
 	for action in cleared:
 		Input.action_release(action)
+		_dispatch_action_event(action, false)
 	_active_simulated_inputs.clear()
 	return cleared
 

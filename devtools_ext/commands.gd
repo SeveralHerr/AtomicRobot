@@ -59,6 +59,9 @@ func _cmd_player_state(_args: Dictionary) -> Dictionary:
 		"facing": p.last_dir,
 		"character": _dev.get_node("/root/Globals").selected_character,
 		"is_dead": p.is_dead,
+		"lane": p.current_lane,
+		"is_changing_lane": p.is_changing_lane,
+		"lane_baseline_y": p.lane_baseline_y,
 	}}
 
 
@@ -115,6 +118,7 @@ func _cmd_list_enemies(_args: Dictionary) -> Dictionary:
 				"script": n.get_script().resource_path.get_file() if n.get_script() else "?",
 				"position": [n.global_position.x, n.global_position.y],
 				"health": n.health,
+				"lane": n.lane,
 			})
 	return {"success": true, "message": "%d enemies" % enemies.size(), "data": {"enemies": enemies}}
 

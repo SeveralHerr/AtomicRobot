@@ -30,7 +30,7 @@ func exit_state(player: Player) -> void:
 
 func update(player: Player, delta: float) -> void:
 	player.jump_fx.global_position = 	player.jump_start_position
-	if player.is_on_floor() and player.velocity.y >= -100: 
+	if player.is_grounded() and player.velocity.y >= -100:
 		if player.velocity.x <= 0:
 			player.state_machine.change_state("IdleState")
 		else:

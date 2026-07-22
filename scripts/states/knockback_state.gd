@@ -6,15 +6,15 @@ var knockback_duration: float = 0.3
 var knockback_velocity: Vector2
 var initial_knockback_strength: float
 
-func enter(host: Player) -> void:
+func enter_state(host: Player) -> void:
 	#host.default_sprite.play("hurt")  # Assuming you have a hurt animation
 	knockback_timer = knockback_duration
-	
+
 	# Store the initial knockback velocity
 	knockback_velocity = host.velocity
 	initial_knockback_strength = abs(knockback_velocity.x)
 
-func exit(host: Player) -> void:
+func exit_state(host: Player) -> void:
 	# Reset any visual effects
 	pass
 
