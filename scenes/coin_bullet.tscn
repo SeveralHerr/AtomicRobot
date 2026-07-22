@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://o61lmvx1pufs"]
 
 [ext_resource type="Script" uid="uid://b4dpl0l1gdtam" path="res://scripts/coin_bullet.gd" id="1_yrbct"]
-[ext_resource type="Texture2D" uid="uid://bcgcuypcs0pl6" path="res://images/coin.png" id="2_w4kev"]
-[ext_resource type="AudioStream" uid="uid://drkswtr5knn8q" path="res://sounds/coin.wav" id="3_vy3yn"]
+[ext_resource type="Texture2D" uid="uid://hi075s0o5d22" path="res://images/coin.png" id="2_w4kev"]
+[ext_resource type="AudioStream" uid="uid://c87obpnhnbtmu" path="res://sounds/coin.wav" id="3_vy3yn"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_w4kev"]
 

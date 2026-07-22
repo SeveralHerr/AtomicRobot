@@ -1,10 +1,10 @@
 [gd_scene load_steps=11 format=3 uid="uid://bi5pyhjxtocqc"]
 
-[ext_resource type="Texture2D" uid="uid://dhwrenpfvfhh3" path="res://images/new/newspaperstand.png" id="1_uwo4u"]
+[ext_resource type="Texture2D" uid="uid://djcqvj1picwpt" path="res://images/new/newspaperstand.png" id="1_uwo4u"]
 [ext_resource type="Script" uid="uid://cfhair3py7sgq" path="res://scripts/interactive_mailbox.gd" id="2_uwo4u"]
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="3_5iqop"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="3_u7wxk"]
-[ext_resource type="Texture2D" uid="uid://bie3hhmnqxv0o" path="res://images/newspaper.png" id="5_u7wxk"]
+[ext_resource type="Texture2D" uid="uid://cw0xfmp8i730g" path="res://images/newspaper.png" id="5_u7wxk"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_64moy"]
 radius = 23.0217

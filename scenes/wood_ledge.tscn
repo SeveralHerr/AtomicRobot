@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dwd6lyrgrnp0h"]
 
-[ext_resource type="Texture2D" uid="uid://bt3u1i27nnely" path="res://images/wood_ledge.png" id="1_qpdmb"]
+[ext_resource type="Texture2D" uid="uid://cm4wo3f5qgjnw" path="res://images/wood_ledge.png" id="1_qpdmb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cjlxv"]
 size = Vector2(32.5, 5)
