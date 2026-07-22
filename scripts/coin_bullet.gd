@@ -9,7 +9,9 @@ var initial_speed: float = 600.0
 var has_hit_player: bool = false
 var bounce_damping: float = 0.7
 var is_falling: bool = false
-var lane: int = Lanes.FRONT_LANE
+var lane: int = Lanes.GROUND_LANE
+# Coins arced down by platform/window maids hit whichever lane they land on.
+var lane_agnostic: bool = false
 
 func start(_position: Vector2, _direction: Vector2, is_arc: bool = false, gravity: float = 0.55) -> void:
 	global_position = _position
@@ -64,7 +66,7 @@ func _on_body_entered(body: Node) -> void:
 	#if body is not Player:
 		#set_collision_mask_value(1, false)
 	if body is Player and not has_hit_player:
-		if body.current_lane != lane:
+		if not lane_agnostic and body.current_lane != lane:
 			return
 		print("hit player")
 		body.receive_hit(global_position, 1)

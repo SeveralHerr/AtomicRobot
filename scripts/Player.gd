@@ -58,8 +58,8 @@ var jump_start_position: Vector2
 var last_dir = 1
 
 # --- LANE SYSTEM (virtual depth, see docs/LANE_REFACTOR.md) ---
-var current_lane: int = Lanes.FRONT_LANE
-# Node Y when physically grounded on the front lane; INF until first captured.
+var current_lane: int = Lanes.GROUND_LANE
+# Node Y when physically grounded on the walkway (ground lane); INF until captured.
 var lane_baseline_y: float = INF
 var is_changing_lane: bool = false
 var _lane_tween: Tween
@@ -175,22 +175,29 @@ func lanes_active() -> bool:
 	return lane_baseline_y != INF and Lanes.scene_has_lanes(get_tree().current_scene.scene_file_path if get_tree().current_scene else "")
 
 func _update_lane_floor() -> void:
-	# The front lane rides real collision; capture its ground line as the baseline
-	# the virtual lane floors are measured from.
-	if is_on_floor() and current_lane == Lanes.FRONT_LANE and not is_changing_lane:
+	# The ground lane rides real collision; capture its walkway line as the baseline
+	# the virtual road-lane floors are measured from.
+	if is_on_floor() and current_lane == Lanes.GROUND_LANE and not is_changing_lane:
 		lane_baseline_y = global_position.y
 
-	# Deeper lanes have no physical floor: snap onto the lane's virtual floor line.
-	if lanes_active() and current_lane != Lanes.FRONT_LANE and not is_changing_lane:
+	# Road lanes have no physical floor: snap onto the lane's virtual floor line.
+	if lanes_active() and current_lane != Lanes.GROUND_LANE and not is_changing_lane:
 		var fy := Lanes.floor_y(lane_baseline_y, current_lane)
 		if velocity.y >= 0 and global_position.y >= fy:
 			global_position.y = fy
 			velocity.y = 0.0
 
 func _on_virtual_floor() -> bool:
-	if not lanes_active() or current_lane == Lanes.FRONT_LANE or is_changing_lane:
+	if not lanes_active() or current_lane == Lanes.GROUND_LANE or is_changing_lane:
 		return false
 	return velocity.y >= 0 and global_position.y >= Lanes.floor_y(lane_baseline_y, current_lane) - 0.5
+
+## The walkway tiles' collision boxes occupy the road strip below them, so bodies
+## on road lanes must ignore Ground(2)/Meter(4)/Platforms(6); walls and cars stay on.
+func _set_ground_collision(enabled: bool) -> void:
+	set_collision_mask_value(2, enabled)
+	set_collision_mask_value(4, enabled)
+	set_collision_mask_value(6, enabled)
 
 ## Lane-aware replacement for is_on_floor(): true on real ground OR a virtual lane floor.
 func is_grounded() -> bool:
@@ -237,6 +244,10 @@ func try_change_lane(dir: int) -> bool:
 func _start_lane_change(target: int) -> void:
 	is_changing_lane = true
 	velocity.y = 0.0
+	# Leaving the walkway: drop ground collision BEFORE the body sinks into the
+	# walkway tiles' boxes. Returning to it: re-enable only on arrival (on top).
+	if target != Lanes.GROUND_LANE:
+		_set_ground_collision(false)
 	if _lane_tween:
 		_lane_tween.kill()
 	_lane_tween = create_tween()
@@ -244,6 +255,8 @@ func _start_lane_change(target: int) -> void:
 	_lane_tween.finished.connect(func() -> void:
 		current_lane = target
 		z_index = Lanes.z_for(target)
+		if target == Lanes.GROUND_LANE:
+			_set_ground_collision(true)
 		is_changing_lane = false)
 
 func _try_crouch() -> void:

@@ -14,6 +14,7 @@ func _ready() -> void:
 	detection_range = 450
 	attack_range = 250
 	attack_cooldown = 2
+	lane_locked = true  # attacks from a window; coins hit any lane
 	super._ready()
 
 	enemy_state_machine.add_state("AttackPlayerState", AttackPlayerState.new(self))

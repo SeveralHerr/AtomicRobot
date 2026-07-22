@@ -4,14 +4,18 @@ extends RefCounted
 ## Virtual-depth lane system (TMNT-arcade style).
 ##
 ## Lanes are a gameplay/render dimension layered on top of the existing physics:
-## lane FRONT (2) is the original street ground line and uses real floor collision;
-## deeper lanes (1, 0) sit up-screen on "virtual floors" LANE_SPACING apart, where
-## entities snap to floor_y() instead of colliding with tiles. Combat only connects
-## between entities on the same lane. See docs/LANE_REFACTOR.md.
+## lane GROUND (0, the back lane) is the original walkway line and uses real floor
+## collision; road lanes (1, 2) extend DOWN-SCREEN toward the camera LANE_SPACING
+## apart on "virtual floors" — entities there snap to floor_y() and disable their
+## Ground/Platforms collision bits (the walkway tiles' collision boxes occupy the
+## road strip). Combat only connects between entities on the same lane.
+## See docs/LANE_REFACTOR.md.
 
 const LANE_COUNT := 3
 const BACK_LANE := 0
 const FRONT_LANE := 2
+## The lane that owns the REAL floor collision (the sidewalk/walkway line).
+const GROUND_LANE := BACK_LANE
 
 ## World pixels between adjacent lane floors (up-screen is deeper).
 const LANE_SPACING := 16.0
@@ -32,15 +36,15 @@ static func is_valid_lane(lane: int) -> bool:
 	return lane >= BACK_LANE and lane <= FRONT_LANE
 
 
-## Y offset of a lane's floor relative to the front-lane baseline (0 for FRONT,
-## negative = up-screen for deeper lanes).
+## Y offset of a lane's floor relative to the ground-lane baseline (0 for GROUND,
+## positive = down-screen toward the camera for the road lanes).
 static func y_offset(lane: int) -> float:
-	return -float(FRONT_LANE - clamp_lane(lane)) * LANE_SPACING
+	return float(clamp_lane(lane) - GROUND_LANE) * LANE_SPACING
 
 
-## Absolute floor Y for a lane, given the entity's Y when grounded on the front lane.
-static func floor_y(baseline_front_y: float, lane: int) -> float:
-	return baseline_front_y + y_offset(lane)
+## Absolute floor Y for a lane, given the entity's Y when grounded on the walkway.
+static func floor_y(baseline_ground_y: float, lane: int) -> float:
+	return baseline_ground_y + y_offset(lane)
 
 
 ## Draw order: nearer lanes render on top (back=1 matches prop z, front=3 above accents).

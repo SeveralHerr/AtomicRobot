@@ -43,7 +43,12 @@ var turn_cooldown: float = 0.0
 var turn_cooldown_duration: float = 0.5
 
 # --- LANE SYSTEM (virtual depth, see docs/LANE_REFACTOR.md) ---
-var lane: int = Lanes.FRONT_LANE
+## Lane this enemy starts on (editor-visible; hand-placed enemies default to the walkway).
+@export var starting_lane: int = Lanes.GROUND_LANE
+## Lane-locked enemies (platform/window maids) never lane-chase, and their coins
+## hit every lane (they arc down from above).
+@export var lane_locked: bool = false
+var lane: int = Lanes.GROUND_LANE
 var lane_baseline_y: float = INF
 var is_changing_lane: bool = false
 var _lane_tween: Tween
@@ -60,6 +65,9 @@ func _init() -> void:
 	add_child(enemy_state_machine)
 
 func _ready() -> void:
+	lane = Lanes.clamp_lane(starting_lane)
+	z_index = Lanes.z_for(lane)
+	_set_ground_collision(lane == Lanes.GROUND_LANE)
 	attack_timer.wait_time = attack_cooldown
 	player = get_tree().get_first_node_in_group("player")
 	if player and player.is_dead:
@@ -148,8 +156,8 @@ func _handle_direction(direction) -> void:
 func _apply_gravity(delta: float) -> void:
 	if is_changing_lane:
 		return
-	# Deeper lanes stand on a virtual floor above the real ground.
-	if lane != Lanes.FRONT_LANE and lane_baseline_y != INF:
+	# Road lanes stand on a virtual floor below the walkway line.
+	if lane != Lanes.GROUND_LANE and lane_baseline_y != INF:
 		var fy := Lanes.floor_y(lane_baseline_y, lane)
 		if velocity.y >= 0 and global_position.y >= fy:
 			global_position.y = fy
@@ -160,9 +168,16 @@ func _apply_gravity(delta: float) -> void:
 
 
 func _update_lane_floor() -> void:
-	# Capture the front-lane ground line whenever physically standing on it.
-	if is_on_floor() and lane == Lanes.FRONT_LANE and not is_changing_lane:
+	# Capture the walkway ground line whenever physically standing on it.
+	if is_on_floor() and lane == Lanes.GROUND_LANE and not is_changing_lane:
 		lane_baseline_y = global_position.y
+
+
+## The walkway tiles' collision occupies the road strip; road-lane bodies ignore
+## Ground(2)/Platforms(6) and stand on virtual floors instead.
+func _set_ground_collision(enabled: bool) -> void:
+	set_collision_mask_value(2, enabled)
+	set_collision_mask_value(6, enabled)
 
 
 func is_same_lane_as_player() -> bool:
@@ -171,7 +186,7 @@ func is_same_lane_as_player() -> bool:
 
 ## Step one lane toward the player's lane (used while chasing).
 func _lane_chase() -> void:
-	if is_changing_lane or lane_change_cooldown > 0.0 or lane_baseline_y == INF:
+	if lane_locked or is_changing_lane or lane_change_cooldown > 0.0 or lane_baseline_y == INF:
 		return
 	if player == null or player.current_lane == lane or player.is_changing_lane:
 		return
@@ -185,6 +200,8 @@ func _start_lane_change(target: int) -> void:
 	is_changing_lane = true
 	lane_change_cooldown = LANE_CHANGE_COOLDOWN
 	velocity.y = 0.0
+	if target != Lanes.GROUND_LANE:
+		_set_ground_collision(false)
 	if _lane_tween:
 		_lane_tween.kill()
 	_lane_tween = create_tween()
@@ -192,6 +209,8 @@ func _start_lane_change(target: int) -> void:
 	_lane_tween.finished.connect(func() -> void:
 		lane = target
 		z_index = Lanes.z_for(target)
+		if target == Lanes.GROUND_LANE:
+			_set_ground_collision(true)
 		is_changing_lane = false)
 
 func die() -> void:
@@ -297,40 +316,6 @@ func is_the_player_in_attack_range() -> bool:
 func has_state(state: String) -> bool:
 	return enemy_state_machine.states.has(state)
 
-
-func chase_player(delta: float) -> void:
-	# Handle animation and movement (but don't override knockback)
-	if not is_the_player_in_attack_range() and is_player_in_line_of_sight():
-		# Only move if not being knocked back
-		if abs(knockback_velocity.x) < 10.0:
-			_lane_chase()
-			move_towards_target(player.global_position, delta)
-		animated_sprite_2d.play("walk")
-	else:
-		if not is_same_lane_as_player():
-			_lane_chase()
-		_face_player()
-		animated_sprite_2d.play("idle")
-		# Only stop movement if not being knocked back
-		if abs(knockback_velocity.x) < 10.0:
-			velocity.x = 0
-
-func chase_player_melee(delta: float) -> void:
-	# Handle animation and movement (but don't override knockback)
-	if not is_the_player_in_attack_range() and is_player_in_line_of_sight():
-		# Only move if not being knocked back
-		if abs(knockback_velocity.x) < 10.0:
-			_lane_chase()
-			move_towards_target(player.global_position, delta)
-		animated_sprite_2d.play("walk")
-	else:
-		if not is_same_lane_as_player():
-			_lane_chase()
-		_face_player()
-		animated_sprite_2d.play("idle")
-		# Only stop movement if not being knocked back
-		if abs(knockback_velocity.x) < 10.0:
-			velocity.x = 0
 
 func can_attack() -> bool:
 	return attack_timer.is_stopped() and is_player_in_attack_range and is_same_lane_as_player()

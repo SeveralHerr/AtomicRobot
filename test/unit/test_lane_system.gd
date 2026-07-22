@@ -34,14 +34,18 @@ func test_is_valid_lane() -> String:
 	return _T.assert_false(L.is_valid_lane(L.FRONT_LANE + 1), "above range invalid")
 
 
-func test_y_offset_front_is_zero_and_deeper_is_up_screen() -> String:
-	var r: String = _T.assert_float_eq(L.y_offset(L.FRONT_LANE), 0.0, "front lane has no offset")
+func test_ground_lane_is_back_lane() -> String:
+	return _T.assert_eq(L.GROUND_LANE, L.BACK_LANE, "walkway (physical floor) is the back lane")
+
+
+func test_y_offset_ground_is_zero_and_front_is_down_screen() -> String:
+	var r: String = _T.assert_float_eq(L.y_offset(L.GROUND_LANE), 0.0, "ground lane has no offset")
 	if r != "":
 		return r
-	# Each step deeper (lower index) moves LANE_SPACING further up-screen (more negative Y).
+	# Each step toward the camera (higher index) moves LANE_SPACING further down-screen (+Y).
 	for lane in range(L.BACK_LANE, L.FRONT_LANE):
-		var diff := L.y_offset(lane) - L.y_offset(lane + 1)
-		r = _T.assert_float_eq(diff, -L.LANE_SPACING, "lane %d is one spacing above lane %d" % [lane, lane + 1])
+		var diff := L.y_offset(lane + 1) - L.y_offset(lane)
+		r = _T.assert_float_eq(diff, L.LANE_SPACING, "lane %d is one spacing below lane %d" % [lane + 1, lane])
 		if r != "":
 			return r
 	return ""
@@ -49,10 +53,10 @@ func test_y_offset_front_is_zero_and_deeper_is_up_screen() -> String:
 
 func test_floor_y_applies_offset_to_baseline() -> String:
 	var baseline := -20.75
-	var r: String = _T.assert_float_eq(L.floor_y(baseline, L.FRONT_LANE), baseline, "front floor == baseline")
+	var r: String = _T.assert_float_eq(L.floor_y(baseline, L.GROUND_LANE), baseline, "ground floor == baseline")
 	if r != "":
 		return r
-	return _T.assert_float_eq(L.floor_y(baseline, L.BACK_LANE), baseline - L.LANE_SPACING * (L.LANE_COUNT - 1), "back floor is highest")
+	return _T.assert_float_eq(L.floor_y(baseline, L.FRONT_LANE), baseline + L.LANE_SPACING * (L.LANE_COUNT - 1), "front floor is lowest on screen")
 
 
 func test_z_order_front_lane_draws_on_top() -> String:

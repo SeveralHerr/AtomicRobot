@@ -6,35 +6,46 @@ This doc catalogues every place the current code assumes a single ground plane,
 so the refactor can be planned and reviewed against it. Line numbers are as of
 commit `eceb471` (2026-07) — re-verify before editing.
 
-## STATUS — increment 1 SHIPPED (2026-07-21)
+## STATUS — increment 2 SHIPPED (2026-07-21): road lanes toward the camera
 
-The core system is implemented and runtime-verified on the street level:
+The lane geometry now matches classic TMNT: **lane 0 (GROUND_LANE) = the original
+walkway line with real floor collision; lanes 1-2 extend DOWN-SCREEN (+16/+32px)
+onto the road strip** on virtual floors. No tiles were painted — the road art
+already existed below the walk line (non-colliding stone fill), hidden by the old
+camera clamp; `limit_bottom` went 30 → 64 to reveal it.
 
-- **`scripts/lane_system.gd`** (`class_name Lanes`): 3 lanes, 16px spacing, front
-  lane (2) = original ground with real collision, lanes 1/0 up-screen on virtual
-  floors. All math static + unit-tested (`test/unit/test_lane_system.gd`).
-- **Player** (`Player.gd`): `current_lane`, baseline capture from the physical floor,
-  virtual-floor snap, `is_grounded()` replacing `is_on_floor()` across all states,
-  tap-W/S = lane step (polled edges, works with injected input), hold-S ≥0.25s =
-  crouch (CrouchState exit is now polled too). Jumping works within any lane.
-- **Enemies** (`enemy.gd`): `lane` + same virtual-floor logic; chase states step one
-  lane toward the player (0.7s cooldown); `can_attack()` requires same lane;
-  melee attack and all projectiles (robot/flipflop/coin) are lane-tagged and only
-  hit same-lane targets. Spawner spawns on the player's current lane.
-- **Draw order**: `z_index = 1 + lane` on lane entities (front draws on top).
-- Scene-gated via `Lanes.LANE_SCENES` — main.tscn only; boss room single-plane.
-- Also fixed here: KnockbackState enter/exit naming bug; DevTools input injection
-  now dispatches real InputEvents (event-driven handlers work under automation).
+- **`scripts/lane_system.gd`** (`class_name Lanes`): `GROUND_LANE` owns physics;
+  `y_offset()` is +LANE_SPACING per lane toward the camera. Unit-tested.
+- **Collision handling**: the walkway tiles' collision strips occupy the road band,
+  so road-lane bodies disable Ground(2)/Platforms(6) (player also Meter(4)) via
+  `_set_ground_collision()` — off when leaving the walkway (tween start), back on
+  when arriving at it (tween end). Walls/car bits stay on.
+- **Player**: spawns on the walkway (lane 0); S taps toward camera, W back;
+  hold-S crouches. Jump verified within road lanes.
+- **Enemies**: `@export starting_lane` (hand-placed default = walkway) and
+  `@export lane_locked`; lane-chase is wired into **ChasePlayerState** (the earlier
+  chase_player() wiring was dead code — removed). Spawner picks a weighted random
+  lane (40% player's, 60% others) and seeds baseline from the player.
+- **Platform/window maids**: `lane_locked = true`; their arced coins are
+  `lane_agnostic` (hit any lane). Street maids' coins remain lane-tagged.
+- **FindMeter**: maids step back to the walkway before refilling at meters.
+- **Cars** (streetlight event): spawn on the front road lane (+32) and only hit
+  front-lane players — thematically correct road hazard.
+- **Kill box**: verified 173px clearance below the front lane — no change needed.
+  `fall_death_collision.gd` is orphaned (attached to nothing).
 
-### Known v1 limitations / next increments
-- Props (trashcans, meters, cars) don't occlude back-lane entities correctly yet
-  (props are z=1; proper fix is y-sort or lane-aware prop z). Street art is not
-  visually widened for depth; lanes play on the existing ground strip.
-- Back-lane jumps can land on real one-way platforms above (emergent, physically
-  consistent; revisit if it feels wrong).
-- Platform/window meter maids are lane-locked to FRONT; boss room untouched.
-- Hand-placed street enemies default to FRONT lane; no authored lane assignments.
-- `nearest_meter` / FindMeter is not lane-aware (maids may refill cross-lane).
+### Known limitations / next increments
+- **Water zone x 6209..6898** (splash volume) overlaps the road lanes — front-lane
+  players can currently "walk on water" through it; decide: block lane-changes in
+  that x-range, or bridge/reroute. (The death pit below only triggers via the
+  walkway hole at x 6496..6592.)
+- Props (trashcans, meters) don't occlude road-lane entities correctly yet
+  (props z=1; proper fix is y-sort or lane-aware prop z).
+- Enemy lane convergence is eager (0.7s cooldown) — everything stacks the player's
+  lane fast; consider longer initial cooldown or per-enemy lane preference.
+- Lane spacing 16px and crouch-hold 0.25s are feel parameters, untested by hand.
+- Boss room intentionally single-plane. VirtualJoystick addon class name collides
+  with a Godot 4.7 native class (mobile builds only, pre-existing).
 
 ## Recommended shape of the feature
 

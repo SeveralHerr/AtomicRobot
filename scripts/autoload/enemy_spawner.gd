@@ -21,13 +21,27 @@ static func spawn_enemy(parent: Node2D, player: Node2D, viewport_size: Vector2, 
 	elif spawn_side == 0: # Left side
 		spawn_x = player.position.x - viewport_size.x / 3 - offset
 
-	# Set enemy position; spawn on the player's current lane so it can fight immediately
-	enemy.global_position = Vector2(spawn_x, player.position.y)
+	# Spawn on a weighted random lane (biased toward the player's) for TMNT-style
+	# depth pressure; _ready applies starting_lane + collision/z. The player's
+	# baseline (physical walkway Y) derives every lane's floor.
 	if player is Player and player.lane_baseline_y != INF:
-		enemy.lane = player.current_lane
+		var lane := _pick_spawn_lane(player.current_lane)
+		enemy.starting_lane = lane
 		enemy.lane_baseline_y = player.lane_baseline_y
-		enemy.z_index = Lanes.z_for(enemy.lane)
+		enemy.global_position = Vector2(spawn_x, Lanes.floor_y(player.lane_baseline_y, lane))
+	else:
+		enemy.global_position = Vector2(spawn_x, player.position.y)
 	return enemy
+
+
+static func _pick_spawn_lane(player_lane: int) -> int:
+	if randf() < 0.4:
+		return player_lane
+	var others: Array[int] = []
+	for l in range(Lanes.BACK_LANE, Lanes.FRONT_LANE + 1):
+		if l != player_lane:
+			others.append(l)
+	return others[randi() % others.size()]
 
 static func spawn_wave(parent: Node2D, player: Node2D, viewport_size: Vector2, count: int = 3, offset: float = 50.0) -> Array[Node2D]:
 	var enemies: Array[Node2D] = []

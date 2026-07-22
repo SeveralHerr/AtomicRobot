@@ -9,6 +9,9 @@ var stand_still: bool = false
 func enter_state() -> void:
 	meter = Globals.nearest_meter(enemy.global_position)
 	stand_still = false
+	# Meters live on the walkway — step back to the ground lane before seeking one.
+	if enemy.lane != Lanes.GROUND_LANE:
+		enemy._start_lane_change(Lanes.GROUND_LANE)
 	var dist = enemy.global_position.distance_to(meter.global_position)
 	if dist >= 200:
 		enemy.coins += 2
@@ -25,6 +28,8 @@ func exit_state() -> void:
 
 
 func update(delta: float) -> void:
+	if enemy.is_changing_lane:
+		return
 	if stand_still:
 		enemy.velocity.x = 0
 		enemy.animated_sprite_2d.pause()

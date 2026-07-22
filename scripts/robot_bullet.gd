@@ -4,7 +4,7 @@ extends Node2D
 
 var dir = 0
 var player: Player
-var lane: int = Lanes.FRONT_LANE
+var lane: int = Lanes.GROUND_LANE
 
 func _ready() -> void:
 	area_2d.body_entered.connect(_hit)

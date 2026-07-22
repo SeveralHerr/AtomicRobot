@@ -39,7 +39,8 @@ func change_to_green():
 
 	var car = CAR.instantiate()
 	add_child(car)
-	car.global_position = Vector2(player.position.x + car_position.x, 0)
+	car.global_position = Vector2(player.position.x + car_position.x, _car_road_y())
+	car.z_index = Lanes.z_for(Lanes.FRONT_LANE)
 	car.speed = 0
 	car.start = true
 	
@@ -54,13 +55,17 @@ func change_to_green():
 	car.area_2d.monitorable = false
 	car.area_2d.monitoring = false
 
-	car.global_position = Vector2(player.position.x + car_position.x, 0)
+	car.global_position = Vector2(player.position.x + car_position.x, _car_road_y())
 	current_state = LightState.RED
 	
 	# Wait for red duration before allowing state change again
 	await get_tree().create_timer(red_duration).timeout
 	car.queue_free()
 	can_change_state = true
+
+# Cars drive on the front road lane now, 32px below the old walkway line.
+func _car_road_y() -> float:
+	return Lanes.y_offset(Lanes.FRONT_LANE)
 
 func _on_detection_area_body_entered(body):
 	if body is Player:

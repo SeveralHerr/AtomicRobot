@@ -46,7 +46,9 @@ func _process(delta: float) -> void:
 
 func _hit(body: Node2D) -> void:
 	if body is Player:
-		
+		# Cars drive on the front road lane; only hit players standing in it.
+		if body.current_lane != Lanes.FRONT_LANE:
+			return
 		shaker.apply_shake(2)
 		_enable_player_layer(false)
 		print("Car hit")

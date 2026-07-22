@@ -29,13 +29,16 @@ func update(delta: float) -> void:
 	if not enemy.is_the_player_in_attack_range()  and enemy.is_player_in_line_of_sight() and not enemy.is_near_edge():
 		# Only move if not being knocked back
 		if abs(enemy.knockback_velocity.x) < 10.0:
+			enemy._lane_chase()
 			enemy.move_towards_target(enemy.player.global_position, delta)
 		enemy.animated_sprite_2d.play("walk")
 	else:
+		if not enemy.is_same_lane_as_player():
+			enemy._lane_chase()
 		enemy._face_player()
 		enemy.animated_sprite_2d.play("idle")
 		# Only stop movement if not being knocked back
 		if abs(enemy.knockback_velocity.x) < 10.0:
-			enemy.velocity.x = 0	
+			enemy.velocity.x = 0
 		
 	
