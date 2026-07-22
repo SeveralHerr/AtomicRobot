@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=35 format=3 uid="uid://do54d5cxhwo50"]
+[gd_resource type="SpriteFrames" format=3 uid="uid://do54d5cxhwo50"]
 
 [ext_resource type="Texture2D" uid="uid://bvnv4llf17xuw" path="res://sprites/Ryan2.png" id="1_bga50"]
 
@@ -161,7 +161,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_oblej")
 }],
-"loop": false,
+"loop": 0,
 "name": &"Attack",
 "speed": 15.0
 }, {
@@ -169,7 +169,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_e4eri")
 }],
-"loop": true,
+"loop": 1,
 "name": &"Climb",
 "speed": 3.0
 }, {
@@ -177,7 +177,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_1cgjh")
 }],
-"loop": false,
+"loop": 0,
 "name": &"Crouch",
 "speed": 8.0
 }, {
@@ -209,7 +209,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_2p17n")
 }],
-"loop": false,
+"loop": 0,
 "name": &"Dead",
 "speed": 10.0
 }, {
@@ -217,7 +217,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_bga50")
 }],
-"loop": true,
+"loop": 1,
 "name": &"Fall",
 "speed": 5.0
 }, {
@@ -228,7 +228,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_kedo4")
 }],
-"loop": false,
+"loop": 0,
 "name": &"Jump",
 "speed": 5.0
 }, {
@@ -257,7 +257,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_48teo")
 }],
-"loop": true,
+"loop": 1,
 "name": &"Walk",
 "speed": 10.0
 }, {
@@ -334,7 +334,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_gf3gb")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle",
 "speed": 4.0
 }]

@@ -1,4 +1,4 @@
-[gd_resource type="LabelSettings" load_steps=3 format=3 uid="uid://dagx3yqrlt5ea"]
+[gd_resource type="LabelSettings" format=3 uid="uid://dagx3yqrlt5ea"]
 
 [ext_resource type="FontFile" uid="uid://4xjpn6386m5m" path="res://styles/KomikaTitlePaint-D3x.ttf" id="1_gp1ku"]
 

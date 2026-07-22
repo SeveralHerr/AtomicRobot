@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=35 format=3 uid="uid://bbdmg24cvolf2"]
+[gd_resource type="SpriteFrames" format=3 uid="uid://bbdmg24cvolf2"]
 
 [ext_resource type="Texture2D" uid="uid://w34dcybju7ou" path="res://sprites/Caitlyn.png" id="1_embvm"]
 
@@ -167,7 +167,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_kw5g7")
 }],
-"loop": false,
+"loop": 0,
 "name": &"Attack",
 "speed": 15.0
 }, {
@@ -175,7 +175,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_ng3tn")
 }],
-"loop": true,
+"loop": 1,
 "name": &"Climb",
 "speed": 3.0
 }, {
@@ -183,7 +183,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_kvxay")
 }],
-"loop": true,
+"loop": 1,
 "name": &"Crouch",
 "speed": 8.0
 }, {
@@ -212,7 +212,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_3b68w")
 }],
-"loop": false,
+"loop": 0,
 "name": &"Dead",
 "speed": 10.0
 }, {
@@ -220,7 +220,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_en2os")
 }],
-"loop": true,
+"loop": 1,
 "name": &"Fall",
 "speed": 5.0
 }, {
@@ -231,7 +231,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_hvucc")
 }],
-"loop": false,
+"loop": 0,
 "name": &"Jump",
 "speed": 5.0
 }, {
@@ -260,7 +260,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_xc7te")
 }],
-"loop": true,
+"loop": 1,
 "name": &"Walk",
 "speed": 10.0
 }, {
@@ -271,7 +271,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_4y65c")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle",
 "speed": 4.0
 }]
