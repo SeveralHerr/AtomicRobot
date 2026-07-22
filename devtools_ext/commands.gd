@@ -4,8 +4,8 @@ extends RefCounted
 ##
 ## Loaded by addons/godot_selftest/dev_tools.gd after the generic verbs.
 ## Every handler returns EXACTLY { "success": bool, "message": String, "data": Dictionary }.
-## Invoke from CLI: python tools/devtools.py cmd player-state
-##                  python tools/devtools.py cmd teleport-player --args '{"x": 100, "y": -21}'
+## Invoke from CLI: python tools/devtools.py cmd player_state
+##                  python tools/devtools.py cmd teleport_player --args '{"x": 100, "y": -21}'
 ## Discover:        python tools/devtools.py list-commands
 
 var _dev: Node

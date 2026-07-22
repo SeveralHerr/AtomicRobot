@@ -69,7 +69,7 @@ hand-edit it. Options:
 - Headless tool script using `TileMapLayer.set_cell()` / `set_pattern()` then
   `ResourceSaver.save()` on a packed scene.
 - Read/verify with `tools/dump_level.gd` (headless) or the runtime devtools verb
-  `cmd dump-tilemap` (see CLAUDE.md).
+  `cmd dump_tilemap` (see CLAUDE.md).
 
 ## Object placement
 
@@ -108,5 +108,5 @@ far background parallax `z_index=-1` (boss bg `-4`) · ground TileMapLayers & mo
   Area2D triggers, camera limits, instanced sub-scenes with positions.
 - `tools/fix_uids.gd` — rewrites stale `uid://` refs after reimports (run if lint
   reports uid mismatches).
-- Runtime: `python3 tools/devtools.py cmd dump-tilemap` / `cmd level-info` /
-  `cmd player-state` etc. — see CLAUDE.md cheat-sheet and `list-commands`.
+- Runtime: `python3 tools/devtools.py cmd dump_tilemap` / `cmd level_info` /
+  `cmd player_state` etc. — see CLAUDE.md cheat-sheet and `list-commands`.

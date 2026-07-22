@@ -18,8 +18,8 @@
 
 ### Runtime DevTools bridge (game running)
 - Launch: `godot --path . --mute` then `python tools/devtools.py ping`
-- Project verbs: `cmd start-game`, `cmd player-state`, `cmd teleport-player`,
-  `cmd spawn-enemy`, `cmd list-enemies`, `cmd level-info`, `cmd dump-tilemap`
+- Project verbs: `cmd start_game`, `cmd player_state`, `cmd teleport_player`,
+  `cmd spawn_enemy`, `cmd list_enemies`, `cmd level_info`, `cmd dump_tilemap`
 - Generic verbs + full cheat-sheet: see CLAUDE.md; discover with `list-commands`
 - The `/verify` slash command runs the whole gate (lint + tests + runtime assertions)
 

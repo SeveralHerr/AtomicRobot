@@ -83,8 +83,8 @@ commit `eceb471` (2026-07) — re-verify before editing.
 
 - `tools/dump_level.gd` prints the ground-surface profile per TileMapLayer — use it to
   derive/check lane Y positions.
-- Runtime: `python3 tools/devtools.py cmd player-state` (lane/pos/state),
-  `cmd teleport-player --args '{"x":..,"y":..}'`, `cmd spawn-enemy`,
+- Runtime: `python3 tools/devtools.py cmd player_state` (lane/pos/state),
+  `cmd teleport_player --args '{"x":..,"y":..}'`, `cmd spawn_enemy`,
   `input press/tap ui_up|ui_down`, `set-game-speed`, `wait-frames` — deterministic
   lane-change tests without a human at the keyboard.
 - Add unit tests under `test/unit/` for pure lane math (lane→Y mapping, same-lane
