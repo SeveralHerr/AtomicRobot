@@ -25,7 +25,7 @@ const CRT_SHADER := preload("res://shaders/crt_overlay.gdshader")
 @export_range(0.0, 1.0) var grille_opacity := 0.2: set = _set_grille_opacity
 
 @export_group("VHS Roll")
-@export var roll := true: set = _set_roll
+@export var roll := false: set = _set_roll
 @export var roll_speed := 8.0: set = _set_roll_speed
 @export_range(0.0, 100.0) var roll_size := 15.0: set = _set_roll_size
 @export_range(0.1, 5.0) var roll_variation := 1.8: set = _set_roll_variation
@@ -42,7 +42,7 @@ const CRT_SHADER := preload("res://shaders/crt_overlay.gdshader")
 @export var discolor := false: set = _set_discolor
 
 @export_group("Warp / Vignette")
-@export_range(0.0, 5.0) var warp_amount := 0.0: set = _set_warp_amount
+@export_range(0.0, 5.0) var warp_amount := 1.0: set = _set_warp_amount
 @export var vignette_intensity := 0.4: set = _set_vignette_intensity
 @export_range(0.0, 1.0) var vignette_opacity := 0.4: set = _set_vignette_opacity
 
