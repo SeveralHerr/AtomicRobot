@@ -146,6 +146,15 @@ func reset() -> void:
 	meter_maids_killed = 0
 
 
+# DevTools/testing entry hook: skip menus straight into a playable scene.
+# Wired via addons/godot_selftest/devtools_config.json entry_hook and the
+# devtools "start_game" verb. Not used by normal gameplay.
+func debug_start_game(character: String = "Ryan", scene: String = "res://scenes/main.tscn") -> void:
+	if character_dict.has(character):
+		selected_character = character
+	get_tree().change_scene_to_file.call_deferred(scene)
+
+
 func nearest_meter(pos: Vector2) -> Node2D:
 	var lowest_distance = 32323  
 	var nearest_meter: Node2D = null 
