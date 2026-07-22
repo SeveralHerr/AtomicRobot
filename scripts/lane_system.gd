@@ -17,8 +17,8 @@ const FRONT_LANE := 2
 ## The lane that owns the REAL floor collision (the sidewalk/walkway line).
 const GROUND_LANE := BACK_LANE
 
-## World pixels between adjacent lane floors (up-screen is deeper).
-const LANE_SPACING := 16.0
+## World pixels between adjacent lane floors (down-screen is nearer the camera).
+const LANE_SPACING := 24.0
 ## Seconds for a lane-step tween (player).
 const CHANGE_DURATION := 0.12
 ## Holding ui_down at least this long crouches; a shorter tap steps a lane forward.

@@ -213,7 +213,7 @@ autoplay = "RESET"
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, 20)
 zoom = Vector2(2.5, 2.5)
-limit_bottom = 64
+limit_bottom = 96
 limit_smoothed = true
 position_smoothing_speed = 1.0
 
