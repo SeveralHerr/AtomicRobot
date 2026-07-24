@@ -69,6 +69,7 @@ func _ready() -> void:
 	z_index = Lanes.z_for(lane)
 	_set_ground_collision(lane == Lanes.GROUND_LANE)
 	attack_timer.wait_time = attack_cooldown
+	add_to_group("enemies")
 	player = get_tree().get_first_node_in_group("player")
 	if player and player.is_dead:
 		print("Dead player detected")
@@ -192,13 +193,45 @@ func is_same_lane_as_player() -> bool:
 	return player != null and player.current_lane == lane
 
 
-## Step one lane toward the player's lane (used while chasing).
+## Step one lane toward the player's lane (used while chasing). Prefers the
+## player's lane, but if it's already staked out by another attacker within
+## throwing range, queues in a free adjacent lane instead of stacking on top.
 func _lane_chase() -> void:
 	if lane_locked or is_changing_lane or lane_change_cooldown > 0.0 or lane_baseline_y == INF:
 		return
-	if player == null or player.current_lane == lane or player.is_changing_lane:
+	if player == null or player.is_changing_lane:
 		return
-	_start_lane_change(lane + signi(player.current_lane - lane))
+	var target_lane := _pick_chase_lane()
+	if target_lane == lane:
+		return
+	_start_lane_change(lane + signi(target_lane - lane))
+
+
+## Same-lane-as-player if that lane is free; otherwise the nearest unclaimed
+## adjacent lane (falls back to the player's lane if every lane is claimed).
+func _pick_chase_lane() -> int:
+	var wanted := player.current_lane
+	if lane == wanted or not _lane_is_claimed(wanted):
+		return wanted
+	var offsets := [1, -1, 2, -2, 3, -3]
+	for offset in offsets:
+		var candidate: int = wanted + offset
+		if Lanes.is_valid_lane(candidate) and not _lane_is_claimed(candidate):
+			return candidate
+	return wanted
+
+
+## True if another (non-lane-locked) enemy is already camped on `check_lane`
+## within throwing distance of the player.
+func _lane_is_claimed(check_lane: int) -> bool:
+	for other in get_tree().get_nodes_in_group("enemies"):
+		if other == self or not is_instance_valid(other):
+			continue
+		if other.lane_locked or other.lane != check_lane or other.is_changing_lane:
+			continue
+		if absf(other.global_position.x - player.global_position.x) < attack_range:
+			return true
+	return false
 
 
 ## `duration` defaults to the snappy in-combat speed; callers that want a slower,

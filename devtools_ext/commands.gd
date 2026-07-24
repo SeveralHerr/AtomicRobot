@@ -25,6 +25,10 @@ func register_commands(dev: Node) -> void:
 	_dev.register_command("trigger_encounter", _cmd_trigger_encounter)
 	_dev.register_command("level_info", _cmd_level_info)
 	_dev.register_command("dump_tilemap", _cmd_dump_tilemap)
+	_dev.register_command("list_meters", _cmd_list_meters)
+	_dev.register_command("teleport_enemy", _cmd_teleport_enemy)
+	_dev.register_command("set_enemy_state", _cmd_set_enemy_state)
+	_dev.register_command("debug_find_meter", _cmd_debug_find_meter)
 
 
 func _player() -> Node:
@@ -257,6 +261,79 @@ func _cmd_dump_tilemap(args: Dictionary) -> Dictionary:
 				entry["cells"] = cells
 			layers.append(entry)
 	return {"success": true, "message": "%d layers" % layers.size(), "data": {"layers": layers}}
+
+
+## Every registered Meter (Globals.meters), with global position — the generic
+## scene-tree/get-state verbs can't resolve these back to node paths easily.
+func _cmd_list_meters(_args: Dictionary) -> Dictionary:
+	var globals := _dev.get_node("/root/Globals")
+	var out := []
+	for m in globals.meters:
+		if not is_instance_valid(m):
+			continue
+		out.append({
+			"path": String(_dev.get_tree().current_scene.get_path_to(m)),
+			"position": [m.global_position.x, m.global_position.y],
+		})
+	return {"success": true, "message": "%d meters" % out.size(), "data": {"meters": out}}
+
+
+## Find an Enemy by path suffix (as returned by list_enemies) and set its global_position.
+## args: {"path": "EnemyManager/MeterMaid", "x": float, "y": float}
+func _cmd_teleport_enemy(args: Dictionary) -> Dictionary:
+	var want: String = args.get("path", "")
+	if want == "":
+		return _fail("missing arg: path")
+	for n in _walk_scene():
+		if n is Enemy and String(_dev.get_tree().current_scene.get_path_to(n)) == want:
+			var pos: Vector2 = n.global_position
+			pos.x = float(args.get("x", pos.x))
+			pos.y = float(args.get("y", pos.y))
+			n.global_position = pos
+			n.velocity = Vector2.ZERO
+			return {"success": true, "message": "teleported", "data": {"position": [pos.x, pos.y]}}
+	return _fail("no enemy at path %s" % want)
+
+
+## Force an Enemy's state machine to a named state. args: {"path": "...", "state": "FindMeterState"}
+func _cmd_set_enemy_state(args: Dictionary) -> Dictionary:
+	var want: String = args.get("path", "")
+	var state: String = args.get("state", "")
+	if want == "" or state == "":
+		return _fail("missing arg: path and/or state")
+	for n in _walk_scene():
+		if n is Enemy and String(_dev.get_tree().current_scene.get_path_to(n)) == want:
+			if not n.has_state(state):
+				return _fail("enemy has no state: %s" % state)
+			n.enemy_state_machine.change_state(state)
+			return {"success": true, "message": "state set", "data": {"state": state}}
+	return _fail("no enemy at path %s" % want)
+
+
+## Introspect a live FindMeterState instance (not itself in the scene tree, so
+## the generic get-state node-path lookup can't reach it). args: {"path": "..."}
+func _cmd_debug_find_meter(args: Dictionary) -> Dictionary:
+	var want: String = args.get("path", "")
+	if want == "":
+		return _fail("missing arg: path")
+	for n in _walk_scene():
+		if n is Enemy and String(_dev.get_tree().current_scene.get_path_to(n)) == want:
+			var st = n.enemy_state_machine.states.get("FindMeterState")
+			if st == null:
+				return _fail("enemy has no FindMeterState")
+			return {"success": true, "message": "ok", "data": {
+				"stand_still": st.stand_still,
+				"dir": [st.dir.x, st.dir.y],
+				"meter_path": String(_dev.get_tree().current_scene.get_path_to(st.meter)) if st.meter else null,
+				"meter_pos": [st.meter.global_position.x, st.meter.global_position.y] if st.meter else null,
+				"current_state_matches": n.enemy_state_machine.current_state == st,
+				"is_changing_lane": n.is_changing_lane,
+				"lane": n.lane,
+				"coins": n.coins,
+				"velocity": [n.velocity.x, n.velocity.y],
+				"enemy_pos": [n.global_position.x, n.global_position.y],
+			}}
+	return _fail("no enemy at path %s" % want)
 
 
 func _walk_scene() -> Array:

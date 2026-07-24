@@ -179,7 +179,9 @@ func nearest_meter(pos: Vector2) -> Node2D:
 	var nearest_meter: Node2D = null 
 
 	for meter in meters:
-		var dist = pos.distance_to(meter.global_position) 
+		if not is_instance_valid(meter):
+			continue
+		var dist = pos.distance_to(meter.global_position)
 		if dist < lowest_distance:
 			lowest_distance = dist
 			nearest_meter = meter  

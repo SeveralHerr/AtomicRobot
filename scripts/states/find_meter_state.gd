@@ -25,6 +25,7 @@ func enter_state() -> void:
 func exit_state() -> void:
 	stand_still = false
 	enemy.coin_audio_player.stop()
+	enemy.animated_sprite_2d.flip_h = false
 
 
 func update(delta: float) -> void:
@@ -32,7 +33,11 @@ func update(delta: float) -> void:
 		return
 	if stand_still:
 		enemy.velocity.x = 0
-		enemy.animated_sprite_2d.pause()
+		# Don't pause the "refill" animation itself — it was just started this same
+		# entry into stand_still and pausing it here freezes it on frame 0 for the
+		# whole 2s wait, so the maid never visibly reaches for the meter.
+		if enemy.animated_sprite_2d.animation != "refill":
+			enemy.animated_sprite_2d.pause()
 		return
 		
 	if enemy.enemy_state_machine.current_state is not FindMeterState:
@@ -61,6 +66,10 @@ func _refill_at_meter() -> void:
 	meter.play_animation()
 	enemy.velocity.x = 0
 	enemy.coin_audio_player.play()
+	# The "refill" art reaches with the hand on the opposite side from the body's
+	# facing (drawn backwards vs. walk/idle) — mirror just this animation so the
+	# hand lands on the meter side instead of away from it.
+	enemy.animated_sprite_2d.flip_h = true
 	enemy.animated_sprite_2d.play("refill", 2)
 	Utils.shake_two_node2d(enemy.animated_sprite_2d, meter, 3)
 	await enemy.get_tree().create_timer(2).timeout
