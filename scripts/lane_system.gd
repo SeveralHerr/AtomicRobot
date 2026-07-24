@@ -5,15 +5,15 @@ extends RefCounted
 ##
 ## Lanes are a gameplay/render dimension layered on top of the existing physics:
 ## lane GROUND (0, the back lane) is the original walkway line and uses real floor
-## collision; road lanes (1, 2) extend DOWN-SCREEN toward the camera LANE_SPACING
+## collision; road lanes (1, 2, 3) extend DOWN-SCREEN toward the camera LANE_SPACING
 ## apart on "virtual floors" — entities there snap to floor_y() and disable their
 ## Ground/Platforms collision bits (the walkway tiles' collision boxes occupy the
 ## road strip). Combat only connects between entities on the same lane.
 ## See docs/LANE_REFACTOR.md.
 
-const LANE_COUNT := 3
+const LANE_COUNT := 4
 const BACK_LANE := 0
-const FRONT_LANE := 2
+const FRONT_LANE := 3
 ## The lane that owns the REAL floor collision (the sidewalk/walkway line).
 const GROUND_LANE := BACK_LANE
 
@@ -47,7 +47,7 @@ static func floor_y(baseline_ground_y: float, lane: int) -> float:
 	return baseline_ground_y + y_offset(lane)
 
 
-## Draw order: nearer lanes render on top (back=1 matches prop z, front=3 above accents).
+## Draw order: nearer lanes render on top (back=1 matches prop z, front=4 above accents).
 static func z_for(lane: int) -> int:
 	return 1 + clamp_lane(lane)
 

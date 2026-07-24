@@ -39,8 +39,10 @@ func change_to_green():
 
 	var car = CAR.instantiate()
 	add_child(car)
-	car.global_position = Vector2(player.position.x + car_position.x, _car_road_y())
-	car.z_index = Lanes.z_for(Lanes.FRONT_LANE)
+	var car_lane: int = _pick_car_lane()
+	car.lane = car_lane
+	car.global_position = Vector2(player.position.x + car_position.x, _car_road_y(car_lane))
+	car.z_index = Lanes.z_for(car_lane)
 	car.speed = 0
 	car.start = true
 	
@@ -55,7 +57,7 @@ func change_to_green():
 	car.area_2d.monitorable = false
 	car.area_2d.monitoring = false
 
-	car.global_position = Vector2(player.position.x + car_position.x, _car_road_y())
+	car.global_position = Vector2(player.position.x + car_position.x, _car_road_y(car_lane))
 	current_state = LightState.RED
 	
 	# Wait for red duration before allowing state change again
@@ -63,9 +65,18 @@ func change_to_green():
 	car.queue_free()
 	can_change_state = true
 
-# Cars drive on the front road lane now, 32px below the old walkway line.
-func _car_road_y() -> float:
-	return Lanes.y_offset(Lanes.FRONT_LANE)
+## Cars use the road lanes only — never the sidewalk (GROUND_LANE).
+func _pick_car_lane() -> int:
+	return randi_range(Lanes.GROUND_LANE + 1, Lanes.FRONT_LANE)
+
+## Absolute world Y of a lane's floor. Note this must be floor_y(), not y_offset():
+## y_offset() is a RELATIVE offset from the walkway baseline, and using it as an
+## absolute Y put cars ~21px below the lane they were supposed to be driving in.
+func _car_road_y(lane: int) -> float:
+	var baseline: float = player.global_position.y
+	if player != null and player.lane_baseline_y != INF:
+		baseline = player.lane_baseline_y
+	return Lanes.floor_y(baseline, lane)
 
 func _on_detection_area_body_entered(body):
 	if body is Player:

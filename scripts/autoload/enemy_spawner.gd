@@ -34,6 +34,29 @@ static func spawn_enemy(parent: Node2D, player: Node2D, viewport_size: Vector2, 
 	return enemy
 
 
+## Spawn one enemy at an explicit world X on an explicit lane.
+##
+## `parent` MUST be a zero-transform node — pass `get_tree().current_scene`.
+## global_position is applied while the node is still an orphan (add_child is
+## deferred), so on a parent with a non-zero transform the enemy gets shifted by
+## that transform once it is actually added.
+static func spawn_enemy_at(parent: Node, player: Node2D, world_x: float, lane: int, melee: bool) -> Node2D:
+	var enemy = (METER_MAID_MELEE if melee else METER_MAID).instantiate()
+	var use_lane := Lanes.clamp_lane(lane)
+	var y: float = player.position.y
+	if player is Player and player.lane_baseline_y != INF:
+		enemy.lane_baseline_y = player.lane_baseline_y
+		y = Lanes.floor_y(player.lane_baseline_y, use_lane)
+	else:
+		# No walkway baseline captured yet — the virtual floors are unknown, so the
+		# only safe place to stand is the real one.
+		use_lane = Lanes.GROUND_LANE
+	enemy.starting_lane = use_lane
+	parent.call_deferred("add_child", enemy)
+	enemy.global_position = Vector2(world_x, y)
+	return enemy
+
+
 static func _pick_spawn_lane(player_lane: int) -> int:
 	if randf() < 0.4:
 		return player_lane

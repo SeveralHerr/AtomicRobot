@@ -14,6 +14,19 @@ func test_lane_constants_are_coherent() -> String:
 	return _T.assert_gt(L.LANE_SPACING, 0.0, "positive spacing")
 
 
+## Pins the shipped lane count. The rest of the suite is bounds-relative and would
+## happily pass with any count, so this is the tripwire that makes adding/removing a
+## lane a deliberate edit. z_for(FRONT) must stay clear of prop z (1) and accent z (2).
+func test_front_lane_is_the_fourth_lane() -> String:
+	var r: String = _T.assert_eq(L.LANE_COUNT, 4, "four lanes ship")
+	if r != "":
+		return r
+	r = _T.assert_eq(L.FRONT_LANE, 3, "front lane index")
+	if r != "":
+		return r
+	return _T.assert_eq(L.z_for(L.FRONT_LANE), 4, "front lane draws at z=4")
+
+
 func test_clamp_lane_bounds() -> String:
 	var r: String = _T.assert_eq(L.clamp_lane(-5), L.BACK_LANE, "clamp low")
 	if r != "":

@@ -7,6 +7,9 @@ const CAR_RED = preload("res://images/new/Car_Red.png")
 @onready var sprite_2d: Sprite2D = $Sprite2D
 
 var shaker: Shaker
+## Road lane this car drives in. Assigned per-car by the spawning streetlight, so
+## which lane is dangerous varies from car to car.
+var lane: int = Lanes.FRONT_LANE
 var start: bool = false
 var car_damage = 1
 var speed: int = 0
@@ -46,8 +49,8 @@ func _process(delta: float) -> void:
 
 func _hit(body: Node2D) -> void:
 	if body is Player:
-		# Cars drive on the front road lane; only hit players standing in it.
-		if body.current_lane != Lanes.FRONT_LANE:
+		# A car only hits players standing in the lane it is driving down.
+		if body.current_lane != lane:
 			return
 		shaker.apply_shake(2)
 		_enable_player_layer(false)

@@ -44,7 +44,7 @@ func _process(_delta):
 func _on_body_entered(body: Node2D):
 	if body is Player and not is_active:
 		_on_spawn_timer_timeout()
-		Globals.event.emit(true)
+		Globals.push_event()
 		is_active = true
 		wave_timer.start()
 
@@ -53,11 +53,15 @@ func _on_body_exited(body: Node2D):
 
 func _end_event():
 	print("Event complete...")
-	Globals.event.emit(false)
+	Globals.pop_event()
 	queue_free()
 
 func _on_spawn_timer_timeout():
 	if not waves_done:
-		var enemy = EnemySpawner.spawn_enemy(get_parent(), player, viewport_size, 0)
+		# Parent to the scene root, NOT get_parent(): these volumes live under a
+		# BuildingGroup at (1875, -1), and spawn_enemy() applies global_position
+		# while the enemy is still an orphan — so a non-zero parent transform used
+		# to shift every spawned maid thousands of px to the right.
+		var enemy = EnemySpawner.spawn_enemy(get_tree().current_scene, player, viewport_size, 0)
 		spawned_enemies.append(enemy)
 		spawn_timer.start()

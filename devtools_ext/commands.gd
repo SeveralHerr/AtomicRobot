@@ -20,6 +20,9 @@ func register_commands(dev: Node) -> void:
 	_dev.register_command("spawn_enemy", _cmd_spawn_enemy)
 	_dev.register_command("list_enemies", _cmd_list_enemies)
 	_dev.register_command("kill_enemies", _cmd_kill_enemies)
+	_dev.register_command("throw_coin", _cmd_throw_coin)
+	_dev.register_command("list_encounters", _cmd_list_encounters)
+	_dev.register_command("trigger_encounter", _cmd_trigger_encounter)
 	_dev.register_command("level_info", _cmd_level_info)
 	_dev.register_command("dump_tilemap", _cmd_dump_tilemap)
 
@@ -40,6 +43,75 @@ func _cmd_start_game(args: Dictionary) -> Dictionary:
 		return _fail("Globals autoload not found")
 	globals.debug_start_game(args.get("character", "Ryan"), args.get("scene", "res://scenes/main.tscn"))
 	return {"success": true, "message": "starting game", "data": {"character": globals.selected_character}}
+
+
+## Throw a coin at the player without waiting on maid AI — the deterministic way to
+## test projectile/lane behaviour. args: {"lane": int (default player's lane),
+## "agnostic": bool, "from_x": float, "from_y": float} (offsets from the player).
+func _cmd_throw_coin(args: Dictionary) -> Dictionary:
+	var p := _player()
+	if p == null:
+		return _fail("no node in group 'player' (still in a menu? run: cmd start_game)")
+	var from: Vector2 = p.global_position + Vector2(
+		float(args.get("from_x", 120.0)), float(args.get("from_y", -8.0)))
+	var coin: Bullet = Utils.throw_coin(
+		from,
+		p.enemy_attack_position.global_position,
+		p.get_parent(),
+		bool(args.get("arc", false)),
+		int(args.get("lane", p.current_lane)),
+		bool(args.get("agnostic", false)))
+	return {"success": true, "message": "coin thrown", "data": {
+		"path": String(coin.get_path()),
+		"lane": coin.lane,
+		"lane_agnostic": coin.lane_agnostic,
+		"has_virtual_floor": is_finite(coin.virtual_floor_y),
+		"virtual_floor_y": coin.virtual_floor_y if is_finite(coin.virtual_floor_y) else 0.0,
+		"masks_ground": coin.get_collision_mask_value(2),
+		"z_index": coin.z_index,
+		"position": [coin.global_position.x, coin.global_position.y],
+	}}
+
+
+## Every BuildingDoorEncounter in the scene, with enough state to assert a burst.
+func _cmd_list_encounters(_args: Dictionary) -> Dictionary:
+	var out := []
+	for n in _walk_scene():
+		if n is BuildingDoorEncounter:
+			var cam: Camera2D = n.player.camera_2d if n.player != null else null
+			out.append({
+				"path": String(_dev.get_tree().current_scene.get_path_to(n)),
+				"door_x": n.door_mouth.global_position.x,
+				"fired": n._fired,
+				"active": n._active,
+				"alive_spawned": n._spawned.filter(func(e): return is_instance_valid(e)).size(),
+				"enemy_count": n.enemy_count,
+				"lock_arena": n.lock_arena,
+				"barriers_up": not n.left_wall.disabled,
+				"camera_limit_left": cam.limit_left if cam != null else 0,
+				"camera_limit_right": cam.limit_right if cam != null else 0,
+			})
+	return {"success": true, "message": "%d encounters" % out.size(), "data": {"encounters": out}}
+
+
+## Fire an encounter without walking into it. args: {"path": "relative/or/name"}
+## (omit to fire the first one found).
+func _cmd_trigger_encounter(args: Dictionary) -> Dictionary:
+	var want: String = args.get("path", "")
+	var p := _player()
+	if p == null:
+		return _fail("no node in group 'player' (still in a menu? run: cmd start_game)")
+	for n in _walk_scene():
+		if n is not BuildingDoorEncounter:
+			continue
+		var rel := String(_dev.get_tree().current_scene.get_path_to(n))
+		if want != "" and not rel.ends_with(want):
+			continue
+		if n._fired:
+			return _fail("encounter %s already fired" % rel)
+		n._on_body_entered(p)
+		return {"success": true, "message": "triggered %s" % rel, "data": {"path": rel}}
+	return _fail("no matching BuildingDoorEncounter found")
 
 
 func _cmd_player_state(_args: Dictionary) -> Dictionary:

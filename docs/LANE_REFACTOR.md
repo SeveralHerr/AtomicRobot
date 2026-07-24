@@ -6,13 +6,31 @@ This doc catalogues every place the current code assumes a single ground plane,
 so the refactor can be planned and reviewed against it. Line numbers are as of
 commit `eceb471` (2026-07) — re-verify before editing.
 
+## STATUS — increment 3 SHIPPED (2026-07-23): fourth lane
+
+`LANE_COUNT 3 → 4`, `FRONT_LANE 2 → 3`. Those two constants were the entire code
+change — everything downstream (`clamp_lane`, `y_offset`, `floor_y`, `z_for`,
+`_pick_spawn_lane`, `try_change_lane`, `_lane_chase`) is bounds-generic.
+
+- **No new tile art.** Road fill (`tileset` source 5, atlas `2:1`) already runs to
+  world y=127 across all 374 columns; lane-3 feet land at y=71.
+- **Lane floors** (origin / feet): 0 = -20.75 / -1 · 1 = 3.25 / 23 · 2 = 27.25 / 47
+  · 3 = 51.25 / 71. Lane 3 draws at **z=4** (nothing static occupies z=3 or z=4).
+- **Camera** deliberately left at `limit_bottom = 96`, so lane 3 sits ~62 screen px
+  off the bottom edge — tighter framing than the other lanes, accepted by design.
+- **Kill box** clearance is now 134px (was 173) — still ample.
+- **Cars** now pick a **random road lane per car** (1-3, never the sidewalk) and
+  only hit players in that lane. Fixed `streetlight._car_road_y()`, which used the
+  *relative* `Lanes.y_offset()` as an absolute world Y and so drove cars ~21px
+  below the lane they belonged to.
+
 ## STATUS — increment 2 SHIPPED (2026-07-21): road lanes toward the camera
 
 The lane geometry now matches classic TMNT: **lane 0 (GROUND_LANE) = the original
-walkway line with real floor collision; lanes 1-2 extend DOWN-SCREEN (+16/+32px)
-onto the road strip** on virtual floors. No tiles were painted — the road art
-already existed below the walk line (non-colliding stone fill), hidden by the old
-camera clamp; `limit_bottom` went 30 → 64 to reveal it.
+walkway line with real floor collision; the road lanes extend DOWN-SCREEN
+(+24px each)** onto the road strip on virtual floors. No tiles were painted — the
+road art already existed below the walk line (non-colliding stone fill), hidden by
+the old camera clamp; `limit_bottom` went 30 → 64 → 96 to reveal it.
 
 - **`scripts/lane_system.gd`** (`class_name Lanes`): `GROUND_LANE` owns physics;
   `y_offset()` is +LANE_SPACING per lane toward the camera. Unit-tested.
@@ -29,9 +47,9 @@ camera clamp; `limit_bottom` went 30 → 64 to reveal it.
 - **Platform/window maids**: `lane_locked = true`; their arced coins are
   `lane_agnostic` (hit any lane). Street maids' coins remain lane-tagged.
 - **FindMeter**: maids step back to the walkway before refilling at meters.
-- **Cars** (streetlight event): spawn on the front road lane (+32) and only hit
-  front-lane players — thematically correct road hazard.
-- **Kill box**: verified 173px clearance below the front lane — no change needed.
+- **Cars** (streetlight event): road hazard on the road lanes only — see increment 3
+  for the current per-car random lane behaviour.
+- **Kill box**: ample clearance below the front lane — no change needed.
   `fall_death_collision.gd` is orphaned (attached to nothing).
 
 ### Known limitations / next increments
@@ -42,8 +60,12 @@ camera clamp; `limit_bottom` went 30 → 64 to reveal it.
 - Props (trashcans, meters) don't occlude road-lane entities correctly yet
   (props z=1; proper fix is y-sort or lane-aware prop z).
 - Enemy lane convergence is eager (0.7s cooldown) — everything stacks the player's
-  lane fast; consider longer initial cooldown or per-enemy lane preference.
-- Lane spacing 16px and crouch-hold 0.25s are feel parameters, untested by hand.
+  lane fast; consider longer initial cooldown or per-enemy lane preference. With 4
+  lanes the worst case is now a 3-step trip (~2.7s), and `FindMeterState` walking
+  back to the walkway from lane 3 can read as an AI stall.
+- `_pick_spawn_lane` keeps 40% on the player's lane; the remaining 60% now splits
+  three ways (20% each) instead of two, so spawns are more thinly spread.
+- Lane spacing 24px and crouch-hold 0.25s are feel parameters, untested by hand.
 - Boss room intentionally single-plane. VirtualJoystick addon class name collides
   with a Godot 4.7 native class (mobile builds only, pre-existing).
 

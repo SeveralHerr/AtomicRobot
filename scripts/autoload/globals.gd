@@ -144,6 +144,25 @@ func is_node_destroyed(node_name: String) -> bool:
 func reset() -> void:
 	meters.clear()
 	meter_maids_killed = 0
+	_active_events = 0
+
+
+## `event` is listened to by EnemyManager (pauses ambient waves), Player (slows on
+## start) and the notification banner. Overlapping emitters used to fight over it —
+## BuildingGroup3 has two EnemyEvent volumes, and whichever finished first emitted
+## `event(false)` while the other was still running. Refcount so it only flips on
+## the first push and the last pop.
+var _active_events: int = 0
+
+func push_event() -> void:
+	_active_events += 1
+	if _active_events == 1:
+		event.emit(true)
+
+func pop_event() -> void:
+	_active_events = maxi(0, _active_events - 1)
+	if _active_events == 0:
+		event.emit(false)
 
 
 # DevTools/testing entry hook: skip menus straight into a playable scene.

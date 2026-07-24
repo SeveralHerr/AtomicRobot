@@ -54,13 +54,22 @@ static func shake_two_node2d(node1: Node2D, node2: Node2D, strength1: float = 10
 	tween2.tween_property(node2, "position", original_pos2, frequency)
 
 ## Coin throwing factory methods
-static func throw_coin(spawn_position: Vector2, target_position: Vector2, parent_node: Node, use_arc: bool = false, lane: int = Lanes.GROUND_LANE, lane_agnostic: bool = false) -> void:
+static func throw_coin(spawn_position: Vector2, target_position: Vector2, parent_node: Node, use_arc: bool = false, lane: int = Lanes.GROUND_LANE, lane_agnostic: bool = false) -> Bullet:
 	var instance = COIN_BULLET.instantiate()
 	parent_node.add_child(instance)
 	instance.lane = lane
 	instance.lane_agnostic = lane_agnostic
+	# A coin flies at its target's lane height. Lane-tagged throws are gated to the
+	# player's lane already; arced (lane_agnostic) coins come down onto whatever lane
+	# the player is in. Either way the road lanes have no real floor — hand the coin
+	# the same virtual floor line entities stand on.
+	var player = parent_node.get_tree().get_first_node_in_group("player")
+	if player and player.lanes_active():
+		var floor_lane: int = player.current_lane if lane_agnostic else lane
+		instance.set_lane_floor(floor_lane, player.lane_baseline_y)
 	var direction = (target_position - spawn_position).normalized()
 	instance.start(spawn_position, direction, use_arc)
+	return instance
 
 static func throw_coin_from_enemy(enemy: Node, use_arc: bool = false, offset: int = 0) -> void:
 	var player = enemy.get_tree().get_first_node_in_group("player")

@@ -81,7 +81,18 @@ hand-edit it. Options:
   `EnemyManager` (3-30 s random timer, only when `player.is_near_ground()`, paused
   during events).
 - **Triggers**: `EnemyEvent` Area2Ds (`enemy_event.gd`) fire scripted waves;
-  `BuildingGroup4/Enter` (`final_boss_enter.gd`) changes scene to boss_room.
+  `BuildingGroup4/Enter` (`final_boss_enter.gd`) changes scene to boss_room;
+  `building_door_encounter.tscn` (`BuildingDoorEncounter`) is the TMNT-style
+  burst — a squad pours out of a doorway across the lanes and optionally locks the
+  player in with barriers + camera limits until the street is clear. One instance
+  is placed at world x≈4600 (`BuildingGroup2`, beside the parking meters). Drive it
+  headless with `cmd list_encounters` / `cmd trigger_encounter`.
+
+> **Spawning gotcha:** `EnemySpawner.spawn_enemy*()` applies `global_position` while
+> the enemy is still an orphan (its `add_child` is deferred), so the parent's
+> transform is added afterwards. Always pass `get_tree().current_scene` as the
+> parent — passing a `BuildingGroup` (at ~(1875,-1)) displaces spawns by thousands
+> of px. This was a live bug in `enemy_event.gd` and `window_event_building.gd`.
 
 ## Visual layering — manual z_index only
 

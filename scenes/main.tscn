@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://d2jsdjdehljbp"]
 
 [ext_resource type="Texture2D" uid="uid://b2eicycwwhah1" path="res://images/new/Sky.png" id="1_haqju"]
+[ext_resource type="PackedScene" path="res://scenes/building_door_encounter.tscn" id="60_bdenc"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
 [ext_resource type="Texture2D" uid="uid://cl41wp8lfwn3u" path="res://images/new/Background_Really_Far_Buildings.png" id="2_n5jul"]
 [ext_resource type="Script" uid="uid://dc00l4kuir5j0" path="res://scripts/health_container.gd" id="2_vq1rx"]
@@ -725,6 +726,9 @@ script = ExtResource("32_bjc77")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SceneItemsBackground/BuildingGroup2/EnemyEvent" unique_id=2080459653]
 position = Vector2(576.5, -12)
 shape = SubResource("RectangleShape2D_dbsfu")
+
+[node name="BuildingDoorEncounter" parent="SceneItemsBackground/BuildingGroup2" instance=ExtResource("60_bdenc")]
+position = Vector2(176, 0)
 
 [node name="Meter" parent="SceneItemsBackground/BuildingGroup2" unique_id=181482052 instance=ExtResource("43_335wh")]
 position = Vector2(339, -28)
