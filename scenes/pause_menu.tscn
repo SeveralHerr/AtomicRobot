@@ -1,0 +1,158 @@
+[gd_scene load_steps=17 format=3]
+
+[ext_resource type="Texture2D" uid="uid://celoqs2lympxv" path="res://images/background_small.png" id="1_bg"]
+[ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="3_whitefont"]
+[ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="4_fontvar"]
+[ext_resource type="Texture2D" uid="uid://drlbejg4ojdha" path="res://images/check_square_grey_checkmark.png" id="5_checkmark"]
+[ext_resource type="Texture2D" uid="uid://hpogdiga4x5d" path="res://images/check_square_grey.png" id="6_uncheck"]
+[ext_resource type="Script" path="res://scripts/autoload/pause_menu.gd" id="7_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0, 0, 0, 0.65)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="LabelSettings" id="LabelSettings_header"]
+font = ExtResource("3_whitefont")
+font_size = 48
+font_color = Color(0.462745, 0, 0, 1)
+outline_size = 8
+shadow_size = 14
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_small"]
+font = ExtResource("4_fontvar")
+font_size = 32
+font_color = Color(1, 1, 1, 1)
+shadow_size = 6
+shadow_color = Color(0, 0, 0, 0.337255)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_disabled_mirrored"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_disabled"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hover_pressed_mirrored"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hover_pressed"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pressed"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+layer = 101
+visible = false
+script = ExtResource("7_script")
+
+[node name="Background" type="TextureRect" parent="."]
+mouse_filter = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Dim" type="ColorRect" parent="."]
+mouse_filter = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.35)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(560, 420)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Margin" type="MarginContainer" parent="CenterContainer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="HeaderRow" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBoxContainer"]
+layout_mode = 2
+
+[node name="HeaderLabel" type="Label" parent="CenterContainer/Panel/Margin/VBoxContainer/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PAUSED"
+label_settings = SubResource("LabelSettings_header")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ExitButton" type="Button" parent="CenterContainer/Panel/Margin/VBoxContainer/HeaderRow"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_vertical = 4
+text = "X"
+
+[node name="VolumeRow" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="VolumeLabel" type="Label" parent="CenterContainer/Panel/Margin/VBoxContainer/VolumeRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Volume"
+label_settings = SubResource("LabelSettings_small")
+vertical_alignment = 1
+
+[node name="VolumeSlider" type="HSlider" parent="CenterContainer/Panel/Margin/VBoxContainer/VolumeRow"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="CRTRow" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="CRTLabel" type="Label" parent="CenterContainer/Panel/Margin/VBoxContainer/CRTRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "CRT Effect"
+label_settings = SubResource("LabelSettings_small")
+vertical_alignment = 1
+
+[node name="CRTCheckBox" type="CheckBox" parent="CenterContainer/Panel/Margin/VBoxContainer/CRTRow"]
+custom_minimum_size = Vector2(55, 10)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_fontvar")
+theme_override_font_sizes/font_size = 35
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_disabled_mirrored")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_disabled")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_hover_pressed_mirrored")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_hover_pressed")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_pressed")
+theme_override_icons/checked = ExtResource("5_checkmark")
+theme_override_icons/unchecked = ExtResource("6_uncheck")
+
+[node name="ResumeButton" type="Button" parent="CenterContainer/Panel/Margin/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Resume"

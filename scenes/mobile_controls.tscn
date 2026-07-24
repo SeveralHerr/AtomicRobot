@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" uid="uid://dgfrky70ry3v" path="res://scripts/mobile_ui.gd" id="1_rvv1d"]
 [ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="2_snoiw"]
@@ -6,6 +6,7 @@
 [ext_resource type="StyleBox" uid="uid://vb5n0pdp6vf" path="res://sprites/mobile_button_normal.tres" id="4_m1a23"]
 [ext_resource type="Texture2D" uid="uid://b2y7hrpauia37" path="res://images/mobile_button.png" id="5_pwq8n"]
 [ext_resource type="Texture2D" uid="uid://b3yvdhkilwb4o" path="res://images/tool_sword_b.png" id="6_qsdwx"]
+[ext_resource type="Texture2D" uid="uid://hpogdiga4x5d" path="res://images/check_square_grey.png" id="7_pause"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_43wfq"]
 texture = ExtResource("5_pwq8n")
@@ -141,6 +142,27 @@ flip_h = true
 
 [node name="Button" type="Button" parent="RunButton"]
 custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+theme = SubResource("Theme_0j376")
+
+[node name="PauseButton" type="CenterContainer" parent="."]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 0
+offset_left = 1120.0
+offset_top = 650.0
+offset_right = 1240.0
+offset_bottom = 770.0
+
+[node name="TextureRect2" type="TextureRect" parent="PauseButton"]
+custom_minimum_size = Vector2(90, 90)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_pause")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Button" type="Button" parent="PauseButton"]
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 theme = SubResource("Theme_0j376")
 
