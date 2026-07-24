@@ -42,6 +42,13 @@ var knockback_decay: float = 8.0  # How fast knockback decays
 var turn_cooldown: float = 0.0
 var turn_cooldown_duration: float = 0.5
 
+# Same-lane enemies never physically collide with each other (collision_mask
+# excludes the enemy layer, to avoid move_and_slide push jitter), so without an
+# explicit separation nudge they can walk to/spawn at the same X and sit stacked
+# on top of each other indefinitely. See docs/LANE_REFACTOR.md.
+const ENEMY_SEPARATION_DISTANCE := 40.0
+const ENEMY_SEPARATION_STRENGTH := 160.0
+
 # --- LANE SYSTEM (virtual depth, see docs/LANE_REFACTOR.md) ---
 ## Lane this enemy starts on (editor-visible; hand-placed enemies default to the walkway).
 @export var starting_lane: int = Lanes.GROUND_LANE
@@ -96,6 +103,7 @@ func _physics_process(delta: float) -> void:
 	enemy_state_machine.update(delta)
 	turn_cooldown -= delta
 	lane_change_cooldown -= delta
+	_apply_enemy_separation(delta)
 
 	move_and_slide()
 
@@ -187,6 +195,37 @@ func _update_lane_floor() -> void:
 func _set_ground_collision(enabled: bool) -> void:
 	set_collision_mask_value(2, enabled)
 	set_collision_mask_value(6, enabled)
+
+
+## Nudges apart from other same-lane enemies within ENEMY_SEPARATION_DISTANCE so
+## they don't sit stacked on top of each other (no physical collision resolves this
+## since enemies deliberately don't collide with their own layer).
+func _apply_enemy_separation(delta: float) -> void:
+	if is_changing_lane or enemy_state_machine.current_state is DeadEnemyState:
+		return
+	var push := 0.0
+	for node in get_tree().get_nodes_in_group("enemies"):
+		if node == self or not is_instance_valid(node) or not node is Enemy:
+			continue
+		var other: Enemy = node
+		if other.lane != lane or other.is_changing_lane:
+			continue
+		if other.enemy_state_machine.current_state is DeadEnemyState:
+			continue
+		var dx: float = global_position.x - other.global_position.x
+		var dist := absf(dx)
+		if dist >= ENEMY_SEPARATION_DISTANCE:
+			continue
+		# Perfectly overlapping (dx == 0) has no direction to push in — break the
+		# tie deterministically so both instances agree on opposite directions.
+		var dir := signf(dx) if dist > 0.5 else (1.0 if get_instance_id() > other.get_instance_id() else -1.0)
+		push += dir * (ENEMY_SEPARATION_DISTANCE - dist) / ENEMY_SEPARATION_DISTANCE
+	if push != 0.0:
+		# A direct position nudge rather than a velocity add — idle/attacking enemies
+		# have their velocity.x actively damped to 0 by knockback friction every frame
+		# (see _apply_knockback_decay), which would eat a velocity-based push before
+		# move_and_slide ever applied it.
+		global_position.x += push * ENEMY_SEPARATION_STRENGTH * delta
 
 
 func is_same_lane_as_player() -> bool:

@@ -71,6 +71,10 @@ static func throw_coin(spawn_position: Vector2, target_position: Vector2, parent
 	instance.start(spawn_position, direction, use_arc)
 	return instance
 
+## Small per-shot spread so simultaneous throws from stacked/close enemies don't
+## fly the exact same path and visually overlap.
+const PROJECTILE_TARGET_JITTER: float = 10.0
+
 static func throw_coin_from_enemy(enemy: Node, use_arc: bool = false, offset: int = 0) -> void:
 	var player = enemy.get_tree().get_first_node_in_group("player")
 	if not enemy or not player:
@@ -78,6 +82,7 @@ static func throw_coin_from_enemy(enemy: Node, use_arc: bool = false, offset: in
 	var spawn_pos = enemy.global_position + enemy.coin_spawn_point.position
 	var target_pos = player.enemy_attack_position.global_position
 	target_pos.y += offset
+	target_pos.x += randf_range(-PROJECTILE_TARGET_JITTER, PROJECTILE_TARGET_JITTER)
 	var lane: int = enemy.lane if enemy is Enemy else Lanes.GROUND_LANE
 	# Lane-locked maids (platforms/windows) arc coins from above — those hit any lane.
 	var agnostic: bool = enemy.lane_locked if enemy is Enemy else false
@@ -100,6 +105,7 @@ static func throw_briefcase_from_enemy(enemy: Node, use_arc: bool = false, offse
 	var spawn_pos = enemy.global_position + enemy.coin_spawn_point.position
 	var target_pos = player.enemy_attack_position.global_position
 	target_pos.y += offset
+	target_pos.x += randf_range(-PROJECTILE_TARGET_JITTER, PROJECTILE_TARGET_JITTER)
 	throw_briefcase(spawn_pos, target_pos, enemy.player.get_parent(), use_arc)
 
 static func throw_coin_delayed(enemy: Node, delay: float = 0.3, use_arc: bool = false) -> void:
