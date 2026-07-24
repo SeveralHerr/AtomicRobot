@@ -13,7 +13,7 @@ class_name BuildingDoorEncounter
 
 signal encounter_finished
 
-@export var enemy_count: int = 5
+@export var enemy_count: int = 4
 ## Fraction of the squad that spawns as melee maids. Ranged maids run FindMeterState
 ## when they run dry, which walks them into a barrier if no meter is inside the
 ## arena — so keep this high unless the encounter is placed near parking meters.
