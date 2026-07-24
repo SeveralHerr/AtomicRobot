@@ -11,7 +11,7 @@ var description: String
 @onready var button: Button = $Button
 @onready var texture_rect: PanelContainer = $Background/TextureRect
 @onready var check_box: CheckBox = $"../../../../MarginContainer2/HBoxContainer/CheckBox"
-const NEW_ASSET_TEST = preload("res://scenes/main.tscn")
+const CONTROLS_SPLASH = preload("res://scenes/controls_splash.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -34,7 +34,7 @@ func _ready() -> void:
 func _on_press() -> void:
 	Globals.selected_character = character
 	if check_box.button_pressed:
-		get_tree().change_scene_to_packed(NEW_ASSET_TEST)
+		get_tree().change_scene_to_packed(CONTROLS_SPLASH)
 	else:
 		get_tree().change_scene_to_packed(STORY)
 

@@ -1,0 +1,114 @@
+[gd_scene format=3 uid="uid://dqxg2h8mklsp1"]
+
+[ext_resource type="Script" path="res://scripts/controls_splash.gd" id="1_ctrls"]
+[ext_resource type="Texture2D" uid="uid://ca5xhsjjo30tb" path="res://images/ARTBG.png" id="2_bg"]
+[ext_resource type="Script" uid="uid://chic8djxflbae" path="res://scripts/sway.gd" id="3_sway"]
+[ext_resource type="LabelSettings" uid="uid://dagx3yqrlt5ea" path="res://styles/story_white_label.tres" id="4_header"]
+[ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="5_body"]
+[ext_resource type="PackedScene" uid="uid://cd687fbnvb516" path="res://scenes/fade_overlay.tscn" id="6_fade"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_body"]
+line_spacing = 10.0
+font = ExtResource("5_body")
+font_size = 32
+shadow_size = 8
+shadow_color = Color(0, 0, 0, 0.384314)
+
+[sub_resource type="LabelSettings" id="LabelSettings_continue"]
+font = ExtResource("5_body")
+font_size = 33
+shadow_size = 10
+shadow_color = Color(0, 0, 0, 0.384314)
+
+[node name="ControlsSplash" type="Control"]
+self_modulate = Color(0.268138, 0.268138, 0.268138, 0.576471)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ctrls")
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = -2.0
+offset_right = -42.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.1, 1.15)
+texture = ExtResource("2_bg")
+expand_mode = 1
+script = ExtResource("3_sway")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 20
+
+[node name="HeaderLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "CONTROLS"
+label_settings = ExtResource("4_header")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonsLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "MOVE — A/D / Left/Right Arrow
+CHANGE LANE — W/Up Arrow (back), S/Down Arrow tap (forward)
+CROUCH — Hold S/Down Arrow
+RUN — Shift
+ATTACK — F
+INTERACT — E"
+label_settings = SubResource("LabelSettings_body")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -66.0
+offset_right = 260.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_bottom = 20
+
+[node name="ContinueLabel" type="Label" parent="MarginContainer"]
+layout_mode = 2
+text = "PRESS ANY BUTTON TO START"
+label_settings = SubResource("LabelSettings_continue")
+horizontal_alignment = 1
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[node name="FadeOverlay" parent="." instance=ExtResource("6_fade")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
