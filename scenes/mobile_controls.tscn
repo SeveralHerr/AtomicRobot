@@ -19,11 +19,13 @@ Button/styles/pressed = SubResource("StyleBoxTexture_43wfq")
 
 [node name="MobileUI" type="Control"]
 layout_mode = 3
-anchors_preset = 0
-offset_left = -0.5
-offset_top = -0.5
-offset_right = -0.5
-offset_bottom = -0.5
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -220.0
+offset_right = 10.0
+offset_bottom = -20.0
 script = ExtResource("1_rvv1d")
 
 [node name="Virtual Joystick2" parent="." instance=ExtResource("2_snoiw")]
