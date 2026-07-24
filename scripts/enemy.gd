@@ -36,6 +36,19 @@ var attack_range: int = 120
 var attack_cooldown: float = 4
 var detection_range: float = 600.0
 var last_dir: int = -1
+
+# --- ENGAGEMENT (turn-taking combat, see docs/LANE_REFACTOR.md + attack-slot manager) ---
+## Which attack-slot pool this enemy competes for (see Globals.request_attack_slot).
+@export var attack_category: String = "ranged"
+## Desired distance from the player's center while actively attacking / about to.
+@export var attack_standoff: float = 120.0
+## Desired distance from the player's center while queued, waiting for a free slot.
+@export var wait_standoff: float = 150.0
+## True once _chase_toward_player has closed to within ~4px of its target standoff
+## (attack or wait). Drives the walk/idle animation choice in ChasePlayerState —
+## deliberately independent of the Area2D-based is_player_in_attack_range flag,
+## since wait_standoff can sit outside that circle for tightly-ranged enemies.
+var is_holding_position: bool = false
 # Knockback variables
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 8.0  # How fast knockback decays
@@ -75,6 +88,12 @@ func _ready() -> void:
 	lane = Lanes.clamp_lane(starting_lane)
 	z_index = Lanes.z_for(lane)
 	_set_ground_collision(lane == Lanes.GROUND_LANE)
+	if lane != Lanes.GROUND_LANE:
+		# Hand-placed enemies that start on a road lane never touch the real floor,
+		# so _update_lane_floor() would never capture a baseline for them and
+		# _lane_chase() would stay permanently blocked (lane_baseline_y == INF).
+		# Back-derive the walkway baseline from the current (already-offset) Y.
+		lane_baseline_y = global_position.y - Lanes.y_offset(lane)
 	attack_timer.wait_time = attack_cooldown
 	add_to_group("enemies")
 	player = get_tree().get_first_node_in_group("player")
@@ -94,6 +113,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if is_too_far() and not persist:
 		print("enemy too far, purgiing....")
+		Globals.release_attack_slot(self)
 		queue_free()
 	
 func _physics_process(delta: float) -> void:
@@ -129,6 +149,28 @@ func move_towards_target(target_pos: Vector2, delta: float):
 	#_update_sprite_direction(direction.x)
 	velocity.x = move_toward(velocity.x, target_velocity.x, 2000 * delta)
 	pass
+
+
+## Same-lane approach toward the player that holds a standoff distance instead of
+## closing to the player's exact center (that was bug: enemies ending up on top of
+## the player). Holds `attack_standoff` when a turn-taking attack slot is available
+## to this enemy (about to fight), otherwise `wait_standoff` (queued, giving the
+## active attacker(s) room). Approaches from whichever side it's already on so it
+## doesn't cross through the player to switch sides.
+func _chase_toward_player(delta: float) -> void:
+	var slot_ready := Globals.has_attack_slot_available(attack_category, self)
+	var target_standoff := attack_standoff if slot_ready else wait_standoff
+	var dx := global_position.x - player.global_position.x
+	var side := signf(dx) if absf(dx) > 0.5 else (1.0 if get_instance_id() > player.get_instance_id() else -1.0)
+	var target_x := player.global_position.x + side * target_standoff
+	var to_target := target_x - global_position.x
+	if absf(to_target) < 4.0:
+		is_holding_position = true
+		velocity.x = move_toward(velocity.x, 0.0, 2000 * delta)
+		return
+	is_holding_position = false
+	var target_velocity := signf(to_target) * move_speed
+	velocity.x = move_toward(velocity.x, target_velocity, 2000 * delta)
 
 
 func is_near_edge() -> bool:
@@ -197,9 +239,17 @@ func _set_ground_collision(enabled: bool) -> void:
 	set_collision_mask_value(6, enabled)
 
 
+## Minimum enemy-center-to-player-center gap on the same lane, enforced as a hard
+## floor (not a spring like the enemy-enemy push below) so nothing — chase drift,
+## knockback, or an enemy-enemy shove — can land an enemy on top of the player.
+const MIN_PLAYER_GAP := 26.0
+
 ## Nudges apart from other same-lane enemies within ENEMY_SEPARATION_DISTANCE so
 ## they don't sit stacked on top of each other (no physical collision resolves this
-## since enemies deliberately don't collide with their own layer).
+## since enemies deliberately don't collide with their own layer), and enforces
+## MIN_PLAYER_GAP from the player (no physical collision resolves that either —
+## enemy/player collision masks deliberately exclude each other, see collision
+## layer comment above).
 func _apply_enemy_separation(delta: float) -> void:
 	if is_changing_lane or enemy_state_machine.current_state is DeadEnemyState:
 		return
@@ -226,51 +276,39 @@ func _apply_enemy_separation(delta: float) -> void:
 		# (see _apply_knockback_decay), which would eat a velocity-based push before
 		# move_and_slide ever applied it.
 		global_position.x += push * ENEMY_SEPARATION_STRENGTH * delta
+	_apply_player_separation()
+
+
+func _apply_player_separation() -> void:
+	if player == null or player.current_lane != lane:
+		return
+	var pdx := global_position.x - player.global_position.x
+	var pdist := absf(pdx)
+	if pdist >= MIN_PLAYER_GAP:
+		return
+	var pdir := signf(pdx) if pdist > 0.5 else (1.0 if get_instance_id() > player.get_instance_id() else -1.0)
+	global_position.x = player.global_position.x + pdir * MIN_PLAYER_GAP
 
 
 func is_same_lane_as_player() -> bool:
 	return player != null and player.current_lane == lane
 
 
-## Step one lane toward the player's lane (used while chasing). Prefers the
-## player's lane, but if it's already staked out by another attacker within
-## throwing range, queues in a free adjacent lane instead of stacking on top.
+## Step one lane toward the player's lane (used while chasing). Combat is
+## same-lane-only, so every non-locked enemy converges onto the player's exact
+## lane — turn-taking attack slots (Globals.request_attack_slot) plus standoff
+## distance (_chase_toward_player) are what keep a crowd from stacking up, not
+## lane diversion (a previous version parked extra attackers on adjacent lanes,
+## which left them permanently unable to attack — same-lane-gated combat check
+## always failed for them; see docs/LANE_REFACTOR.md).
 func _lane_chase() -> void:
 	if lane_locked or is_changing_lane or lane_change_cooldown > 0.0 or lane_baseline_y == INF:
 		return
 	if player == null or player.is_changing_lane:
 		return
-	var target_lane := _pick_chase_lane()
-	if target_lane == lane:
+	if lane == player.current_lane:
 		return
-	_start_lane_change(lane + signi(target_lane - lane))
-
-
-## Same-lane-as-player if that lane is free; otherwise the nearest unclaimed
-## adjacent lane (falls back to the player's lane if every lane is claimed).
-func _pick_chase_lane() -> int:
-	var wanted := player.current_lane
-	if lane == wanted or not _lane_is_claimed(wanted):
-		return wanted
-	var offsets := [1, -1, 2, -2, 3, -3]
-	for offset in offsets:
-		var candidate: int = wanted + offset
-		if Lanes.is_valid_lane(candidate) and not _lane_is_claimed(candidate):
-			return candidate
-	return wanted
-
-
-## True if another (non-lane-locked) enemy is already camped on `check_lane`
-## within throwing distance of the player.
-func _lane_is_claimed(check_lane: int) -> bool:
-	for other in get_tree().get_nodes_in_group("enemies"):
-		if other == self or not is_instance_valid(other):
-			continue
-		if other.lane_locked or other.lane != check_lane or other.is_changing_lane:
-			continue
-		if absf(other.global_position.x - player.global_position.x) < attack_range:
-			return true
-	return false
+	_start_lane_change(lane + signi(player.current_lane - lane))
 
 
 ## `duration` defaults to the snappy in-combat speed; callers that want a slower,
@@ -284,18 +322,23 @@ func _start_lane_change(target: int, duration: float = LANE_CHANGE_DURATION) -> 
 	velocity.y = 0.0
 	if target != Lanes.GROUND_LANE:
 		_set_ground_collision(false)
+	# Snap draw order to the arriving lane immediately, not on tween completion —
+	# the sprite is visually moving toward that depth for the whole tween, so
+	# holding the departing lane's z_index for the tween's duration renders it
+	# in front of/behind the wrong props and entities until it lands.
+	z_index = Lanes.z_for(target)
 	if _lane_tween:
 		_lane_tween.kill()
 	_lane_tween = create_tween()
 	_lane_tween.tween_property(self, "global_position:y", Lanes.floor_y(lane_baseline_y, target), duration)
 	_lane_tween.finished.connect(func() -> void:
 		lane = target
-		z_index = Lanes.z_for(target)
 		if target == Lanes.GROUND_LANE:
 			_set_ground_collision(true)
 		is_changing_lane = false)
 
 func die() -> void:
+	Globals.release_attack_slot(self)
 	set_collision_mask_value(3, false )
 	set_collision_mask_value(10, false )
 	attack_timer.stop()
@@ -398,6 +441,11 @@ func has_state(state: String) -> bool:
 	return enemy_state_machine.states.has(state)
 
 
+## Pure query — does NOT claim a slot. Claiming happens in AttackPlayerState.enter_state()
+## (and its melee subclass) so a slot is only ever held while actually in that state;
+## see Globals.request_attack_slot / release_attack_slot for the turn-taking pool.
 func can_attack() -> bool:
-	return attack_timer.is_stopped() and is_player_in_attack_range and is_same_lane_as_player()
+	return (attack_timer.is_stopped() and is_player_in_attack_range
+		and is_same_lane_as_player()
+		and Globals.has_attack_slot_available(attack_category, self))
 	

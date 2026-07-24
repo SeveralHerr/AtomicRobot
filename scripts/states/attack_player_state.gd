@@ -5,13 +5,19 @@ var attack_finished: bool = false
 var is_player_crouched: bool = false
 
 func enter_state() -> void:
+	# Claim this enemy's turn-taking attack slot (see Globals.request_attack_slot).
+	# ChasePlayerState already confirmed one was available via can_attack() before
+	# transitioning here; claiming is idempotent so a repeat call is harmless.
+	Globals.request_attack_slot(enemy)
 	enemy.animated_sprite_2d.frame_changed.connect(_on_frame_changed.bind(enemy))
 	attack_finished = false
 	enemy.velocity.x = 0
 	is_player_crouched = enemy.player.state_machine.current_state is CrouchState
 	enemy.animated_sprite_2d.play("attack")
-	
+
 func exit_state() -> void:
+	# Free the slot for a queued enemy the moment this one stops actively attacking.
+	Globals.release_attack_slot(enemy)
 	enemy.animated_sprite_2d.frame_changed.disconnect(_on_frame_changed.bind(enemy))
 			
 func _on_frame_changed(enemy: Enemy):

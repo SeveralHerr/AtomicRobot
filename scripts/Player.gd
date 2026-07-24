@@ -269,13 +269,17 @@ func _start_lane_change(target: int) -> void:
 	# walkway tiles' boxes. Returning to it: re-enable only on arrival (on top).
 	if target != Lanes.GROUND_LANE:
 		_set_ground_collision(false)
+	# Snap draw order to the arriving lane immediately, not on tween completion —
+	# the sprite is visually moving toward that depth for the whole tween, so
+	# holding the departing lane's z_index for its ~0.12s duration renders it
+	# in front of/behind the wrong props and entities until it lands.
+	z_index = Lanes.z_for(target)
 	if _lane_tween:
 		_lane_tween.kill()
 	_lane_tween = create_tween()
 	_lane_tween.tween_property(self, "global_position:y", Lanes.floor_y(lane_baseline_y, target), Lanes.CHANGE_DURATION)
 	_lane_tween.finished.connect(func() -> void:
 		current_lane = target
-		z_index = Lanes.z_for(target)
 		if target == Lanes.GROUND_LANE:
 			_set_ground_collision(true)
 		is_changing_lane = false)

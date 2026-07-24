@@ -133,6 +133,57 @@ var meters: Array
 var meter_maids_killed: int = 0
 var meter_maid_boss_killed: int = 0
 
+func _ready() -> void:
+	player_death.connect(reset_attack_slots)
+
+
+## Turn-taking attack slots (TMNT-style crowd combat): caps how many enemies can be
+## actively attacking the player at once so a crowd queues up and takes turns
+## instead of dogpiling. Keyed by Enemy.attack_category ("melee"/"ranged").
+## See docs/LANE_REFACTOR.md and scripts/enemy.gd (can_attack / _chase_toward_player).
+const MAX_MELEE_ATTACKERS := 1
+const MAX_RANGED_ATTACKERS := 2
+var _melee_attackers: Array = []
+var _ranged_attackers: Array = []
+
+func _attack_slot_array(category: String) -> Array:
+	return _melee_attackers if category == "melee" else _ranged_attackers
+
+func _attack_slot_max(category: String) -> int:
+	return MAX_MELEE_ATTACKERS if category == "melee" else MAX_RANGED_ATTACKERS
+
+func _prune_attack_slots(arr: Array) -> void:
+	for i in range(arr.size() - 1, -1, -1):
+		if not is_instance_valid(arr[i]):
+			arr.remove_at(i)
+
+## True if `enemy` already holds a slot in its category, or one is free. Pure —
+## does not claim. Used to gate whether an enemy may start/continue attacking.
+func has_attack_slot_available(category: String, enemy = null) -> bool:
+	var arr := _attack_slot_array(category)
+	_prune_attack_slots(arr)
+	return (enemy != null and arr.has(enemy)) or arr.size() < _attack_slot_max(category)
+
+## Claims a slot for `enemy` in its attack_category. Idempotent if already held.
+## Returns false (no claim) if the category is full.
+func request_attack_slot(enemy) -> bool:
+	var arr := _attack_slot_array(enemy.attack_category)
+	_prune_attack_slots(arr)
+	if arr.has(enemy):
+		return true
+	if arr.size() < _attack_slot_max(enemy.attack_category):
+		arr.append(enemy)
+		return true
+	return false
+
+func release_attack_slot(enemy) -> void:
+	_melee_attackers.erase(enemy)
+	_ranged_attackers.erase(enemy)
+
+func reset_attack_slots() -> void:
+	_melee_attackers.clear()
+	_ranged_attackers.clear()
+
 var destroyed_nodes = {}
 
 func mark_node_destroyed(node_name: String) -> void:

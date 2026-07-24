@@ -2,14 +2,20 @@ extends AttackPlayerState
 class_name AttackPlayerMeleeState
 #
 func enter_state() -> void:
+	# Claim this enemy's turn-taking attack slot (see Globals.request_attack_slot).
+	# Overrides AttackPlayerState.enter_state() entirely (different animation), so
+	# the claim has to be repeated here rather than inherited via super().
+	Globals.request_attack_slot(enemy)
 	enemy.animated_sprite_2d.frame_changed.connect(_on_frame_changed.bind(enemy))
 	enemy.velocity.x = 0
 	enemy._face_player()
 	attack_finished = false
-	
+
 
 	enemy.animated_sprite_2d.play("melee")
 func exit_state() -> void:
+	# Free the slot for a queued enemy the moment this one stops actively attacking.
+	Globals.release_attack_slot(enemy)
 	enemy.animated_sprite_2d.frame_changed.disconnect(_on_frame_changed.bind(enemy))
 			
 func _on_frame_changed(enemy: Enemy):
