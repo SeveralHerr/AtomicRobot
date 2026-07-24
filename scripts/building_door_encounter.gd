@@ -37,6 +37,14 @@ signal encounter_finished
 @export var lane_hold_max: float = 4.0
 ## Telegraph (door rattle) before the burst.
 @export var arm_seconds: float = 0.35
+## How long a spawned enemy takes to step from the crack out to its fan-out lane.
+## Deliberately much slower than Enemy.LANE_CHANGE_DURATION (0.2s, tuned for snappy
+## in-combat repositioning) — this is a "walking out of the doorway" beat, not a
+## combat dodge, so it should read as a walk, not a snap.
+@export var walk_out_seconds: float = 1.0
+## Move speed multiplier applied to a freshly-spawned enemy for walk_out_seconds,
+## so it doesn't immediately sprint at full chase speed the instant it appears.
+@export_range(0.05, 1.0) var walk_out_speed_scale: float = 0.4
 ## Optional explicit lane order, e.g. [0, 2, 1, 3]. Empty = round-robin all lanes.
 @export var lane_pattern: Array[int] = []
 
@@ -145,16 +153,44 @@ func _run() -> void:
 
 
 func _spawn_one(index: int) -> void:
-	var lane: int = lane_for_index(index, lane_pattern)
+	var target_lane: int = lane_for_index(index, lane_pattern)
 	var melee: bool = randf() < melee_ratio
-	# Jitter X so melee maids (which collide with each other) don't pile up in the
-	# doorway; combined with the spawn stagger this reads as "pouring out".
-	var x: float = door_mouth.global_position.x + randf_range(-12.0, 12.0)
+	# Small jitter so melee maids (which collide with each other) don't spawn
+	# perfectly stacked; combined with the spawn stagger and the walk-out below,
+	# this reads as a squad individually filing out of the doorway.
+	var x: float = door_mouth.global_position.x + randf_range(-8.0, 8.0)
+	# Everyone spawns at the crack itself (ground lane, on the wall) — _walk_out()
+	# below is what actually sends each one out to its fan-out lane, so they're
+	# seen leaving the doorway instead of just appearing already in position.
 	var enemy := EnemySpawner.spawn_enemy_at(
-		get_tree().current_scene, player, x, lane, melee)
-	if enemy != null:
-		enemy.lane_change_cooldown = randf_range(lane_hold_min, lane_hold_max)
-		_spawned.append(enemy)
+		get_tree().current_scene, player, x, Lanes.GROUND_LANE, melee)
+	if enemy == null:
+		return
+	# Block the AI's own eager lane-chase (Enemy._lane_chase, polled every frame by
+	# ChasePlayerState) until the walk-out step below has run — its cooldown starts
+	# at 0.0, so left alone it fires on the very first physics tick and steps the
+	# maid toward the PLAYER's lane instead of its assigned fan-out lane.
+	enemy.lane_change_cooldown = arm_seconds + 1.0
+	_spawned.append(enemy)
+	_walk_out(enemy, target_lane)
+
+
+## Steps a freshly-spawned enemy from the crack out to its fan-out lane, so it
+## visibly leaves the doorway rather than appearing already in position.
+## Deferred one frame: spawn_enemy_at()'s add_child is deferred, so the node isn't
+## in the tree yet when _spawn_one() returns — create_tween() needs it to be.
+func _walk_out(enemy: Enemy, target_lane: int) -> void:
+	await get_tree().process_frame
+	if not is_instance_valid(enemy) or not enemy.is_inside_tree():
+		return
+	var normal_speed: float = enemy.move_speed
+	enemy.move_speed = normal_speed * walk_out_speed_scale
+	if target_lane != Lanes.GROUND_LANE:
+		enemy._start_lane_change(target_lane, walk_out_seconds)
+	enemy.lane_change_cooldown = randf_range(lane_hold_min, lane_hold_max)
+	await get_tree().create_timer(walk_out_seconds).timeout
+	if is_instance_valid(enemy):
+		enemy.move_speed = normal_speed
 
 
 func _engage_lock() -> void:

@@ -193,7 +193,9 @@ func _lane_chase() -> void:
 	_start_lane_change(lane + signi(player.current_lane - lane))
 
 
-func _start_lane_change(target: int) -> void:
+## `duration` defaults to the snappy in-combat speed; callers that want a slower,
+## more deliberate step (e.g. walking out of a spawn point) can override it.
+func _start_lane_change(target: int, duration: float = LANE_CHANGE_DURATION) -> void:
 	target = Lanes.clamp_lane(target)
 	if target == lane or lane_baseline_y == INF:
 		return
@@ -205,7 +207,7 @@ func _start_lane_change(target: int) -> void:
 	if _lane_tween:
 		_lane_tween.kill()
 	_lane_tween = create_tween()
-	_lane_tween.tween_property(self, "global_position:y", Lanes.floor_y(lane_baseline_y, target), LANE_CHANGE_DURATION)
+	_lane_tween.tween_property(self, "global_position:y", Lanes.floor_y(lane_baseline_y, target), duration)
 	_lane_tween.finished.connect(func() -> void:
 		lane = target
 		z_index = Lanes.z_for(target)
