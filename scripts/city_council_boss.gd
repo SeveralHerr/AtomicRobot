@@ -15,8 +15,8 @@ func _ready() -> void:
 	enemy_state_machine.change_state("BossAttackPlayerState")
 
 	
-func receive_hit(damage: int) -> void:
-	super.receive_hit(damage)
+func receive_hit(damage: int, knockback_strength: float = 200.0) -> void:
+	super.receive_hit(damage, knockback_strength)
 	if health <= 0:
 		Globals.boss_death.emit()
 	

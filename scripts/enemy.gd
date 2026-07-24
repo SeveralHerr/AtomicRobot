@@ -267,11 +267,11 @@ func should_turn() -> bool:
 	return false
 
 
-func receive_hit(damage: int) -> void:
+func receive_hit(damage: int, knockback_strength: float = 200.0) -> void:
 	_play_hit_effects()
 	_apply_damage(damage)
-	_apply_knockback()
-	
+	_apply_knockback(knockback_strength)
+
 	if health <= 0 and has_state("DeadEnemyState"):
 		var random_delay = randf_range(0, 0.2)
 		await get_tree().create_timer(random_delay).timeout
@@ -291,9 +291,8 @@ func _apply_damage(damage: int) -> void:
 	print(health)
 
 
-func _apply_knockback() -> void:
+func _apply_knockback(knockback_strength: float = 200.0) -> void:
 	var knockback_direction = (global_position - player.global_position).normalized()
-	var knockback_strength = 200.0  # Increased for more noticeable effect
 	knockback_velocity = knockback_direction * knockback_strength
 	velocity.y = -50.0
 

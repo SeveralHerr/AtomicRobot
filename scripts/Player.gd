@@ -301,24 +301,24 @@ func _process(delta: float) -> void:
 	#default_sprite.material.set_shader_parameter("frame_coords",frame_coords)
 	#default_sprite.material.set_shader_parameter("velocity",velocity)
 
-func receive_hit(source_position: Vector2, damage: int) -> void:
+func receive_hit(source_position: Vector2, damage: int, knockback_strength: float = 300) -> void:
 	if is_dead:
 		return
-	
+
 	# Don't allow multiple hits during knockback
 	if state_machine.current_state is KnockbackState:
 		return
-	
+
 	hurt_audio.play()
 
 	if animation_player.is_playing():
 		animation_player.stop()
-	
+
 	animation_player.play("Hit")
-	
+
 	# Calculate knockback direction and strength
 	var knockback_direction = (global_position - source_position).normalized()
-	var base_knockback_strength = 300
+	var base_knockback_strength = knockback_strength
 	
 	# Adjust knockback based on current state
 	var knockback_multiplier = 1.0
