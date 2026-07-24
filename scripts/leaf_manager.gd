@@ -10,7 +10,7 @@ signal leaf_interaction(leaf: DroppedLeaf, interaction_type: String)
 @export var leaf_pool_size: int = 100
 @export var max_active_leaves: int = 280
 
-@onready var player: Player = $"../Player"
+@onready var player: Player = $"../../Player"
 
 var ground_y = -1
 var leaf_pool: Array[DroppedLeaf] = []

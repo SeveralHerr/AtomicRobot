@@ -27,7 +27,8 @@ func _on_frame_changed(enemy: Enemy):
 			enemy.attack_timer.start()
 
 func attack() -> void:
-
+	if not enemy.is_same_lane_as_player():
+		return
 	for body in enemy.attack_area.get_overlapping_bodies():
 		if body is Player:
 			enemy.player.receive_hit(enemy.global_position, 1)

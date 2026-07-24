@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://btaphps6ps5mq"]
 
-[ext_resource type="Texture2D" uid="uid://cpmx38d8kqq1w" path="res://images/Logo+Web.png" id="1_jexr2"]
-[ext_resource type="Texture2D" uid="uid://degiutq3ukb4w" path="res://images/Logo_small.png" id="1_p5stn"]
+[ext_resource type="Texture2D" uid="uid://bwdce22i5axih" path="res://images/Logo+Web.png" id="1_jexr2"]
+[ext_resource type="Texture2D" uid="uid://de5ug1q13hab1" path="res://images/Logo_small.png" id="1_p5stn"]
 
 [node name="HP1" type="TextureRect"]
 texture_filter = 4

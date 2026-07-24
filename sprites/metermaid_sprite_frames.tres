@@ -1,9 +1,9 @@
-[gd_resource type="SpriteFrames" load_steps=40 format=3 uid="uid://ckct5j2bt3fq7"]
+[gd_resource type="SpriteFrames" format=3 uid="uid://ckct5j2bt3fq7"]
 
-[ext_resource type="Texture2D" uid="uid://ctotmrb257nrs" path="res://sprites/Meter Maid.png" id="1_8f8f2"]
-[ext_resource type="Texture2D" uid="uid://b6l617g2ri0yv" path="res://sprites/maid_idle.png" id="2_nx70l"]
-[ext_resource type="Texture2D" uid="uid://ilva7532twtc" path="res://sprites/meter maid melee3-sheet.png" id="3_t27jl"]
-[ext_resource type="Texture2D" uid="uid://c5t338lvqm8mh" path="res://sprites/meter maid refill.png" id="4_1onqe"]
+[ext_resource type="Texture2D" uid="uid://bjx1a8yhxo522" path="res://sprites/Meter Maid.png" id="1_8f8f2"]
+[ext_resource type="Texture2D" uid="uid://clrwpitvmm1qj" path="res://sprites/maid_idle.png" id="2_nx70l"]
+[ext_resource type="Texture2D" uid="uid://dsmjv6ib5bino" path="res://sprites/meter maid melee3-sheet.png" id="3_t27jl"]
+[ext_resource type="Texture2D" uid="uid://cyjvb5snmvxjn" path="res://sprites/meter maid refill.png" id="4_1onqe"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uvsvq"]
 atlas = ExtResource("1_8f8f2")
@@ -181,7 +181,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_lonoa")
 }],
-"loop": false,
+"loop": 0,
 "name": &"attack",
 "speed": 7.95
 }, {
@@ -213,7 +213,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_4ynx4")
 }],
-"loop": false,
+"loop": 0,
 "name": &"death",
 "speed": 10.0
 }, {
@@ -224,7 +224,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_6ken7")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle",
 "speed": 4.0
 }, {
@@ -250,7 +250,7 @@ animations = [{
 "duration": 1.5,
 "texture": SubResource("AtlasTexture_7vp4n")
 }],
-"loop": false,
+"loop": 0,
 "name": &"melee",
 "speed": 15.0
 }, {
@@ -258,7 +258,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_s51vj")
 }],
-"loop": true,
+"loop": 1,
 "name": &"melee_idle",
 "speed": 5.0
 }, {
@@ -266,7 +266,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("4_1onqe")
 }],
-"loop": true,
+"loop": 1,
 "name": &"refill",
 "speed": 5.0
 }, {
@@ -295,7 +295,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_w0pdj")
 }],
-"loop": true,
+"loop": 1,
 "name": &"walk",
 "speed": 10.0
 }]

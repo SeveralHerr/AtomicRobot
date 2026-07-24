@@ -1,0 +1,12 @@
+{
+  "validator_script": "res://addons/godot_selftest/scene_validator.gd",
+  "extension_script": "res://devtools_ext/commands.gd",
+  "hud_layer_name": "UI",
+  "test_dir": "res://test/unit",
+  "scan_root": "res://",
+  "fps_min": 30,
+  "orphan_max": 0,
+  "main_scene": "res://scenes/startscreen.tscn",
+  "entry_hook": { "node_path": "/root/Globals", "method": "debug_start_game" },
+  "mute": true
+}

@@ -1,6 +1,6 @@
-[gd_resource type="SpriteFrames" load_steps=23 format=3 uid="uid://dol7bmjmxljvk"]
+[gd_resource type="SpriteFrames" format=3 uid="uid://dol7bmjmxljvk"]
 
-[ext_resource type="Texture2D" uid="uid://fa0mae2jvuat" path="res://sprites/CityCouncil.png" id="1_ksom4"]
+[ext_resource type="Texture2D" uid="uid://b816q08k35v4x" path="res://sprites/CityCouncil.png" id="1_ksom4"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_673pk"]
 atlas = ExtResource("1_ksom4")
@@ -122,7 +122,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_qvmem")
 }],
-"loop": false,
+"loop": 0,
 "name": &"attack",
 "speed": 8.0
 }, {
@@ -154,7 +154,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_vxc0g")
 }],
-"loop": false,
+"loop": 0,
 "name": &"death",
 "speed": 5.0
 }, {
@@ -162,7 +162,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_010di")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle",
 "speed": 5.0
 }]

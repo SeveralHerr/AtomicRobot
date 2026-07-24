@@ -1,17 +1,17 @@
 [gd_scene load_steps=29 format=3 uid="uid://csmg52xs05d1e"]
 
 [ext_resource type="Script" uid="uid://b4j6tw0kgdavd" path="res://scripts/Player.gd" id="1_ncv2v"]
-[ext_resource type="Texture2D" uid="uid://d0y81su3m3a7u" path="res://images/Sprite-0001.png" id="1_rc65t"]
+[ext_resource type="Texture2D" uid="uid://c6dxgv1cpubla" path="res://images/Sprite-0001.png" id="1_rc65t"]
 [ext_resource type="Shape2D" uid="uid://vgx6w6q5wbi" path="res://sprites/player_normal_collision_shape.tres" id="2_fjrip"]
 [ext_resource type="SpriteFrames" uid="uid://cyu43ntf0g8u2" path="res://sprites/sarah_sprite_frames.tres" id="3_d2wvv"]
-[ext_resource type="AudioStream" uid="uid://wqp3s2nrqdc" path="res://sounds/ryan_jump.wav" id="4_d2wvv"]
-[ext_resource type="AudioStream" uid="uid://o6elmv0yuf22" path="res://sounds/hurt.wav" id="4_mkmka"]
-[ext_resource type="AudioStream" uid="uid://d3xgerpa6vl5o" path="res://sounds/hit3.ogg" id="5_hoc3m"]
-[ext_resource type="AudioStream" uid="uid://cjdlt2gywxnpn" path="res://sounds/lightsaber.wav" id="8_smehm"]
-[ext_resource type="AudioStream" uid="uid://bqqnkr73hsf0v" path="res://sounds/422762__kierankeegan__footsteps_stone_4.wav" id="9_ur7pv"]
-[ext_resource type="AudioStream" uid="uid://c1o4g0qfxouyt" path="res://sounds/515624__mrickey13__playerhurt2.wav" id="10_y4r1p"]
+[ext_resource type="AudioStream" uid="uid://b8ur41p2m4gmq" path="res://sounds/ryan_jump.wav" id="4_d2wvv"]
+[ext_resource type="AudioStream" uid="uid://cwuxubcdkpakw" path="res://sounds/hurt.wav" id="4_mkmka"]
+[ext_resource type="AudioStream" uid="uid://dovodlpxl78o3" path="res://sounds/hit3.ogg" id="5_hoc3m"]
+[ext_resource type="AudioStream" uid="uid://djcqmjvbujdo2" path="res://sounds/lightsaber.wav" id="8_smehm"]
+[ext_resource type="AudioStream" uid="uid://duoc3oi1rv33r" path="res://sounds/422762__kierankeegan__footsteps_stone_4.wav" id="9_ur7pv"]
+[ext_resource type="AudioStream" uid="uid://c56tp6fla4n2o" path="res://sounds/515624__mrickey13__playerhurt2.wav" id="10_y4r1p"]
 [ext_resource type="Script" uid="uid://xo4s2my0m1b7" path="res://scripts/run_particles.gd" id="12_3v2ag"]
-[ext_resource type="AudioStream" uid="uid://cdpyidiydmygd" path="res://sounds/power_up.wav" id="12_jej6c"]
+[ext_resource type="AudioStream" uid="uid://dsqvxr5veemuf" path="res://sounds/power_up.wav" id="12_jej6c"]
 
 [sub_resource type="Shader" id="Shader_27hpx"]
 code = "shader_type canvas_item;
@@ -213,7 +213,7 @@ autoplay = "RESET"
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, 20)
 zoom = Vector2(2.5, 2.5)
-limit_bottom = 30
+limit_bottom = 96
 limit_smoothed = true
 position_smoothing_speed = 1.0
 

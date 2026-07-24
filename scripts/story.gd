@@ -2,9 +2,8 @@ extends Control
 @onready var story_label_1: Label = $CenterContainer/StoryLabel1
 
 @onready var continue_label: Label = $MarginContainer/ContinueLabel
-@onready var fade_overlay: FadeOverlay = $FadeOverlay
 
-const GAME: PackedScene = preload("res://scenes/main.tscn")
+const CONTROLS_SPLASH: PackedScene = preload("res://scenes/controls_splash.tscn")
 var current_label_index: int = 0
 var labels: Array[Label]
 var can_proceed: bool = false
@@ -51,13 +50,9 @@ func transition_to_game() -> void:
 		current_tween.parallel().tween_property(labels[current_label_index - 1], "modulate:a", 0.0, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	
 	await current_tween.finished
-	
-	# Fade to black
-	await fade_overlay.fade_out()
-	await get_tree().create_timer(1).timeout
-	
+
 	# Change scene
-	get_tree().change_scene_to_packed(GAME)
+	get_tree().change_scene_to_packed(CONTROLS_SPLASH)
 
 func show_next_label() -> void:
 	if current_label_index < labels.size():

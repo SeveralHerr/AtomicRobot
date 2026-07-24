@@ -7,8 +7,15 @@ const HIT_FX = preload("res://scenes/hit_fx.tscn")
 
 var initial_speed: float = 600.0
 var has_hit_player: bool = false
-var bounce_damping: float = 0.7
+# Restitution used when bouncing off a virtual lane floor; matches the physics
+# material bounce applied in start(), so both floors feel the same.
+var bounce_damping: float = 0.3
 var is_falling: bool = false
+var lane: int = Lanes.GROUND_LANE
+# Coins arced down by platform/window maids hit whichever lane they land on.
+var lane_agnostic: bool = false
+## Absolute Y of the virtual floor this coin lands on; INF = ride real collision.
+var virtual_floor_y: float = INF
 
 func start(_position: Vector2, _direction: Vector2, is_arc: bool = false, gravity: float = 0.55) -> void:
 	global_position = _position
@@ -42,6 +49,35 @@ func _ready() -> void:
 	await get_tree().create_timer(15).timeout
 	queue_free()
 	
+## Put this coin on a road lane's virtual floor. The walkway tiles' collision boxes
+## fill the road strip below the walkway line, so a coin flying at a road-lane Y is
+## inside solid Ground geometry and smacks into it immediately. Road-lane bodies
+## solve this by dropping Ground(2)/Platforms(6) and standing on a virtual floor —
+## coins do the same (see Player._set_ground_collision / Enemy._apply_gravity).
+func set_lane_floor(floor_lane: int, baseline_y: float) -> void:
+	if floor_lane == Lanes.GROUND_LANE or not is_finite(baseline_y):
+		return
+	virtual_floor_y = Lanes.floor_y(baseline_y, floor_lane)
+	set_collision_mask_value(2, false)
+	set_collision_mask_value(6, false)
+	z_index = Lanes.z_for(floor_lane)
+
+## Bounce/rest on the virtual floor, since there is no body there to collide with.
+func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
+	if virtual_floor_y == INF or state.linear_velocity.y < 0.0:
+		return
+	var xform := state.transform
+	if xform.origin.y < virtual_floor_y:
+		return
+	xform.origin.y = virtual_floor_y
+	state.transform = xform
+	var v := state.linear_velocity
+	v.y = -v.y * bounce_damping
+	v.x *= 0.85  # rolling friction, stands in for the material's friction
+	if absf(v.y) < 30.0:
+		v.y = 0.0
+	state.linear_velocity = v
+
 func enable_passthrough() -> void:
 	#set_collision_mask_value(1, false)
 	set_collision_mask_value(2, false)
@@ -63,6 +99,8 @@ func _on_body_entered(body: Node) -> void:
 	#if body is not Player:
 		#set_collision_mask_value(1, false)
 	if body is Player and not has_hit_player:
+		if not lane_agnostic and body.current_lane != lane:
+			return
 		print("hit player")
 		body.receive_hit(global_position, 1)
 		var instance = HIT_FX.instantiate()

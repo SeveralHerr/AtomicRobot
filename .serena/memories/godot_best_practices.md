@@ -56,7 +56,7 @@
 - Use meaningful commit messages for scene and script changes
 
 ## Project-Specific Considerations
-- This project uses Godot 4.4 - ensure compatibility with current version
+- This project uses Godot 4.7 - ensure compatibility with current version
 - State machine pattern is well-implemented - follow existing patterns
 - Global singletons are appropriately used - don't add unnecessary ones
 - Physics layers are well-defined - respect existing collision setup

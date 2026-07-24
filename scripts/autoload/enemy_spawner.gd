@@ -21,9 +21,50 @@ static func spawn_enemy(parent: Node2D, player: Node2D, viewport_size: Vector2, 
 	elif spawn_side == 0: # Left side
 		spawn_x = player.position.x - viewport_size.x / 3 - offset
 
-	# Set enemy position
-	enemy.global_position = Vector2(spawn_x, player.position.y)
+	# Spawn on a weighted random lane (biased toward the player's) for TMNT-style
+	# depth pressure; _ready applies starting_lane + collision/z. The player's
+	# baseline (physical walkway Y) derives every lane's floor.
+	if player is Player and player.lane_baseline_y != INF:
+		var lane := _pick_spawn_lane(player.current_lane)
+		enemy.starting_lane = lane
+		enemy.lane_baseline_y = player.lane_baseline_y
+		enemy.global_position = Vector2(spawn_x, Lanes.floor_y(player.lane_baseline_y, lane))
+	else:
+		enemy.global_position = Vector2(spawn_x, player.position.y)
 	return enemy
+
+
+## Spawn one enemy at an explicit world X on an explicit lane.
+##
+## `parent` MUST be a zero-transform node — pass `get_tree().current_scene`.
+## global_position is applied while the node is still an orphan (add_child is
+## deferred), so on a parent with a non-zero transform the enemy gets shifted by
+## that transform once it is actually added.
+static func spawn_enemy_at(parent: Node, player: Node2D, world_x: float, lane: int, melee: bool) -> Node2D:
+	var enemy = (METER_MAID_MELEE if melee else METER_MAID).instantiate()
+	var use_lane := Lanes.clamp_lane(lane)
+	var y: float = player.position.y
+	if player is Player and player.lane_baseline_y != INF:
+		enemy.lane_baseline_y = player.lane_baseline_y
+		y = Lanes.floor_y(player.lane_baseline_y, use_lane)
+	else:
+		# No walkway baseline captured yet — the virtual floors are unknown, so the
+		# only safe place to stand is the real one.
+		use_lane = Lanes.GROUND_LANE
+	enemy.starting_lane = use_lane
+	parent.call_deferred("add_child", enemy)
+	enemy.global_position = Vector2(world_x, y)
+	return enemy
+
+
+static func _pick_spawn_lane(player_lane: int) -> int:
+	if randf() < 0.4:
+		return player_lane
+	var others: Array[int] = []
+	for l in range(Lanes.BACK_LANE, Lanes.FRONT_LANE + 1):
+		if l != player_lane:
+			others.append(l)
+	return others[randi() % others.size()]
 
 static func spawn_wave(parent: Node2D, player: Node2D, viewport_size: Vector2, count: int = 3, offset: float = 50.0) -> Array[Node2D]:
 	var enemies: Array[Node2D] = []

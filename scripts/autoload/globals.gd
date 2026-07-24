@@ -144,6 +144,34 @@ func is_node_destroyed(node_name: String) -> bool:
 func reset() -> void:
 	meters.clear()
 	meter_maids_killed = 0
+	_active_events = 0
+
+
+## `event` is listened to by EnemyManager (pauses ambient waves), Player (slows on
+## start) and the notification banner. Overlapping emitters used to fight over it —
+## BuildingGroup3 has two EnemyEvent volumes, and whichever finished first emitted
+## `event(false)` while the other was still running. Refcount so it only flips on
+## the first push and the last pop.
+var _active_events: int = 0
+
+func push_event() -> void:
+	_active_events += 1
+	if _active_events == 1:
+		event.emit(true)
+
+func pop_event() -> void:
+	_active_events = maxi(0, _active_events - 1)
+	if _active_events == 0:
+		event.emit(false)
+
+
+# DevTools/testing entry hook: skip menus straight into a playable scene.
+# Wired via addons/godot_selftest/devtools_config.json entry_hook and the
+# devtools "start_game" verb. Not used by normal gameplay.
+func debug_start_game(character: String = "Ryan", scene: String = "res://scenes/main.tscn") -> void:
+	if character_dict.has(character):
+		selected_character = character
+	get_tree().change_scene_to_file.call_deferred(scene)
 
 
 func nearest_meter(pos: Vector2) -> Node2D:
@@ -151,7 +179,9 @@ func nearest_meter(pos: Vector2) -> Node2D:
 	var nearest_meter: Node2D = null 
 
 	for meter in meters:
-		var dist = pos.distance_to(meter.global_position) 
+		if not is_instance_valid(meter):
+			continue
+		var dist = pos.distance_to(meter.global_position)
 		if dist < lowest_distance:
 			lowest_distance = dist
 			nearest_meter = meter  

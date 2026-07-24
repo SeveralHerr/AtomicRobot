@@ -1,0 +1,103 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://images/new/BuildingCourthouse.png" id="1_kx5dy"]
+[ext_resource type="PackedScene" path="res://scenes/lamp.tscn" id="2_xdnbq"]
+[ext_resource type="Texture2D" path="res://images/new/Streetlamp.png" id="3_at3ej"]
+[ext_resource type="PackedScene" path="res://scenes/building_door_encounter.tscn" id="4_j7oam"]
+[ext_resource type="Script" path="res://scripts/building_door_encounter.gd" id="5_5amyh"]
+[ext_resource type="Texture2D" path="res://images/new/Blue_Trashcan.png" id="6_j8aft"]
+[ext_resource type="Texture2D" path="res://images/new/Streetsign.png" id="7_75ru3"]
+[ext_resource type="Texture2D" path="res://images/arrow_n.png" id="8_drrkj"]
+[ext_resource type="Script" path="res://scripts/final_boss_enter.gd" id="9_ym8w8"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_a82wo"]
+radius = 50.3587
+
+[sub_resource type="Animation" id="Animation_mlv25"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(6804, -39)]
+}
+
+[sub_resource type="Animation" id="Animation_y57op"]
+resource_name = "hover"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(6804, -30), Vector2(6804, -39)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_a82wo"]
+_data = {
+&"RESET": SubResource("Animation_mlv25"),
+&"hover": SubResource("Animation_y57op")
+}
+
+[node name="BuildingGroup4" type="Node2D" unique_id=1676439319]
+position = Vector2(0, 2)
+
+[node name="Courthouse" type="Sprite2D" parent="." unique_id=1651286307]
+position = Vector2(6800, -233.5)
+texture = ExtResource("1_kx5dy")
+
+[node name="Lamp4" type="Sprite2D" parent="." unique_id=1502548419 instance=ExtResource("2_xdnbq")]
+z_index = 1
+position = Vector2(6507, -71)
+texture = ExtResource("3_at3ej")
+
+[node name="Lamp6" type="Sprite2D" parent="." unique_id=598052136 instance=ExtResource("2_xdnbq")]
+z_index = 1
+position = Vector2(6119, -71)
+texture = ExtResource("3_at3ej")
+
+[node name="BuildingDoorEncounter" type="Node2D" parent="." unique_id=1182008041 instance=ExtResource("4_j7oam")]
+position = Vector2(5900, 0)
+script = ExtResource("5_5amyh")
+melee_ratio = 1.0
+
+[node name="Lamp5" type="Sprite2D" parent="." unique_id=1290627267 instance=ExtResource("2_xdnbq")]
+z_index = 1
+position = Vector2(7111, -71)
+texture = ExtResource("3_at3ej")
+
+[node name="Trash4" type="Sprite2D" parent="." unique_id=1858689367]
+z_index = 1
+position = Vector2(6258, -18)
+texture = ExtResource("6_j8aft")
+
+[node name="Sign" type="Sprite2D" parent="." unique_id=607654538]
+z_index = 1
+position = Vector2(6279, -51)
+texture = ExtResource("7_75ru3")
+
+[node name="Enter" type="Sprite2D" parent="." unique_id=2102146681]
+position = Vector2(6804, -39)
+texture = ExtResource("8_drrkj")
+script = ExtResource("9_ym8w8")
+
+[node name="Area2D" type="Area2D" parent="Enter" unique_id=1607296257]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enter/Area2D" unique_id=124816113]
+shape = SubResource("CircleShape2D_a82wo")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Enter" unique_id=1071195528]
+libraries/ = SubResource("AnimationLibrary_a82wo")
+autoplay = &"hover"

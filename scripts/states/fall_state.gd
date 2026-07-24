@@ -15,7 +15,7 @@ func exit_state(player: Player) -> void:
 	
 
 func update(player: Player, delta: float) -> void:
-	if not player.is_on_floor():
+	if not player.is_grounded():
 		return
 	#player.land_audio.play()
 	squash_and_stretch(player)
@@ -51,5 +51,4 @@ func handle_input(player: Player, event: InputEvent) -> void:
 		player.state_machine.change_state("JumpState")
 	elif event.is_action_pressed("Attack"):
 		player.state_machine.change_state("AttackState")
-	elif event.is_action_pressed("ui_down") and player.is_on_floor():
-		player.state_machine.change_state("CrouchState")
+	# ui_down is handled centrally by Player._process_lane_input (tap = lane, hold = crouch)

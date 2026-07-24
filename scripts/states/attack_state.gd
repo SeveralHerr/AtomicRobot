@@ -18,24 +18,26 @@ func trigger_attack(player: Player)-> void:
 		var instance = player.ROBOT_BULLET.instantiate()
 		player.get_parent().add_child(instance)
 		instance.global_position = player.robot_attack_position.global_position
-		
+
 		var dir = player.last_dir
 		instance.dir = dir
 		instance.player = player
+		instance.lane = player.current_lane
 		return
 	elif Globals.selected_character == "Cass":
 		var instance = player.FLIPFLOP_BULLET.instantiate()
 		player.get_parent().add_child(instance)
 		instance.global_position = player.robot_attack_position.global_position
-		
+
 		var dir = player.last_dir
 		instance.dir = dir
 		instance.player = player
+		instance.lane = player.current_lane
 		return
-	
+
 	var bodies = player.area_2d.get_overlapping_bodies()
 	for body in bodies:
-		if body is Enemy:
+		if body is Enemy and body.lane == player.current_lane:
 			ScreenShake.apply_shake(7)
 			var dir = (player.global_position - body.global_position).normalized()
 			body.receive_hit(player.damage)
@@ -57,10 +59,9 @@ func _on_frame_changed(player: Player):
 		trigger_attack(player)
 			
 func handle_input(player: Player, event: InputEvent) -> void:
-	if event.is_action_pressed("ui_accept") and player.is_on_floor():
+	if event.is_action_pressed("ui_accept") and player.is_grounded():
 		player.state_machine.change_state("JumpState")
-	elif event.is_action("ui_down") and player.is_on_floor():
-		player.state_machine.change_state("CrouchState")
+	# ui_down is handled centrally by Player._process_lane_input (tap = lane, hold = crouch)
 
 func exit_state(player: Player) -> void:
 	player.default_sprite.animation_finished.disconnect(_on_animation_finished.bind(player))

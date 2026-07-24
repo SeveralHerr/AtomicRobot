@@ -1,0 +1,21 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://images/new/tall_building.png" id="1_8avbf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k2mcc"]
+size = Vector2(431, 559)
+
+[node name="RightBoundary" type="Node2D" unique_id=1220517773]
+
+[node name="Building10" type="Sprite2D" parent="." unique_id=1927133807]
+z_index = 1
+position = Vector2(7535, -219)
+texture = ExtResource("1_8avbf")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Building10" unique_id=52192789]
+collision_layer = 64
+collision_mask = 31
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Building10/StaticBody2D" unique_id=1829113906]
+position = Vector2(-25.5, 69.5)
+shape = SubResource("RectangleShape2D_k2mcc")

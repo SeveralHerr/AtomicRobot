@@ -54,11 +54,26 @@ static func shake_two_node2d(node1: Node2D, node2: Node2D, strength1: float = 10
 	tween2.tween_property(node2, "position", original_pos2, frequency)
 
 ## Coin throwing factory methods
-static func throw_coin(spawn_position: Vector2, target_position: Vector2, parent_node: Node, use_arc: bool = false) -> void:
+static func throw_coin(spawn_position: Vector2, target_position: Vector2, parent_node: Node, use_arc: bool = false, lane: int = Lanes.GROUND_LANE, lane_agnostic: bool = false) -> Bullet:
 	var instance = COIN_BULLET.instantiate()
 	parent_node.add_child(instance)
+	instance.lane = lane
+	instance.lane_agnostic = lane_agnostic
+	# A coin flies at its target's lane height. Lane-tagged throws are gated to the
+	# player's lane already; arced (lane_agnostic) coins come down onto whatever lane
+	# the player is in. Either way the road lanes have no real floor — hand the coin
+	# the same virtual floor line entities stand on.
+	var player = parent_node.get_tree().get_first_node_in_group("player")
+	if player and player.lanes_active():
+		var floor_lane: int = player.current_lane if lane_agnostic else lane
+		instance.set_lane_floor(floor_lane, player.lane_baseline_y)
 	var direction = (target_position - spawn_position).normalized()
 	instance.start(spawn_position, direction, use_arc)
+	return instance
+
+## Small per-shot spread so simultaneous throws from stacked/close enemies don't
+## fly the exact same path and visually overlap.
+const PROJECTILE_TARGET_JITTER: float = 10.0
 
 static func throw_coin_from_enemy(enemy: Node, use_arc: bool = false, offset: int = 0) -> void:
 	var player = enemy.get_tree().get_first_node_in_group("player")
@@ -67,7 +82,11 @@ static func throw_coin_from_enemy(enemy: Node, use_arc: bool = false, offset: in
 	var spawn_pos = enemy.global_position + enemy.coin_spawn_point.position
 	var target_pos = player.enemy_attack_position.global_position
 	target_pos.y += offset
-	throw_coin(spawn_pos, target_pos, enemy.player.get_parent(), use_arc)
+	target_pos.x += randf_range(-PROJECTILE_TARGET_JITTER, PROJECTILE_TARGET_JITTER)
+	var lane: int = enemy.lane if enemy is Enemy else Lanes.GROUND_LANE
+	# Lane-locked maids (platforms/windows) arc coins from above — those hit any lane.
+	var agnostic: bool = enemy.lane_locked if enemy is Enemy else false
+	throw_coin(spawn_pos, target_pos, enemy.player.get_parent(), use_arc, lane, agnostic)
 	
 ## Coin throwing factory methods
 static func throw_briefcase(spawn_position: Vector2, target_position: Vector2, parent_node: Node, use_arc: bool = false, gravity: float = 0.55, is_falling: bool = false) -> void:
@@ -86,6 +105,7 @@ static func throw_briefcase_from_enemy(enemy: Node, use_arc: bool = false, offse
 	var spawn_pos = enemy.global_position + enemy.coin_spawn_point.position
 	var target_pos = player.enemy_attack_position.global_position
 	target_pos.y += offset
+	target_pos.x += randf_range(-PROJECTILE_TARGET_JITTER, PROJECTILE_TARGET_JITTER)
 	throw_briefcase(spawn_pos, target_pos, enemy.player.get_parent(), use_arc)
 
 static func throw_coin_delayed(enemy: Node, delay: float = 0.3, use_arc: bool = false) -> void:

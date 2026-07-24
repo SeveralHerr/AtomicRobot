@@ -4,19 +4,6 @@ extends CenterContainer
 
 func _ready() -> void:
 	hide()
-	Globals.event.connect(_event_started)
-
-func _event_started(status: bool ) -> void:
-	if status:
-		notification_label.text = "Event Started"
-		reveal_fade(0.4)
-		await get_tree().create_timer(2).timeout
-		fade_out(0.4)
-	else:
-		notification_label.text = "Event Completed"
-		reveal_fade(0.4)
-		await get_tree().create_timer(3.5).timeout
-		fade_out(0.4)		
 
 	
 

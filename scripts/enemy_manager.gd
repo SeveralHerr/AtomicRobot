@@ -1,5 +1,5 @@
 extends Node2D
-@onready var player: Player = $"../Player"
+@onready var player: Player = $"../../Player"
 
 var spawn_timer: Timer
 var viewport_size: Vector2
