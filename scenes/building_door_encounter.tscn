@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://g2i0ldrygj4w" path="res://sprites/crack.png" id="2_crack"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
-size = Vector2(80, 300)
+size = Vector2(220, 300)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
 size = Vector2(16, 400)
