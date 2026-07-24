@@ -39,6 +39,8 @@ var jump_fx_offset: float = 0
 var is_dead: bool = false
 var health: int = 3
 var damage: int = 1
+## Debug-menu cheat: invincible + one-hit-kill. See scripts/autoload/debug_menu.gd.
+var god_mode: bool = false
 var is_event_active: bool = false
 var SPEED = 170.0
 const JUMP_VELOCITY = -1250.0
@@ -74,6 +76,8 @@ var _down_held: float = -1.0
 var _up_prev: bool = false
 var _down_prev: bool = false
 func take_damage(amount: int) -> void:
+	if god_mode:
+		return
 	health -= amount
 	print(health)
 	
@@ -303,6 +307,9 @@ func _process(delta: float) -> void:
 
 func receive_hit(source_position: Vector2, damage: int, knockback_strength: float = 300) -> void:
 	if is_dead:
+		return
+
+	if god_mode:
 		return
 
 	# Don't allow multiple hits during knockback
