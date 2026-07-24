@@ -1,0 +1,90 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://images/new/Sky.png" id="1_laa6y"]
+[ext_resource type="Texture2D" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 240x135px/Pixelcity02/Pixelcity02_layer01.png" id="2_og1wf"]
+[ext_resource type="Texture2D" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_01/PixelcityFullHD01_layer01.png" id="3_a2ofe"]
+[ext_resource type="Texture2D" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_01/PixelcityFullHD01_layer02.png" id="4_im3bu"]
+[ext_resource type="Texture2D" path="res://images/new/Background_Really_Far_Buildings.png" id="5_vm1oy"]
+[ext_resource type="Texture2D" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_01/PixelcityFullHD01_layer03.png" id="6_bpkog"]
+[ext_resource type="Texture2D" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_01/PixelcityFullHD01_layer04.png" id="7_djm1h"]
+[ext_resource type="Texture2D" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_01/PixelcityFullHD01_layer05.png" id="8_23k1f"]
+[ext_resource type="Texture2D" path="res://images/Pixel City background pack 3.0 by Digital Moons/Pixel City background pack 3.0 by Digital Moons/Pixel City 1920x1080px FullHD/PixelcityFullHD_01/PixelcityFullHD01_layer06.png" id="9_lhupn"]
+
+[node name="Background" type="Node2D" unique_id=1104501429]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1168045837]
+position = Vector2(967, -231)
+scale = Vector2(15.7757, 1.22348)
+texture = ExtResource("1_laa6y")
+
+[node name="Parallax2DBackground" type="Parallax2D" parent="." unique_id=1439945699]
+scroll_scale = Vector2(0.1, 1)
+scroll_offset = Vector2(-30, -249)
+repeat_size = Vector2(1160.38, 0)
+repeat_times = 11
+
+[node name="Background_Far_Building2" type="Sprite2D" parent="Parallax2DBackground" unique_id=1829479609]
+visible = false
+position = Vector2(985, -532)
+scale = Vector2(3, 3)
+texture = ExtResource("2_og1wf")
+
+[node name="Background_Far_Building1" type="Sprite2D" parent="Parallax2DBackground" unique_id=1062972540]
+position = Vector2(752, -233)
+scale = Vector2(0.605, 0.605)
+texture = ExtResource("3_a2ofe")
+
+[node name="Background_Far_Building3" type="Sprite2D" parent="Parallax2DBackground" unique_id=1161027823]
+position = Vector2(1959, 45)
+scale = Vector2(0.605, 0.605)
+texture = ExtResource("4_im3bu")
+
+[node name="Background_Really_Far_Buildings" type="Sprite2D" parent="Parallax2DBackground" unique_id=776352460]
+visible = false
+position = Vector2(530, -188)
+texture = ExtResource("5_vm1oy")
+
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=1766112224]
+scroll_scale = Vector2(0.4, 1)
+scroll_offset = Vector2(-204, 64)
+repeat_size = Vector2(1160.38, 0)
+repeat_times = 11
+
+[node name="Background_Far_Building4" type="Sprite2D" parent="Parallax2D" unique_id=638891811]
+position = Vector2(2083, -276)
+scale = Vector2(0.695, 0.695)
+texture = ExtResource("6_bpkog")
+
+[node name="Parallax2D2" type="Parallax2D" parent="." unique_id=1111398511]
+scroll_scale = Vector2(0.6, 1)
+scroll_offset = Vector2(-738, -58)
+repeat_size = Vector2(882.6, 0)
+repeat_times = 11
+
+[node name="Background_Far_Building5" type="Sprite2D" parent="Parallax2D2" unique_id=28132486]
+modulate = Color(0.872435, 0.872435, 0.872435, 1)
+position = Vector2(2500, -134)
+scale = Vector2(0.46, 0.46)
+texture = ExtResource("7_djm1h")
+
+[node name="ForegroundParallaxLayer" type="Parallax2D" parent="." unique_id=1748678347]
+visible = false
+z_index = -1
+scale = Vector2(15.7757, 1.22348)
+scroll_scale = Vector2(0.5, 1)
+scroll_offset = Vector2(-43, 27)
+repeat_size = Vector2(22.845, 0)
+repeat_times = 22
+
+[node name="Background_Far_Building6" type="Sprite2D" parent="ForegroundParallaxLayer" unique_id=140648951]
+z_index = 1
+position = Vector2(115.431, -107.889)
+scale = Vector2(0.012, 0.16)
+texture = ExtResource("8_23k1f")
+
+[node name="Background_Far_Building7" type="Sprite2D" parent="ForegroundParallaxLayer" unique_id=1167104137]
+visible = false
+z_index = 1
+position = Vector2(115.494, -107.072)
+scale = Vector2(0.012, 0.16)
+texture = ExtResource("9_lhupn")

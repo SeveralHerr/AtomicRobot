@@ -1,20 +1,33 @@
-[gd_scene load_steps=23 format=3 uid="uid://6p6bt45jx3nl"]
+[gd_scene format=3]
 
-[ext_resource type="Texture2D" uid="uid://b3ym2lrg45u1g" path="res://sprites/bossroom.png" id="1_3n20u"]
-[ext_resource type="Script" uid="uid://6hy4cjr5j8bd" path="res://scripts/boss_room.gd" id="1_ee80j"]
-[ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="2_010di"]
-[ext_resource type="Script" uid="uid://dc00l4kuir5j0" path="res://scripts/health_container.gd" id="3_c7j7s"]
-[ext_resource type="Texture2D" uid="uid://54wohi1aav3k" path="res://images/ART-Mobile-logo (1).png" id="4_4e86d"]
-[ext_resource type="SpriteFrames" uid="uid://dol7bmjmxljvk" path="res://sprites/boss_ani.tres" id="4_bggbs"]
-[ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="4_g2a2m"]
-[ext_resource type="Script" uid="uid://fv8o1x5w5344" path="res://scripts/notificataion_container.gd" id="5_xmdvo"]
-[ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://styles/font_v2.tres" id="6_okx5s"]
-[ext_resource type="Script" uid="uid://1oip5i83mu4r" path="res://scripts/news_paper_notification_container.gd" id="7_rrfgo"]
-[ext_resource type="Script" uid="uid://bljv8wkcve17e" path="res://scripts/initial_fade_in.gd" id="8_v502q"]
-[ext_resource type="PackedScene" uid="uid://cd687fbnvb516" path="res://scenes/fade_overlay.tscn" id="9_d53cq"]
-[ext_resource type="Script" uid="uid://o2h3iex6u6ps" path="res://scripts/game_over_container.gd" id="10_7l8xw"]
-[ext_resource type="Script" uid="uid://dk1uut7vstewe" path="res://scripts/win_container.gd" id="11_c7j7s"]
+[ext_resource type="FontVariation" path="res://styles/white_font.tres" id="2_010di"]
+[ext_resource type="Script" path="res://scripts/health_container.gd" id="3_c7j7s"]
+[ext_resource type="Texture2D" path="res://images/ART-Mobile-logo (1).png" id="4_4e86d"]
+[ext_resource type="SpriteFrames" path="res://sprites/boss_ani.tres" id="4_bggbs"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="4_g2a2m"]
+[ext_resource type="Script" path="res://scripts/notificataion_container.gd" id="5_xmdvo"]
+[ext_resource type="LabelSettings" path="res://styles/font_v2.tres" id="6_okx5s"]
+[ext_resource type="Script" path="res://scripts/fade_overlay.gd" id="8_skgx8"]
+[ext_resource type="Script" path="res://scripts/initial_fade_in.gd" id="8_v502q"]
+[ext_resource type="PackedScene" path="res://scenes/fade_overlay.tscn" id="9_d53cq"]
+[ext_resource type="Script" path="res://scripts/mobile_ui.gd" id="10_gjhnn"]
+[ext_resource type="PackedScene" path="res://scenes/boss_room_environment.tscn" id="11_geu3j"]
+[ext_resource type="Shape2D" path="res://sprites/player_normal_collision_shape.tres" id="14_yvuth"]
+[ext_resource type="SpriteFrames" path="res://sprites/sarah_sprite_frames.tres" id="15_l160s"]
+[ext_resource type="AudioStream" path="res://sounds/ryan_jump.wav" id="16_2dyfp"]
+[ext_resource type="AudioStream" path="res://sounds/hurt.wav" id="17_1j8t8"]
+[ext_resource type="AudioStream" path="res://sounds/hit3.ogg" id="18_yb5k5"]
+[ext_resource type="Texture2D" path="res://images/Sprite-0001.png" id="19_601l5"]
+[ext_resource type="AudioStream" path="res://sounds/lightsaber.wav" id="20_kjnjn"]
+[ext_resource type="AudioStream" path="res://sounds/422762__kierankeegan__footsteps_stone_4.wav" id="21_4fi7l"]
+[ext_resource type="AudioStream" path="res://sounds/515624__mrickey13__playerhurt2.wav" id="22_0b6oq"]
+[ext_resource type="Script" path="res://scripts/run_particles.gd" id="23_rfivy"]
+[ext_resource type="AudioStream" path="res://sounds/power_up.wav" id="24_7ovk3"]
 [ext_resource type="PackedScene" path="res://scenes/mobile_controls.tscn" id="100_mobctl"]
+[ext_resource type="Script" path="res://scripts/boss_room.gd" id="200_broomgd"]
+[ext_resource type="Script" path="res://scripts/news_paper_notification_container.gd" id="201_npnc"]
+[ext_resource type="Script" path="res://scripts/game_over_container.gd" id="202_goc"]
+[ext_resource type="Script" path="res://scripts/win_container.gd" id="203_wc"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_votf5"]
 font = ExtResource("2_010di")
@@ -43,29 +56,149 @@ shadow_size = 6
 shadow_color = Color(0, 0, 0, 0.243137)
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_bpcqn"]
-size = Vector2(2462, 51)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_3n20u"]
-size = Vector2(36, 1374)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_entrance"]
 size = Vector2(200, 400)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ee80j"]
 size = Vector2(24, 56)
 
+[sub_resource type="Shader" id="Shader_27hpx"]
+code = "shader_type canvas_item;
+
+uniform vec4 flash_color : source_color;
+uniform float flash_value : hint_range(0.0, 1.0, 0.1) = 0;
+
+void fragment() {
+    vec4 texture_color = texture(TEXTURE, UV);
+    COLOR = mix(texture_color, flash_color, flash_value);
+    COLOR.a = texture_color.a;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mw4su"]
+shader = SubResource("Shader_27hpx")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_value = 0.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_sv8s5"]
+radius = 32.0156
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_34cfq"]
+atlas = ExtResource("19_601l5")
+region = Rect2(384, 144, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lgny0"]
+atlas = ExtResource("19_601l5")
+region = Rect2(400, 144, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fo77u"]
+atlas = ExtResource("19_601l5")
+region = Rect2(416, 144, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n06cy"]
+atlas = ExtResource("19_601l5")
+region = Rect2(432, 144, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gtu8j"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_34cfq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lgny0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fo77u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n06cy")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7lllm"]
+atlas = ExtResource("19_601l5")
+region = Rect2(336, 176, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0y77h"]
+atlas = ExtResource("19_601l5")
+region = Rect2(352, 176, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_podlq"]
+atlas = ExtResource("19_601l5")
+region = Rect2(368, 176, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_qydoc"]
+animations = [{
+"frames": [{
+"duration": 0.6,
+"texture": SubResource("AtlasTexture_7lllm")
+}, {
+"duration": 0.6,
+"texture": SubResource("AtlasTexture_0y77h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_podlq")
+}],
+"loop": 0,
+"name": &"default",
+"speed": 8.0
+}]
+
+[sub_resource type="Animation" id="Animation_r035c"]
+resource_name = "Hit"
+length = 0.1333
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DefaultSprite:material:shader_parameter/flash_value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.1333),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [1.0, 1.0, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_1qcb3"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DefaultSprite:material:shader_parameter/flash_value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qxslq"]
+_data = {
+&"Hit": SubResource("Animation_r035c"),
+&"RESET": SubResource("Animation_1qcb3")
+}
+
+[sub_resource type="Gradient" id="Gradient_d2wvv"]
+offsets = PackedFloat32Array(0.873529, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g2a2m"]
 bg_color = Color(0.0383972, 0.0383972, 0.0383971, 1)
 
-[node name="BossRoom" type="Node2D"]
+[node name="BossRoom" type="Node2D" unique_id=1669948772]
 position = Vector2(19, -251)
-script = ExtResource("1_ee80j")
+script = ExtResource("200_broomgd")
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=927377533]
 layer = 2
 
-[node name="HealthContainer" type="MarginContainer" parent="UI"]
+[node name="HealthContainer" type="MarginContainer" parent="UI" unique_id=1070747490]
 offset_right = 40.0
 offset_bottom = 40.0
 theme_override_constants/margin_left = 10
@@ -73,22 +206,22 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Health" type="HBoxContainer" parent="UI/HealthContainer"]
+[node name="Health" type="HBoxContainer" parent="UI/HealthContainer" unique_id=1247181367]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
-[node name="Label" type="Label" parent="UI/HealthContainer/Health"]
+[node name="Label" type="Label" parent="UI/HealthContainer/Health" unique_id=180351569]
 layout_mode = 2
 text = "HP "
 label_settings = SubResource("LabelSettings_votf5")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/HealthContainer/Health"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/HealthContainer/Health" unique_id=895862360]
 layout_mode = 2
 theme_override_constants/separation = -2
 script = ExtResource("3_c7j7s")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI"]
+[node name="MarginContainer" type="MarginContainer" parent="UI" unique_id=1933347217]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -99,14 +232,14 @@ theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="TextureRect" type="TextureRect" parent="UI/MarginContainer"]
+[node name="TextureRect" type="TextureRect" parent="UI/MarginContainer" unique_id=734463413]
 custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
 texture = ExtResource("4_4e86d")
 expand_mode = 5
 stretch_mode = 5
 
-[node name="NotificataionContainer" type="CenterContainer" parent="UI"]
+[node name="NotificataionContainer" type="CenterContainer" parent="UI" unique_id=651510953]
 z_index = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -115,17 +248,17 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("5_xmdvo")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/NotificataionContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/NotificataionContainer" unique_id=1900163974]
 layout_mode = 2
 
-[node name="NotificationLabel" type="Label" parent="UI/NotificataionContainer/VBoxContainer"]
+[node name="NotificationLabel" type="Label" parent="UI/NotificataionContainer/VBoxContainer" unique_id=142481385]
 layout_mode = 2
 text = "Event Started...."
 label_settings = ExtResource("6_okx5s")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="NewsPaperNotificationContainer" type="CenterContainer" parent="UI"]
+[node name="NewsPaperNotificationContainer" type="CenterContainer" parent="UI" unique_id=243625790]
 visible = false
 z_index = 1
 anchors_preset = 15
@@ -133,19 +266,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("7_rrfgo")
+script = ExtResource("201_npnc")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/NewsPaperNotificationContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/NewsPaperNotificationContainer" unique_id=631178686]
 layout_mode = 2
 
-[node name="NotificationLabel" type="Label" parent="UI/NewsPaperNotificationContainer/VBoxContainer"]
+[node name="NotificationLabel" type="Label" parent="UI/NewsPaperNotificationContainer/VBoxContainer" unique_id=141524509]
 layout_mode = 2
 text = "Event Started...."
 label_settings = SubResource("LabelSettings_skgx8")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="InitialFadeIn" type="Control" parent="UI"]
+[node name="InitialFadeIn" type="Control" parent="UI" unique_id=1784628716]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -154,12 +287,18 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("8_v502q")
 
-[node name="FadeOverlay" parent="UI/InitialFadeIn" instance=ExtResource("9_d53cq")]
+[node name="FadeOverlay" type="ColorRect" parent="UI/InitialFadeIn" unique_id=1308855272 instance=ExtResource("9_d53cq")]
 visible = false
 layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0, 0, 0, 1)
+script = ExtResource("8_skgx8")
 
-[node name="GameOverContainer" type="CenterContainer" parent="UI"]
+[node name="GameOverContainer" type="CenterContainer" parent="UI" unique_id=2063545137]
 visible = false
 z_index = 1
 anchors_preset = 15
@@ -167,24 +306,24 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("10_7l8xw")
+script = ExtResource("202_goc")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOverContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOverContainer" unique_id=1032477581]
 layout_mode = 2
 
-[node name="GameOverLabel" type="Label" parent="UI/GameOverContainer/VBoxContainer"]
+[node name="GameOverLabel" type="Label" parent="UI/GameOverContainer/VBoxContainer" unique_id=932849051]
 layout_mode = 2
 text = "Game Over"
 label_settings = ExtResource("6_okx5s")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button" type="Button" parent="UI/GameOverContainer/VBoxContainer"]
+[node name="Button" type="Button" parent="UI/GameOverContainer/VBoxContainer" unique_id=1063719288]
 layout_mode = 2
 theme_override_font_sizes/font_size = 31
 text = "Restart"
 
-[node name="BossIntroContainer" type="CenterContainer" parent="UI"]
+[node name="BossIntroContainer" type="CenterContainer" parent="UI" unique_id=778758246]
 z_index = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -192,7 +331,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="BossWordsLabel" type="Label" parent="UI/BossIntroContainer"]
+[node name="BossWordsLabel" type="Label" parent="UI/BossIntroContainer" unique_id=1232267876]
 layout_mode = 2
 text = "\"We are charging for 
 parking on sundays\""
@@ -200,17 +339,17 @@ label_settings = SubResource("LabelSettings_010di")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/BossIntroContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/BossIntroContainer" unique_id=1510494629]
 layout_mode = 2
 
-[node name="FinalBossLabel" type="Label" parent="UI/BossIntroContainer/VBoxContainer"]
+[node name="FinalBossLabel" type="Label" parent="UI/BossIntroContainer/VBoxContainer" unique_id=1571748807]
 layout_mode = 2
 text = "Final boss"
 label_settings = ExtResource("6_okx5s")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="WinContainer" type="CenterContainer" parent="UI"]
+[node name="WinContainer" type="CenterContainer" parent="UI" unique_id=1160796697]
 visible = false
 z_index = 1
 anchors_preset = 15
@@ -218,99 +357,206 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("11_c7j7s")
+script = ExtResource("203_wc")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/WinContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/WinContainer" unique_id=185985167]
 layout_mode = 2
 
-[node name="WinLabel" type="Label" parent="UI/WinContainer/VBoxContainer"]
+[node name="WinLabel" type="Label" parent="UI/WinContainer/VBoxContainer" unique_id=1059817973]
 layout_mode = 2
 text = "You win!"
 label_settings = ExtResource("6_okx5s")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button" type="Button" parent="UI/WinContainer/VBoxContainer"]
+[node name="Button" type="Button" parent="UI/WinContainer/VBoxContainer" unique_id=1031686047]
 layout_mode = 2
 theme_override_font_sizes/font_size = 31
 text = "Restart"
 
-[node name="MobileUI" parent="UI" instance=ExtResource("100_mobctl")]
-layout_mode = 2
+[node name="MobileUI" type="Control" parent="UI" unique_id=1180746398 instance=ExtResource("100_mobctl")]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -0.5
+offset_top = -0.5
+offset_right = -0.5
+offset_bottom = -0.5
+script = ExtResource("10_gjhnn")
 
-[node name="BossRoomBackgroundSprite" type="Sprite2D" parent="."]
-scale = Vector2(0.4, 0.4)
-texture = ExtResource("1_3n20u")
+[node name="Environment" type="Node2D" parent="." unique_id=1932166895 instance=ExtResource("11_geu3j")]
 
-[node name="GroundStaticBody" type="StaticBody2D" parent="."]
-position = Vector2(2, -349)
-collision_layer = 2
-collision_mask = 0
+[node name="Triggers" type="Node2D" parent="." unique_id=2095610578]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundStaticBody"]
-position = Vector2(12, 606.5)
-shape = SubResource("RectangleShape2D_bpcqn")
-
-[node name="WallStaticBody" type="StaticBody2D" parent="."]
-position = Vector2(724, -54)
-collision_layer = 2
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WallStaticBody"]
-position = Vector2(-1232, -55)
-shape = SubResource("RectangleShape2D_3n20u")
-
-[node name="WallStaticBody2" type="StaticBody2D" parent="."]
-position = Vector2(1739, 142)
-collision_layer = 2
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WallStaticBody2"]
-position = Vector2(-1232, -55)
-shape = SubResource("RectangleShape2D_3n20u")
-
-[node name="PlayerSpawnPosition" type="Node2D" parent="."]
+[node name="PlayerSpawnPosition" type="Node2D" parent="Triggers" unique_id=1916490571]
 position = Vector2(-712, 579)
 
-[node name="EntranceTrigger" type="Area2D" parent="."]
+[node name="EntranceTrigger" type="Area2D" parent="Triggers" unique_id=158694577]
 position = Vector2(-284, 174)
 collision_layer = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EntranceTrigger"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Triggers/EntranceTrigger" unique_id=1742018031]
 shape = SubResource("RectangleShape2D_entrance")
 
-[node name="CityCouncilBoss" type="CharacterBody2D" parent="."]
+[node name="CityCouncilBoss" type="CharacterBody2D" parent="." unique_id=192557567]
 visible = false
 position = Vector2(-104, 174)
 collision_layer = 4
 collision_mask = 102
 
-[node name="BossSprite" type="AnimatedSprite2D" parent="CityCouncilBoss"]
+[node name="BossSprite" type="AnimatedSprite2D" parent="CityCouncilBoss" unique_id=1484122526]
 sprite_frames = ExtResource("4_bggbs")
 animation = &"Attack"
 autoplay = "Idle"
 frame = 10
 frame_progress = 1.0
 
-[node name="AttackTimer" type="Timer" parent="CityCouncilBoss"]
+[node name="AttackTimer" type="Timer" parent="CityCouncilBoss" unique_id=1637563051]
 wait_time = 3.0
 one_shot = true
 
-[node name="BulletSpawnPoint" type="Node2D" parent="CityCouncilBoss"]
+[node name="BulletSpawnPoint" type="Node2D" parent="CityCouncilBoss" unique_id=721533183]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CityCouncilBoss"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CityCouncilBoss" unique_id=1875825464]
 position = Vector2(2, 5)
 shape = SubResource("RectangleShape2D_ee80j")
 
-[node name="Player" parent="." instance=ExtResource("4_g2a2m")]
+[node name="Player" parent="." unique_id=1875136205 groups=["player"] instance=ExtResource("4_g2a2m")]
 position = Vector2(-290, 211)
+collision_mask = 122
+platform_floor_layers = 4294901762
+platform_wall_layers = 64
+
+[node name="CollisionShape2D" parent="Player" index="0"]
+position = Vector2(0, -6)
+shape = ExtResource("14_yvuth")
+
+[node name="DefaultSprite" parent="Player" index="1"]
+material = SubResource("ShaderMaterial_mw4su")
+position = Vector2(2, 20)
+sprite_frames = ExtResource("15_l160s")
+animation = &"Attack"
+frame = 9
+frame_progress = 1.0
+offset = Vector2(0, -33.19)
+
+[node name="Area2D" parent="Player" index="2"]
+position = Vector2(0, 20)
+collision_layer = 0
+collision_mask = 652
+monitorable = false
+
+[node name="CollisionShape2D" parent="Player/Area2D" index="0"]
+position = Vector2(48, -27)
+shape = SubResource("CircleShape2D_sv8s5")
+
+[node name="JumpAudioPlayer" parent="Player" index="3"]
+position = Vector2(0, 20)
+stream = ExtResource("16_2dyfp")
+
+[node name="HurtAudioPlayer" parent="Player" index="4"]
+position = Vector2(0, 20)
+stream = ExtResource("17_1j8t8")
+
+[node name="AttackAudioPlayer" parent="Player" index="5"]
+position = Vector2(0, 20)
+stream = ExtResource("18_yb5k5")
+volume_db = 6.141
+
+[node name="CodySprite" parent="Player" index="6"]
+visible = false
+sprite_frames = SubResource("SpriteFrames_gtu8j")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.860659
+
+[node name="JumpingStreakSprite" parent="Player" index="7"]
+visible = false
+show_behind_parent = true
+position = Vector2(0, 44)
+scale = Vector2(1.5, 2.4)
+sprite_frames = SubResource("SpriteFrames_qydoc")
+frame = 2
+frame_progress = 1.0
+
+[node name="BossSpawnPosition" parent="Player" index="8"]
+position = Vector2(143, -140)
+
+[node name="EnemyAttackPosition" parent="Player" index="9"]
+position = Vector2(-1, -19)
+
+[node name="AnimationPlayer" parent="Player" index="10"]
+libraries/ = SubResource("AnimationLibrary_qxslq")
+autoplay = &"RESET"
 
 [node name="Camera2D" parent="Player" index="11"]
+position = Vector2(0, 20)
+zoom = Vector2(2.5, 2.5)
 limit_left = -465
 limit_right = 475
 limit_bottom = 0
+limit_smoothed = true
+position_smoothing_speed = 1.0
 
-[node name="Background" type="Panel" parent="."]
+[node name="AttackAudio" parent="Player" index="12"]
+stream = ExtResource("20_kjnjn")
+
+[node name="WalkAudio" parent="Player" index="13"]
+stream = ExtResource("21_4fi7l")
+
+[node name="HurtAudio" parent="Player" index="14"]
+stream = ExtResource("22_0b6oq")
+
+[node name="LandAudio" parent="Player" index="15"]
+stream = ExtResource("22_0b6oq")
+
+[node name="JumpFx" parent="Player" index="16"]
+position = Vector2(0, 19)
+emitting = false
+amount = 80
+lifetime = 0.3
+one_shot = true
+explosiveness = 0.8
+randomness = 1.0
+lifetime_randomness = 1.0
+emission_shape = 3
+emission_rect_extents = Vector2(16, 1)
+direction = Vector2(0, -1)
+spread = 180.0
+gravity = Vector2(0, -60)
+initial_velocity_min = 12.0
+initial_velocity_max = 15.0
+damping_max = 3.0
+scale_amount_min = 2.0
+scale_amount_max = 4.0
+
+[node name="RunParticles" parent="Player" index="17"]
+position = Vector2(-14, 17)
+emitting = false
+amount = 22
+lifetime = 0.16
+one_shot = true
+emission_shape = 3
+emission_rect_extents = Vector2(3, 3)
+direction = Vector2(0, -1)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 6.0
+initial_velocity_max = 33.0
+damping_max = 3.0
+scale_amount_max = 2.0
+color_ramp = SubResource("Gradient_d2wvv")
+script = ExtResource("23_rfivy")
+
+[node name="Timer" parent="Player/RunParticles" index="0"]
+wait_time = 0.1
+
+[node name="PickupAudio" parent="Player" index="18"]
+stream = ExtResource("24_7ovk3")
+
+[node name="RobotAttackPosition" parent="Player" index="19"]
+position = Vector2(20, -4)
+
+[node name="Background" type="Panel" parent="." unique_id=645357156]
 z_index = -4
 anchors_preset = 8
 anchor_left = 0.5

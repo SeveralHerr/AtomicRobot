@@ -1,0 +1,220 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://images/new/Background_Building1.png" id="1_dw0g6"]
+[ext_resource type="Texture2D" path="res://images/new/Background_Building2.png" id="2_aj7cx"]
+[ext_resource type="Texture2D" path="res://images/new/Background_Bushes.png" id="3_g26tw"]
+[ext_resource type="Texture2D" path="res://images/new/Background_bush2.png" id="4_w3svi"]
+[ext_resource type="Texture2D" path="res://images/new/Background_Big_Sculpture.png" id="5_382jw"]
+[ext_resource type="Texture2D" path="res://images/new/Background_David.png" id="6_edwwg"]
+[ext_resource type="Texture2D" path="res://images/new/Background_Bridge.png" id="7_7uxc8"]
+[ext_resource type="PackedScene" path="res://scenes/lamp.tscn" id="8_55yfn"]
+[ext_resource type="Texture2D" path="res://images/new/Streetlamp.png" id="9_x70k6"]
+[ext_resource type="PackedScene" path="res://scenes/tree.tscn" id="10_56tje"]
+[ext_resource type="Material" path="res://shaders/tree_shader.tres" id="11_67wkw"]
+[ext_resource type="Texture2D" path="res://images/new/Tree.png" id="12_hrfci"]
+[ext_resource type="Script" path="res://scripts/tree.gd" id="13_nseqi"]
+[ext_resource type="Shader" path="res://shaders/sway.gdshader" id="14_4mrnk"]
+[ext_resource type="Texture2D" path="res://images/new/leaf.png" id="15_wgmty"]
+[ext_resource type="Texture2D" path="res://images/new/Curb_white.png" id="16_04n7p"]
+[ext_resource type="Texture2D" path="res://images/new/Black_Trashcan.png" id="17_6gmga"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_64moy"]
+shader = ExtResource("14_4mrnk")
+shader_parameter/speed = 2.0
+shader_parameter/minStrength = 0.05
+shader_parameter/maxStrength = 0.015
+shader_parameter/strengthScale = 100.0
+shader_parameter/interval = 3.5
+shader_parameter/detail = 1.0
+shader_parameter/distortion = 0.608
+shader_parameter/heightOffset = 0.0
+shader_parameter/offset = 0.0
+
+[node name="BuildingGroup3" type="Node2D" unique_id=340492269]
+
+[node name="Parallax2D2" type="Parallax2D" parent="." unique_id=753731643]
+scroll_scale = Vector2(0.95, 1)
+scroll_offset = Vector2(3280, 9)
+
+[node name="Background_Building1" type="Sprite2D" parent="Parallax2D2" unique_id=1125353997]
+position = Vector2(3087, -223)
+texture = ExtResource("1_dw0g6")
+
+[node name="Background_Building2" type="Sprite2D" parent="Parallax2D2" unique_id=435077280]
+position = Vector2(2487, -288)
+texture = ExtResource("2_aj7cx")
+
+[node name="Background_Bushes3" type="Sprite2D" parent="." unique_id=676989214]
+position = Vector2(5351, -66)
+texture = ExtResource("3_g26tw")
+flip_h = true
+
+[node name="Background_Bushes4" type="Sprite2D" parent="." unique_id=2098388635]
+position = Vector2(4054, -58)
+texture = ExtResource("3_g26tw")
+flip_h = true
+
+[node name="Bush3" type="Sprite2D" parent="." unique_id=960882655]
+self_modulate = Color(0.729658, 0.729658, 0.729658, 1)
+position = Vector2(4002, -27)
+texture = ExtResource("4_w3svi")
+
+[node name="Bush4" type="Sprite2D" parent="." unique_id=1757517868]
+self_modulate = Color(0.729658, 0.729658, 0.729658, 1)
+position = Vector2(3715, -28)
+texture = ExtResource("4_w3svi")
+
+[node name="Bush5" type="Sprite2D" parent="." unique_id=888466342]
+self_modulate = Color(0.729658, 0.729658, 0.729658, 1)
+position = Vector2(5525, -27)
+texture = ExtResource("4_w3svi")
+
+[node name="Bush6" type="Sprite2D" parent="." unique_id=2017773744]
+self_modulate = Color(0.729658, 0.729658, 0.729658, 1)
+position = Vector2(5836, -37)
+texture = ExtResource("4_w3svi")
+
+[node name="Bush7" type="Sprite2D" parent="." unique_id=2119288929]
+self_modulate = Color(0.729658, 0.729658, 0.729658, 1)
+position = Vector2(5975, -12)
+texture = ExtResource("4_w3svi")
+
+[node name="Background_Bushes" type="Sprite2D" parent="." unique_id=518541137]
+position = Vector2(4287, -111)
+texture = ExtResource("3_g26tw")
+
+[node name="Background_Bushes2" type="Sprite2D" parent="." unique_id=1332885709]
+position = Vector2(5087, -92)
+texture = ExtResource("3_g26tw")
+
+[node name="Background_Big_Sculpture" type="Sprite2D" parent="." unique_id=1091629274]
+position = Vector2(4686, -150)
+texture = ExtResource("5_382jw")
+
+[node name="Background_David" type="Sprite2D" parent="." unique_id=1869517405]
+position = Vector2(5331, -154)
+texture = ExtResource("6_edwwg")
+
+[node name="Bridge" type="Sprite2D" parent="." unique_id=1068409628]
+position = Vector2(4685, -54)
+texture = ExtResource("7_7uxc8")
+
+[node name="Lamp4" type="Sprite2D" parent="." unique_id=944929514 instance=ExtResource("8_55yfn")]
+z_index = 1
+position = Vector2(5000, -69)
+texture = ExtResource("9_x70k6")
+
+[node name="Lamp5" type="Sprite2D" parent="." unique_id=976476167 instance=ExtResource("8_55yfn")]
+z_index = 1
+position = Vector2(4379, -69)
+texture = ExtResource("9_x70k6")
+
+[node name="Tree8" type="Sprite2D" parent="." unique_id=1716645664 instance=ExtResource("10_56tje")]
+z_index = 1
+material = ExtResource("11_67wkw")
+position = Vector2(3550, -84)
+texture = ExtResource("12_hrfci")
+script = ExtResource("13_nseqi")
+
+[node name="Tree9" type="Sprite2D" parent="." unique_id=1182103161 instance=ExtResource("10_56tje")]
+z_index = 1
+material = ExtResource("11_67wkw")
+position = Vector2(3700, -84)
+texture = ExtResource("12_hrfci")
+script = ExtResource("13_nseqi")
+
+[node name="Tree10" type="Sprite2D" parent="." unique_id=1375503178 instance=ExtResource("10_56tje")]
+z_index = 1
+material = ExtResource("11_67wkw")
+position = Vector2(3850, -84)
+texture = ExtResource("12_hrfci")
+script = ExtResource("13_nseqi")
+
+[node name="Tree11" type="Sprite2D" parent="." unique_id=1893610943 instance=ExtResource("10_56tje")]
+z_index = 1
+material = ExtResource("11_67wkw")
+position = Vector2(4000, -84)
+texture = ExtResource("12_hrfci")
+script = ExtResource("13_nseqi")
+
+[node name="Tree12" type="Sprite2D" parent="." unique_id=1493910552 instance=ExtResource("10_56tje")]
+z_index = 1
+material = ExtResource("11_67wkw")
+position = Vector2(5526, -84)
+texture = ExtResource("12_hrfci")
+script = ExtResource("13_nseqi")
+
+[node name="Tree13" type="Sprite2D" parent="." unique_id=126258876 instance=ExtResource("10_56tje")]
+z_index = 1
+material = ExtResource("11_67wkw")
+position = Vector2(5676, -84)
+texture = ExtResource("12_hrfci")
+script = ExtResource("13_nseqi")
+
+[node name="Tree14" parent="." unique_id=1743222023 instance=ExtResource("10_56tje")]
+z_index = 1
+material = SubResource("ShaderMaterial_64moy")
+position = Vector2(5826, -84)
+texture = ExtResource("12_hrfci")
+script = ExtResource("13_nseqi")
+
+[node name="CPUParticles2D" parent="Tree14" index="0"]
+z_as_relative = false
+position = Vector2(-17, -10)
+amount = 3
+texture = ExtResource("15_wgmty")
+lifetime = 5.0
+explosiveness = 0.61
+randomness = 0.7
+lifetime_randomness = 0.54
+direction = Vector2(1, -0.2)
+spread = 22.83
+gravity = Vector2(0, 6)
+initial_velocity_min = 19.0
+initial_velocity_max = 25.0
+angular_velocity_min = 5.0
+angular_velocity_max = 5.0
+scale_amount_min = 1.5
+scale_amount_max = 2.0
+
+[node name="CPUParticles2D2" parent="Tree14" index="1"]
+z_as_relative = false
+position = Vector2(5, -45)
+amount = 1
+texture = ExtResource("15_wgmty")
+lifetime = 5.0
+explosiveness = 0.61
+randomness = 0.1
+lifetime_randomness = 0.1
+direction = Vector2(1, -0.2)
+spread = 22.83
+gravity = Vector2(0, 6)
+initial_velocity_min = 19.0
+initial_velocity_max = 25.0
+angular_velocity_min = 5.0
+angular_velocity_max = 5.0
+scale_amount_min = 1.5
+scale_amount_max = 2.0
+
+[node name="Sprite2D" parent="Tree14" index="2"]
+position = Vector2(-8, 81)
+texture = ExtResource("16_04n7p")
+
+[node name="Tree15" type="Sprite2D" parent="." unique_id=225012650 instance=ExtResource("10_56tje")]
+z_index = 1
+material = ExtResource("11_67wkw")
+position = Vector2(5976, -84)
+texture = ExtResource("12_hrfci")
+script = ExtResource("13_nseqi")
+
+[node name="Trash3" type="Sprite2D" parent="." unique_id=882575253]
+z_index = 1
+position = Vector2(5025, -16)
+texture = ExtResource("17_6gmga")
+
+[node name="Trash4" type="Sprite2D" parent="." unique_id=1141028749]
+z_index = 1
+position = Vector2(4355, -15)
+texture = ExtResource("17_6gmga")
+
+[editable path="Tree14"]

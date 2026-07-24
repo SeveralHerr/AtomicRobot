@@ -1,0 +1,51 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/interactive_mailbox.tscn" id="1_d4p63"]
+[ext_resource type="Texture2D" path="res://images/new/newspaperstand.png" id="2_cio5k"]
+[ext_resource type="Script" path="res://scripts/interactive_mailbox.gd" id="3_dksaj"]
+[ext_resource type="PackedScene" path="res://scenes/atomic_robot_building_group.tscn" id="4_u3tw7"]
+[ext_resource type="PackedScene" path="res://scenes/meter_maid_platform.tscn" id="5_iy562"]
+[ext_resource type="Script" path="res://scripts/meter_maid_platform_patrol.gd" id="6_x5ggl"]
+[ext_resource type="PackedScene" path="res://scenes/meter_maid_melee.tscn" id="7_kygf7"]
+[ext_resource type="Script" path="res://scripts/meter_maid_melee.gd" id="8_w6fs2"]
+[ext_resource type="PackedScene" path="res://scenes/building_door_encounter.tscn" id="9_e27br"]
+[ext_resource type="Script" path="res://scripts/building_door_encounter.gd" id="10_sypnp"]
+
+[node name="AtomicRobotBuildingGroup" type="Node2D" unique_id=1945495896]
+position = Vector2(-1875, 1)
+
+[node name="InteractiveMailbox" type="Sprite2D" parent="." unique_id=1947264389 instance=ExtResource("1_d4p63")]
+z_index = 1
+position = Vector2(1494, -25)
+texture = ExtResource("2_cio5k")
+script = ExtResource("3_dksaj")
+
+[node name="AtomicBuildingGroup" type="Node2D" parent="." unique_id=1636716310 instance=ExtResource("4_u3tw7")]
+position = Vector2(-258, -97)
+
+[node name="MeterMaid" type="CharacterBody2D" parent="." unique_id=758169102 instance=ExtResource("5_iy562")]
+top_level = true
+position = Vector2(-405, -259)
+collision_layer = 4
+collision_mask = 98
+script = ExtResource("6_x5ggl")
+
+[node name="MeterMaidMelee" type="CharacterBody2D" parent="." unique_id=1638712485 instance=ExtResource("7_kygf7")]
+top_level = true
+position = Vector2(1410, -81)
+collision_layer = 512
+collision_mask = 98
+script = ExtResource("8_w6fs2")
+persist = true
+
+[node name="MeterMaidMelee3" type="CharacterBody2D" parent="." unique_id=34675654 instance=ExtResource("7_kygf7")]
+top_level = true
+position = Vector2(1475, -47)
+collision_layer = 512
+collision_mask = 98
+script = ExtResource("8_w6fs2")
+persist = true
+
+[node name="BuildingDoorEncounter" type="Node2D" parent="." unique_id=965566927 instance=ExtResource("9_e27br")]
+position = Vector2(389, -5)
+script = ExtResource("10_sypnp")

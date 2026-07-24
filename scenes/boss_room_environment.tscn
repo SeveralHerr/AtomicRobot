@@ -1,0 +1,42 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://sprites/bossroom.png" id="1_5y2hg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bpcqn"]
+size = Vector2(2462, 51)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3n20u"]
+size = Vector2(36, 1374)
+
+[node name="Environment" type="Node2D" unique_id=1932166895]
+
+[node name="BossRoomBackgroundSprite" type="Sprite2D" parent="." unique_id=1501140839]
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("1_5y2hg")
+
+[node name="GroundStaticBody" type="StaticBody2D" parent="." unique_id=595165672]
+position = Vector2(2, -349)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundStaticBody" unique_id=1237955716]
+position = Vector2(12, 606.5)
+shape = SubResource("RectangleShape2D_bpcqn")
+
+[node name="WallStaticBody" type="StaticBody2D" parent="." unique_id=225745034]
+position = Vector2(724, -54)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallStaticBody" unique_id=1958371771]
+position = Vector2(-1232, -55)
+shape = SubResource("RectangleShape2D_3n20u")
+
+[node name="WallStaticBody2" type="StaticBody2D" parent="." unique_id=1545298254]
+position = Vector2(1739, 142)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallStaticBody2" unique_id=570139710]
+position = Vector2(-1232, -55)
+shape = SubResource("RectangleShape2D_3n20u")

@@ -1,0 +1,141 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://images/new/Blue_Trashcan.png" id="1_re4lk"]
+[ext_resource type="PackedScene" path="res://scenes/interactive_mailbox.tscn" id="2_d5ltt"]
+[ext_resource type="Texture2D" path="res://images/new/newspaperstand.png" id="3_hf3om"]
+[ext_resource type="Script" path="res://scripts/interactive_mailbox.gd" id="4_24isy"]
+[ext_resource type="Texture2D" path="res://images/new/Background_bush2.png" id="5_v0xdm"]
+[ext_resource type="Texture2D" path="res://images/new/Building1.png" id="6_xdcwy"]
+[ext_resource type="Texture2D" path="res://images/new/Building3.png" id="7_ou5a3"]
+[ext_resource type="PackedScene" path="res://scenes/tree.tscn" id="8_rs8uj"]
+[ext_resource type="Material" path="res://shaders/tree_shader.tres" id="9_to2ka"]
+[ext_resource type="Texture2D" path="res://images/new/Tree.png" id="10_ns15p"]
+[ext_resource type="Script" path="res://scripts/tree.gd" id="11_hvykd"]
+[ext_resource type="Texture2D" path="res://images/new/leaf.png" id="12_j3s66"]
+[ext_resource type="Texture2D" path="res://images/new/Curb_white.png" id="13_y4e1k"]
+[ext_resource type="Texture2D" path="res://images/new/Bollard.png" id="14_w2y7b"]
+[ext_resource type="PackedScene" path="res://scenes/lamp.tscn" id="15_f0lpc"]
+[ext_resource type="Texture2D" path="res://images/new/Streetlamp.png" id="16_nns31"]
+[ext_resource type="PackedScene" path="res://scenes/building_door_encounter.tscn" id="17_ybv5f"]
+[ext_resource type="Script" path="res://scripts/building_door_encounter.gd" id="18_0kulo"]
+[ext_resource type="PackedScene" path="res://scenes/meter.tscn" id="19_50dvv"]
+[ext_resource type="Script" path="res://scripts/meter.gd" id="20_58qqa"]
+
+[node name="BuildingGroup2" type="Node2D" unique_id=657802005]
+position = Vector2(2549, 0)
+
+[node name="Trash3" type="Sprite2D" parent="." unique_id=545282087]
+z_index = 1
+position = Vector2(253, -15.5)
+texture = ExtResource("1_re4lk")
+
+[node name="InteractiveMailbox" type="Sprite2D" parent="." unique_id=1501774927 instance=ExtResource("2_d5ltt")]
+z_index = 1
+position = Vector2(604, -16)
+texture = ExtResource("3_hf3om")
+script = ExtResource("4_24isy")
+
+[node name="Bush2" type="Sprite2D" parent="." unique_id=768105365]
+self_modulate = Color(0.729658, 0.729658, 0.729658, 1)
+position = Vector2(624, -50)
+texture = ExtResource("5_v0xdm")
+
+[node name="Building" type="Sprite2D" parent="." unique_id=1267138138]
+self_modulate = Color(0.490196, 0.490196, 0.490196, 1)
+position = Vector2(422, -102)
+texture = ExtResource("6_xdcwy")
+
+[node name="Building4" type="Sprite2D" parent="." unique_id=322828937]
+position = Vector2(577, -205)
+texture = ExtResource("7_ou5a3")
+
+[node name="Tree6" parent="." unique_id=2017240395 instance=ExtResource("8_rs8uj")]
+z_index = 1
+material = ExtResource("9_to2ka")
+position = Vector2(220, -84.5)
+texture = ExtResource("10_ns15p")
+flip_h = true
+script = ExtResource("11_hvykd")
+
+[node name="CPUParticles2D" parent="Tree6" index="0"]
+z_as_relative = false
+position = Vector2(-17, -10)
+amount = 3
+texture = ExtResource("12_j3s66")
+lifetime = 5.0
+explosiveness = 0.61
+randomness = 0.3
+lifetime_randomness = 0.3
+direction = Vector2(1, -0.2)
+spread = 22.83
+gravity = Vector2(0, 6)
+initial_velocity_min = 19.0
+initial_velocity_max = 25.0
+angular_velocity_min = 5.0
+angular_velocity_max = 5.0
+scale_amount_min = 1.5
+scale_amount_max = 2.0
+
+[node name="CPUParticles2D2" parent="Tree6" index="1"]
+z_as_relative = false
+position = Vector2(5, -45)
+amount = 1
+texture = ExtResource("12_j3s66")
+lifetime = 5.0
+explosiveness = 0.61
+direction = Vector2(1, -0.2)
+spread = 22.83
+gravity = Vector2(0, 6)
+initial_velocity_min = 19.0
+initial_velocity_max = 25.0
+angular_velocity_min = 5.0
+angular_velocity_max = 5.0
+scale_amount_min = 1.5
+scale_amount_max = 2.0
+
+[node name="Sprite2D" parent="Tree6" index="2"]
+position = Vector2(9, 81)
+texture = ExtResource("13_y4e1k")
+
+[node name="Tree7" type="Sprite2D" parent="." unique_id=910728510 instance=ExtResource("8_rs8uj")]
+z_index = 1
+material = ExtResource("9_to2ka")
+position = Vector2(818, -84)
+texture = ExtResource("10_ns15p")
+script = ExtResource("11_hvykd")
+
+[node name="Bullard" type="Sprite2D" parent="." unique_id=640532934]
+z_index = 1
+position = Vector2(853, -17)
+texture = ExtResource("14_w2y7b")
+
+[node name="Bullard2" type="Sprite2D" parent="." unique_id=1029573531]
+z_index = 1
+position = Vector2(924, -16)
+texture = ExtResource("14_w2y7b")
+
+[node name="Lamp3" type="Sprite2D" parent="." unique_id=1049798219 instance=ExtResource("15_f0lpc")]
+z_index = 1
+position = Vector2(576, -69)
+texture = ExtResource("16_nns31")
+
+[node name="BuildingDoorEncounter" type="Node2D" parent="." unique_id=542259118 instance=ExtResource("17_ybv5f")]
+position = Vector2(297, 0)
+script = ExtResource("18_0kulo")
+
+[node name="Meter" type="Node2D" parent="." unique_id=181482052 instance=ExtResource("19_50dvv")]
+z_index = 1
+position = Vector2(339, -28)
+script = ExtResource("20_58qqa")
+
+[node name="Meter2" type="Node2D" parent="." unique_id=240032481 instance=ExtResource("19_50dvv")]
+z_index = 1
+position = Vector2(492, -28)
+script = ExtResource("20_58qqa")
+
+[node name="Meter3" type="Node2D" parent="." unique_id=819448627 instance=ExtResource("19_50dvv")]
+z_index = 1
+position = Vector2(677, -28)
+script = ExtResource("20_58qqa")
+
+[editable path="Tree6"]
