@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://scripts/building_door_encounter.gd" id="1_bdenc"]
+[ext_resource type="Texture2D" uid="uid://g2i0ldrygj4w" path="res://sprites/crack.png" id="2_crack"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
 size = Vector2(80, 300)
@@ -12,10 +13,70 @@ size = Vector2(16, 400)
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_crack0"]
+atlas = ExtResource("2_crack")
+region = Rect2(0, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_crack1"]
+atlas = ExtResource("2_crack")
+region = Rect2(32, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_crack2"]
+atlas = ExtResource("2_crack")
+region = Rect2(64, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_crack3"]
+atlas = ExtResource("2_crack")
+region = Rect2(96, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_crack4"]
+atlas = ExtResource("2_crack")
+region = Rect2(128, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_crack5"]
+atlas = ExtResource("2_crack")
+region = Rect2(192, 0, 32, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_crack"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_crack0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_crack1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_crack2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_crack3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_crack4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_crack5")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}]
+
 [node name="BuildingDoorEncounter" type="Node2D"]
 script = ExtResource("1_bdenc")
 
+[node name="DoorMouth" type="Marker2D" parent="."]
+position = Vector2(0, -24)
+
+[node name="Crack" type="AnimatedSprite2D" parent="DoorMouth"]
+z_index = 1
+sprite_frames = SubResource("SpriteFrames_crack")
+frame = 0
+frame_progress = 0.0
+
 [node name="Dust" type="CPUParticles2D" parent="."]
+position = Vector2(0, -24)
 z_index = 2
 emitting = false
 amount = 24
@@ -31,8 +92,6 @@ scale_amount_min = 1.5
 scale_amount_max = 3.0
 scale_amount_curve = SubResource("Curve_dust")
 color = Color(0.75, 0.72, 0.66, 1)
-
-[node name="DoorMouth" type="Marker2D" parent="."]
 
 [node name="Trigger" type="Area2D" parent="."]
 position = Vector2(0, -20)

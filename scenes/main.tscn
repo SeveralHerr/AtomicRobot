@@ -632,6 +632,9 @@ position = Vector2(3136, -557)
 position = Vector2(2, 0)
 scale = Vector2(0.77, 1)
 
+[node name="BuildingDoorEncounter" parent="SceneItemsBackground/BuildingGroup1" instance=ExtResource("60_bdenc")]
+position = Vector2(1700, 0)
+
 [node name="Meter3" parent="SceneItemsBackground/BuildingGroup1" unique_id=1853720684 instance=ExtResource("43_335wh")]
 position = Vector2(1874, -28)
 
@@ -904,6 +907,10 @@ position = Vector2(6507, -71)
 
 [node name="Lamp6" parent="SceneItemsBackground/BuildingGroup4" unique_id=598052136 instance=ExtResource("28_dbsfu")]
 position = Vector2(6119, -71)
+
+[node name="BuildingDoorEncounter" parent="SceneItemsBackground/BuildingGroup4" instance=ExtResource("60_bdenc")]
+position = Vector2(5900, 0)
+melee_ratio = 1.0
 
 [node name="Lamp5" parent="SceneItemsBackground/BuildingGroup4" unique_id=1290627267 instance=ExtResource("28_dbsfu")]
 position = Vector2(7111, -71)

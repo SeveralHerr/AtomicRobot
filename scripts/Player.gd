@@ -63,6 +63,10 @@ var current_lane: int = Lanes.GROUND_LANE
 var lane_baseline_y: float = INF
 var is_changing_lane: bool = false
 var _lane_tween: Tween
+## Lane the player is snapped into as soon as the walkway baseline is known. Only
+## takes effect where lanes_active() is true (main.tscn) — boss_room ignores it.
+@export var spawn_lane: int = 2
+var _spawn_lane_applied: bool = false
 # Seconds ui_down has been held this press; negative = not tracking a press.
 var _down_held: float = -1.0
 # Previous-frame pressed states, so lane input works on polled edges (injected
@@ -179,6 +183,7 @@ func _update_lane_floor() -> void:
 	# the virtual road-lane floors are measured from.
 	if is_on_floor() and current_lane == Lanes.GROUND_LANE and not is_changing_lane:
 		lane_baseline_y = global_position.y
+		_apply_spawn_lane()
 
 	# Road lanes have no physical floor: snap onto the lane's virtual floor line.
 	if lanes_active() and current_lane != Lanes.GROUND_LANE and not is_changing_lane:
@@ -186,6 +191,18 @@ func _update_lane_floor() -> void:
 		if velocity.y >= 0 and global_position.y >= fy:
 			global_position.y = fy
 			velocity.y = 0.0
+
+## Snaps the player onto `spawn_lane` the instant the walkway baseline is known.
+## Instant, not tweened — this is the starting position, not a played lane change.
+func _apply_spawn_lane() -> void:
+	if _spawn_lane_applied or spawn_lane == Lanes.GROUND_LANE or not lanes_active():
+		return
+	_spawn_lane_applied = true
+	var target := Lanes.clamp_lane(spawn_lane)
+	_set_ground_collision(false)
+	global_position.y = Lanes.floor_y(lane_baseline_y, target)
+	current_lane = target
+	z_index = Lanes.z_for(target)
 
 func _on_virtual_floor() -> bool:
 	if not lanes_active() or current_lane == Lanes.GROUND_LANE or is_changing_lane:

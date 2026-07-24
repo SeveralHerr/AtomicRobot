@@ -7,10 +7,9 @@ class_name BuildingDoorEncounter
 ## the lanes, and — if `lock_arena` — barriers plus camera limits hold the player
 ## there until the street is clear.
 ##
-## There is deliberately no door sprite: the buildings already have doorways painted
-## into their art, so the burst reads through dust + screen shake. To add real door
-## art, drop a Sprite2D (plus an AnimationPlayer "burst" track) into the scene and
-## play it from `_run()` — nothing else here needs to change.
+## `DoorMouth/Crack` (sprites/crack.png) doubles as the visual: a hairline crack
+## sits at the base of the wall as a permanent tell for where an encounter lives,
+## widens through the telegraph, and blows open into a hole enemies pour out of.
 
 signal encounter_finished
 
@@ -27,7 +26,10 @@ signal encounter_finished
 @export var arena_half_width: int = 320
 ## Force-release after this long, so a stuck enemy can never softlock the player.
 @export var watchdog_seconds: float = 45.0
-@export var one_shot: bool = true
+## Free the whole node once the street is clear. Off by default: the burst-open
+## crack (final frame, a hole) is left in the wall as a permanent level scar
+## instead of vanishing along with the encounter's logic.
+@export var one_shot: bool = false
 ## Seconds a spawned enemy holds its spawn lane before it starts chasing the
 ## player's lane. Without this the whole squad re-stacks onto one lane in ~1.5s
 ## and the fan-out never reads.
@@ -38,8 +40,9 @@ signal encounter_finished
 ## Optional explicit lane order, e.g. [0, 2, 1, 3]. Empty = round-robin all lanes.
 @export var lane_pattern: Array[int] = []
 
-@onready var dust: CPUParticles2D = $Dust
 @onready var door_mouth: Marker2D = $DoorMouth
+@onready var crack: AnimatedSprite2D = $DoorMouth/Crack
+@onready var dust: CPUParticles2D = $Dust
 @onready var trigger: Area2D = $Trigger
 @onready var left_wall: CollisionShape2D = $Barriers/LeftWall/CollisionShape2D
 @onready var right_wall: CollisionShape2D = $Barriers/RightWall/CollisionShape2D
@@ -57,6 +60,10 @@ var _spawned: Array[Node2D] = []
 var _saved_limit_left: int = 0
 var _saved_limit_right: int = 0
 var _watchdog: Timer
+var _arm_tween: Tween
+
+const _CRACK_WIDEST_FRAME: int = 4
+const _CRACK_BURST_FRAME: int = 5
 
 
 ## Which lane the i-th enemy out of the door takes. Static and pure so it can be
@@ -69,6 +76,7 @@ static func lane_for_index(index: int, pattern: Array = []) -> int:
 
 
 func _ready() -> void:
+	crack.frame = 0
 	dust.emitting = false
 	_set_barriers(false)
 
@@ -101,8 +109,10 @@ func _on_body_entered(body: Node2D) -> void:
 
 
 func _run() -> void:
-	# Telegraph: a low rumble before the door gives.
+	# Telegraph: the crack widens and the wall rumbles before it gives.
 	ScreenShake.apply_shake(3)
+	_arm_tween = create_tween()
+	_arm_tween.tween_property(crack, "frame", _CRACK_WIDEST_FRAME, arm_seconds)
 	Globals.push_event()
 	_pushed_event = true
 	_active = true
@@ -113,7 +123,12 @@ func _run() -> void:
 	if not is_inside_tree():
 		return
 
-	# Burst.
+	# Burst — the crack blows open into a hole and enemies pour out of it.
+	# Kill the arm tween first: it targets frame 4 and its last step can otherwise
+	# land after this assignment and stomp the burst frame back down.
+	if _arm_tween != null and _arm_tween.is_valid():
+		_arm_tween.kill()
+	crack.frame = _CRACK_BURST_FRAME
 	dust.emitting = true
 	ScreenShake.apply_shake(9)
 	if door_slam.stream != null:
@@ -189,6 +204,8 @@ func _end() -> void:
 		return
 	_active = false
 	_watchdog.stop()
+	if _arm_tween != null and _arm_tween.is_valid():
+		_arm_tween.kill()
 	if lock_arena:
 		_release_lock()
 	if _pushed_event:
