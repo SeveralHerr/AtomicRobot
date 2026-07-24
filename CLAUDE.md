@@ -191,3 +191,8 @@ past a menu into the playable scene), `test_dir`, `scan_root`, `hud_layer_name`.
 Run **`/scaffold-godot-harness`** to install or refresh the harness. Re-running it also
 refreshes this very section in place (it never duplicates it).
 <!-- END godot-selftest-harness -->
+
+
+## Other
+
+At the end of each response, list out any gaps in the /verify or devtools that might've helped with testing and suggest a meaninful improvement. 
