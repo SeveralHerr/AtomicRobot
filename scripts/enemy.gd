@@ -123,7 +123,15 @@ func move_towards_target(target_pos: Vector2, delta: float):
 
 
 func is_near_edge() -> bool:
-	# Check for wall collisions
+	# The down-raycasts target Ground(2)/Platforms(32), but road-lane bodies
+	# deliberately disable both bits on themselves (_set_ground_collision) since
+	# virtual lane floors have no real collision under them — so on any non-ground
+	# lane these rays never hit anything and this would permanently read "near an
+	# edge", blocking chase movement outright. The virtual floors run gapless the
+	# length of the level (see docs/LANE_REFACTOR.md), so there's nothing to fall
+	# off there; only check for real ledges on the ground lane.
+	if lane != Lanes.GROUND_LANE:
+		return false
 	return not ray_cast_2d_left_down.is_colliding() or not ray_cast_2d_right_down.is_colliding()
 
 
