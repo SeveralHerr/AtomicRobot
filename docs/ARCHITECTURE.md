@@ -96,7 +96,9 @@ each receiving `player`.
 
 `ui_left`/`ui_right` (A/D, arrows, dpad, stick), `ui_up` (W/up — **only used by dead
 ClimbState, effectively free**), `ui_down` (S/down — crouch in idle/walk/run/fall/attack),
-`ui_accept` (jump), `Attack` (F), `Interact` (E), `Run` (Shift).
+`ui_accept` (jump; built-in default, includes joypad button 0/A), `Attack` (F, joypad
+button 2/X), `Interact` (E, joypad button 0/A), `Run` (Shift, joypad button 5/R1).
+`debug_menu` is keyboard-only by design (dev-only, not player-facing).
 
 ## Enemies
 

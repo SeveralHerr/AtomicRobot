@@ -2,9 +2,9 @@ extends Sprite2D
 
 @export var speed : float = 100
 
-@export var joystick_left : VirtualJoystick
+@export var joystick_left : JoystickControl
 
-@export var joystick_right : VirtualJoystick
+@export var joystick_right : JoystickControl
 
 var move_vector := Vector2.ZERO
 

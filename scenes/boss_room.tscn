@@ -1,10 +1,10 @@
 [gd_scene load_steps=23 format=3 uid="uid://6p6bt45jx3nl"]
 
-[ext_resource type="Texture2D" uid="uid://buyqxqdcg7x5v" path="res://sprites/bossroom.png" id="1_3n20u"]
+[ext_resource type="Texture2D" uid="uid://b3ym2lrg45u1g" path="res://sprites/bossroom.png" id="1_3n20u"]
 [ext_resource type="Script" uid="uid://6hy4cjr5j8bd" path="res://scripts/boss_room.gd" id="1_ee80j"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="2_010di"]
 [ext_resource type="Script" uid="uid://dc00l4kuir5j0" path="res://scripts/health_container.gd" id="3_c7j7s"]
-[ext_resource type="Texture2D" uid="uid://xaol7ee44k8q" path="res://images/ART-Mobile-logo (1).png" id="4_4e86d"]
+[ext_resource type="Texture2D" uid="uid://54wohi1aav3k" path="res://images/ART-Mobile-logo (1).png" id="4_4e86d"]
 [ext_resource type="SpriteFrames" uid="uid://dol7bmjmxljvk" path="res://sprites/boss_ani.tres" id="4_bggbs"]
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="4_g2a2m"]
 [ext_resource type="Script" uid="uid://fv8o1x5w5344" path="res://scripts/notificataion_container.gd" id="5_xmdvo"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://cd687fbnvb516" path="res://scenes/fade_overlay.tscn" id="9_d53cq"]
 [ext_resource type="Script" uid="uid://o2h3iex6u6ps" path="res://scripts/game_over_container.gd" id="10_7l8xw"]
 [ext_resource type="Script" uid="uid://dk1uut7vstewe" path="res://scripts/win_container.gd" id="11_c7j7s"]
+[ext_resource type="PackedScene" path="res://scenes/mobile_controls.tscn" id="100_mobctl"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_votf5"]
 font = ExtResource("2_010di")
@@ -233,6 +234,9 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_font_sizes/font_size = 31
 text = "Restart"
+
+[node name="MobileUI" parent="UI" instance=ExtResource("100_mobctl")]
+layout_mode = 2
 
 [node name="BossRoomBackgroundSprite" type="Sprite2D" parent="."]
 scale = Vector2(0.4, 0.4)
