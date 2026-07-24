@@ -50,15 +50,21 @@ func _ready() -> void:
 	await get_tree().create_timer(15).timeout
 	queue_free()
 	
-## Put this coin on a road lane's virtual floor. The walkway tiles' collision boxes
-## fill the road strip below the walkway line, so a coin flying at a road-lane Y is
-## inside solid Ground geometry and smacks into it immediately. Road-lane bodies
-## solve this by dropping Ground(2)/Platforms(6) and standing on a virtual floor —
-## coins do the same (see Player._set_ground_collision / Enemy._apply_gravity).
-func set_lane_floor(floor_lane: int, baseline_y: float) -> void:
-	if floor_lane == Lanes.GROUND_LANE or not is_finite(baseline_y):
+## Put this coin on a lane's virtual floor. The walkway tiles' collision boxes fill
+## the road strip below the walkway line, so a coin flying at a road-lane Y is inside
+## solid Ground geometry. All lanes, including GROUND_LANE, drop Ground(2)/Platforms(6)
+## and stand on a virtual floor instead, so every coin behaves the same way whatever
+## lane it is on (see Player._set_ground_collision / Enemy._apply_gravity). For
+## GROUND_LANE, Lanes.floor_y() reduces to baseline_y itself.
+##
+## `spawn_y` is where the coin was thrown from: a coin aimed UP-screen at a player on
+## a farther lane starts below that lane's floor line, and clamping it there would
+## teleport it up-screen on its first downward frame. Keeping the lower (larger-y) of
+## the two means a coin that misses just falls back to the height it was thrown from.
+func set_lane_floor(floor_lane: int, baseline_y: float, spawn_y: float = -INF) -> void:
+	if not is_finite(baseline_y):
 		return
-	virtual_floor_y = Lanes.floor_y(baseline_y, floor_lane)
+	virtual_floor_y = maxf(Lanes.floor_y(baseline_y, floor_lane), spawn_y)
 	set_collision_mask_value(2, false)
 	set_collision_mask_value(6, false)
 	z_index = Lanes.z_for(floor_lane)

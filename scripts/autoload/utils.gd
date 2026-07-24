@@ -59,14 +59,14 @@ static func throw_coin(spawn_position: Vector2, target_position: Vector2, parent
 	parent_node.add_child(instance)
 	instance.lane = lane
 	instance.lane_agnostic = lane_agnostic
-	# A coin flies at its target's lane height. Lane-tagged throws are gated to the
-	# player's lane already; arced (lane_agnostic) coins come down onto whatever lane
-	# the player is in. Either way the road lanes have no real floor — hand the coin
-	# the same virtual floor line entities stand on.
+	# A coin flies at its target's lane height, and arced (lane_agnostic) coins come
+	# down onto whatever lane the player is in. Either way the road lanes have no
+	# real floor — hand the coin the same virtual floor line entities stand on, and
+	# tell it where it was thrown from so a cross-lane throw can't snap up-screen.
 	var player = parent_node.get_tree().get_first_node_in_group("player")
 	if player and player.lanes_active():
 		var floor_lane: int = player.current_lane if lane_agnostic else lane
-		instance.set_lane_floor(floor_lane, player.lane_baseline_y)
+		instance.set_lane_floor(floor_lane, player.lane_baseline_y, spawn_position.y)
 	var direction = (target_position - spawn_position).normalized()
 	instance.start(spawn_position, direction, use_arc)
 	return instance
@@ -83,7 +83,13 @@ static func throw_coin_from_enemy(enemy: Node, use_arc: bool = false, offset: in
 	var target_pos = player.enemy_attack_position.global_position
 	target_pos.y += offset
 	target_pos.x += randf_range(-PROJECTILE_TARGET_JITTER, PROJECTILE_TARGET_JITTER)
-	var lane: int = enemy.lane if enemy is Enemy else Lanes.GROUND_LANE
+	# A coin is aimed at the player's ACTUAL position (target_pos above), so it
+	# travels on the player's lane, not the thrower's — an enemy a lane closer to
+	# the camera still throws up at you. Tagging it with the thrower's lane made
+	# those coins fly right through the player and get dropped by
+	# Bullet._on_body_entered's same-lane check. The tag describes where the coin
+	# flies; a player who lane-steps mid-flight still dodges it.
+	var lane: int = player.current_lane
 	# Lane-locked maids (platforms/windows) arc coins from above — those hit any lane.
 	var agnostic: bool = enemy.lane_locked if enemy is Enemy else false
 	throw_coin(spawn_pos, target_pos, enemy.player.get_parent(), use_arc, lane, agnostic)
