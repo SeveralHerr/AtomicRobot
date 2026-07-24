@@ -340,11 +340,13 @@ text = "Restart"
 
 [node name="MobileUI" type="Control" parent="UI" unique_id=1905073212 instance=ExtResource("100_mobctl")]
 layout_mode = 3
-anchors_preset = 0
-offset_left = -0.5
-offset_top = -0.5
-offset_right = -0.5
-offset_bottom = -0.5
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -220.0
+offset_right = 10.0
+offset_bottom = -20.0
 script = ExtResource("12_v0wtd")
 
 [node name="Background" type="Node2D" parent="." unique_id=1104501429 instance=ExtResource("13_sgvw8")]
