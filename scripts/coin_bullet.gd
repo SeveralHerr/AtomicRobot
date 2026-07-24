@@ -11,6 +11,7 @@ var has_hit_player: bool = false
 # material bounce applied in start(), so both floors feel the same.
 var bounce_damping: float = 0.3
 var is_falling: bool = false
+var has_landed: bool = false
 var lane: int = Lanes.GROUND_LANE
 # Coins arced down by platform/window maids hit whichever lane they land on.
 var lane_agnostic: bool = false
@@ -94,11 +95,14 @@ func _physics_process(delta: float) -> void:
 		# Set to kinematic mode to prevent further movement
 		freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC
 		freeze = true
+		has_landed = true
 
 func _on_body_entered(body: Node) -> void:
 	#if body is not Player:
 		#set_collision_mask_value(1, false)
 	if body is Player and not has_hit_player:
+		if has_landed:
+			return
 		if not lane_agnostic and body.current_lane != lane:
 			return
 		print("hit player")
