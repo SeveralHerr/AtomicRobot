@@ -17,7 +17,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"CODY IS NOW PLAYABLE",
 		true, 
 		"Artist at Atomic Robot Tattoo
-		+1 hp    +2 dmg",
+		+2 hp    +2 dmg",
 		preload("res://sprites/cody_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -28,7 +28,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/lightsaber.wav")  # weapon sound
 		),
 		2,  # Attack frame,
-		1, # hp
+		2, # hp
 		2 # dmg
 		
 	),
@@ -37,7 +37,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"RYAN IS NOW PLAYABLE",
 		true,
 		"Artist at Atomic Robot Tattoo
-		+3 hp    +1 dmg", 
+		+4 hp    +1 dmg", 
 		preload("res://sprites/ryan_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -48,7 +48,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/sword_attack.wav")  # weapon sound
 		),
 		3,  # Attack frame
-		3, # hp
+		4, # hp
 		1 # dmg
 	),
 	"Sara": CharacterConfig.new(
@@ -56,7 +56,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"SARA IS NOW PLAYABLE",
 		true,
 		"Artist at Atomic Robot Tattoo
-		+3 hp    +1 dmg", 
+		+4 hp    +1 dmg", 
 		preload("res://sprites/sarah_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -67,7 +67,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/sword_attack.wav")  # weapon sound
 		),
 		5,  # Attack frame
-		3, # hp
+		4, # hp
 		1 # dmg
 	),
 	"Cass": CharacterConfig.new(
@@ -75,7 +75,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"Cass IS NOW PLAYABLE",
 		true,
 		"Artist at Atomic Robot Tattoo
-		+1 hp    +1 dmg", 
+		+2 hp    +1 dmg", 
 		preload("res://sprites/cass_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -86,7 +86,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/throw.wav")  # weapon sound
 		),
 		5,  # Attack frame
-		1, # hp
+		2, # hp
 		1 # dmg
 	),
 	"Caitlyn": CharacterConfig.new(
@@ -94,7 +94,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"Caitlyn IS NOW PLAYABLE",
 		true,
 		"Artist at Atomic Robot Tattoo
-		+3 hp    +1 dmg", 
+		+4 hp    +1 dmg", 
 		preload("res://sprites/cait_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -105,7 +105,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/sword_attack.wav")  # weapon sound
 		),
 		5,  # Attack frame
-		3, # hp
+		4, # hp
 		1 # dmg
 	),
 	"Robot": CharacterConfig.new(
@@ -113,7 +113,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"Robot IS NOW PLAYABLE",
 		true,
 		"Mascot of Atomic Robot Tattoo
-		+1 hp    +1 dmg", 
+		+2 hp    +1 dmg", 
 		preload("res://sprites/robot_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -124,7 +124,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/robot_attack.ogg")  # weapon sound
 		),
 		5,  # Attack frame
-		1, # hp
+		2, # hp
 		1 # dmg
 	)
 }
