@@ -12,7 +12,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if player and not is_meter:
 		# target_position is LOCAL to this node, which inherits the parent Enemy's
-		# transform — and _handle_direction() flips the enemy's scale.x to -1 when
+		# transform — and Enemy.set_facing() flips the enemy's scale.x to -1 when
 		# facing left, which silently mirrors any local vector we set here. Using
 		# to_local() on the desired world endpoint correctly inverts that (and any
 		# other parent transform) instead of us having to guess/counteract the sign

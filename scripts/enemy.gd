@@ -35,7 +35,16 @@ var coins: int = 1
 var attack_range: int = 120
 var attack_cooldown: float = 4
 var detection_range: float = 600.0
-var last_dir: int = -1
+## Direction the sprite is LOOKING: +1 = right, -1 = left. All meter-maid art is
+## authored facing right, so +1 is the unmirrored transform. Read this rather than
+## `scale.x` — see set_facing() for why scale.x lies about a horizontal flip.
+var facing: int = 1
+## Authored (unmirrored) scale, captured before anything flips us — set_facing()
+## rebuilds the transform from this so instance scaling in the editor survives.
+var _base_scale: Vector2 = Vector2.ONE
+## Below this world-space X gap, a face target counts as "on top of us" and the
+## current facing is kept — stops jitter when a target is nearly vertically aligned.
+const FACE_DEADZONE := 2.0
 # Knockback variables
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 8.0  # How fast knockback decays
@@ -72,6 +81,7 @@ func _init() -> void:
 	add_child(enemy_state_machine)
 
 func _ready() -> void:
+	_base_scale = Vector2(absf(scale.x), scale.y)
 	lane = Lanes.clamp_lane(starting_lane)
 	z_index = Lanes.z_for(lane)
 	_set_ground_collision(lane == Lanes.GROUND_LANE)
@@ -150,26 +160,50 @@ func is_near_wall() -> bool:
 
 	
 func _face_player() -> void:
-	var direction = (global_position - player.global_position ).normalized()
-	_handle_direction( direction.x  )
-	
-func _handle_direction(direction) -> void:
-	if direction:
-		if direction < 0:
-			if last_dir != -1:
-				if scale.x == -1:
-					scale.x *= -1
-					last_dir = -1
-					return
-				scale.x *= -1
-				last_dir = -1
+	if player == null:
+		return
+	face_towards(player.global_position.x)
 
-		elif direction > 0:
-			if last_dir != 1 :
-				scale.x *= -1
-				last_dir = 1
-	
-	
+
+## Turn to look at a world-space X coordinate (a meter, the player, a waypoint).
+func face_towards(world_x: float) -> void:
+	var dx := world_x - global_position.x
+	if absf(dx) < FACE_DEADZONE:
+		return
+	set_facing(signi(dx))
+
+
+## Absolute facing setter — +1 looks right, -1 looks left.
+##
+## Two things here are deliberate and both were bugs in the old `scale.x *= -1`
+## toggle (`_handle_direction`):
+##
+## 1. It is *absolute*, not a toggle. The old version only flipped when its argument
+##    disagreed with the previously *requested* direction, so which way the sprite
+##    actually pointed was bookkeeping that any other writer to scale.x/flip_h
+##    silently desynced. It also flipped on the *opposite* of the movement direction
+##    (callers passed the away-from-target vector), so every new caller had a 50/50
+##    chance of coming out mirrored — FindMeterState drew that short straw and
+##    walked backwards to every meter.
+##
+## 2. It writes the transform's basis columns instead of assigning `scale`/`scale.x`.
+##    Transform2D has no way to store a negative x-scale, so Godot re-decomposes
+##    `scale = (-1, 1)` into `rotation = PI, scale = (1, -1)` — a visually identical
+##    mirror, but one that `scale.x` reads back from as *+1*. Worse, Node2D.set_scale
+##    only rescales the existing columns and preserves their direction, so once the
+##    mirror has migrated into `rotation` no assignment to `scale.x` can undo it and
+##    the enemy is stuck facing the wrong way. Setting the columns is idempotent and
+##    survives move_and_slide (which only translates the origin).
+func set_facing(dir: int) -> void:
+	if dir == 0:
+		return
+	facing = signi(dir)
+	var t := transform
+	t.x = Vector2(_base_scale.x * facing, 0.0)
+	t.y = Vector2(0.0, _base_scale.y)
+	transform = t
+
+
 func _apply_gravity(delta: float) -> void:
 	if is_changing_lane:
 		return
@@ -333,7 +367,7 @@ func die() -> void:
 func should_turn() -> bool: 
 	# Only check for turning if cooldown has expired
 	if turn_cooldown <= 0.0 and (is_near_wall() or is_near_edge()):
-		_handle_direction(last_dir * -1)
+		set_facing(-facing)
 		turn_cooldown = turn_cooldown_duration  # Reset cooldown
 		return true
 	return false

@@ -195,6 +195,9 @@ func _cmd_list_enemies(_args: Dictionary) -> Dictionary:
 				"position": [n.global_position.x, n.global_position.y],
 				"health": n.health,
 				"lane": n.lane,
+				"facing": n.facing,
+				"scale_x": n.scale.x,
+				"animation": n.animated_sprite_2d.animation if n.animated_sprite_2d else "",
 			})
 	return {"success": true, "message": "%d enemies" % enemies.size(), "data": {"enemies": enemies}}
 
@@ -332,8 +335,29 @@ func _cmd_debug_find_meter(args: Dictionary) -> Dictionary:
 				"coins": n.coins,
 				"velocity": [n.velocity.x, n.velocity.y],
 				"enemy_pos": [n.global_position.x, n.global_position.y],
+				# facing is +1/-1 (right/left); "facing_meter" is the assertion that
+				# matters — the maid must look at the meter she's walking to, and the
+				# sprite flip lives on the body's scale.x, not on the sprite's flip_h.
+				"facing": n.facing,
+				"scale_x": n.scale.x,
+				"sprite_flip_h": n.animated_sprite_2d.flip_h if n.animated_sprite_2d else false,
+				"animation": n.animated_sprite_2d.animation if n.animated_sprite_2d else "",
+				# null once she's parked within the face deadzone — there is no "correct"
+				# side to look at from on top of the meter, so don't report a failure.
+				"facing_meter": _facing_meter(n, st.meter),
 			}}
 	return _fail("no enemy at path %s" % want)
+
+
+## True/false when the maid is far enough from `meter` for facing to be meaningful,
+## null inside Enemy.FACE_DEADZONE (standing on it — either side is fine).
+func _facing_meter(n: Enemy, meter: Node2D) -> Variant:
+	if meter == null:
+		return null
+	var dx: float = meter.global_position.x - n.global_position.x
+	if absf(dx) < Enemy.FACE_DEADZONE:
+		return null
+	return signi(dx) == n.facing
 
 
 func _walk_scene() -> Array:
