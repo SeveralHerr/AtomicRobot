@@ -66,7 +66,7 @@ static func throw_coin(spawn_position: Vector2, target_position: Vector2, parent
 	var player = parent_node.get_tree().get_first_node_in_group("player")
 	if player and player.lanes_active():
 		var floor_lane: int = player.current_lane if lane_agnostic else lane
-		instance.set_lane_floor(floor_lane, player.lane_baseline_y, spawn_position.y)
+		instance.set_lane_floor(floor_lane, player.lane_stand_y(floor_lane), spawn_position.y)
 	var direction = (target_position - spawn_position).normalized()
 	instance.start(spawn_position, direction, use_arc)
 	return instance
@@ -79,7 +79,11 @@ static func throw_coin_from_enemy(enemy: Node, use_arc: bool = false, offset: in
 	var player = enemy.get_tree().get_first_node_in_group("player")
 	if not enemy or not player:
 		return
-	var spawn_pos = enemy.global_position + enemy.coin_spawn_point.position
+	# global_position, not global + LOCAL offset: set_facing() mirrors the enemy's
+	# transform on x, so a raw local offset put the projectile on the maid's back
+	# whenever she faced left. (Currently a no-op — the marker sits at (0,0) — but
+	# it silently breaks the moment anyone moves it off centre.)
+	var spawn_pos = enemy.coin_spawn_point.global_position
 	var target_pos = player.enemy_attack_position.global_position
 	target_pos.y += offset
 	target_pos.x += randf_range(-PROJECTILE_TARGET_JITTER, PROJECTILE_TARGET_JITTER)
@@ -108,7 +112,11 @@ static func throw_briefcase_from_enemy(enemy: Node, use_arc: bool = false, offse
 	var player = enemy.get_tree().get_first_node_in_group("player")
 	if not enemy or not player:
 		return
-	var spawn_pos = enemy.global_position + enemy.coin_spawn_point.position
+	# global_position, not global + LOCAL offset: set_facing() mirrors the enemy's
+	# transform on x, so a raw local offset put the projectile on the maid's back
+	# whenever she faced left. (Currently a no-op — the marker sits at (0,0) — but
+	# it silently breaks the moment anyone moves it off centre.)
+	var spawn_pos = enemy.coin_spawn_point.global_position
 	var target_pos = player.enemy_attack_position.global_position
 	target_pos.y += offset
 	target_pos.x += randf_range(-PROJECTILE_TARGET_JITTER, PROJECTILE_TARGET_JITTER)

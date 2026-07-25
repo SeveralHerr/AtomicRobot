@@ -29,6 +29,7 @@ func register_commands(dev: Node) -> void:
 	_dev.register_command("teleport_enemy", _cmd_teleport_enemy)
 	_dev.register_command("set_enemy_state", _cmd_set_enemy_state)
 	_dev.register_command("debug_find_meter", _cmd_debug_find_meter)
+	_dev.register_command("lane_report", _cmd_lane_report)
 
 
 func _player() -> Node:
@@ -137,7 +138,8 @@ func _cmd_player_state(_args: Dictionary) -> Dictionary:
 		"is_dead": p.is_dead,
 		"lane": p.current_lane,
 		"is_changing_lane": p.is_changing_lane,
-		"lane_baseline_y": p.lane_baseline_y,
+		"lane_floor_y": p.lane_floor_y,
+		"foot_offset": p.foot_offset(),
 	}}
 
 
@@ -210,6 +212,90 @@ func _cmd_kill_enemies(_args: Dictionary) -> Dictionary:
 			n.queue_free()
 			count += 1
 	return {"success": true, "message": "freed %d enemies" % count, "data": {"count": count}}
+
+
+## Depth geometry for every lane-aware body, plus the invariant that motivates it:
+## bodies settled on the same ROAD lane must have their SOLES on the same line.
+##
+## This exists because that class of bug was invisible to the harness — node-bounds
+## reports one node at a time, so a spawner-placed maid standing 7.25px lower than a
+## self-baselined one on the same lane could only be caught by eye.
+##
+## GROUND_LANE is deliberately exempt: it rides real collision, so maids hand-placed
+## on ledges and rooftops genuinely stand at different heights there (a live scene
+## shows ~175px of spread). Only lanes 1-3 share one derived virtual floor, so only
+## they can be checked. Their spread is still reported, just not failed on.
+## args: {"tolerance": float = 1.0}
+func _cmd_lane_report(args: Dictionary) -> Dictionary:
+	var tolerance := float(args.get("tolerance", 1.0))
+	var bodies := []
+	var p := _player()
+	if p != null:
+		bodies.append(_lane_row(p, "player"))
+	for n in _walk_scene():
+		if n is Enemy:
+			bodies.append(_lane_row(n, String(_dev.get_tree().current_scene.get_path_to(n))))
+
+	# Only settled bodies with a known floor can be compared — one mid-tween is
+	# between two lanes by definition, and one with no baseline hasn't landed yet.
+	var by_lane := {}
+	for row in bodies:
+		if row["changing_lane"] or not row["has_floor"]:
+			continue
+		if not by_lane.has(row["lane"]):
+			by_lane[row["lane"]] = []
+		by_lane[row["lane"]].append(row)
+
+	var violations := []
+	var spreads := {}
+	for lane in by_lane:
+		var rows: Array = by_lane[lane]
+		if rows.size() < 2:
+			continue
+		var lo := INF
+		var hi := -INF
+		for row in rows:
+			var level: float = row["foot_y"] - row["depth_offset"]
+			lo = minf(lo, level)
+			hi = maxf(hi, level)
+		spreads[lane] = hi - lo
+		# hi/lo are measured with each body's deliberate in-lane jitter removed, so
+		# this still fails on the bug it was written for (bodies whose baselines
+		# disagree) without failing on the decoration layered on top of it.
+		if lane != Lanes.GROUND_LANE and hi - lo > tolerance:
+			violations.append({"lane": lane, "spread": hi - lo, "bodies": rows.size()})
+
+	return {
+		"success": violations.is_empty(),
+		"message": "%d bodies, %d road lane(s) with mismatched foot lines" % [bodies.size(), violations.size()],
+		"data": {
+			"tolerance": tolerance,
+			"bodies": bodies,
+			"violations": violations,
+			"foot_spread_by_lane": spreads,
+		},
+	}
+
+
+## Untyped `body` so this takes both Player (current_lane, never jittered) and Enemy.
+func _lane_row(body, label: String) -> Dictionary:
+	var is_player := body is Player
+	var lane: int = body.current_lane if is_player else body.lane
+	var offset: float = body.foot_offset()
+	var has_floor := is_finite(body.lane_floor_y)
+	return {
+		"node": label,
+		"lane": lane,
+		"y": body.global_position.y,
+		"foot_offset": offset,
+		"foot_y": body.global_position.y + offset,
+		"depth_offset": 0.0 if is_player else body.lane_depth_offset,
+		"z": body.z_index,
+		"lane_floor_y": body.lane_floor_y if has_floor else 0.0,
+		"has_floor": has_floor,
+		"changing_lane": body.is_changing_lane,
+		"sorted": body.get_parent() != null and body.get_parent().name == Lanes.SORT_LAYER_NAME,
+	}
 
 
 func _cmd_level_info(_args: Dictionary) -> Dictionary:

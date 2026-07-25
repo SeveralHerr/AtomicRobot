@@ -102,7 +102,7 @@ func _spawn_enemy_near_player(melee: bool) -> void:
 	var player := _player()
 	if player == null:
 		return
-	var lane := player.current_lane if player.lane_baseline_y != INF else Lanes.GROUND_LANE
+	var lane := player.current_lane if player.lane_floor_y != INF else Lanes.GROUND_LANE
 	EnemySpawner.spawn_enemy_at(get_tree().current_scene, player, player.global_position.x + 300, lane, melee)
 
 
@@ -121,8 +121,10 @@ func _spawn_car() -> void:
 	get_tree().current_scene.add_child(car)
 	var lane: int = randi_range(Lanes.GROUND_LANE + 1, Lanes.FRONT_LANE)
 	var y := player.global_position.y
-	if player.lane_baseline_y != INF:
-		y = Lanes.floor_y(player.lane_baseline_y, lane)
+	if player.lane_floor_y != INF:
+		# Cars ride the player's standing line, not the walkway floor — see
+		# Streetlight._car_road_y for why.
+		y = player.lane_stand_y(lane)
 	car.lane = lane
 	car.global_position = Vector2(player.global_position.x + 600, y)
 	car.start = true

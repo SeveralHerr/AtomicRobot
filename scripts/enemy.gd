@@ -65,7 +65,17 @@ const ENEMY_SEPARATION_STRENGTH := 160.0
 ## hit every lane (they arc down from above).
 @export var lane_locked: bool = false
 var lane: int = Lanes.GROUND_LANE
-var lane_baseline_y: float = INF
+## World Y of the walkway FLOOR SURFACE (where soles rest) — not this node's Y.
+## Body-independent, so the spawner can seed it from the player; INF until known.
+var lane_floor_y: float = INF
+# Distance from this node's origin down to its soles. Measured lazily: the
+# collision shape isn't reachable until the instanced scene has its children.
+var _foot_offset: float = 0.0
+var _foot_offset_measured: bool = false
+## Slight depth offset within the current lane (px, down-screen positive) so a lane
+## doesn't read as sprites on one ruled line. Re-rolled on every lane change and
+## always 0.0 on the ground lane — see Lanes.random_in_lane_offset.
+var lane_depth_offset: float = 0.0
 var is_changing_lane: bool = false
 var _lane_tween: Tween
 var lane_change_cooldown: float = 0.0
@@ -84,18 +94,26 @@ func _ready() -> void:
 	_base_scale = Vector2(absf(scale.x), scale.y)
 	lane = Lanes.clamp_lane(starting_lane)
 	z_index = Lanes.z_for(lane)
-	_set_ground_collision(lane == Lanes.GROUND_LANE)
+	_refresh_depth_z()
+	# Ground collision stays ON while the walkway line is still unknown, even on a
+	# road lane: a hand-placed enemy authored straight onto lane 1-3 has no baseline
+	# and nothing virtual to stand on, so dropping the mask here left it falling
+	# forever. _update_lane_floor() takes it off the moment it has a floor line.
+	_set_ground_collision(lane == Lanes.GROUND_LANE or lane_floor_y == INF)
+	lane_depth_offset = Lanes.random_in_lane_offset(lane)
+	# Deferred: reparenting inside _ready trips "parent node is busy setting up children".
+	Lanes.join_sort_layer.call_deferred(self)
 	attack_timer.wait_time = attack_cooldown
 	add_to_group("enemies")
-	player = get_tree().get_first_node_in_group("player")
+	# The sight ray must reach as far as this enemy claims to detect, or chase
+	# logic gated on line-of-sight can never fire at the edge of detection range.
+	line_of_sight.max_range = maxf(line_of_sight.max_range, detection_range)
+	_resolve_player()
 	if player and player.is_dead:
 		print("Dead player detected")
 		queue_free()
-	
-	player_detection.body_entered.connect(func(body: Node2D): is_player_in_attack_range = true)
-	player_detection.body_exited.connect(func(body: Node2D): is_player_in_attack_range = false)
-	
-	Globals.player_death.connect(func(): 
+
+	Globals.player_death.connect(func():
 		if not enemy_state_machine.current_state is DeadEnemyState:
 			animated_sprite_2d.play("idle")
 		set_physics_process(false)
@@ -105,8 +123,10 @@ func _process(delta: float) -> void:
 	if is_too_far() and not persist:
 		print("enemy too far, purgiing....")
 		queue_free()
-	
+
 func _physics_process(delta: float) -> void:
+	_resolve_player()
+	_refresh_player_in_attack_range()
 	_update_lane_floor()
 	_apply_gravity(delta)
 	_apply_knockback_decay(delta)
@@ -118,11 +138,43 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
+## Resolve (and re-resolve) the player. Node `_ready` order decides whether the
+## player is already in its group when a hand-placed enemy readies, and the
+## instance is replaced outright on a scene reload — so a cache-once lookup
+## leaves enemies permanently inert (or null-crashing) rather than just late.
+func _resolve_player() -> Player:
+	if player != null and is_instance_valid(player):
+		return player
+	player = get_tree().get_first_node_in_group("player") as Player
+	return player
+
+
+## Recomputed from the live overlap set every physics tick instead of latched by
+## body_entered/body_exited. The latch had two failure modes that both read in
+## game as "the enemy randomly stopped attacking": the callbacks accepted ANY
+## body, so one non-player body leaving cleared a flag the player was still
+## setting (the window maid's detector masks Ground as well as Player); and a
+## teleport, a lane snap or a deferred add could drop an edge outright and strand
+## the flag on the wrong value with nothing to correct it.
+func _refresh_player_in_attack_range() -> void:
+	if not player_detection.monitoring:
+		is_player_in_attack_range = false
+		return
+	for body in player_detection.get_overlapping_bodies():
+		if body is Player:
+			is_player_in_attack_range = true
+			return
+	is_player_in_attack_range = false
+
+
 func is_player_in_line_of_sight() -> bool:
 	return line_of_sight.is_player_line_of_sight()
 
 func is_meter_in_line_of_sight() -> bool:
-	return meter_line_of_sight.is_meter_line_of_sight(Globals.nearest_meter(global_position).global_position)
+	var nearest := Globals.nearest_meter(global_position)
+	if nearest == null:
+		return false
+	return meter_line_of_sight.is_meter_line_of_sight(nearest.global_position)
 
 
 # Virtual methods to be overridden
@@ -152,6 +204,30 @@ func is_near_edge() -> bool:
 	if lane != Lanes.GROUND_LANE:
 		return false
 	return not ray_cast_2d_left_down.is_colliding() or not ray_cast_2d_right_down.is_colliding()
+
+
+## Ledge check for the direction we are about to move in (+1 right, -1 left).
+##
+## Chase movement used to be gated on is_near_edge(), which reports an edge on
+## EITHER side — so an enemy that walked up to a ledge could no longer move in
+## the one direction that would take it away from that ledge, and froze on the
+## spot permanently. Only the ray on the leading side can actually stop us.
+func is_near_edge_ahead(dir: int) -> bool:
+	if lane != Lanes.GROUND_LANE or dir == 0:
+		return false
+	var left_offset := ray_cast_2d_left_down.global_position.x - global_position.x
+	var leading := ray_cast_2d_left_down if leading_ray_is_left(left_offset, dir) else ray_cast_2d_right_down
+	return not leading.is_colliding()
+
+
+## Which down-ray sits on the side we are moving toward.
+##
+## The rays are children of this body, whose transform mirrors on x when facing
+## left (see set_facing), so the node *named* "left" is on the world right half
+## the time — the choice has to be made from the ray's actual world offset, not
+## its name. Pure and static so it can be unit-tested headless.
+static func leading_ray_is_left(left_ray_offset_x: float, dir: int) -> bool:
+	return signf(left_ray_offset_x) == signf(float(dir))
 
 
 func is_near_wall() -> bool:
@@ -208,8 +284,8 @@ func _apply_gravity(delta: float) -> void:
 	if is_changing_lane:
 		return
 	# Road lanes stand on a virtual floor below the walkway line.
-	if lane != Lanes.GROUND_LANE and lane_baseline_y != INF:
-		var fy := Lanes.floor_y(lane_baseline_y, lane)
+	if lane != Lanes.GROUND_LANE and lane_floor_y != INF:
+		var fy := lane_stand_y(lane)
 		if velocity.y >= 0 and global_position.y >= fy:
 			global_position.y = fy
 			velocity.y = 0.0
@@ -218,10 +294,50 @@ func _apply_gravity(delta: float) -> void:
 		velocity.y += 300 * delta
 
 
+## Distance from this node's origin down to its soles — see Lanes.measure_foot_offset.
+func foot_offset() -> float:
+	if not _foot_offset_measured:
+		_foot_offset = Lanes.measure_foot_offset(self)
+		_foot_offset_measured = true
+	return _foot_offset
+
+
+## World Y this node's origin sits at when standing on `for_lane`, including its
+## in-lane depth offset. The ground lane ignores the offset outright — real floor
+## collision there would fight it, and a contaminated capture in _update_lane_floor()
+## would bake the jitter into the shared baseline every other body reads.
+func lane_stand_y(for_lane: int) -> float:
+	var offset := 0.0 if for_lane == Lanes.GROUND_LANE else lane_depth_offset
+	return Lanes.stand_y(lane_floor_y, for_lane, foot_offset()) + offset
+
+
+## Keep the draw z in step with where this body actually stands. Cheap enough to poll:
+## it only writes when the value changes, and it self-heals the frame a baseline is
+## first captured (before that, depth_z has no floor line to measure against).
+func _refresh_depth_z() -> void:
+	var z := Lanes.depth_z(lane, lane_stand_y(lane) + foot_offset(), lane_floor_y)
+	if z != z_index:
+		z_index = z
+
+
 func _update_lane_floor() -> void:
-	# Capture the walkway ground line whenever physically standing on it.
-	if is_on_floor() and lane == Lanes.GROUND_LANE and not is_changing_lane:
-		lane_baseline_y = global_position.y
+	_refresh_depth_z()
+	if is_changing_lane:
+		return
+	# Capture the walkway ground line whenever physically standing on it. Stored as
+	# the FLOOR (soles), not this node's Y — a maid's origin sits 27px above its
+	# feet and the player's 19.75px, so an origin-based baseline could not be shared
+	# between them without one of the two standing at the wrong height.
+	if is_on_floor() and lane == Lanes.GROUND_LANE:
+		lane_floor_y = global_position.y + foot_offset()
+		return
+	# Authored straight onto a road lane (starting_lane 1-3): _ready kept real ground
+	# collision so we'd land on something. First contact defines the walkway line;
+	# from here on the lane's virtual floor takes over.
+	if is_on_floor() and lane_floor_y == INF:
+		lane_floor_y = global_position.y + foot_offset()
+		_set_ground_collision(false)
+		global_position.y = lane_stand_y(lane)
 
 
 ## The walkway tiles' collision occupies the road strip; road-lane bodies ignore
@@ -270,7 +386,7 @@ func is_same_lane_as_player() -> bool:
 ## player's lane, but if it's already staked out by another attacker within
 ## throwing range, queues in a free adjacent lane instead of stacking on top.
 func _lane_chase() -> void:
-	if lane_locked or is_changing_lane or lane_change_cooldown > 0.0 or lane_baseline_y == INF:
+	if lane_locked or is_changing_lane or lane_change_cooldown > 0.0 or lane_floor_y == INF:
 		return
 	if player == null or player.is_changing_lane:
 		return
@@ -311,20 +427,23 @@ func _lane_is_claimed(check_lane: int) -> bool:
 ## more deliberate step (e.g. walking out of a spawn point) can override it.
 func _start_lane_change(target: int, duration: float = LANE_CHANGE_DURATION) -> void:
 	target = Lanes.clamp_lane(target)
-	if target == lane or lane_baseline_y == INF:
+	if target == lane or lane_floor_y == INF:
 		return
 	is_changing_lane = true
 	lane_change_cooldown = LANE_CHANGE_COOLDOWN
 	velocity.y = 0.0
+	# Fresh jitter for the lane being entered, picked before the tween reads its
+	# destination so the step lands on the offset rather than sliding onto it after.
+	lane_depth_offset = Lanes.random_in_lane_offset(target)
 	if target != Lanes.GROUND_LANE:
 		_set_ground_collision(false)
 	if _lane_tween:
 		_lane_tween.kill()
 	_lane_tween = create_tween()
-	_lane_tween.tween_property(self, "global_position:y", Lanes.floor_y(lane_baseline_y, target), duration)
+	_lane_tween.tween_property(self, "global_position:y", lane_stand_y(target), duration)
 	_lane_tween.finished.connect(func() -> void:
 		lane = target
-		z_index = Lanes.z_for(target)
+		_refresh_depth_z()
 		if target == Lanes.GROUND_LANE:
 			_set_ground_collision(true)
 		is_changing_lane = false)
@@ -398,7 +517,11 @@ func _apply_damage(damage: int) -> void:
 
 
 func _apply_knockback(knockback_strength: float = 200.0) -> void:
-	var knockback_direction = (global_position - player.global_position).normalized()
+	# Hazards (cars, hitboxes) can damage an enemy with no player resolved — fall
+	# back to knocking it backwards off its own facing rather than crashing.
+	var knockback_direction := Vector2(-facing, 0.0)
+	if _resolve_player() != null:
+		knockback_direction = (global_position - player.global_position).normalized()
 	knockback_velocity = knockback_direction * knockback_strength
 	velocity.y = -50.0
 
@@ -413,25 +536,36 @@ func _apply_knockback_decay(delta: float) -> void:
 	if abs(knockback_velocity.x) < 10.0:  # Only apply friction when knockback is minimal
 		velocity.x = move_toward(velocity.x, 0.0, 300.0 * delta)
 	
+## INF when there is no player, so every "within range" test below reads false.
 func get_distance_to_player() -> float:
+	if _resolve_player() == null:
+		return INF
 	return global_position.distance_to(player.global_position)
 
 func can_see_player() -> bool:
 	return  get_distance_to_player() <= detection_range
 
 func is_too_far() -> bool:
+	# No player is not "too far" — purging on it would delete every enemy in a
+	# test scene (and every enemy spawned a frame before the player registers).
+	if _resolve_player() == null:
+		return false
 	return  get_distance_to_player() >= 1500
 
 func can_see_player_threshold(threshold_multiplier: float) -> bool:
 	return get_distance_to_player() <= detection_range * threshold_multiplier
-	
+
 func is_the_player_in_attack_range() -> bool:
 	return is_player_in_attack_range
-	
+
 func has_state(state: String) -> bool:
 	return enemy_state_machine.states.has(state)
 
 
 func can_attack() -> bool:
-	return attack_timer.is_stopped() and is_player_in_attack_range and is_same_lane_as_player()
-	
+	if not attack_timer.is_stopped() or not is_player_in_attack_range:
+		return false
+	if player == null:
+		return false
+	return Lanes.can_engage(lane, player.current_lane, lane_locked)
+
