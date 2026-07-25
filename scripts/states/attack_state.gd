@@ -40,7 +40,7 @@ func trigger_attack(player: Player)-> void:
 		if body is Enemy and body.lane == player.current_lane:
 			ScreenShake.apply_shake(7)
 			var dir = (player.global_position - body.global_position).normalized()
-			body.receive_hit(player.damage)
+			player.land_hit(body)
 			
 			
 	var areas = player.area_2d.get_overlapping_areas()
@@ -49,7 +49,7 @@ func trigger_attack(player: Player)-> void:
 		var parent = area.get_parent()
 		print(parent.name)
 		if area is Enemy:
-			parent.receive_hit(player.damage)
+			player.land_hit(parent)
 		elif parent is Crack: 
 			parent.receive_hit()
 			

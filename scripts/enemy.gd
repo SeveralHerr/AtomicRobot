@@ -456,6 +456,7 @@ func die() -> void:
 	velocity = Vector2.ZERO
 	Globals.meter_maids_killed += 1
 	Globals.meter_maid_death.emit()
+	_maybe_drop_powerup()
 	animated_sprite_2d.play("death")
 	print("dead af")
 
@@ -483,7 +484,18 @@ func die() -> void:
 	await tween.finished
 	queue_free()	
 
-func should_turn() -> bool: 
+## Roll the drop table for this kill. Rolled from die() rather than after the 1.5s
+## death fade so the pickup lands while the fight it was earned in is still going.
+##
+## PowerupSystem owns the roll (and the pity counter that guarantees a drop after a
+## drought), so this must run exactly once per death — die() is the only caller.
+func _maybe_drop_powerup() -> void:
+	var id := PowerupSystem.roll_drop()
+	if id != "":
+		Utils.drop_powerup(self, id)
+
+
+func should_turn() -> bool:
 	# Only check for turning if cooldown has expired
 	if turn_cooldown <= 0.0 and (is_near_wall() or is_near_edge()):
 		set_facing(-facing)

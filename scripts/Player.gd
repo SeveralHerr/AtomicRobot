@@ -41,6 +41,14 @@ var health: int = 3
 var damage: int = 1
 ## Debug-menu cheat: invincible + one-hit-kill. See scripts/autoload/debug_menu.gd.
 var god_mode: bool = false
+
+# --- POWER-UPS (timed buffs, see scripts/autoload/powerup_system.gd) ---
+# Written ONLY by PowerupSystem; read through get_damage()/get_speed(). Kept as
+# separate multipliers rather than by mutating `damage`/`SPEED` in place because
+# those two hold character-config baselines that a buff expiring at an awkward
+# moment (mid scene-change, mid death) must never be able to corrupt.
+var damage_multiplier: float = 1.0
+var speed_multiplier: float = 1.0
 var is_event_active: bool = false
 var SPEED = 170.0
 const JUMP_VELOCITY = -1250.0
@@ -85,11 +93,32 @@ func take_damage(amount: int) -> void:
 		return
 	health -= amount
 	print(health)
-	
+
+	# Getting hit is what breaks a combo — this is the one funnel every damage
+	# source already goes through, so nothing can damage the player without the
+	# score system hearing about it.
+	ScoreSystem.register_player_damaged()
+
 	player_health_updated.emit(health)
-	
+
 	if health <= 0:
 		death()
+
+
+## Damage this attack actually deals, after any active power-up. Always at least 1:
+## a buff must never be able to round a hit down to a no-op.
+func get_damage() -> int:
+	return maxi(1, roundi(float(damage) * damage_multiplier))
+
+
+## Single funnel for "the player connected with an enemy" — melee (AttackState) and
+## both projectile characters route through here, so the combo meter cannot drift
+## out of sync with the damage that was dealt.
+func land_hit(target: Node) -> void:
+	if target == null or not is_instance_valid(target):
+		return
+	target.receive_hit(get_damage())
+	ScoreSystem.register_hit()
 
 func add_heart(amount: int) -> void:
 	health += amount
@@ -142,6 +171,11 @@ func _ready() -> void:
 	hurt_audio.stream = current_character.get_hit_sound()
 	attack_audio_player.stream = current_character.get_attack_sound()
 	land_audio.stream = current_character.get_land_sound()
+	# Takes over DefaultSprite's material shader so power-ups have buff_* uniforms to
+	# drive. Done from here rather than in the scene files because the player node is
+	# inlined (with its own embedded copy of the shader) into player.tscn, main.tscn
+	# AND boss_room.tscn — one runtime install covers all three and any future copy.
+	PowerupSystem.attach(self)
 	Globals.event.connect(_event_started)
 	
 
@@ -326,7 +360,7 @@ func can_jump() -> bool:
 	return coyote_timer > 0 or is_grounded()
 
 func get_speed() -> float:
-	return SPEED + boost_speed
+	return (SPEED + boost_speed) * speed_multiplier
 	
 func _process(delta: float) -> void:
 	state_machine.update(delta)
@@ -395,6 +429,8 @@ func receive_hit(source_position: Vector2, damage: int, knockback_strength: floa
 	take_damage(damage)
 	
 func death() -> void:
+	# Buffs do not survive the run that earned them.
+	PowerupSystem.clear_all()
 	state_machine.change_state("DeadState")
 
 

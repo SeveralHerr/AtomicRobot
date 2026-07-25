@@ -23,6 +23,8 @@ config/icon="res://icon.svg"
 
 Globals="*res://scripts/autoload/globals.gd"
 Utils="*res://scripts/autoload/utils.gd"
+PowerupSystem="*res://scripts/autoload/powerup_system.gd"
+ScoreSystem="*res://scripts/autoload/score_system.gd"
 ChatBubble="*res://scripts/autoload/chat_bubble.gd"
 ScreenShake="*res://scripts/autoload/screenshake.gd"
 AudioManager="*res://scripts/autoload/audio_manager.gd"

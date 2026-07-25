@@ -36,5 +36,5 @@ func _physics_process(delta: float) -> void:
 func _hit(body: Node2D):
 	if body is Enemy and body.lane == lane:
 		ScreenShake.apply_shake(7)
-		body.receive_hit(player.damage)
+		player.land_hit(body)
 		queue_free()

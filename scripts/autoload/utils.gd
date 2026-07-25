@@ -3,6 +3,31 @@ extends Node
 const COIN_BULLET = preload("res://scenes/coin_bullet.tscn")
 const HIT_FX = preload("res://scenes/hit_fx.tscn")
 const BRIEFCASE_BULLET = preload("res://scenes/briefcase_bullet2.tscn")
+const POWERUP_PICKUP = preload("res://scenes/powerup_pickup.tscn")
+
+
+## Drop a power-up pickup where `enemy` fell. Returns the pickup, or null if the id
+## is unknown or the enemy is already out of the tree.
+static func drop_powerup(enemy: Node2D, id: String) -> Node2D:
+	if enemy == null or not enemy.is_inside_tree() or not PowerupRules.has_id(id):
+		return null
+	var parent := enemy.get_tree().current_scene
+	if parent == null:
+		return null
+	var pickup := POWERUP_PICKUP.instantiate()
+	# Set before add_child so the pickup's _ready() already has its final identity.
+	pickup.powerup_id = id
+	pickup.lane = enemy.lane
+	parent.add_child(pickup)
+	# Hover above the LANE'S FLOOR LINE, not above the enemy's origin. Origins sit
+	# different distances above their soles (a maid's is 27px up, the player's
+	# 19.75px), so an origin-relative drop would float at a visibly different height
+	# for every enemy type. See Lanes.measure_foot_offset.
+	var floor_line: float = enemy.global_position.y + enemy.foot_offset()
+	if is_finite(enemy.lane_floor_y):
+		floor_line = Lanes.floor_y(enemy.lane_floor_y, enemy.lane)
+	pickup.global_position = Vector2(enemy.global_position.x, floor_line - PowerupPickup.HOVER_HEIGHT)
+	return pickup
 static func shake_node2d(node: Node2D, strength: float = 10.0, duration: float = 0.3, frequency: float = 0.02) -> void:
 	var original_pos = node.position
 	var tween = node.get_tree().create_tween()
