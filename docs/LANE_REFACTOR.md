@@ -45,7 +45,9 @@ the old camera clamp; `limit_bottom` went 30 → 64 → 96 to reveal it.
   chase_player() wiring was dead code — removed). Spawner picks a weighted random
   lane (40% player's, 60% others) and seeds baseline from the player.
 - **Platform/window maids**: `lane_locked = true`; their arced coins are
-  `lane_agnostic` (hit any lane). Street maids' coins remain lane-tagged.
+  `lane_agnostic` (hit any lane). Street maids' coins are tagged with the lane they
+  fly on — the **player's** lane at throw time, not the thrower's, since the shot is
+  aimed at the player's actual position. Lane-stepping mid-flight still dodges.
 - **FindMeter**: maids step back to the walkway before refilling at meters.
 - **Cars** (streetlight event): road hazard on the road lanes only — see increment 3
   for the current per-car random lane behaviour.

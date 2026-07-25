@@ -1,6 +1,9 @@
 extends Enemy
 class_name MeterMaidWindow
 
+## A maid who smashes a window open and throws coins down at the street. Never
+## moves, never chases: she holds position and fires whenever she has a shot.
+
 
 @onready var cpu_particles_2d: CPUParticles2D = $CPUParticles2D
 @export var is_event: bool = false
@@ -18,50 +21,56 @@ func _ready() -> void:
 	super._ready()
 
 	enemy_state_machine.add_state("AttackPlayerState", AttackPlayerState.new(self))
+	enemy_state_machine.add_state("HoldPositionState", HoldPositionState.new(self))
+	# Enemy.receive_hit() only enters the dead state if it is registered, so
+	# without this the window maid absorbed unlimited damage and could never die.
+	enemy_state_machine.add_state("DeadEnemyState", DeadEnemyState.new(self))
+	enemy_state_machine.change_state("HoldPositionState")
+
 	call_deferred("_setup_initial_state")
 
 func _setup_initial_state() -> void:
-	_setup_sprite_direction()
 	hide() # Start hidden
-
-func _setup_sprite_direction() -> void:
-	var player = get_tree().get_first_node_in_group("player")
-	if not player:
-		return
-	#var direction_to_player = (player.global_position - global_position).normalized().x
-	#_hand(direction_to_player)
 
 func trigger() -> void:
 	"""Manually trigger the window meter maid to appear"""
 	_activate()
 
+## Deliberately does NOT call super(): this maid is mounted in a wall, so she has
+## no gravity, no lane floor, no separation and no move_and_slide. She does still
+## need her state machine stepped — the base _physics_process was the only thing
+## doing that, and overriding it wholesale is why the attack state's update()
+## never ran and every transition out of a swing was dead code.
 func _physics_process(delta: float) -> void:
+	if is_dead():
+		return
+	_resolve_player()
+	_refresh_player_in_attack_range()
 	_check_activation()
 	if not is_activated:
 		return
-	_face_player()
-	#_update_facing_direction()
-	_check_attack()
+	enemy_state_machine.update(delta)
+
+func is_dead() -> bool:
+	return enemy_state_machine.current_state is DeadEnemyState
 
 func _check_activation() -> void:
-	if visible and not is_player_in_line_of_sight() and not can_see_player(): 
+	if visible and not is_player_in_line_of_sight() and not can_see_player():
 		queue_free()
-	
-	if is_activated: 
+
+	if is_activated:
 		return
-		
+
 	if is_event:
 		return
-	
 
-	if (is_player_in_line_of_sight()):
+	if is_player_in_line_of_sight():
 		_activate()
 
 
 func _activate() -> void:
 	is_activated = true
 	show()
-	_setup_sprite_direction()
 	animated_sprite_2d.play("idle")
 	_play_break_effect()
 
@@ -70,11 +79,3 @@ func _play_break_effect() -> void:
 	cpu_particles_2d.emitting = true
 	await get_tree().create_timer(0.5).timeout
 	cpu_particles_2d.emitting = false
-	await get_tree().create_timer(1.0).timeout
-
-func _check_attack() -> void:
-	#if is_attacking or not _player_in_range() or attack_timer.time_left > 0:
-		#return
-	#_start_attack()
-	if can_attack():
-		enemy_state_machine.change_state("AttackPlayerState")

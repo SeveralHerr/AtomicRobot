@@ -5,9 +5,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Environment (this machine)
 
 - Godot **4.7.1** is NOT on PATH. Use the full path:
-  `C:\Users\gotmi\Downloads\Godot_v4.7.1_fixed\Godot_v4.7.1-stable_win64_console.exe`
-  (console build — prefer it for CLI/headless; the windowed exe is beside it). Treat
-  `godot` in any command below as an alias for that path.
+  `C:\Users\gotmi\Documents\Godot_v4.7.1-stable_win64.exe`
+  (no console build alongside it — this exe works fine for `--headless` runs). Treat
+  `godot` in any command below as an alias for that path. Older 4.5.1/4.6.1 builds
+  also sit in `Downloads\` — don't use them, the project targets 4.7.
 - Python 3.12 is installed user-scope (`python`, not `python3`). If a shell can't find
   it, it lives at `%LOCALAPPDATA%\Programs\Python\Python312\python.exe`.
 - After pulling changes that touch images/resources, run

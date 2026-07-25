@@ -1,15 +1,16 @@
 [gd_scene load_steps=3 format=3 uid="uid://btaphps6ps5mq"]
 
 [ext_resource type="Texture2D" uid="uid://bwdce22i5axih" path="res://images/Logo+Web.png" id="1_jexr2"]
-[ext_resource type="Texture2D" uid="uid://de5ug1q13hab1" path="res://images/Logo_small.png" id="1_p5stn"]
+[ext_resource type="Material" path="res://shaders/hud_orb_outline_mat.tres" id="2_orbol"]
 
 [node name="HP1" type="TextureRect"]
+material = ExtResource("2_orbol")
 texture_filter = 4
 custom_minimum_size = Vector2(40, 40)
 offset_right = 40.0
 offset_bottom = 40.0
 pivot_offset = Vector2(20, 20)
-texture = ExtResource("1_p5stn")
+texture = ExtResource("1_jexr2")
 expand_mode = 3
 stretch_mode = 5
 

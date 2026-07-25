@@ -11,6 +11,7 @@ var has_hit_player: bool = false
 # material bounce applied in start(), so both floors feel the same.
 var bounce_damping: float = 0.3
 var is_falling: bool = false
+var has_landed: bool = false
 var lane: int = Lanes.GROUND_LANE
 # Coins arced down by platform/window maids hit whichever lane they land on.
 var lane_agnostic: bool = false
@@ -49,15 +50,25 @@ func _ready() -> void:
 	await get_tree().create_timer(15).timeout
 	queue_free()
 	
-## Put this coin on a road lane's virtual floor. The walkway tiles' collision boxes
-## fill the road strip below the walkway line, so a coin flying at a road-lane Y is
-## inside solid Ground geometry and smacks into it immediately. Road-lane bodies
-## solve this by dropping Ground(2)/Platforms(6) and standing on a virtual floor —
-## coins do the same (see Player._set_ground_collision / Enemy._apply_gravity).
-func set_lane_floor(floor_lane: int, baseline_y: float) -> void:
-	if floor_lane == Lanes.GROUND_LANE or not is_finite(baseline_y):
+## Put this coin on a lane's virtual floor. The walkway tiles' collision boxes fill
+## the road strip below the walkway line, so a coin flying at a road-lane Y is inside
+## solid Ground geometry. All lanes, including GROUND_LANE, drop Ground(2)/Platforms(6)
+## and stand on a virtual floor instead, so every coin behaves the same way whatever
+## lane it is on (see Player._set_ground_collision / Enemy._apply_gravity).
+##
+## `rest_y` is the ABSOLUTE world Y this coin's origin should settle at on that lane,
+## resolved by the caller rather than derived here from a baseline — coins were tuned
+## to rest on the player's standing line, not on the walkway surface underneath it,
+## so Utils.throw_coin passes Player.lane_stand_y() and keeps that height exactly.
+##
+## `spawn_y` is where the coin was thrown from: a coin aimed UP-screen at a player on
+## a farther lane starts below that lane's floor line, and clamping it there would
+## teleport it up-screen on its first downward frame. Keeping the lower (larger-y) of
+## the two means a coin that misses just falls back to the height it was thrown from.
+func set_lane_floor(floor_lane: int, rest_y: float, spawn_y: float = -INF) -> void:
+	if not is_finite(rest_y):
 		return
-	virtual_floor_y = Lanes.floor_y(baseline_y, floor_lane)
+	virtual_floor_y = maxf(rest_y, spawn_y)
 	set_collision_mask_value(2, false)
 	set_collision_mask_value(6, false)
 	z_index = Lanes.z_for(floor_lane)
@@ -94,11 +105,14 @@ func _physics_process(delta: float) -> void:
 		# Set to kinematic mode to prevent further movement
 		freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC
 		freeze = true
+		has_landed = true
 
 func _on_body_entered(body: Node) -> void:
 	#if body is not Player:
 		#set_collision_mask_value(1, false)
 	if body is Player and not has_hit_player:
+		if has_landed:
+			return
 		if not lane_agnostic and body.current_lane != lane:
 			return
 		print("hit player")

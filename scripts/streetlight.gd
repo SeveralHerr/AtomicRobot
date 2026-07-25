@@ -69,14 +69,20 @@ func change_to_green():
 func _pick_car_lane() -> int:
 	return randi_range(Lanes.GROUND_LANE + 1, Lanes.FRONT_LANE)
 
-## Absolute world Y of a lane's floor. Note this must be floor_y(), not y_offset():
-## y_offset() is a RELATIVE offset from the walkway baseline, and using it as an
-## absolute Y put cars ~21px below the lane they were supposed to be driving in.
+## Absolute world Y to place a car at for `lane`. Note this must be an absolute lane
+## Y, not y_offset(): y_offset() is a RELATIVE offset from the walkway baseline, and
+## using it as an absolute Y put cars ~21px below the lane they were meant to drive in.
+##
+## Cars ride the PLAYER's standing line rather than the walkway floor line — car.tscn
+## has no footprint shape of its own (its only CollisionShape2D is an Area2D hitbox),
+## so its art was positioned against whatever the lane math handed it, which was the
+## player's origin. lane_stand_y() reproduces that height exactly.
 func _car_road_y(lane: int) -> float:
-	var baseline: float = player.global_position.y
-	if player != null and player.lane_baseline_y != INF:
-		baseline = player.lane_baseline_y
-	return Lanes.floor_y(baseline, lane)
+	if player == null:
+		return 0.0
+	if player.lane_floor_y == INF:
+		return player.global_position.y + Lanes.y_offset(lane)
+	return player.lane_stand_y(lane)
 
 func _on_detection_area_body_entered(body):
 	if body is Player:

@@ -11,6 +11,8 @@ extends Control
 @onready var interact_button: Button = $InteractButton/Button
 @onready var run_ui: CenterContainer = $RunButton
 @onready var run_button: Button = $RunButton/Button
+@onready var pause_ui: CenterContainer = $PauseButton
+@onready var pause_button: Button = $PauseButton/Button
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -35,6 +37,11 @@ func _ready() -> void:
 		interact_button.pressed.connect(_on_interact)
 		run_button.pressed.connect(_on_run)
 
+	# Pause button is always visible (desktop + mobile) and is intentionally not
+	# part of the hide-all-touch-buttons branch above, nor the mobile-only
+	# connect branch: it must stay wired up regardless of input mode.
+	pause_button.pressed.connect(_on_pause)
+
 func _on_jump() -> void:
 	trigger(true, "ui_accept")
 
@@ -50,6 +57,11 @@ func _on_interact() -> void:
 
 func _on_run() -> void:
 	trigger(true, "Run")
+
+func _on_pause() -> void:
+	# Pause is a toggle, not a held input, so a single "pressed" edge is enough
+	# for Input.is_action_just_pressed("pause") to pick it up next frame.
+	trigger(true, "pause")
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:

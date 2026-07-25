@@ -8,6 +8,8 @@ extends RefCounted
 ##                  python tools/devtools.py cmd teleport_player --args '{"x": 100, "y": -21}'
 ## Discover:        python tools/devtools.py list-commands
 
+const POWERUP_PICKUP: PackedScene = preload("res://scenes/powerup_pickup.tscn")
+
 var _dev: Node
 
 
@@ -17,6 +19,7 @@ func register_commands(dev: Node) -> void:
 	_dev.register_command("player_state", _cmd_player_state)
 	_dev.register_command("teleport_player", _cmd_teleport_player)
 	_dev.register_command("set_player_health", _cmd_set_player_health)
+	_dev.register_command("health_ui", _cmd_health_ui)
 	_dev.register_command("spawn_enemy", _cmd_spawn_enemy)
 	_dev.register_command("list_enemies", _cmd_list_enemies)
 	_dev.register_command("kill_enemies", _cmd_kill_enemies)
@@ -29,6 +32,14 @@ func register_commands(dev: Node) -> void:
 	_dev.register_command("teleport_enemy", _cmd_teleport_enemy)
 	_dev.register_command("set_enemy_state", _cmd_set_enemy_state)
 	_dev.register_command("debug_find_meter", _cmd_debug_find_meter)
+	_dev.register_command("lane_report", _cmd_lane_report)
+	_dev.register_command("grant_powerup", _cmd_grant_powerup)
+	_dev.register_command("clear_powerups", _cmd_clear_powerups)
+	_dev.register_command("drop_powerup", _cmd_drop_powerup)
+	_dev.register_command("powerup_state", _cmd_powerup_state)
+	_dev.register_command("score_state", _cmd_score_state)
+	_dev.register_command("set_combo", _cmd_set_combo)
+	_dev.register_command("finish_stage", _cmd_finish_stage)
 
 
 func _player() -> Node:
@@ -130,6 +141,8 @@ func _cmd_player_state(_args: Dictionary) -> Dictionary:
 		"velocity": [p.velocity.x, p.velocity.y],
 		"state": state_name,
 		"health": p.health,
+		"health_orbs": Player.orbs_for(p.health),
+		"max_health": p.max_health(),
 		"damage": p.damage,
 		"on_floor": p.is_on_floor(),
 		"facing": p.last_dir,
@@ -137,7 +150,8 @@ func _cmd_player_state(_args: Dictionary) -> Dictionary:
 		"is_dead": p.is_dead,
 		"lane": p.current_lane,
 		"is_changing_lane": p.is_changing_lane,
-		"lane_baseline_y": p.lane_baseline_y,
+		"lane_floor_y": p.lane_floor_y,
+		"foot_offset": p.foot_offset(),
 	}}
 
 
@@ -154,16 +168,51 @@ func _cmd_teleport_player(args: Dictionary) -> Dictionary:
 	return {"success": true, "message": "teleported", "data": {"position": [pos.x, pos.y]}}
 
 
-## args: {"health": int}
+## args: {"health": int} raw hit points, or {"orbs": int} whole HUD orbs (orbs wins).
 func _cmd_set_player_health(args: Dictionary) -> Dictionary:
 	var p := _player()
 	if p == null:
 		return _fail("no player in scene")
-	if not args.has("health"):
-		return _fail("missing arg: health")
-	p.health = int(args["health"])
+	if args.has("orbs"):
+		p.health = int(args["orbs"]) * Player.HITS_PER_ORB
+	elif args.has("health"):
+		p.health = int(args["health"])
+	else:
+		return _fail("missing arg: health (or orbs)")
 	p.player_health_updated.emit(p.health)
-	return {"success": true, "message": "health set", "data": {"health": p.health}}
+	return {"success": true, "message": "health set", "data": {
+		"health": p.health, "health_orbs": Player.orbs_for(p.health),
+	}}
+
+
+## What the health HUD is actually drawing right now — one entry per orb node, in
+## left-to-right order, with the damage-stage texture it currently shows. Lets a test
+## assert the rendered bar instead of trusting the health int.
+func _cmd_health_ui(_args: Dictionary) -> Dictionary:
+	var scene := _dev.get_tree().current_scene
+	if scene == null:
+		return _fail("no current scene")
+	var box := scene.get_node_or_null("UI/HealthContainer/Health/HBoxContainer")
+	if box == null:
+		return _fail("health HUD not found at UI/HealthContainer/Health/HBoxContainer (still in a menu?)")
+	var orbs: Array = []
+	var visible_orbs := 0
+	for child in box.get_children():
+		var tex: Texture2D = child.texture if child is TextureRect else null
+		if child.visible:
+			visible_orbs += 1
+		orbs.append({
+			"name": String(child.name),
+			"visible": child.visible,
+			"texture": tex.resource_path.get_file() if tex != null else "",
+		})
+	var p := _player()
+	return {"success": true, "message": "ok", "data": {
+		"orbs": orbs,
+		"visible_orbs": visible_orbs,
+		"health": p.health if p != null else -1,
+		"hits_per_orb": Player.HITS_PER_ORB,
+	}}
 
 
 ## args: {"count": int=1, "force_right": bool=false, "offset": float=50}
@@ -195,6 +244,9 @@ func _cmd_list_enemies(_args: Dictionary) -> Dictionary:
 				"position": [n.global_position.x, n.global_position.y],
 				"health": n.health,
 				"lane": n.lane,
+				"facing": n.facing,
+				"scale_x": n.scale.x,
+				"animation": n.animated_sprite_2d.animation if n.animated_sprite_2d else "",
 			})
 	return {"success": true, "message": "%d enemies" % enemies.size(), "data": {"enemies": enemies}}
 
@@ -207,6 +259,90 @@ func _cmd_kill_enemies(_args: Dictionary) -> Dictionary:
 			n.queue_free()
 			count += 1
 	return {"success": true, "message": "freed %d enemies" % count, "data": {"count": count}}
+
+
+## Depth geometry for every lane-aware body, plus the invariant that motivates it:
+## bodies settled on the same ROAD lane must have their SOLES on the same line.
+##
+## This exists because that class of bug was invisible to the harness — node-bounds
+## reports one node at a time, so a spawner-placed maid standing 7.25px lower than a
+## self-baselined one on the same lane could only be caught by eye.
+##
+## GROUND_LANE is deliberately exempt: it rides real collision, so maids hand-placed
+## on ledges and rooftops genuinely stand at different heights there (a live scene
+## shows ~175px of spread). Only lanes 1-3 share one derived virtual floor, so only
+## they can be checked. Their spread is still reported, just not failed on.
+## args: {"tolerance": float = 1.0}
+func _cmd_lane_report(args: Dictionary) -> Dictionary:
+	var tolerance := float(args.get("tolerance", 1.0))
+	var bodies := []
+	var p := _player()
+	if p != null:
+		bodies.append(_lane_row(p, "player"))
+	for n in _walk_scene():
+		if n is Enemy:
+			bodies.append(_lane_row(n, String(_dev.get_tree().current_scene.get_path_to(n))))
+
+	# Only settled bodies with a known floor can be compared — one mid-tween is
+	# between two lanes by definition, and one with no baseline hasn't landed yet.
+	var by_lane := {}
+	for row in bodies:
+		if row["changing_lane"] or not row["has_floor"]:
+			continue
+		if not by_lane.has(row["lane"]):
+			by_lane[row["lane"]] = []
+		by_lane[row["lane"]].append(row)
+
+	var violations := []
+	var spreads := {}
+	for lane in by_lane:
+		var rows: Array = by_lane[lane]
+		if rows.size() < 2:
+			continue
+		var lo := INF
+		var hi := -INF
+		for row in rows:
+			var level: float = row["foot_y"] - row["depth_offset"]
+			lo = minf(lo, level)
+			hi = maxf(hi, level)
+		spreads[lane] = hi - lo
+		# hi/lo are measured with each body's deliberate in-lane jitter removed, so
+		# this still fails on the bug it was written for (bodies whose baselines
+		# disagree) without failing on the decoration layered on top of it.
+		if lane != Lanes.GROUND_LANE and hi - lo > tolerance:
+			violations.append({"lane": lane, "spread": hi - lo, "bodies": rows.size()})
+
+	return {
+		"success": violations.is_empty(),
+		"message": "%d bodies, %d road lane(s) with mismatched foot lines" % [bodies.size(), violations.size()],
+		"data": {
+			"tolerance": tolerance,
+			"bodies": bodies,
+			"violations": violations,
+			"foot_spread_by_lane": spreads,
+		},
+	}
+
+
+## Untyped `body` so this takes both Player (current_lane, never jittered) and Enemy.
+func _lane_row(body, label: String) -> Dictionary:
+	var is_player := body is Player
+	var lane: int = body.current_lane if is_player else body.lane
+	var offset: float = body.foot_offset()
+	var has_floor := is_finite(body.lane_floor_y)
+	return {
+		"node": label,
+		"lane": lane,
+		"y": body.global_position.y,
+		"foot_offset": offset,
+		"foot_y": body.global_position.y + offset,
+		"depth_offset": 0.0 if is_player else body.lane_depth_offset,
+		"z": body.z_index,
+		"lane_floor_y": body.lane_floor_y if has_floor else 0.0,
+		"has_floor": has_floor,
+		"changing_lane": body.is_changing_lane,
+		"sorted": body.get_parent() != null and body.get_parent().name == Lanes.SORT_LAYER_NAME,
+	}
 
 
 func _cmd_level_info(_args: Dictionary) -> Dictionary:
@@ -332,8 +468,174 @@ func _cmd_debug_find_meter(args: Dictionary) -> Dictionary:
 				"coins": n.coins,
 				"velocity": [n.velocity.x, n.velocity.y],
 				"enemy_pos": [n.global_position.x, n.global_position.y],
+				# facing is +1/-1 (right/left); "facing_meter" is the assertion that
+				# matters — the maid must look at the meter she's walking to, and the
+				# sprite flip lives on the body's scale.x, not on the sprite's flip_h.
+				"facing": n.facing,
+				"scale_x": n.scale.x,
+				"sprite_flip_h": n.animated_sprite_2d.flip_h if n.animated_sprite_2d else false,
+				"animation": n.animated_sprite_2d.animation if n.animated_sprite_2d else "",
+				# null once she's parked within the face deadzone — there is no "correct"
+				# side to look at from on top of the meter, so don't report a failure.
+				"facing_meter": _facing_meter(n, st.meter),
 			}}
 	return _fail("no enemy at path %s" % want)
+
+
+## True/false when the maid is far enough from `meter` for facing to be meaningful,
+## null inside Enemy.FACE_DEADZONE (standing on it — either side is fine).
+func _facing_meter(n: Enemy, meter: Node2D) -> Variant:
+	if meter == null:
+		return null
+	var dx: float = meter.global_position.x - n.global_position.x
+	if absf(dx) < Enemy.FACE_DEADZONE:
+		return null
+	return signi(dx) == n.facing
+
+
+# --- Power-ups and scoring ---------------------------------------------------
+#
+# The generic primitives can't reach these: the buff timers live in an autoload
+# (not a scene node, so get-state can't find them), the visual proof of a buff is a
+# set of shader uniforms on a material (not a node property), and the drop table is
+# a random roll that a test has to be able to bypass entirely.
+
+
+## Start a power-up on the player without waiting for a drop.
+## args: {"id": "rage" | "overclock"} (omit for a weighted random pick)
+func _cmd_grant_powerup(args: Dictionary) -> Dictionary:
+	var id := String(args.get("id", PowerupRules.pick(randf())))
+	if not PowerupRules.has_id(id):
+		return _fail("unknown powerup id '%s' (known: %s)" % [id, ", ".join(PowerupRules.IDS)])
+	if _player() == null:
+		return _fail("no node in group 'player' (still in a menu? run: cmd start_game)")
+	PowerupSystem.grant(id)
+	return {"success": true, "message": "granted %s" % id, "data": {
+		"id": id,
+		"duration": PowerupRules.duration(id),
+		"active": PowerupSystem.active_ids(),
+	}}
+
+
+func _cmd_clear_powerups(_args: Dictionary) -> Dictionary:
+	PowerupSystem.clear_all()
+	return {"success": true, "message": "cleared", "data": {"active": PowerupSystem.active_ids()}}
+
+
+## Drop a collectable pickup near the player, bypassing the drop roll entirely — the
+## deterministic way to test collection (including the same-lane rule).
+## args: {"id": String, "lane": int = player's lane, "offset": float = 60 (px along X)}
+func _cmd_drop_powerup(args: Dictionary) -> Dictionary:
+	var p := _player()
+	if p == null:
+		return _fail("no node in group 'player' (still in a menu? run: cmd start_game)")
+	var id := String(args.get("id", PowerupRules.pick(randf())))
+	if not PowerupRules.has_id(id):
+		return _fail("unknown powerup id '%s' (known: %s)" % [id, ", ".join(PowerupRules.IDS)])
+	var scene := _dev.get_tree().current_scene
+	if scene == null:
+		return _fail("no current scene")
+	var lane := Lanes.clamp_lane(int(args.get("lane", p.current_lane)))
+	var pickup := POWERUP_PICKUP.instantiate()
+	pickup.powerup_id = id
+	pickup.lane = lane
+	scene.add_child(pickup)
+	# Same floor-line derivation as Utils.drop_powerup, so a devtools-placed pickup
+	# hovers at exactly the height a real drop would.
+	var floor_line: float = p.global_position.y + p.foot_offset()
+	if is_finite(p.lane_floor_y):
+		floor_line = Lanes.floor_y(p.lane_floor_y, lane)
+	pickup.global_position = Vector2(
+		p.global_position.x + float(args.get("offset", 60.0)),
+		floor_line - PowerupPickup.HOVER_HEIGHT)
+	return {"success": true, "message": "dropped %s on lane %d" % [id, lane], "data": {
+		"id": id,
+		"lane": lane,
+		"position": [pickup.global_position.x, pickup.global_position.y],
+		"player_lane": p.current_lane,
+		"collectable_now": p.current_lane == lane,
+	}}
+
+
+## Everything a test needs to assert that a buff is actually in effect: the stat
+## multipliers ON the player, and the shader uniforms actually written to the sprite
+## material (the only proof the visual effect is live, since it is not a node property).
+func _cmd_powerup_state(_args: Dictionary) -> Dictionary:
+	var p := _player()
+	if p == null:
+		return _fail("no node in group 'player' (still in a menu? run: cmd start_game)")
+	var active := []
+	for id in PowerupSystem.active_ids():
+		active.append({
+			"id": id,
+			"remaining": PowerupSystem.remaining(id),
+			"duration": PowerupRules.duration(id),
+			"strength": PowerupRules.ramp_strength(PowerupSystem.remaining(id), PowerupRules.duration(id)),
+		})
+	var shader := {}
+	var mat := p.default_sprite.material as ShaderMaterial
+	if mat != null:
+		shader["shader_path"] = mat.shader.resource_path if mat.shader else ""
+		for key in ["buff_value", "buff_pulse_hz", "buff_pixel_size", "buff_dither", "flash_value"]:
+			shader[key] = mat.get_shader_parameter(key)
+		var c = mat.get_shader_parameter("buff_color")
+		shader["buff_color"] = [c.r, c.g, c.b] if c is Color else null
+	var pickups := 0
+	for n in _dev.get_tree().get_nodes_in_group("powerup_pickups"):
+		if is_instance_valid(n):
+			pickups += 1
+	return {"success": true, "message": "%d active" % active.size(), "data": {
+		"active": active,
+		"base_damage": p.damage,
+		"effective_damage": p.get_damage(),
+		"damage_multiplier": p.damage_multiplier,
+		"speed_multiplier": p.speed_multiplier,
+		"effective_speed": p.get_speed(),
+		"sprite_speed_scale": p.default_sprite.speed_scale,
+		"kills_since_drop": PowerupSystem.kills_since_drop(),
+		"pity_at": PowerupRules.PITY_KILLS,
+		"pickups_in_scene": pickups,
+		"shader": shader,
+	}}
+
+
+func _cmd_score_state(_args: Dictionary) -> Dictionary:
+	var hud := _dev.get_tree().current_scene.find_child("ScoreUI", true, false) if _dev.get_tree().current_scene else null
+	return {"success": true, "message": "ok", "data": {
+		"running": ScoreSystem.running,
+		"scene": ScoreSystem.current_scene_path,
+		"scene_is_scored": ScoreRules.is_scored_scene(ScoreSystem.current_scene_path),
+		"score": ScoreSystem.score,
+		"combo": ScoreSystem.combo,
+		"multiplier": ScoreSystem.multiplier(),
+		"combo_fraction": ScoreSystem.combo_fraction(),
+		"stage_seconds": ScoreSystem.stage_seconds,
+		"damage_taken": ScoreSystem.damage_taken,
+		"best": ScoreSystem.best_for(ScoreSystem.current_scene_path),
+		"best_rank": ScoreSystem.best_rank_for(ScoreSystem.current_scene_path),
+		"hud_present": hud != null,
+	}}
+
+
+## Force the combo count so a multiplier tier can be asserted without landing 36
+## hits. args: {"combo": int}
+func _cmd_set_combo(args: Dictionary) -> Dictionary:
+	if not args.has("combo"):
+		return _fail("missing arg: combo")
+	ScoreSystem.combo = maxi(0, int(args["combo"]))
+	ScoreSystem.combo_changed.emit(ScoreSystem.combo, ScoreSystem.multiplier())
+	return {"success": true, "message": "combo set", "data": {
+		"combo": ScoreSystem.combo,
+		"multiplier": ScoreSystem.multiplier(),
+	}}
+
+
+## End the stage now and return the rank breakdown, without killing the boss.
+func _cmd_finish_stage(_args: Dictionary) -> Dictionary:
+	if not ScoreSystem.running:
+		return _fail("no stage running (scene '%s' is not scored)" % ScoreSystem.current_scene_path)
+	var result := ScoreSystem.finish_stage()
+	return {"success": true, "message": "rank %s" % result.get("rank", "?"), "data": result}
 
 
 func _walk_scene() -> Array:

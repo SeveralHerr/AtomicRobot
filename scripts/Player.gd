@@ -37,10 +37,25 @@ const RunState = preload("res://scripts/states/run_state.gd")
 
 var jump_fx_offset: float = 0
 var is_dead: bool = false
-var health: int = 3
+## Hits one HUD orb absorbs before it pops. `health` below is raw hit points, NOT
+## orbs — the HUD (scripts/health_container.gd) renders ceil(health / HITS_PER_ORB)
+## orbs and swaps each orb through three damage-stage textures. Character configs
+## still declare their starting health in ORBS; _init() converts.
+const HITS_PER_ORB: int = 3
+## Most orbs a pickup can stack to (replaces the old flat `min(health, 10)` cap).
+const MAX_ORBS: int = 10
+var health: int = HITS_PER_ORB
 var damage: int = 1
 ## Debug-menu cheat: invincible + one-hit-kill. See scripts/autoload/debug_menu.gd.
 var god_mode: bool = false
+
+# --- POWER-UPS (timed buffs, see scripts/autoload/powerup_system.gd) ---
+# Written ONLY by PowerupSystem; read through get_damage()/get_speed(). Kept as
+# separate multipliers rather than by mutating `damage`/`SPEED` in place because
+# those two hold character-config baselines that a buff expiring at an awkward
+# moment (mid scene-change, mid death) must never be able to corrupt.
+var damage_multiplier: float = 1.0
+var speed_multiplier: float = 1.0
 var is_event_active: bool = false
 var SPEED = 170.0
 const JUMP_VELOCITY = -1250.0
@@ -61,8 +76,13 @@ var last_dir = 1
 
 # --- LANE SYSTEM (virtual depth, see docs/LANE_REFACTOR.md) ---
 var current_lane: int = Lanes.GROUND_LANE
-# Node Y when physically grounded on the walkway (ground lane); INF until captured.
-var lane_baseline_y: float = INF
+## World Y of the walkway FLOOR SURFACE (where soles rest) — not this node's Y.
+## Shared by every entity, so it can be handed to enemies/props; INF until captured.
+var lane_floor_y: float = INF
+# Distance from this node's origin down to its soles. Measured lazily: the
+# collision shape isn't reachable until the instanced scene has its children.
+var _foot_offset: float = 0.0
+var _foot_offset_measured: bool = false
 var is_changing_lane: bool = false
 var _lane_tween: Tween
 ## Lane the player is snapped into as soon as the walkway baseline is known. Only
@@ -80,16 +100,55 @@ func take_damage(amount: int) -> void:
 		return
 	health -= amount
 	print(health)
-	
+
+	# Getting hit is what breaks a combo — this is the one funnel every damage
+	# source already goes through, so nothing can damage the player without the
+	# score system hearing about it.
+	ScoreSystem.register_player_damaged()
+
 	player_health_updated.emit(health)
-	
+
 	if health <= 0:
 		death()
 
+
+## Damage this attack actually deals, after any active power-up. Always at least 1:
+## a buff must never be able to round a hit down to a no-op.
+func get_damage() -> int:
+	return maxi(1, roundi(float(damage) * damage_multiplier))
+
+
+## Single funnel for "the player connected with an enemy" — melee (AttackState) and
+## both projectile characters route through here, so the combo meter cannot drift
+## out of sync with the damage that was dealt.
+func land_hit(target: Node) -> void:
+	if target == null or not is_instance_valid(target):
+		return
+	target.receive_hit(get_damage())
+	ScoreSystem.register_hit()
+
+## Raw hit points at full health. Static so callers (debug menu, devtools) can ask
+## without hardcoding the cap.
+static func max_health() -> int:
+	return MAX_ORBS * HITS_PER_ORB
+
+
+## How many orbs `hp` raw hit points fill, rounding up — a partly-chewed orb still
+## shows on the HUD. 0 hp is 0 orbs, which is death.
+static func orbs_for(hp: int) -> int:
+	return int(ceil(float(maxi(hp, 0)) / float(HITS_PER_ORB)))
+
+
+## Hits left in orb `index` (0-based, left to right): HITS_PER_ORB for an untouched
+## orb, 0 once it is spent. This is what picks the orb's damage-stage texture.
+static func orb_hits_left(index: int, hp: int) -> int:
+	return clampi(maxi(hp, 0) - index * HITS_PER_ORB, 0, HITS_PER_ORB)
+
+
+## `amount` is in ORBS, not raw hits — an atomic heart restores a whole orb.
 func add_heart(amount: int) -> void:
-	health += amount
-	health = min(health, 10)  # Cap at 10 hearts for now
-	print("Healed! Current health: ", health)
+	health = mini(health + amount * HITS_PER_ORB, max_health())
+	print("Healed! Current health: ", health, " (", orbs_for(health), " orbs)")
 	pickup_audio.play()
 	player_health_updated.emit(health)
 
@@ -104,7 +163,8 @@ var h
 
 func _init() -> void:
 	var current_character = Globals.get_current_character()
-	health = current_character.get_starting_health()
+	# Character configs are authored in orbs; health is carried in hit points.
+	health = current_character.get_starting_health() * HITS_PER_ORB
 	damage = current_character.get_starting_damage()
 
 func _ready() -> void:
@@ -122,6 +182,11 @@ func _ready() -> void:
 	
 	state_machine.change_state("IdleState")
 	z_index = Lanes.z_for(current_lane)
+	# Draw inside the shared Y-sort container so the player interleaves correctly with
+	# the enemies jittered around their lane line. No jitter of its own — the player's
+	# depth is driven by input, not decoration. Deferred: reparenting inside _ready
+	# trips "parent node is busy setting up children".
+	Lanes.join_sort_layer.call_deferred(self)
 	jumping_streak_sprite.hide()
 	jump_fx_offset = jump_fx.position.y
 
@@ -132,6 +197,11 @@ func _ready() -> void:
 	hurt_audio.stream = current_character.get_hit_sound()
 	attack_audio_player.stream = current_character.get_attack_sound()
 	land_audio.stream = current_character.get_land_sound()
+	# Takes over DefaultSprite's material shader so power-ups have buff_* uniforms to
+	# drive. Done from here rather than in the scene files because the player node is
+	# inlined (with its own embedded copy of the shader) into player.tscn, main.tscn
+	# AND boss_room.tscn — one runtime install covers all three and any future copy.
+	PowerupSystem.attach(self)
 	Globals.event.connect(_event_started)
 	
 
@@ -180,18 +250,41 @@ func _physics_process(delta: float) -> void:
 # --- Lane mechanics -------------------------------------------------------
 
 func lanes_active() -> bool:
-	return lane_baseline_y != INF and Lanes.scene_has_lanes(get_tree().current_scene.scene_file_path if get_tree().current_scene else "")
+	return lane_floor_y != INF and Lanes.scene_has_lanes(get_tree().current_scene.scene_file_path if get_tree().current_scene else "")
+
+## Distance from this node's origin down to its soles — see Lanes.measure_foot_offset.
+func foot_offset() -> float:
+	if not _foot_offset_measured:
+		_foot_offset = Lanes.measure_foot_offset(self)
+		_foot_offset_measured = true
+	return _foot_offset
+
+## World Y this node's origin sits at when standing on `lane`. Props authored
+## against the player's standing line (cars, resting coins) read this rather than
+## the raw floor line, so they keep the height they were tuned at.
+func lane_stand_y(lane: int) -> float:
+	return Lanes.stand_y(lane_floor_y, lane, foot_offset())
+
+## Keep the draw z in step with where the player actually stands, so same-lane enemies
+## jittered nearer the camera correctly draw over the player. See Lanes.depth_z for why
+## this can't be left to Y-sorting.
+func _refresh_depth_z() -> void:
+	var z := Lanes.depth_z(current_lane, lane_stand_y(current_lane) + foot_offset(), lane_floor_y)
+	if z != z_index:
+		z_index = z
 
 func _update_lane_floor() -> void:
+	_refresh_depth_z()
 	# The ground lane rides real collision; capture its walkway line as the baseline
-	# the virtual road-lane floors are measured from.
+	# the virtual road-lane floors are measured from. Stored as the FLOOR (soles),
+	# not this node's Y, so enemies with different collision boxes can reuse it.
 	if is_on_floor() and current_lane == Lanes.GROUND_LANE and not is_changing_lane:
-		lane_baseline_y = global_position.y
+		lane_floor_y = global_position.y + foot_offset()
 		_apply_spawn_lane()
 
 	# Road lanes have no physical floor: snap onto the lane's virtual floor line.
 	if lanes_active() and current_lane != Lanes.GROUND_LANE and not is_changing_lane:
-		var fy := Lanes.floor_y(lane_baseline_y, current_lane)
+		var fy := lane_stand_y(current_lane)
 		if velocity.y >= 0 and global_position.y >= fy:
 			global_position.y = fy
 			velocity.y = 0.0
@@ -204,14 +297,14 @@ func _apply_spawn_lane() -> void:
 	_spawn_lane_applied = true
 	var target := Lanes.clamp_lane(spawn_lane)
 	_set_ground_collision(false)
-	global_position.y = Lanes.floor_y(lane_baseline_y, target)
+	global_position.y = lane_stand_y(target)
 	current_lane = target
-	z_index = Lanes.z_for(target)
+	_refresh_depth_z()
 
 func _on_virtual_floor() -> bool:
 	if not lanes_active() or current_lane == Lanes.GROUND_LANE or is_changing_lane:
 		return false
-	return velocity.y >= 0 and global_position.y >= Lanes.floor_y(lane_baseline_y, current_lane) - 0.5
+	return velocity.y >= 0 and global_position.y >= lane_stand_y(current_lane) - 0.5
 
 ## The walkway tiles' collision boxes occupy the road strip below them, so bodies
 ## on road lanes must ignore Ground(2)/Meter(4)/Platforms(6); walls and cars stay on.
@@ -277,9 +370,10 @@ func _start_lane_change(target: int) -> void:
 	if _lane_tween:
 		_lane_tween.kill()
 	_lane_tween = create_tween()
-	_lane_tween.tween_property(self, "global_position:y", Lanes.floor_y(lane_baseline_y, target), Lanes.CHANGE_DURATION)
+	_lane_tween.tween_property(self, "global_position:y", lane_stand_y(target), Lanes.CHANGE_DURATION)
 	_lane_tween.finished.connect(func() -> void:
 		current_lane = target
+		_refresh_depth_z()
 		if target == Lanes.GROUND_LANE:
 			_set_ground_collision(true)
 		is_changing_lane = false)
@@ -297,7 +391,7 @@ func can_jump() -> bool:
 	return coyote_timer > 0 or is_grounded()
 
 func get_speed() -> float:
-	return SPEED + boost_speed
+	return (SPEED + boost_speed) * speed_multiplier
 	
 func _process(delta: float) -> void:
 	state_machine.update(delta)
@@ -366,6 +460,8 @@ func receive_hit(source_position: Vector2, damage: int, knockback_strength: floa
 	take_damage(damage)
 	
 func death() -> void:
+	# Buffs do not survive the run that earned them.
+	PowerupSystem.clear_all()
 	state_machine.change_state("DeadState")
 
 

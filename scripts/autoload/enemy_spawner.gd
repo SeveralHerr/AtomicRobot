@@ -23,12 +23,14 @@ static func spawn_enemy(parent: Node2D, player: Node2D, viewport_size: Vector2, 
 
 	# Spawn on a weighted random lane (biased toward the player's) for TMNT-style
 	# depth pressure; _ready applies starting_lane + collision/z. The player's
-	# baseline (physical walkway Y) derives every lane's floor.
-	if player is Player and player.lane_baseline_y != INF:
+	# baseline is the walkway FLOOR line, shared by every body, so handing it
+	# straight over is safe — the enemy converts it with its own foot offset.
+	if player is Player and player.lane_floor_y != INF:
 		var lane := _pick_spawn_lane(player.current_lane)
 		enemy.starting_lane = lane
-		enemy.lane_baseline_y = player.lane_baseline_y
-		enemy.global_position = Vector2(spawn_x, Lanes.floor_y(player.lane_baseline_y, lane))
+		enemy.lane_floor_y = player.lane_floor_y
+		enemy.global_position = Vector2(
+			spawn_x, Lanes.stand_y(player.lane_floor_y, lane, Lanes.measure_foot_offset(enemy)))
 	else:
 		enemy.global_position = Vector2(spawn_x, player.position.y)
 	return enemy
@@ -44,9 +46,9 @@ static func spawn_enemy_at(parent: Node, player: Node2D, world_x: float, lane: i
 	var enemy = (METER_MAID_MELEE if melee else METER_MAID).instantiate()
 	var use_lane := Lanes.clamp_lane(lane)
 	var y: float = player.position.y
-	if player is Player and player.lane_baseline_y != INF:
-		enemy.lane_baseline_y = player.lane_baseline_y
-		y = Lanes.floor_y(player.lane_baseline_y, use_lane)
+	if player is Player and player.lane_floor_y != INF:
+		enemy.lane_floor_y = player.lane_floor_y
+		y = Lanes.stand_y(player.lane_floor_y, use_lane, Lanes.measure_foot_offset(enemy))
 	else:
 		# No walkway baseline captured yet — the virtual floors are unknown, so the
 		# only safe place to stand is the real one.
