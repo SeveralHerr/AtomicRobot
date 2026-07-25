@@ -19,6 +19,7 @@ func register_commands(dev: Node) -> void:
 	_dev.register_command("player_state", _cmd_player_state)
 	_dev.register_command("teleport_player", _cmd_teleport_player)
 	_dev.register_command("set_player_health", _cmd_set_player_health)
+	_dev.register_command("health_ui", _cmd_health_ui)
 	_dev.register_command("spawn_enemy", _cmd_spawn_enemy)
 	_dev.register_command("list_enemies", _cmd_list_enemies)
 	_dev.register_command("kill_enemies", _cmd_kill_enemies)
@@ -140,6 +141,8 @@ func _cmd_player_state(_args: Dictionary) -> Dictionary:
 		"velocity": [p.velocity.x, p.velocity.y],
 		"state": state_name,
 		"health": p.health,
+		"health_orbs": Player.orbs_for(p.health),
+		"max_health": p.max_health(),
 		"damage": p.damage,
 		"on_floor": p.is_on_floor(),
 		"facing": p.last_dir,
@@ -165,16 +168,51 @@ func _cmd_teleport_player(args: Dictionary) -> Dictionary:
 	return {"success": true, "message": "teleported", "data": {"position": [pos.x, pos.y]}}
 
 
-## args: {"health": int}
+## args: {"health": int} raw hit points, or {"orbs": int} whole HUD orbs (orbs wins).
 func _cmd_set_player_health(args: Dictionary) -> Dictionary:
 	var p := _player()
 	if p == null:
 		return _fail("no player in scene")
-	if not args.has("health"):
-		return _fail("missing arg: health")
-	p.health = int(args["health"])
+	if args.has("orbs"):
+		p.health = int(args["orbs"]) * Player.HITS_PER_ORB
+	elif args.has("health"):
+		p.health = int(args["health"])
+	else:
+		return _fail("missing arg: health (or orbs)")
 	p.player_health_updated.emit(p.health)
-	return {"success": true, "message": "health set", "data": {"health": p.health}}
+	return {"success": true, "message": "health set", "data": {
+		"health": p.health, "health_orbs": Player.orbs_for(p.health),
+	}}
+
+
+## What the health HUD is actually drawing right now — one entry per orb node, in
+## left-to-right order, with the damage-stage texture it currently shows. Lets a test
+## assert the rendered bar instead of trusting the health int.
+func _cmd_health_ui(_args: Dictionary) -> Dictionary:
+	var scene := _dev.get_tree().current_scene
+	if scene == null:
+		return _fail("no current scene")
+	var box := scene.get_node_or_null("UI/HealthContainer/Health/HBoxContainer")
+	if box == null:
+		return _fail("health HUD not found at UI/HealthContainer/Health/HBoxContainer (still in a menu?)")
+	var orbs: Array = []
+	var visible_orbs := 0
+	for child in box.get_children():
+		var tex: Texture2D = child.texture if child is TextureRect else null
+		if child.visible:
+			visible_orbs += 1
+		orbs.append({
+			"name": String(child.name),
+			"visible": child.visible,
+			"texture": tex.resource_path.get_file() if tex != null else "",
+		})
+	var p := _player()
+	return {"success": true, "message": "ok", "data": {
+		"orbs": orbs,
+		"visible_orbs": visible_orbs,
+		"health": p.health if p != null else -1,
+		"hits_per_orb": Player.HITS_PER_ORB,
+	}}
 
 
 ## args: {"count": int=1, "force_right": bool=false, "offset": float=50}

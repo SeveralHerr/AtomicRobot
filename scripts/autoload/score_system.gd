@@ -194,11 +194,14 @@ func finish_stage() -> Dictionary:
 		return {}
 	_finished = true
 	running = false
-	var health := 0
+	# Scored in ORBS, not raw hit points: the player is rewarded for the health bar
+	# they can see, and it keeps POINTS_PER_HEALTH_KEPT * max health under
+	# PERFECT_BONUS (the invariant test_score_rules.gd asserts).
+	var orbs_left := 0
 	var player := get_tree().get_first_node_in_group("player") as Player
 	if player != null:
-		health = maxi(0, player.health)
-	var result := ScoreRules.summarise(score, stage_seconds, damage_taken, health)
+		orbs_left = Player.orbs_for(player.health)
+	var result := ScoreRules.summarise(score, stage_seconds, damage_taken, orbs_left)
 	var previous := best_for(current_scene_path)
 	var is_new_best: bool = int(result["total"]) > previous
 	result["scene"] = current_scene_path

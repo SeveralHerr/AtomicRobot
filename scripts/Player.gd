@@ -37,7 +37,14 @@ const RunState = preload("res://scripts/states/run_state.gd")
 
 var jump_fx_offset: float = 0
 var is_dead: bool = false
-var health: int = 3
+## Hits one HUD orb absorbs before it pops. `health` below is raw hit points, NOT
+## orbs — the HUD (scripts/health_container.gd) renders ceil(health / HITS_PER_ORB)
+## orbs and swaps each orb through three damage-stage textures. Character configs
+## still declare their starting health in ORBS; _init() converts.
+const HITS_PER_ORB: int = 3
+## Most orbs a pickup can stack to (replaces the old flat `min(health, 10)` cap).
+const MAX_ORBS: int = 10
+var health: int = HITS_PER_ORB
 var damage: int = 1
 ## Debug-menu cheat: invincible + one-hit-kill. See scripts/autoload/debug_menu.gd.
 var god_mode: bool = false
@@ -120,10 +127,28 @@ func land_hit(target: Node) -> void:
 	target.receive_hit(get_damage())
 	ScoreSystem.register_hit()
 
+## Raw hit points at full health. Static so callers (debug menu, devtools) can ask
+## without hardcoding the cap.
+static func max_health() -> int:
+	return MAX_ORBS * HITS_PER_ORB
+
+
+## How many orbs `hp` raw hit points fill, rounding up — a partly-chewed orb still
+## shows on the HUD. 0 hp is 0 orbs, which is death.
+static func orbs_for(hp: int) -> int:
+	return int(ceil(float(maxi(hp, 0)) / float(HITS_PER_ORB)))
+
+
+## Hits left in orb `index` (0-based, left to right): HITS_PER_ORB for an untouched
+## orb, 0 once it is spent. This is what picks the orb's damage-stage texture.
+static func orb_hits_left(index: int, hp: int) -> int:
+	return clampi(maxi(hp, 0) - index * HITS_PER_ORB, 0, HITS_PER_ORB)
+
+
+## `amount` is in ORBS, not raw hits — an atomic heart restores a whole orb.
 func add_heart(amount: int) -> void:
-	health += amount
-	health = min(health, 10)  # Cap at 10 hearts for now
-	print("Healed! Current health: ", health)
+	health = mini(health + amount * HITS_PER_ORB, max_health())
+	print("Healed! Current health: ", health, " (", orbs_for(health), " orbs)")
 	pickup_audio.play()
 	player_health_updated.emit(health)
 
@@ -138,7 +163,8 @@ var h
 
 func _init() -> void:
 	var current_character = Globals.get_current_character()
-	health = current_character.get_starting_health()
+	# Character configs are authored in orbs; health is carried in hit points.
+	health = current_character.get_starting_health() * HITS_PER_ORB
 	damage = current_character.get_starting_damage()
 
 func _ready() -> void:

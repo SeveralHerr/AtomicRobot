@@ -153,7 +153,7 @@ func _toggle_god_mode() -> void:
 	if player.god_mode:
 		_saved_damage = player.damage
 		player.damage = 999
-		player.health = max(player.health, 10)
+		player.health = maxi(player.health, player.max_health())
 		player.player_health_updated.emit(player.health)
 	elif _saved_damage >= 0:
 		player.damage = _saved_damage
@@ -164,7 +164,7 @@ func _full_heal() -> void:
 	var player := _player()
 	if player == null:
 		return
-	player.health = 10
+	player.health = player.max_health()
 	player.player_health_updated.emit(player.health)
 
 
