@@ -111,8 +111,32 @@ Variants (each registers its own states in `_ready`):
 - **MeterMaid** (`meter_maid.gd`): ranged coin thrower; Chase/Attack/FindMeter/Dead. Coins are ammo — refills at parking meters (`FindMeterState`, `Globals.nearest_meter`).
 - **MeterMaidMelee** (`meter_maid_melee.gd`): speed 150, cooldown 1; Area2D overlap melee.
 - **PlatformMeterMaid** (`meter_maid_platform_patrol.gd`): edge-aware patrol via down raycasts.
-- **MeterMaidWindow** (`meter_maid_window.gd`): stationary, activates on line-of-sight.
+- **MeterMaidWindow** (`meter_maid_window.gd`): stationary; Hold/Attack/Dead. Overrides
+  `_physics_process` (no gravity/move_and_slide) but **must still step the state machine**.
 - **FinalBoss** (`city_council_boss.gd`): briefcase spirals; emits `boss_death`.
+
+### Enemy state contract (important invariants)
+
+- `EnemyStateMachine.change_state` **rejects unknown names and same-state re-entry**.
+  Re-entry used to restart the attack animation every frame, so a swing could never
+  reach its own release frame. States that need to repeat an action expose a re-arm
+  path (`AttackPlayerState._begin_swing`) rather than re-entering themselves.
+- `AttackPlayerState` is the shared swing base (melee + boss subclass it). It guards
+  every deferred step with a `_generation` counter — a stale `await` from a previous
+  swing resuming mid-swing was the "enemy randomly stops attacking" bug — and has a
+  3s watchdog so a swing can never park the enemy permanently.
+- Chase **movement is gated on distance, not the sight ray**; line of sight only gates
+  *attacking* and the PatrolState fallback. The ray is one line and used to freeze
+  enemies solid whenever it missed.
+- `Enemy.line_of_sight.max_range` is raised to `detection_range` in `_ready`. The
+  authored ray length (450) was shorter than the spawn distance (~477), so freshly
+  spawned maids were out of sight range from birth.
+- `Enemy.can_attack()` delegates the lane rule to `Lanes.can_engage`, which exempts
+  `lane_locked` enemies (window/platform maids fire lane-agnostic coins from above).
+- `is_player_in_attack_range` is recomputed from the live overlap set every physics
+  tick, not latched from `body_entered`/`body_exited`.
+- `Enemy._resolve_player()` re-resolves lazily; enemies must never assume the player
+  existed at their `_ready`.
 
 Spawning: hand-placed instances in main.tscn + `EnemyManager` (`enemy_manager.gd`,
 timed random waves, gated by `player.is_near_ground()`) + `EnemyEvent` Area2D triggers
@@ -137,9 +161,34 @@ Robot (bullet) and Cass (flipflop).
 ```
 (bit values in parens). Player mask 122 = Ground+Meter+car+Platforms+wall.
 
+## Enemy behaviour sandboxes (`test/scenes/`)
+
+Nine one-scene-per-scenario harnesses for enemy AI — open any of them and press F6.
+Each builds its own ground, player, props and enemies at runtime (`enemy_sandbox.gd`),
+so none of them depend on main.tscn's tilemaps or level layout. `test/scenes/` is
+registered with `Lanes.scene_has_lanes()`, so lane combat behaves as it does in the
+street level. In-scene keys: `R` reset · `K` clear · `C` car · `Space` wave · `H` hide HUD.
+
+`melee_cluster` · `ranged_cluster` · `mixed_cluster` · `coin_refill` · `window_maids`
+· `no_line_of_sight` · `spawn_event` · `car_vs_crowd` · `platform_patrol`
+
+They double as automated regression tests. `test/scenes/sandbox_selftest.gd` samples
+every physics frame and fails on an inert enemy, a swing that never closes, or an
+enemy walking backwards — coverage the synchronous unit runner structurally cannot
+provide. Run them all with:
+
+```bash
+python tools/run_sandbox_selftests.py          # ~100s, exit 0 only if all pass
+python tools/run_sandbox_selftests.py melee    # name-substring filter
+```
+
 ## Known quirks
 
 - KnockbackState method-name bug (above) — knockback ends almost instantly.
 - `states/static_attack_state.gd` references members that don't exist on `Enemy` — legacy/dead.
 - `Player.JUMP_VELOCITY` and `FRICTION` unused; `update_facing_direction()` unused.
+- `Enemy.range_timer` (`RangeTimer`) is never started — dead.
+- `State`/`EnemyState` extend `Node` but are never added to the tree, so every state
+  object is an orphan node. A live main.tscn reports ~50 orphans as a matter of course,
+  which permanently fails the harness's `orphan_max: 0` threshold.
 - README.md tracks user-facing bugs (highlighting, collision, health).

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=4]
+
+[ext_resource type="Script" uid="uid://cifukiecv00io" path="res://test/scenes/enemy_sandbox.gd" id="1_sandbox"]
+
+; Five coin throwers plus a meter, to watch throw -> chase -> refill.
+; Open and press F6. All arena geometry is built at runtime by the script.
+
+[node name="RangedCluster" type="Node2D"]
+script = ExtResource("1_sandbox")
+scenario = 1
