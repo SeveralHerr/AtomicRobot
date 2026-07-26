@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Atomic Robot"
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="uid://cpy1hjrs74exh"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -23,8 +23,6 @@ config/icon="res://icon.svg"
 
 Globals="*res://scripts/autoload/globals.gd"
 Utils="*res://scripts/autoload/utils.gd"
-PowerupSystem="*res://scripts/autoload/powerup_system.gd"
-ScoreSystem="*res://scripts/autoload/score_system.gd"
 ChatBubble="*res://scripts/autoload/chat_bubble.gd"
 ScreenShake="*res://scripts/autoload/screenshake.gd"
 AudioManager="*res://scripts/autoload/audio_manager.gd"
@@ -34,6 +32,8 @@ DevTools="*res://addons/godot_selftest/dev_tools.gd"
 CRTOverlay="*res://scripts/autoload/crt_overlay.gd"
 DebugMenu="*res://scripts/autoload/debug_menu.gd"
 PauseMenu="*res://scenes/pause_menu.tscn"
+PowerupSystem="*res://scripts/autoload/powerup_system.gd"
+ScoreSystem="*res://scripts/autoload/score_system.gd"
 
 [debug]
 
