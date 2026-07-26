@@ -42,7 +42,7 @@ func trigger() -> void:
 ## doing that, and overriding it wholesale is why the attack state's update()
 ## never ran and every transition out of a swing was dead code.
 func _physics_process(delta: float) -> void:
-	if is_dead():
+	if is_dead:
 		return
 	_resolve_player()
 	_refresh_player_in_attack_range()
@@ -50,9 +50,6 @@ func _physics_process(delta: float) -> void:
 	if not is_activated:
 		return
 	enemy_state_machine.update(delta)
-
-func is_dead() -> bool:
-	return enemy_state_machine.current_state is DeadEnemyState
 
 func _check_activation() -> void:
 	if visible and not is_player_in_line_of_sight() and not can_see_player():

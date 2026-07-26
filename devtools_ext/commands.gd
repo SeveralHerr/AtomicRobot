@@ -99,7 +99,11 @@ func _cmd_list_encounters(_args: Dictionary) -> Dictionary:
 				"door_x": n.door_mouth.global_position.x,
 				"fired": n._fired,
 				"active": n._active,
-				"alive_spawned": n._spawned.filter(func(e): return is_instance_valid(e)).size(),
+				# Same "alive" definition the encounter itself ends on — corpses
+				# still in their death animation do not count. See Enemy.is_dead.
+				"alive_spawned": n._spawned.filter(n._is_alive).size(),
+				"corpses_spawned": n._spawned.filter(func(e):
+					return is_instance_valid(e) and e is Enemy and e.is_dead).size(),
 				"enemy_count": n.enemy_count,
 				"lock_arena": n.lock_arena,
 				"barriers_up": not n.left_wall.disabled,

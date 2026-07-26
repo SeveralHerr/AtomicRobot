@@ -28,6 +28,18 @@ var enemy_state_machine: EnemyStateMachine
 
 var is_player_in_attack_range: bool = false
 
+## True from the first frame of die() — i.e. the moment the kill lands, not when the
+## corpse finally frees itself ~3.5s later after the death clip and the blink-out.
+##
+## Everything that asks "is this enemy still in the fight?" must read this rather than
+## `current_state is DeadEnemyState` or `is_instance_valid()`:
+##   * the state check misses enemies whose die() is driven directly (and the ~0.2s
+##     randomised gap in receive_hit before the state actually flips), and
+##   * an instance-validity check counts the corpse as a live enemy for the whole
+##     death animation — which is what used to make wave events hang after the last
+##     kill and made the living queue up around a body instead of walking over it.
+var is_dead: bool = false
+
 # Stats
 var health: int = 2
 var move_speed: float = 100.0
@@ -114,7 +126,7 @@ func _ready() -> void:
 		queue_free()
 
 	Globals.player_death.connect(func():
-		if not enemy_state_machine.current_state is DeadEnemyState:
+		if not is_dead:
 			animated_sprite_2d.play("idle")
 		set_physics_process(false)
 		set_process(false))
@@ -351,7 +363,7 @@ func _set_ground_collision(enabled: bool) -> void:
 ## they don't sit stacked on top of each other (no physical collision resolves this
 ## since enemies deliberately don't collide with their own layer).
 func _apply_enemy_separation(delta: float) -> void:
-	if is_changing_lane or enemy_state_machine.current_state is DeadEnemyState:
+	if is_changing_lane or is_dead:
 		return
 	var push := 0.0
 	for node in get_tree().get_nodes_in_group("enemies"):
@@ -360,7 +372,9 @@ func _apply_enemy_separation(delta: float) -> void:
 		var other: Enemy = node
 		if other.lane != lane or other.is_changing_lane:
 			continue
-		if other.enemy_state_machine.current_state is DeadEnemyState:
+		# Corpses take up no space: a dying maid is on the floor for several seconds
+		# and the living should be able to close over her, not shuffle around her.
+		if other.is_dead:
 			continue
 		var dx: float = global_position.x - other.global_position.x
 		var dist := absf(dx)
@@ -416,6 +430,11 @@ func _lane_is_claimed(check_lane: int) -> bool:
 	for other in get_tree().get_nodes_in_group("enemies"):
 		if other == self or not is_instance_valid(other):
 			continue
+		# A corpse holds no claim — otherwise the rest of the squad keeps queueing in
+		# the neighbouring lanes for the whole death animation instead of stepping
+		# into the slot that just opened up.
+		if other.is_dead:
+			continue
 		if other.lane_locked or other.lane != check_lane or other.is_changing_lane:
 			continue
 		if absf(other.global_position.x - player.global_position.x) < attack_range:
@@ -449,6 +468,12 @@ func _start_lane_change(target: int, duration: float = LANE_CHANGE_DURATION) -> 
 		is_changing_lane = false)
 
 func die() -> void:
+	# Re-entrant kills (a second hit landing inside receive_hit's randomised delay,
+	# or a hazard finishing off an already-dying maid) would otherwise double-count
+	# the kill, re-roll the drop table and restart the fade.
+	if is_dead:
+		return
+	is_dead = true
 	set_collision_mask_value(3, false )
 	set_collision_mask_value(10, false )
 	attack_timer.stop()
@@ -505,6 +530,9 @@ func should_turn() -> bool:
 
 
 func receive_hit(damage: int, knockback_strength: float = 200.0) -> void:
+	# A corpse doesn't flinch, bleed health or get knocked around.
+	if is_dead:
+		return
 	_play_hit_effects()
 	_apply_damage(damage)
 	_apply_knockback(knockback_strength)
