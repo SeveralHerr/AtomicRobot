@@ -3,3 +3,7 @@
 *.import
 .import/
 .godot/imported/
+
+# Python bytecode from tools/ helpers
+__pycache__/
+*.pyc
