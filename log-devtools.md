@@ -95,3 +95,11 @@ the single source of truth.)
 - Proof the `state` field was needed: the first call returned an enemy with `"animation": "idle"` whose real state was `attack_player_melee_state.gd`. Inferring attacks from animation names was wrong, not merely awkward.
 - Still open: the bridge is not concurrency-safe (one in-flight command at a time — a background health-pinning thread corrupted replies); `orphan_max: 0` is unreachable (53 orphans on a fresh launch); and there is no path into the boss fight.
 - New, found while testing: `Globals.reset_attack_slots()` on `player_death` clears both pools without telling the holders, so an enemy mid-swing keeps `AttackPlayerState._slot_held = true` while the pool forgets it. Measured as 2 enemies in `attack_player_melee_state` with `attack_slots` reporting `0/2`. A clean run with no death tracks 1:1 (`melee 2/2`, `in_attack_state=2`, 12/12 samples), so the desync is death-triggered and self-heals within one swing.
+
+## 2026-07-25 — Fix the slot desync and upstream the input patch
+
+- The verbs added last turn paid for themselves immediately: confirming the desync fix took one `attack_slots` call per sample, and the `status` field showed `player=dead` inline, so the death case could be verified deliberately instead of being mistaken for a frozen run.
+- Closed (harness 0.3.1): the input-injection patch that had been living only in this project is upstreamed, so `/scaffold-godot-harness` can no longer silently overwrite it. `templates/addons/godot_selftest/dev_tools.gd` and the installed copy are now byte-identical.
+- Gap: **nothing keeps the installed harness and the upstream template in sync.** This divergence survived unnoticed until a diff happened to be run for another reason, and the only thing at risk was a fix the project depended on.
+  - Improvement: have `/verify` (or the scaffolder) diff the installed `addons/godot_selftest/` and `tools/` against the plugin's templates and report drift, naming which side is ahead.
+- Still open from previous runs: bridge concurrency, unreachable `orphan_max: 0`, and no path into the boss fight.

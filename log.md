@@ -63,3 +63,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - No skill invoked — adding project verbs to `devtools_ext/commands.gd`, a generic status hook to the harness core, and a path fix to `devtools.py`, then committing to two repos.
 - `godot-selftest-harness:verify` — not re-run in full; this turn changed only debug tooling, and the gameplay change it gates was already verified and committed. Lint + 114 tests were re-run clean, and each new verb was exercised live.
 - A skill that doesn't exist and would have helped: something like "plugin-release" — bump the version, update the changelog, and push a Claude marketplace plugin in one step. Doing it by hand means remembering which of `plugin.json` / `marketplace.json` carries the version.
+
+## 2026-07-25 — Fix the slot desync and upstream the input patch
+
+- No skill invoked — a one-line root-cause fix, two regression tests, and a file sync between two repos.
+- `godot-selftest-harness:verify` — not run in full; lint + 116 tests are clean and the fix was confirmed live with the new `attack_slots` verb across a player death. The verbs added last turn are what made that a single command instead of a hand-written sampler.
+- A skill that doesn't exist and would have helped: something like "mutation-check" — reintroduce a fix's root cause, confirm the new test fails, then restore. I did that by hand this turn and my restore path was wrong, so the bug briefly stayed reintroduced; a skill that owns the backup/restore step would not have slipped.

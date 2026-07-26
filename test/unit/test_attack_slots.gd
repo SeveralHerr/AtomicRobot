@@ -177,3 +177,35 @@ func test_reset_clears_all_categories() -> String:
 	if r != "":
 		return r
 	return _T.assert_true(_globals.request_attack_slot(MockEnemy.new("ranged")), "ranged slot free after reset")
+
+
+## Nothing may clear the pool behind the holders' backs.
+##
+## reset_attack_slots() used to run on player_death. AttackPlayerState tracks its own
+## claim in `_slot_held`, so wiping the arrays left an enemy mid-swing believing it
+## held a slot the pool had forgotten: two maids sat in AttackPlayerMeleeState while
+## the pool reported 0/2, and because the cleared slots were instantly claimable,
+## fresh attackers pushed the real count past the cap until the stale swings ended.
+## The reset is setup/teardown-only now, and this pins that it stays that way.
+func test_ready_does_not_wire_the_pool_reset_to_any_signal() -> String:
+	_globals._ready()
+	for connection in _globals.player_death.get_connections():
+		var target: Callable = connection["callable"]
+		if target.get_method() == "reset_attack_slots":
+			return "player_death must not be connected to reset_attack_slots"
+	return ""
+
+
+## The consequence the wiring caused, stated as an invariant: a live holder keeps its
+## slot until IT gives the slot back. Only release_attack_slot (or being freed) may
+## take one away.
+func test_a_live_holder_keeps_its_slot_until_it_releases() -> String:
+	var holders := _fill_slots("melee", GLOBALS.MAX_MELEE_ATTACKERS)
+	var intruder := MockEnemy.new("melee")
+	var r: String = _T.assert_false(
+		_globals.request_attack_slot(intruder), "pool is full while the holders are alive")
+	if r != "":
+		return r
+	_globals.release_attack_slot(holders[0])
+	return _T.assert_true(
+		_globals.request_attack_slot(intruder), "a released slot is claimable by the next enemy")
