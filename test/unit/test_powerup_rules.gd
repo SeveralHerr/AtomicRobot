@@ -108,8 +108,8 @@ func test_drop_roll_respects_the_base_chance() -> String:
 	return _T.assert_false(P.should_drop(0, P.BASE_DROP_CHANCE), "chance boundary is exclusive")
 
 
-## The pity floor is the whole reason drops feel reliable. Without it a 22% roll has
-## a ~14% chance of an 8-kill drought, which reads as "power-ups are broken".
+## The pity floor is the whole reason drops feel reliable. Without it a 10% roll runs
+## PITY_KILLS dry about 19% of the time, which reads as "power-ups are broken".
 func test_pity_guarantees_a_drop() -> String:
 	var r: String = _T.assert_true(P.should_drop(P.PITY_KILLS, 1.0),
 		"pity forces a drop even on the worst possible roll")
@@ -120,6 +120,24 @@ func test_pity_guarantees_a_drop() -> String:
 		return r
 	return _T.assert_false(P.should_drop(P.PITY_KILLS - 1, 1.0),
 		"but not one kill early")
+
+
+## Pins the cadence the two constants actually produce, because they are only
+## meaningful together: the pity floor truncates the geometric distribution, so
+## halving BASE_DROP_CHANCE alone barely moves the real rate. Drops arriving faster
+## than a buff expires (8s) is what made the buffed state the default state.
+func test_drop_cadence_stays_sparse() -> String:
+	# Expected kills between drops: sum of P(no drop yet) over the pity window.
+	var expected_kills := 0.0
+	var survives := 1.0
+	for _i in P.PITY_KILLS:
+		expected_kills += survives
+		survives *= (1.0 - P.BASE_DROP_CHANCE)
+	if expected_kills < 6.0:
+		return "drops every %.1f kills is too generous (want >= 6)" % expected_kills
+	if expected_kills > 12.0:
+		return "drops every %.1f kills is too stingy (want <= 12)" % expected_kills
+	return ""
 
 
 func test_stack_of_nothing_is_neutral() -> String:

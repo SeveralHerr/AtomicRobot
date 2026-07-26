@@ -52,13 +52,18 @@ const DEFS := {
 	},
 }
 
-## Chance that a defeated enemy drops anything at all.
-const BASE_DROP_CHANCE := 0.22
-## ...but never let a player go this many kills with nothing. A pure 22% roll has a
-## ~14% chance of a 8-kill drought, which in a fight-heavy level reads as "power-ups
-## are broken" rather than "unlucky". The pity counter makes the floor deterministic
-## without making the common case predictable.
-const PITY_KILLS := 8
+## Chance that a defeated enemy drops anything at all. Kept low on purpose: a drop
+## should punctuate a fight, not be its normal rhythm.
+const BASE_DROP_CHANCE := 0.10
+## ...but never let a player go this many kills with nothing. A pure 10% roll runs
+## 16 kills dry about 19% of the time, which in a fight-heavy level reads as
+## "power-ups are broken" rather than "unlucky". The pity counter makes the floor
+## deterministic without making the common case predictable.
+##
+## Together these average a drop every ~8 kills ((1 - 0.9^16) / 0.10). The previous
+## 0.22 / 8 pairing averaged one every ~3.9, which had power-ups dropping faster than
+## an 8-second buff expires — the buffed state was the default state.
+const PITY_KILLS := 16
 
 ## Seconds a dropped pickup sits in the world before it despawns, and how long before
 ## that it starts blinking to warn you.
