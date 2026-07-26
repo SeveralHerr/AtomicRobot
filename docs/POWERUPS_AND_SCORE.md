@@ -179,6 +179,11 @@ It's driven entirely by autoload signals, so there's nothing to wire per level, 
 one injection point covers both levels plus every sandbox instead of three copies that
 drift apart.
 
+Score, combo, combo bar and the active-buff timers stack in a single column centred at
+the top of the screen, set in the character-select face (`styles/white_font.tres`,
+Bangers). It begins at y=126, below the health orbs (top-**left**, running to x=544,
+y=118) — the column is wide enough that a long buff line would otherwise clip them.
+
 The rank card centres in the **top 45%** of the screen on purpose: the existing
 `win_container.gd` shows its RESTART button dead-centre on the same `boss_death`
 signal, and this layer draws above it.

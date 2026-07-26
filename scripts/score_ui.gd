@@ -7,6 +7,12 @@ extends CanvasLayer
 ## wire up per level, and one injection point covers main.tscn, boss_room.tscn and
 ## every enemy sandbox under test/scenes/ without three copies drifting apart.
 ##
+## The whole HUD is one column centred at the top of the screen, in the same Bangers
+## face (styles/white_font.tres) the character-select screen uses, so score, combo and
+## buff timers all read from one spot. It starts at y=126 rather than hard against the
+## top edge: the health orbs run to x=544, y=118, and the column is wide enough that a
+## long buff line ("ATOMIC RAGE 8.0") would otherwise clip their right-hand orb.
+##
 ## The rank card deliberately centres in the TOP 45% of the screen: the existing Win
 ## container (scripts/win_container.gd) shows its RESTART button dead-centre on the
 ## same boss_death signal, and this layer draws above it.
@@ -14,10 +20,7 @@ extends CanvasLayer
 @onready var score_label: Label = $Hud/Rows/ScoreLabel
 @onready var combo_label: Label = $Hud/Rows/ComboLabel
 @onready var combo_bar: ProgressBar = $Hud/Rows/ComboBar
-## Lives outside the top-right score column: buff timers sit centred under the health
-## orbs (whose row ends at y=118 in both main.tscn and boss_room.tscn), where the eye
-## already is during a fight, and large enough to read without looking away from it.
-@onready var powerup_label: Label = $PowerupLabel
+@onready var powerup_label: Label = $Hud/Rows/PowerupLabel
 @onready var rank_card: CenterContainer = $RankCard
 @onready var rank_label: Label = $RankCard/Panel/Lines/RankLabel
 @onready var breakdown_label: Label = $RankCard/Panel/Lines/Breakdown
