@@ -135,6 +135,27 @@ def get_user_data_path(project_path: Path) -> Path:
     return _platform_data_dir() / godot_dir / "app_userdata" / _sanitize_dir_name(project_name)
 
 
+_MANGLED_ROOT = re.compile(r"^[A-Za-z]:[\/].*?[\/](root[\/].*)$")
+
+
+def normalize_node_path(path):
+    """Undo MSYS/Git-Bash rewriting of an absolute Godot node path.
+
+    Git Bash treats a leading "/" as a POSIX root and rewrites "/root/Globals" into
+    something like "C:/Program Files/Git/root/Globals" before Python ever sees it, so
+    the node lookup fails with a confusing Windows path in the error. Callers can also
+    write "//root/..." to defeat the rewrite; both forms normalize back to "/root/...".
+    """
+    if not isinstance(path, str) or not path:
+        return path
+    m = _MANGLED_ROOT.match(path)
+    if m:
+        return "/" + m.group(1).replace("\\", "/")
+    if path.startswith("//"):
+        return "/" + path.lstrip("/")
+    return path
+
+
 def send_command(project_path: Path, action: str, args: dict = None, timeout: float = 30.0) -> dict:
     """Send a command to the running Godot instance and wait for the result."""
     user_data = get_user_data_path(project_path)
@@ -148,7 +169,10 @@ def send_command(project_path: Path, action: str, args: dict = None, timeout: fl
         results_path.unlink()
 
     # Write command
-    command = {"action": action, "args": args or {}}
+    args = dict(args or {})
+    if "node_path" in args:
+        args["node_path"] = normalize_node_path(args["node_path"])
+    command = {"action": action, "args": args}
     commands_path.write_text(json.dumps(command), encoding="utf-8")
 
     # Wait for result

@@ -57,3 +57,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - `godot-selftest-harness:verify` — used, and it was the only thing that could prove this change (lint + 114 unit tests passed on the broken version too). Enhancement idea, in simple words: let `/verify` keep the test player alive by itself, because the fight killed the player three times before a single measurement succeeded, and each death silently froze every reading at zero instead of saying "your player is dead".
 - `simplify` — still queued and now clearly worth running: the change left `_pick_chase_lane` inlined and `_lane_is_claimed` deleted, and I added a `competes_for_attack_slots()` predicate that replaced a duplicated `lane_locked` check in two files.
 - A skill that doesn't exist and would have helped: something like "godot-crowd-assert" — sample a running fight over time and report peaks (how many attacking at once, who is on which lane). I hand-wrote four throwaway Python samplers to get numbers that should be one command.
+
+## 2026-07-25 — Add revive/god_mode/attack_slots devtools verbs
+
+- No skill invoked — adding project verbs to `devtools_ext/commands.gd`, a generic status hook to the harness core, and a path fix to `devtools.py`, then committing to two repos.
+- `godot-selftest-harness:verify` — not re-run in full; this turn changed only debug tooling, and the gameplay change it gates was already verified and committed. Lint + 114 tests were re-run clean, and each new verb was exercised live.
+- A skill that doesn't exist and would have helped: something like "plugin-release" — bump the version, update the changelog, and push a Claude marketplace plugin in one step. Doing it by hand means remembering which of `plugin.json` / `marketplace.json` carries the version.

@@ -86,3 +86,12 @@ the single source of truth.)
   - Improvement: retune `orphan_max` to a real baseline (or make `performance` report orphan *growth* across a run rather than an absolute), so the number means something.
 - Gap: **Git Bash mangles `/root/...` node paths into Windows paths** (`Node not found: C:/Program Files/Git/root/Globals`). Workaround found: a leading double slash (`//root/Globals`) survives. Cheat-sheet does not mention it.
   - Improvement: have `devtools.py` normalise a leading `C:/.../Git/root/` back to `/root/`, and document the `//root` form.
+
+## 2026-07-25 — Add revive/god_mode/attack_slots devtools verbs
+
+- Closed (project, `devtools_ext/commands.gd`): `revive_player` (clears `is_dead`, leaves `DeadState`, hides the game-over panel), `god_mode` (exposes the flag `Player.take_damage` already honours), `attack_slots` (both pools + caps + holder paths), and `state` on every `list_enemies` row.
+- Closed (harness core, generic): `register_status_provider()` — one project-supplied callable whose Dictionary rides on EVERY response as `status`. A dead player now announces itself on every reply instead of silently returning well-formed zeros.
+- Closed (harness, `devtools.py`): `normalize_node_path()` undoes Git Bash rewriting `/root/Globals` into `C:/Program Files/Git/root/Globals`, and accepts the `//root/...` workaround form.
+- Proof the `state` field was needed: the first call returned an enemy with `"animation": "idle"` whose real state was `attack_player_melee_state.gd`. Inferring attacks from animation names was wrong, not merely awkward.
+- Still open: the bridge is not concurrency-safe (one in-flight command at a time — a background health-pinning thread corrupted replies); `orphan_max: 0` is unreachable (53 orphans on a fresh launch); and there is no path into the boss fight.
+- New, found while testing: `Globals.reset_attack_slots()` on `player_death` clears both pools without telling the holders, so an enemy mid-swing keeps `AttackPlayerState._slot_held = true` while the pool forgets it. Measured as 2 enemies in `attack_player_melee_state` with `attack_slots` reporting `0/2`. A clean run with no death tracks 1:1 (`melee 2/2`, `in_attack_state=2`, 12/12 samples), so the desync is death-triggered and self-heals within one swing.
