@@ -140,8 +140,12 @@ func _ready() -> void:
 ## Turn-taking attack slots (TMNT-style crowd combat): caps how many enemies can be
 ## actively attacking the player at once so a crowd queues up and takes turns
 ## instead of dogpiling. Keyed by Enemy.attack_category ("melee"/"ranged").
-## See docs/LANE_REFACTOR.md and scripts/enemy.gd (can_attack / _chase_toward_player).
-const MAX_MELEE_ATTACKERS := 1
+## See docs/LANE_REFACTOR.md; Enemy.can_attack gates on has_attack_slot_available,
+## and AttackPlayerState.enter_state/exit_state claim and release the slot.
+## Two melee, not one: with lane exclusivity gone a cap of 1 still reads on screen as
+## a 1v1 with spectators. Two attackers is the classic beat-em-up feel and still
+## leaves the rest of the crowd visibly queueing.
+const MAX_MELEE_ATTACKERS := 2
 const MAX_RANGED_ATTACKERS := 2
 var _melee_attackers: Array = []
 var _ranged_attackers: Array = []

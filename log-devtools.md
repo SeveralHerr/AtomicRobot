@@ -55,3 +55,34 @@ the single source of truth.)
 
 - Gap: **nothing compares two versions of a scene.** A 246-line editor re-save of `main.tscn` looked like it had dropped `groups=["player"]`, building positions, and script overrides; proving it hadn't meant writing HEAD's copy to a temp `.tscn`, running `tools/dump_level.gd` twice, and diffing the JSON by hand.
   - Improvement: a `tools/diff_scene.gd` (or a `--baseline <git-ref>` flag on `dump_level.gd`) that instantiates a scene at two revisions and reports only the semantic differences — and have `/verify` run it automatically when the diff touches a `.tscn`.
+
+## 2026-07-25 — Diagnose the one-attacker wave bug, fan out approach A
+
+- Gap: **nothing verifies that a registered system is actually reachable from gameplay.** `Globals.request_attack_slot` and friends had six passing unit tests and not one caller; lint checks UIDs and scenes, `run_tests.gd` happily green-lights orphaned code. The bug survived because both gates said "clean".
+  - Improvement: a lint rule (or a `tools/find_orphans.gd`) that flags script functions and autoload APIs referenced only from `test/`, and have `/verify` surface them as warnings.
+- Gap: **no way to assert "how many enemies are attacking right now".** The whole bug is a crowd-behaviour property, and the devtools vocabulary is per-node (`get-state`, `node-bounds`) — confirming it means reading each maid's state one call at a time and inferring.
+  - Improvement: a project verb in `devtools_ext/commands.gd` like `cmd enemy_summary` returning one row per enemy (lane, current state, holds-a-slot, distance to player), so a wave can be asserted in a single call. That is the natural runtime check for this change.
+- Gap: **no deterministic way to stage a wave.** Verifying multi-attacker combat needs N maids placed at known lanes and offsets around the player; today that means letting the ambient spawner do it and hoping, which is the same nondeterminism that has killed idle test players in earlier runs.
+  - Improvement: a `cmd spawn_wave --args '{"count":4,"lanes":[0,1,2,3],"around":"player"}'` setup verb, paired with the already-proposed `pause-spawner` toggle so the staged wave isn't polluted by ambient spawns.
+
+## 2026-07-25 — Exempt the boss from the attack-slot pool
+
+- Gap: **no runtime read of who holds an attack slot.** The boss-holds-a-slot-forever bug was found by reading code, not by observing the game; there is no verb that would have shown `_melee_attackers` / `_ranged_attackers` occupancy during a fight.
+  - Improvement: a `cmd attack_slots` verb dumping both pools (holder name, category, how long held). Paired with the `enemy_summary` verb proposed above, that makes crowd pacing directly assertable.
+- Gap: **`/verify` cannot exercise the boss room.** Its `entry_hook` advances into `main_scene` only, so a change touching `city_council_boss.gd` has no runtime path at all — the boss fight has to be reached by hand.
+  - Improvement: let `devtools_config.json` declare additional named entry points (e.g. `scenes: {boss: {path, hook}}`) and have `/verify` pick the one matching the diff, so touching a boss script actually launches the boss room.
+
+## 2026-07-25 — Verify approach A at runtime
+
+- Gap: **a dead test player silently zeroes every reading.** Three separate runs returned `melee=0 ranged=0 swinging=0` across 20-40 identical samples; the cause was `is_dead=true`, not a broken fix. `set_player_health` restores the number but NOT the `is_dead` flag or the DeadState, so the player is unrevivable once killed.
+  - Improvement: a `revive_player` verb (clear `is_dead`, force the state machine out of `DeadState`) and a `god_mode` toggle; and have every `cmd` response carry a `player_alive` field so a frozen run is self-diagnosing instead of looking like a passing test.
+- Gap: **the devtools bridge is not concurrency-safe.** Pinning health from a background thread while sampling on the main thread corrupted responses (`KeyError: 'enemies'` — a reply arrived for the wrong request). Nothing in the docs warns about this.
+  - Improvement: sequence-number or lock the file bridge so interleaved requests can't cross; failing that, document "one in-flight command at a time" in the cheat-sheet.
+- Gap: **no runtime read of attack-slot occupancy, and no crowd-level aggregation.** The whole change is a crowd property, so every measurement went through `get-state //root/Globals` plus a hand-written Python parser over `list_enemies`. `list_enemies` also omits the state-machine state, so "who is attacking" had to be inferred from the animation name.
+  - Improvement: add `current_state` to `list_enemies`, and a `cmd attack_slots` verb dumping both pools. Both are small additions to `devtools_ext/commands.gd` and would have replaced four throwaway sampler scripts.
+- Gap: **the boss fight is unreachable from devtools**, so the boss-exemption fix could not be verified at runtime. `start_game --scene res://scenes/boss_room.tscn` loads the room with `CityCouncilBoss.visible=false`; walking the player onto `Triggers/EntranceTrigger` does not start the fight, and `list_encounters` returns 0.
+  - Improvement: a `start_boss_fight` verb that runs whatever the intro sequence does, so boss-side changes have any runtime path at all.
+- Gap: **`orphan_max: 0` is unreachable and therefore ignored.** A fresh launch into `main.tscn` reports 53 orphan nodes before any test action; after scene swaps it reached 178. A threshold nothing can ever satisfy trains you to skip the check.
+  - Improvement: retune `orphan_max` to a real baseline (or make `performance` report orphan *growth* across a run rather than an absolute), so the number means something.
+- Gap: **Git Bash mangles `/root/...` node paths into Windows paths** (`Node not found: C:/Program Files/Git/root/Globals`). Workaround found: a leading double slash (`//root/Globals`) survives. Cheat-sheet does not mention it.
+  - Improvement: have `devtools.py` normalise a leading `C:/.../Git/root/` back to `/root/`, and document the `//root` form.

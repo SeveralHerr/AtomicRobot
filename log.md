@@ -38,3 +38,22 @@ Log of skills that might have been useful for a given response, and why (short f
 
 - No skills fit — branching, reviewing three diffs I hadn't written, and committing. `/verify` was already run on the code change in the previous turn and nothing gameplay-related changed here.
 - A skill that doesn't exist and would have helped: something like "godot-scene-diff" — tell whether a re-saved `.tscn` actually changed behaviour or just churned format. Doing it by hand meant dumping both versions through `tools/dump_level.gd` and diffing the JSON.
+
+## 2026-07-25 — Diagnose the one-attacker wave bug, fan out approach A
+
+- No skill was invoked this turn — the work was reading `enemy.gd` / `lane_system.gd` / `globals.gd` to find why only one enemy attacks, then splitting the fix across three subagents by file ownership. No available skill covers "partition an edit so parallel agents can't collide".
+- `godot-selftest-harness:verify` — not yet run; it is the gate for the next turn, once all three agents have landed their edits. Enhancement idea, in simple words: let `/verify` take a list of files and check only what those files affect, so a three-way parallel change can be verified per-part instead of only at the end.
+- `simplify` — worth queueing after the agents finish. The change deletes `_lane_is_claimed` and shrinks `_pick_chase_lane` to a one-liner, which is exactly the kind of leftover a reuse/altitude pass should collapse.
+- A skill that doesn't exist and would have helped: something like "godot-dead-code" — find autoload APIs that are fully written and unit-tested but never called from gameplay. The whole bug was that `Globals`' attack-slot manager had passing tests and zero callers, and nothing surfaced that; its own docstring pointed at a function (`_chase_toward_player`) that never existed.
+
+## 2026-07-25 — Exempt the boss from the attack-slot pool
+
+- No skill invoked — a three-file follow-up fix surfaced by a subagent's report (the boss holding a ranged slot for the whole fight), plus a lint run.
+- `godot-selftest-harness:verify` — still pending until the test agent lands; the `test/scenes/melee_cluster.tscn` / `ranged_cluster.tscn` / `mixed_cluster.tscn` sandboxes are the right runtime targets for this change.
+- A skill that doesn't exist and would have helped: something like "godot-state-reachability" — given a state machine, report which states have no exit transition. The boss bug was exactly that (`BossAttackPlayerState` is entered in `_ready()` and never left), and it only came to light because an agent read the file by hand.
+
+## 2026-07-25 — Verify approach A at runtime
+
+- `godot-selftest-harness:verify` — used, and it was the only thing that could prove this change (lint + 114 unit tests passed on the broken version too). Enhancement idea, in simple words: let `/verify` keep the test player alive by itself, because the fight killed the player three times before a single measurement succeeded, and each death silently froze every reading at zero instead of saying "your player is dead".
+- `simplify` — still queued and now clearly worth running: the change left `_pick_chase_lane` inlined and `_lane_is_claimed` deleted, and I added a `competes_for_attack_slots()` predicate that replaced a duplicated `lane_locked` check in two files.
+- A skill that doesn't exist and would have helped: something like "godot-crowd-assert" — sample a running fight over time and report peaks (how many attacking at once, who is on which lane). I hand-wrote four throwaway Python samplers to get numbers that should be one command.

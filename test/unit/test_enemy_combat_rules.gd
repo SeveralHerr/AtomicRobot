@@ -48,6 +48,29 @@ func test_lane_lock_does_not_make_a_grounded_maid_omnipresent() -> String:
 		L.can_engage(L.GROUND_LANE, L.FRONT_LANE, false), "unlocked maid stays lane-bound")
 
 
+# ------------------------------------------------------------ attack_category
+
+## Globals' attack-slot manager keys its pools off `enemy.attack_category` and reads it
+## dynamically off whatever object it is handed, so renaming or dropping the property
+## would not raise a compile error — every enemy would just silently fall into whichever
+## pool the fallback picks and the per-category caps would stop meaning anything. Pin the
+## declaration and the base default (plain Enemy throws coins, so it is ranged; the melee
+## subclasses are the ones that override).
+func test_enemy_declares_attack_category_defaulting_to_ranged() -> String:
+	var script: Script = ENEMY
+	var declared: bool = false
+	for p: Dictionary in script.get_script_property_list():
+		if str(p.get("name", "")) == "attack_category":
+			declared = true
+			var r: String = _T.assert_eq(int(p.get("type", TYPE_NIL)), TYPE_STRING, "attack_category must be a String")
+			if r != "":
+				return r
+	if not declared:
+		return "Enemy no longer declares an `attack_category` property — the slot pools key off it"
+	return _T.assert_eq(
+		script.get_property_default_value("attack_category"), "ranged", "base Enemy defaults to the ranged pool")
+
+
 # --------------------------------------------------------- release_frame_for
 
 func test_release_frame_uses_the_hint_when_the_clip_is_long_enough() -> String:

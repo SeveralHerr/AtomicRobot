@@ -47,6 +47,10 @@ var coins: int = 1
 var attack_range: int = 120
 var attack_cooldown: float = 4
 var detection_range: float = 600.0
+## Which attack-slot pool this enemy competes in ("melee" / "ranged"). Base Enemy
+## throws coins (AttackPlayerState._do_hit), so ranged is the default; melee
+## subclasses override it. See Globals' attack-slot manager.
+@export var attack_category: String = "ranged"
 ## Direction the sprite is LOOKING: +1 = right, -1 = left. All meter-maid art is
 ## authored facing right, so +1 is the unmirrored transform. Read this rather than
 ## `scale.x` — see set_facing() for why scale.x lies about a horizontal flip.
@@ -396,50 +400,25 @@ func is_same_lane_as_player() -> bool:
 	return player != null and player.current_lane == lane
 
 
-## Step one lane toward the player's lane (used while chasing). Prefers the
-## player's lane, but if it's already staked out by another attacker within
-## throwing range, queues in a free adjacent lane instead of stacking on top.
+## Step one lane toward the player's lane (used while chasing). Always targets the
+## player's own lane.
+##
+## This used to route chasers into a *free adjacent* lane whenever another attacker
+## was already camped near the player on the wanted lane, one enemy per lane. That
+## lane exclusivity was the cause of the one-attacker bug: can_attack() requires lane
+## parity (Lanes.can_engage), so every enemy parked in a neighbouring lane was
+## permanently unable to attack and the wave collapsed into a 1v1. Lanes are purely
+## about depth/dodging again; attack pacing now lives in Globals' attack-slot pool,
+## and horizontal crowding is handled by _apply_enemy_separation, which fans the
+## squad out along X within the player's lane.
 func _lane_chase() -> void:
 	if lane_locked or is_changing_lane or lane_change_cooldown > 0.0 or lane_floor_y == INF:
 		return
 	if player == null or player.is_changing_lane:
 		return
-	var target_lane := _pick_chase_lane()
-	if target_lane == lane:
+	if player.current_lane == lane:
 		return
-	_start_lane_change(lane + signi(target_lane - lane))
-
-
-## Same-lane-as-player if that lane is free; otherwise the nearest unclaimed
-## adjacent lane (falls back to the player's lane if every lane is claimed).
-func _pick_chase_lane() -> int:
-	var wanted := player.current_lane
-	if lane == wanted or not _lane_is_claimed(wanted):
-		return wanted
-	var offsets := [1, -1, 2, -2, 3, -3]
-	for offset in offsets:
-		var candidate: int = wanted + offset
-		if Lanes.is_valid_lane(candidate) and not _lane_is_claimed(candidate):
-			return candidate
-	return wanted
-
-
-## True if another (non-lane-locked) enemy is already camped on `check_lane`
-## within throwing distance of the player.
-func _lane_is_claimed(check_lane: int) -> bool:
-	for other in get_tree().get_nodes_in_group("enemies"):
-		if other == self or not is_instance_valid(other):
-			continue
-		# A corpse holds no claim — otherwise the rest of the squad keeps queueing in
-		# the neighbouring lanes for the whole death animation instead of stepping
-		# into the slot that just opened up.
-		if other.is_dead:
-			continue
-		if other.lane_locked or other.lane != check_lane or other.is_changing_lane:
-			continue
-		if absf(other.global_position.x - player.global_position.x) < attack_range:
-			return true
-	return false
+	_start_lane_change(lane + signi(player.current_lane - lane))
 
 
 ## `duration` defaults to the snappy in-combat speed; callers that want a slower,
@@ -477,6 +456,11 @@ func die() -> void:
 	set_collision_mask_value(3, false )
 	set_collision_mask_value(10, false )
 	attack_timer.stop()
+	# A corpse is a valid instance for seconds (1.5s death fade + the blink-out), and
+	# _prune_attack_slots only drops instances that have actually been freed — so
+	# without an explicit release here a dying maid holds her slot the whole time and
+	# the rest of the wave stands around waiting for a turn that never comes.
+	Globals.release_attack_slot(self)
 	range_timer.stop()
 	velocity = Vector2.ZERO
 	Globals.meter_maids_killed += 1
@@ -602,10 +586,30 @@ func has_state(state: String) -> bool:
 	return enemy_state_machine.states.has(state)
 
 
+## Whether this enemy competes in Globals' turn-taking attack-slot pool.
+##
+## The pool exists to pace a CROWD, so only crowd members belong in it. Two kinds of
+## enemy sit outside it and must never hold a slot: lane-locked maids (window and
+## platform) are stationary hazards raining coins onto the street from their own
+## axis, and two of them would silence every maid actually walking it. FinalBoss
+## overrides this for a sharper reason — it enters BossAttackPlayerState in _ready()
+## and has no state to exit into, so it would claim a ranged slot on spawn and hold
+## it until death, leaving one slot for the entire boss room.
+func competes_for_attack_slots() -> bool:
+	return not lane_locked
+
+
 func can_attack() -> bool:
 	if not attack_timer.is_stopped() or not is_player_in_attack_range:
 		return false
 	if player == null:
 		return false
-	return Lanes.can_engage(lane, player.current_lane, lane_locked)
+	if not Lanes.can_engage(lane, player.current_lane, lane_locked):
+		return false
+	if not competes_for_attack_slots():
+		return true
+	# Pure query, never a claim — this is polled every frame from ChasePlayerState.update.
+	# The claim/release pair lives in AttackPlayerState; passing `self` means the enemy
+	# currently holding the slot keeps reading as available.
+	return Globals.has_attack_slot_available(attack_category, self)
 

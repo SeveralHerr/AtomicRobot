@@ -3,11 +3,20 @@ extends RefCounted
 # Headless sanity tests for the Globals autoload's turn-taking attack-slot manager
 # (scripts/autoload/globals.gd). Enemies compete for a capped pool of "attack slots"
 # per category (melee/ranged) so a crowd queues up and takes turns instead of all
-# attacking the player at once. See docs/LANE_REFACTOR.md and scripts/enemy.gd
-# (can_attack / _chase_toward_player).
+# attacking the player at once. See docs/LANE_REFACTOR.md and the two call sites:
+# Enemy.can_attack (the gate — a pure has_attack_slot_available query, polled every
+# frame) and AttackPlayerState.enter_state / exit_state (the claim/release pair).
+#
+# The manager shipped fully written and fully tested but entirely UNWIRED: crowd
+# control was instead done on the lane axis, which routed every enemy but one out of
+# the player's lane, so in a wave fight exactly one maid ever swung. Wiring these
+# functions up is what makes a crowd take turns, so the contracts below are now load
+# bearing rather than aspirational.
 
 var _T
 var _globals
+
+const GLOBALS = preload("res://scripts/autoload/globals.gd")
 
 class MockEnemy extends RefCounted:
 	var attack_category: String
@@ -16,7 +25,7 @@ class MockEnemy extends RefCounted:
 
 
 func setup() -> void:
-	_globals = load("res://scripts/autoload/globals.gd").new()
+	_globals = GLOBALS.new()
 
 
 func teardown() -> void:
@@ -25,22 +34,62 @@ func teardown() -> void:
 		_globals = null
 
 
-func test_melee_slot_cap_is_one() -> String:
-	var a := MockEnemy.new("melee")
-	var b := MockEnemy.new("melee")
-	var r: String = _T.assert_true(_globals.request_attack_slot(a), "first melee claim should succeed")
+## Claims `count` slots in `category` and hands back the holders. The caller must keep
+## the returned array alive: the pool prunes freed instances, so a dropped MockEnemy
+## would quietly give its slot back mid-test.
+func _fill_slots(category: String, count: int) -> Array:
+	var holders: Array = []
+	for i in count:
+		var e := MockEnemy.new(category)
+		holders.append(e)
+		_globals.request_attack_slot(e)
+	return holders
+
+
+## The behavioural tests below derive their expectations from the two constants, so
+## re-tuning a cap doesn't rot them. That would also let a cap change slip through
+## unnoticed — which is itself the regression (a cap of 1 reads on screen as a 1v1 with
+## spectators; 0 would silence the crowd entirely). So pin the shipped values here, in
+## one obvious place, and let everything else follow the constants.
+func test_slot_caps_are_the_tuned_crowd_values() -> String:
+	var r: String = _T.assert_eq(GLOBALS.MAX_MELEE_ATTACKERS, 2, "two melee attackers is the beat-em-up feel")
 	if r != "":
 		return r
-	return _T.assert_false(_globals.request_attack_slot(b), "second melee claim should fail while cap=1 is held")
+	return _T.assert_eq(GLOBALS.MAX_RANGED_ATTACKERS, 2, "two ranged attackers")
 
 
-func test_ranged_slot_cap_is_two() -> String:
-	var a := MockEnemy.new("ranged")
-	var b := MockEnemy.new("ranged")
-	var c := MockEnemy.new("ranged")
-	_globals.request_attack_slot(a)
-	_globals.request_attack_slot(b)
-	return _T.assert_false(_globals.request_attack_slot(c), "third ranged claim should fail while cap=2 is held")
+func test_melee_slot_cap_admits_exactly_max_melee_attackers() -> String:
+	var holders: Array = []
+	for i in GLOBALS.MAX_MELEE_ATTACKERS:
+		var e := MockEnemy.new("melee")
+		holders.append(e)
+		var r: String = _T.assert_true(
+			_globals.request_attack_slot(e), "melee claim %d should succeed under the cap" % i)
+		if r != "":
+			return r
+	return _T.assert_false(
+		_globals.request_attack_slot(MockEnemy.new("melee")), "melee claim past the cap should fail")
+
+
+func test_ranged_slot_cap_admits_exactly_max_ranged_attackers() -> String:
+	var holders: Array = []
+	for i in GLOBALS.MAX_RANGED_ATTACKERS:
+		var e := MockEnemy.new("ranged")
+		holders.append(e)
+		var r: String = _T.assert_true(
+			_globals.request_attack_slot(e), "ranged claim %d should succeed under the cap" % i)
+		if r != "":
+			return r
+	return _T.assert_false(
+		_globals.request_attack_slot(MockEnemy.new("ranged")), "ranged claim past the cap should fail")
+
+
+## The two pools are independent: a street brawl must not lock out the window maids
+## overhead, and vice versa.
+func test_melee_and_ranged_pools_do_not_share_capacity() -> String:
+	var _melee := _fill_slots("melee", GLOBALS.MAX_MELEE_ATTACKERS)
+	return _T.assert_true(
+		_globals.request_attack_slot(MockEnemy.new("ranged")), "a full melee pool must not block a ranged claim")
 
 
 func test_request_is_idempotent_for_holder() -> String:
@@ -58,19 +107,64 @@ func test_release_frees_slot_for_next_claimant() -> String:
 
 
 func test_has_attack_slot_available_is_pure() -> String:
-	var a := MockEnemy.new("melee")
-	var b := MockEnemy.new("melee")
-	_globals.request_attack_slot(a)
+	var holders := _fill_slots("melee", GLOBALS.MAX_MELEE_ATTACKERS)
+	var outsider := MockEnemy.new("melee")
 	var r: String = _T.assert_false(
-		_globals.has_attack_slot_available("melee", b), "no slot available for a non-holder while cap is full")
+		_globals.has_attack_slot_available("melee", outsider), "no slot available for a non-holder while cap is full")
 	if r != "":
 		return r
 	r = _T.assert_true(
-		_globals.has_attack_slot_available("melee", a), "the current holder should still read as available")
+		_globals.has_attack_slot_available("melee", holders[0]), "the current holder should still read as available")
 	if r != "":
 		return r
 	# Querying availability must not itself claim a slot.
-	return _T.assert_true(_globals.request_attack_slot(a), "holder can still re-claim after a pure query")
+	return _T.assert_true(_globals.request_attack_slot(holders[0]), "holder can still re-claim after a pure query")
+
+
+## Enemy.die() releases its slot explicitly, and it has to: _prune_attack_slots only
+## drops *freed* instances, and a dying maid stays a perfectly valid object for seconds
+## (a 1.5s death timer plus the blink teardown). Nothing about "dead" is visible to the
+## pool. Drop the release from die() and a corpse holds a slot until it finally frees,
+## stalling the enemy that should have stepped in.
+func test_a_dying_holder_keeps_its_slot_until_it_is_released() -> String:
+	var holders := _fill_slots("melee", GLOBALS.MAX_MELEE_ATTACKERS)
+	var dying = holders[0]
+	var next_up := MockEnemy.new("melee")
+	var r: String = _T.assert_false(
+		_globals.request_attack_slot(next_up), "a still-valid dying holder must not be pruned out from under itself")
+	if r != "":
+		return r
+	_globals.release_attack_slot(dying)
+	return _T.assert_true(_globals.request_attack_slot(next_up), "die()'s explicit release must free the slot")
+
+
+## has_attack_slot_available is a pure query, not a reservation, so two enemies can both
+## read it as true in the same frame and both try to enter AttackPlayerState; the loser's
+## request_attack_slot returns false and it falls through without swinging. The failure
+## path must be inert — a rejected claim that half-registered the loser would leak
+## capacity and silence the crowd all over again.
+func test_a_lost_claim_race_leaves_the_pool_intact() -> String:
+	var holders := _fill_slots("melee", GLOBALS.MAX_MELEE_ATTACKERS)
+	var loser := MockEnemy.new("melee")
+	var r: String = _T.assert_false(
+		_globals.has_attack_slot_available("melee", loser), "a full pool reads as unavailable to a non-holder")
+	if r != "":
+		return r
+	r = _T.assert_false(_globals.request_attack_slot(loser), "the losing claim of a same-frame race must fail")
+	if r != "":
+		return r
+	for i in holders.size():
+		r = _T.assert_true(
+			_globals.has_attack_slot_available("melee", holders[i]), "winner %d must keep its slot" % i)
+		if r != "":
+			return r
+	# One release frees exactly one slot — no more, no fewer.
+	_globals.release_attack_slot(holders[0])
+	r = _T.assert_true(_globals.request_attack_slot(loser), "a release after a failed claim still frees a slot")
+	if r != "":
+		return r
+	return _T.assert_false(
+		_globals.request_attack_slot(MockEnemy.new("melee")), "one release must not free more than one slot")
 
 
 func test_reset_clears_all_categories() -> String:
