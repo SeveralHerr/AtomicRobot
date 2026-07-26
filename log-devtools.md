@@ -39,3 +39,14 @@ the single source of truth.)
 
 - Gap: none new — docs-only turn.
 - Process gap worth noting: `CLAUDE.md` was rewritten mid-session (PRs #4, #5), so the copy in context still had the old `## Other` rule and the first two turns wrote the gaps into the response body and `README.md` instead of these files. The `Stop` hook's reminder is the right mechanism, but it only fires on code changes — it didn't fire on those doc-only turns.
+
+## 2026-07-25 — Animate the HUD orb losing a hit point
+
+- Gap: **`get-state` has no `--property` filter**, despite the CLAUDE.md cheat-sheet listing `get-state --node PATH --property N`. `devtools.py: error: unrecognized arguments: --property scale` — so every read dumped ~200 properties and had to be grepped.
+  - Improvement: add `--property` (repeatable) to `get-state`; until then, fix the cheat-sheet line so it doesn't advertise a flag that doesn't exist.
+- Gap: **no way to observe an animation at a chosen moment.** The only lever is `set-game-speed 0.05` plus real-time sleeps, so whether a read lands in the flash, the recoil, or after the tween finished is luck — two reads of the same effect came back "tinted" and "already settled".
+  - Improvement: a `step-time --seconds N` verb that pauses the tree and advances it by exactly N game-seconds, so a tween can be sampled deterministically (t=0.05s, t=0.3s, …).
+- Gap: **the previously-logged "test player dies mid-run" gap bit again, twice** — ambient waves killed the idle player between setup and assertion (`health 12 → 9` with no call of mine), forcing two relaunches. `kill_enemies` only clears the current wave; the spawner refills it.
+  - Improvement: the already-proposed god-mode/health-pin verb, plus a `pause-spawner` toggle so a HUD test isn't racing the enemy AI.
+- Gap: **`get-state` on a `Control` omits `scale`/`rotation`** (Godot 4.7 reports `offset_transform_scale` instead, which stayed 1.0 while the node was visibly scaling), so the scale half of the effect could only be confirmed from a screenshot.
+  - Improvement: have `get_state` include a node's real transform (`scale`, `rotation`, `pivot_offset`) for `Control`s rather than only the serialized property list.
