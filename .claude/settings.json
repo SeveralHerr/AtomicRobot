@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && bash tools/check_logging.sh 2>/dev/null || true",
+            "timeout": 10,
+            "statusMessage": "Checking logging convention..."
+          }
+        ]
+      }
+    ]
+  }
+}
