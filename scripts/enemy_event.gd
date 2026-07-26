@@ -33,13 +33,21 @@ func _ready():
 	body_exited.connect(_on_body_exited)
 
 func _process(_delta):
-	if is_active and spawned_enemies.size() > 0:
-		# Remove any dead enemies from the array
+	if not is_active:
+		return
+	# Drop enemies the moment they die, not when their corpse frees itself: die()
+	# runs a ~3.5s death clip and blink-out before queue_free, and waiting on
+	# is_instance_valid() alone left the player standing in a finished event for
+	# all of it. See Enemy.is_dead.
+	spawned_enemies = spawned_enemies.filter(_is_alive)
+	if spawned_enemies.is_empty() and waves_done:
+		_end_event()
 
-		spawned_enemies = spawned_enemies.filter(func(enemy): return is_instance_valid(enemy))
-		# If all enemies are dead, end the event
-		if spawned_enemies.size() == 0 and waves_done:
-			_end_event()
+
+func _is_alive(enemy: Node2D) -> bool:
+	if not is_instance_valid(enemy):
+		return false
+	return not (enemy is Enemy and enemy.is_dead)
 
 func _on_body_entered(body: Node2D):
 	if body is Player and not is_active:

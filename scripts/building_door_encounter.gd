@@ -101,9 +101,18 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if not _active or _spawning:
 		return
-	_spawned = _spawned.filter(func(e): return is_instance_valid(e))
+	# Dropped on death, not on free: a corpse plays out ~3.5s of death clip and
+	# blink-out before queue_free, and holding the arena lock for that long reads
+	# as the encounter having hung after the last kill. See Enemy.is_dead.
+	_spawned = _spawned.filter(_is_alive)
 	if _spawned.is_empty():
 		_end()
+
+
+func _is_alive(enemy: Node2D) -> bool:
+	if not is_instance_valid(enemy):
+		return false
+	return not (enemy is Enemy and enemy.is_dead)
 
 
 func _on_body_entered(body: Node2D) -> void:
