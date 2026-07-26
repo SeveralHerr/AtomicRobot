@@ -46,6 +46,9 @@ var _log_abs_path: String
 var _last_command_check_msec: int = 0
 var _config: Dictionary = {}
 var _handlers: Dictionary = {}
+## Optional project-supplied callable whose Dictionary is merged into every response
+## as "status". See register_status_provider().
+var _status_provider: Callable = Callable()
 var _active_simulated_inputs: Array[String] = []
 # Live reference to the instantiated registry extension. MUST be held so the
 # Callables it bound (via register_command) are not freed out from under us.
@@ -92,6 +95,19 @@ func _exit_tree() -> void:
 ## { "success": bool, "message": String, "data": Dictionary }.
 func register_command(action: String, handler: Callable) -> void:
 	_handlers[action] = handler
+
+
+## Registers a callable whose return Dictionary is merged into EVERY response under
+## "status". Signature: func(args: Dictionary) -> Dictionary. Pass an empty Callable
+## to clear it. At most one provider is active; last writer wins.
+##
+## Use it for the handful of facts that decide whether a reading means anything at all
+## — typically "is the thing under test still alive/running". Without it, a session
+## that has silently entered a dead or frozen state keeps answering every query with
+## well-formed zeros, which reads identically to a genuine all-clear result. Keep the
+## payload tiny: it rides on every single reply.
+func register_status_provider(provider: Callable) -> void:
+	_status_provider = provider
 
 
 # --- Setup ---
@@ -215,12 +231,24 @@ func _write_result(action: String, result: Dictionary) -> void:
 		"data": result.get("data"),
 		"timestamp": Time.get_unix_time_from_system(),
 	}
+	var status: Dictionary = _collect_status()
+	if not status.is_empty():
+		response["status"] = status
 	var file: FileAccess = FileAccess.open(RESULTS_PATH, FileAccess.WRITE)
 	if file == null:
 		_write_log("error", "Failed to write result file", {"error": FileAccess.get_open_error()})
 		return
 	file.store_string(JSON.stringify(response, "  "))
 	file.close()
+
+
+## Never let a broken provider take the bridge down: a status hook that errors would
+## otherwise poison every reply, including the ones you would use to diagnose it.
+func _collect_status() -> Dictionary:
+	if not _status_provider.is_valid():
+		return {}
+	var out: Variant = _status_provider.call({})
+	return out if out is Dictionary else {}
 
 
 func _process_command_line_args() -> void:

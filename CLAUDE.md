@@ -196,5 +196,5 @@ refreshes this very section in place (it never duplicates it).
 
 ## Logging
 
-- **Skills log**: At the end of every response, append an entry to `log.md` (create it if missing) listing any skills — from the available skills list for that session — that might have been useful for the task, each with a short (few-word) reason why. If none would have helped, note that briefly instead of skipping the entry. If a skill was actually used, also note a simple-words enhancement idea for it.
-- **Devtools log**: At the end of every response, append an entry to `log-devtools.md` (create it if missing) with any gaps in the global `/verify` or devtools that might've helped with testing, plus a suggested improvement for each.
+- **Skills log**: At the end of every response, append an entry to `log.md` (create it if missing) listing any skills — from the available skills list for that session — that might have been useful for the task or would have been useful had they existed, each with a short (few-word) reason why. If none would have helped, note that briefly instead of skipping the entry. If a skill was actually used, also note a simple-words enhancement idea for it.
+- **Devtools log**: At the end of every response, append an entry to `log-devtools.md` (create it if missing) with any gaps in the global `/verify` or devtools that might've helped with testing, plus a suggested improvement for each. 

@@ -19,6 +19,9 @@ func register_commands(dev: Node) -> void:
 	_dev.register_command("player_state", _cmd_player_state)
 	_dev.register_command("teleport_player", _cmd_teleport_player)
 	_dev.register_command("set_player_health", _cmd_set_player_health)
+	_dev.register_command("revive_player", _cmd_revive_player)
+	_dev.register_command("god_mode", _cmd_god_mode)
+	_dev.register_command("attack_slots", _cmd_attack_slots)
 	_dev.register_command("health_ui", _cmd_health_ui)
 	_dev.register_command("spawn_enemy", _cmd_spawn_enemy)
 	_dev.register_command("list_enemies", _cmd_list_enemies)
@@ -40,6 +43,26 @@ func register_commands(dev: Node) -> void:
 	_dev.register_command("score_state", _cmd_score_state)
 	_dev.register_command("set_combo", _cmd_set_combo)
 	_dev.register_command("finish_stage", _cmd_finish_stage)
+	# Merged into EVERY response, not just this file's verbs — see _status().
+	_dev.register_status_provider(_status)
+
+
+## Liveness facts attached to every reply the bridge sends.
+##
+## A dead player silently zeroes every gameplay reading: enemies stop attacking, slot
+## pools empty, animations freeze. Runs that hit this looked exactly like a passing
+## test — 40 identical all-zero samples — and the only way to tell the difference was
+## to remember to ask `player_state` separately. Now every response carries it, so a
+## frozen run announces itself instead of being mistaken for a green one.
+func _status(_args: Dictionary) -> Dictionary:
+	var p := _player()
+	if p == null:
+		return {"player": "absent"}
+	return {
+		"player": "dead" if p.is_dead else "alive",
+		"player_health": p.health,
+		"god_mode": p.god_mode,
+	}
 
 
 func _player() -> Node:
@@ -189,6 +212,80 @@ func _cmd_set_player_health(args: Dictionary) -> Dictionary:
 	}}
 
 
+## Bring a dead player back under test control.
+##
+## set_player_health writes the number but NOT `is_dead`, and nothing leaves DeadState
+## on its own — so once the test player died every later reading came back frozen, and
+## the run could only be rescued by relaunching the game. Prefer god_mode for long
+## observation runs: re-writing health each sample never worked, because a hit landing
+## between two writes still routed through death().
+func _cmd_revive_player(args: Dictionary) -> Dictionary:
+	var p := _player()
+	if p == null:
+		return _fail("no player in scene")
+	p.is_dead = false
+	p.velocity = Vector2.ZERO
+	p.health = int(args.get("health", Player.max_health()))
+	if args.has("god_mode"):
+		p.god_mode = bool(args["god_mode"])
+	# death() parks the player in DeadState permanently; without this it stands revived
+	# but frozen, still playing the death animation.
+	if p.state_machine != null:
+		p.state_machine.change_state("IdleState")
+	p.player_health_updated.emit(p.health)
+	return {"success": true, "message": "revived", "data": {
+		"health": p.health,
+		"god_mode": p.god_mode,
+		"game_over_hidden": _hide_game_over(),
+	}}
+
+
+## The game-over panel latches visible on Globals.player_death and nothing hides it
+## again short of a scene reload, so a revived player would keep testing behind it.
+func _hide_game_over() -> bool:
+	for n in _walk_scene():
+		if n is CanvasItem and n.name == "GameOverContainer":
+			(n as CanvasItem).hide()
+			return true
+	return false
+
+
+## Toggle damage immunity. Player.take_damage already honours `god_mode` — this only
+## exposes it, so an observation run stops having to out-race incoming damage.
+func _cmd_god_mode(args: Dictionary) -> Dictionary:
+	var p := _player()
+	if p == null:
+		return _fail("no player in scene")
+	p.god_mode = bool(args.get("enabled", true))
+	return {"success": true, "message": "god_mode %s" % ("on" if p.god_mode else "off"), "data": {
+		"god_mode": p.god_mode,
+	}}
+
+
+## Who currently holds one of Globals' turn-taking attack slots.
+##
+## Crowd pacing is a whole-fight property, so reading it used to mean dumping every
+## Globals property via get-state and parsing the two arrays out by hand. Caps are
+## reported alongside the holders so "2 of 2" is legible without knowing the constants.
+func _cmd_attack_slots(_args: Dictionary) -> Dictionary:
+	var melee := _slot_holders(Globals._melee_attackers)
+	var ranged := _slot_holders(Globals._ranged_attackers)
+	return {"success": true, "message": "melee %d/%d, ranged %d/%d" % [
+		melee.size(), Globals.MAX_MELEE_ATTACKERS, ranged.size(), Globals.MAX_RANGED_ATTACKERS,
+	], "data": {
+		"melee": {"holders": melee, "max": Globals.MAX_MELEE_ATTACKERS},
+		"ranged": {"holders": ranged, "max": Globals.MAX_RANGED_ATTACKERS},
+	}}
+
+
+func _slot_holders(arr: Array) -> Array:
+	var out := []
+	for e in arr:
+		if is_instance_valid(e):
+			out.append(String(_dev.get_tree().current_scene.get_path_to(e)))
+	return out
+
+
 ## What the health HUD is actually drawing right now — one entry per orb node, in
 ## left-to-right order, with the damage-stage texture it currently shows. Lets a test
 ## assert the rendered bar instead of trusting the health int.
@@ -251,8 +348,17 @@ func _cmd_list_enemies(_args: Dictionary) -> Dictionary:
 				"facing": n.facing,
 				"scale_x": n.scale.x,
 				"animation": n.animated_sprite_2d.animation if n.animated_sprite_2d else "",
+				# Without this, "who is attacking" had to be inferred from the animation
+				# name — guesswork the moment two states share a clip or one is renamed.
+				"state": _enemy_state_name(n),
 			})
 	return {"success": true, "message": "%d enemies" % enemies.size(), "data": {"enemies": enemies}}
+
+
+func _enemy_state_name(e: Node) -> String:
+	if e.enemy_state_machine == null or e.enemy_state_machine.current_state == null:
+		return "?"
+	return e.enemy_state_machine.current_state.get_script().resource_path.get_file()
 
 
 ## Frees every Enemy in the current scene (no death FX/signals — hard delete).

@@ -134,14 +134,18 @@ var meter_maids_killed: int = 0
 var meter_maid_boss_killed: int = 0
 
 func _ready() -> void:
-	player_death.connect(reset_attack_slots)
+	pass
 
 
 ## Turn-taking attack slots (TMNT-style crowd combat): caps how many enemies can be
 ## actively attacking the player at once so a crowd queues up and takes turns
 ## instead of dogpiling. Keyed by Enemy.attack_category ("melee"/"ranged").
-## See docs/LANE_REFACTOR.md and scripts/enemy.gd (can_attack / _chase_toward_player).
-const MAX_MELEE_ATTACKERS := 1
+## See docs/LANE_REFACTOR.md; Enemy.can_attack gates on has_attack_slot_available,
+## and AttackPlayerState.enter_state/exit_state claim and release the slot.
+## Two melee, not one: with lane exclusivity gone a cap of 1 still reads on screen as
+## a 1v1 with spectators. Two attackers is the classic beat-em-up feel and still
+## leaves the rest of the crowd visibly queueing.
+const MAX_MELEE_ATTACKERS := 2
 const MAX_RANGED_ATTACKERS := 2
 var _melee_attackers: Array = []
 var _ranged_attackers: Array = []
@@ -180,6 +184,19 @@ func release_attack_slot(enemy) -> void:
 	_melee_attackers.erase(enemy)
 	_ranged_attackers.erase(enemy)
 
+## Hard reset of both pools. Setup/teardown only — NEVER wire this to a live gameplay
+## signal.
+##
+## It used to run on `player_death`, which desynchronised the pool from the holders:
+## AttackPlayerState tracks its own claim in `_slot_held`, so an enemy mid-swing kept
+## believing it held a slot the pool had just forgotten. Two enemies would sit in
+## AttackPlayerMeleeState while the pool reported 0/2, and because the cleared slots
+## were immediately claimable, fresh attackers pushed the real count over the cap until
+## the stale swings ended.
+##
+## Nothing needs the blunt reset: AttackPlayerState.exit_state releases on every route
+## out of a swing, Enemy.die() releases explicitly, and _prune_attack_slots drops
+## instances freed by a scene reload.
 func reset_attack_slots() -> void:
 	_melee_attackers.clear()
 	_ranged_attackers.clear()

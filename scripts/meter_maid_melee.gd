@@ -9,6 +9,7 @@ func _ready() -> void:
 	animated_sprite_2d.sprite_frames = METERMAID_MELEE_SPRITE_FRAMES
 	attack_cooldown = 1
 	move_speed = 150
+	attack_category = "melee"  # swings an Area2D in the player's face, not a coin
 	super._ready()
 	#enemy_state_machine.add_state("PatrolState", PatrolState.new(self))
 	enemy_state_machine.add_state("ChasePlayerState", ChasePlayerState.new(self))

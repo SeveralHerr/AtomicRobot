@@ -34,17 +34,37 @@ var _release_frame: int = 6
 var _released: bool = false
 var _elapsed: float = 0.0
 var _hold: float = 0.0
+## True while this state is holding one of Globals' turn-taking attack slots.
+var _slot_held: bool = false
 
 
 func enter_state() -> void:
 	enemy.animated_sprite_2d.frame_changed.connect(_on_frame_changed)
 	enemy.animated_sprite_2d.animation_finished.connect(_on_animation_finished)
+	# Non-crowd attackers (lane-locked hazards, the boss) stay out of the slot economy
+	# entirely — same carve-out as Enemy.can_attack, via the same predicate, so the
+	# gate and the claim can never disagree about who competes.
+	if enemy.competes_for_attack_slots():
+		_slot_held = Globals.request_attack_slot(enemy)
+		if not _slot_held:
+			# can_attack() only QUERIES the pool and is polled every frame, so two
+			# enemies can both read the last free slot on the same tick and both
+			# transition in here; the second request_attack_slot is refused. Skip the
+			# swing and mark it finished so update()'s existing exit chain hands off
+			# next tick, rather than opening a second way out of this state.
+			attack_finished = true
+			return
 	_begin_swing()
 
 
 func exit_state() -> void:
 	# Invalidate any continuation still pending from this swing.
 	_generation += 1
+	# Every route out of a swing — handoff, watchdog, interrupt, death — passes
+	# through here, so this is the one place the slot is reliably given back.
+	if _slot_held:
+		Globals.release_attack_slot(enemy)
+		_slot_held = false
 	enemy.animated_sprite_2d.frame_changed.disconnect(_on_frame_changed)
 	enemy.animated_sprite_2d.animation_finished.disconnect(_on_animation_finished)
 

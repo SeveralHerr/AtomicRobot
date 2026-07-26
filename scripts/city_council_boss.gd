@@ -14,7 +14,17 @@ func _ready() -> void:
 	
 	enemy_state_machine.change_state("BossAttackPlayerState")
 
-	
+
+## The boss is a solo set-piece, not a member of the crowd the attack-slot pool
+## paces. It enters BossAttackPlayerState above and never leaves — there is no
+## chase or patrol to fall back to, and BossAttackPlayerState._should_re_arm()
+## returns true unconditionally — so competing would mean claiming a ranged slot
+## on spawn and holding it until death, leaving the maids in the boss room to
+## share one slot instead of two.
+func competes_for_attack_slots() -> bool:
+	return false
+
+
 func receive_hit(damage: int, knockback_strength: float = 200.0) -> void:
 	super.receive_hit(damage, knockback_strength)
 	if health <= 0:

@@ -19,6 +19,10 @@ const int SAMPLES = 16;
 const float TAU_ = 6.28318530718;
 
 void fragment() {
+	// Vertex colour, i.e. the node's modulate * self_modulate. It has to be captured
+	// and re-applied at the end: writing COLOR outright would otherwise throw it away,
+	// which silently killed the HUD's damage/pickup flashes (scripts/health_container.gd).
+	vec4 tint = COLOR;
 	vec4 col = texture(TEXTURE, UV);
 
 	// Alpha dilation: a transparent pixel joins the halo if ANY neighbour within
@@ -33,5 +37,5 @@ void fragment() {
 	// Keep the artwork wherever it is opaque and let the halo fill in behind it, so
 	// the outline surrounds the orb instead of eating into it.
 	vec4 halo = vec4(outline_color.rgb, outline_color.a * ring);
-	COLOR = mix(halo, col, col.a);
+	COLOR = mix(halo, col, col.a) * tint;
 }
