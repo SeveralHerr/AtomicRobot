@@ -1,16 +1,14 @@
-[gd_scene format=4]
+[gd_scene format=4 uid="uid://domb4w20voy1k"]
 
-[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_5jk15"]
-[ext_resource type="Script" path="res://scripts/health_container.gd" id="2_vq1rx"]
-[ext_resource type="Texture2D" path="res://images/ART-Mobile-logo (1).png" id="4_vq1rx"]
-[ext_resource type="Script" path="res://scripts/game_over_container.gd" id="5_sj8ng"]
-[ext_resource type="LabelSettings" path="res://styles/font_v2.tres" id="5_yhyvh"]
-[ext_resource type="Script" path="res://scripts/notificataion_container.gd" id="7_2pg4o"]
-[ext_resource type="Script" path="res://scripts/initial_fade_in.gd" id="7_gdeaw"]
-[ext_resource type="PackedScene" path="res://scenes/fade_overlay.tscn" id="7_lcs47"]
-[ext_resource type="Script" path="res://scripts/news_paper_notification_container.gd" id="8_7k40d"]
-[ext_resource type="Script" path="res://scripts/fade_overlay.gd" id="9_r4ag1"]
-[ext_resource type="Script" path="res://scripts/mobile_ui.gd" id="12_v0wtd"]
+[ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
+[ext_resource type="Script" uid="uid://dc00l4kuir5j0" path="res://scripts/health_container.gd" id="2_vq1rx"]
+[ext_resource type="Texture2D" uid="uid://xaol7ee44k8q" path="res://images/ART-Mobile-logo (1).png" id="4_vq1rx"]
+[ext_resource type="Script" uid="uid://o2h3iex6u6ps" path="res://scripts/game_over_container.gd" id="5_sj8ng"]
+[ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://styles/font_v2.tres" id="5_yhyvh"]
+[ext_resource type="Script" uid="uid://fv8o1x5w5344" path="res://scripts/notificataion_container.gd" id="7_2pg4o"]
+[ext_resource type="Script" uid="uid://bljv8wkcve17e" path="res://scripts/initial_fade_in.gd" id="7_gdeaw"]
+[ext_resource type="PackedScene" uid="uid://cd687fbnvb516" path="res://scenes/fade_overlay.tscn" id="7_lcs47"]
+[ext_resource type="Script" uid="uid://1oip5i83mu4r" path="res://scripts/news_paper_notification_container.gd" id="8_7k40d"]
 [ext_resource type="PackedScene" path="res://scenes/level_background.tscn" id="13_sgvw8"]
 [ext_resource type="PackedScene" path="res://scenes/building_group_1.tscn" id="14_ygd8o"]
 [ext_resource type="PackedScene" path="res://scenes/building_group_2.tscn" id="15_xrs0c"]
@@ -19,35 +17,22 @@
 [ext_resource type="PackedScene" path="res://scenes/level_right_boundary.tscn" id="19_ty1g6"]
 [ext_resource type="PackedScene" path="res://scenes/atomic_robot_area.tscn" id="20_nvyfr"]
 [ext_resource type="PackedScene" path="res://scenes/level_left_boundary.tscn" id="20_ty1g6"]
-[ext_resource type="Texture2D" path="res://images/new/Blue_Trashcan.png" id="21_0bwfm"]
-[ext_resource type="Texture2D" path="res://tiles/mp_cs_tilemap_all.png" id="21_euxwc"]
-[ext_resource type="Texture2D" path="res://images/new/Background_bush2.png" id="22_lcs47"]
-[ext_resource type="Texture2D" path="res://images/new/Parking_Meter.png" id="24_meefr"]
-[ext_resource type="Texture2D" path="res://images/new/Lamppost2.png" id="25_k35ai"]
-[ext_resource type="PackedScene" path="res://scenes/streetlight.tscn" id="31_euxwc"]
-[ext_resource type="TileSet" path="res://tiles/tileset.tres" id="41_01ywe"]
-[ext_resource type="Texture2D" path="res://images/new/Tree.png" id="51_2p6wh"]
-[ext_resource type="FontVariation" path="res://styles/white_font.tres" id="51_k4pk8"]
-[ext_resource type="Script" path="res://scripts/enemy_manager.gd" id="58_335wh"]
-[ext_resource type="Script" path="res://scripts/under_world_kill_box.gd" id="58_qr2g0"]
-[ext_resource type="PackedScene" path="res://scenes/leaf_manager.tscn" id="65_brcwu"]
-[ext_resource type="PackedScene" path="res://scenes/scaffolding1.tscn" id="65_fw04e"]
-[ext_resource type="SpriteFrames" path="res://sprites/cait_sprite_frames.tres" id="66_y57op"]
-[ext_resource type="Texture2D" path="res://images/new/Traffic_Light.png" id="68_roort"]
-[ext_resource type="Script" path="res://scripts/streetlight.gd" id="69_gm02q"]
-[ext_resource type="Script" path="res://scripts/leaf_manager.gd" id="73_07pt3"]
-[ext_resource type="Texture2D" path="res://images/new/scaffolding_foreground.png" id="75_37xlc"]
-[ext_resource type="Script" path="res://scripts/Player.gd" id="77_83607"]
-[ext_resource type="Shape2D" path="res://sprites/player_normal_collision_shape.tres" id="78_vny5k"]
-[ext_resource type="AudioStream" path="res://sounds/ryan_jump.wav" id="80_8lcmr"]
-[ext_resource type="AudioStream" path="res://sounds/hurt.wav" id="81_ga3rw"]
-[ext_resource type="AudioStream" path="res://sounds/hit3.ogg" id="82_f5chs"]
-[ext_resource type="Texture2D" path="res://images/Sprite-0001.png" id="83_eh25q"]
-[ext_resource type="AudioStream" path="res://sounds/lightsaber.wav" id="84_joh2r"]
-[ext_resource type="AudioStream" path="res://sounds/422762__kierankeegan__footsteps_stone_4.wav" id="85_yton5"]
-[ext_resource type="AudioStream" path="res://sounds/515624__mrickey13__playerhurt2.wav" id="86_4ahvx"]
-[ext_resource type="Script" path="res://scripts/run_particles.gd" id="87_2cr71"]
-[ext_resource type="AudioStream" path="res://sounds/power_up.wav" id="88_1hbcg"]
+[ext_resource type="Texture2D" uid="uid://c0pbysa8efg28" path="res://images/new/Blue_Trashcan.png" id="21_0bwfm"]
+[ext_resource type="Texture2D" uid="uid://cbrvn6pre08i5" path="res://tiles/mp_cs_tilemap_all.png" id="21_euxwc"]
+[ext_resource type="Texture2D" uid="uid://dtybo2oqjbric" path="res://images/new/Background_bush2.png" id="22_lcs47"]
+[ext_resource type="Texture2D" uid="uid://cu0068emgxgni" path="res://images/new/Parking_Meter.png" id="24_meefr"]
+[ext_resource type="Texture2D" uid="uid://c70fhct4rn0vm" path="res://images/new/Lamppost2.png" id="25_k35ai"]
+[ext_resource type="PackedScene" uid="uid://bx5bwuj7fad3" path="res://scenes/streetlight.tscn" id="31_euxwc"]
+[ext_resource type="TileSet" uid="uid://dnk1onf4fhpgp" path="res://tiles/tileset.tres" id="41_01ywe"]
+[ext_resource type="Texture2D" uid="uid://oykojjt2otx1" path="res://images/new/Tree.png" id="51_2p6wh"]
+[ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="51_k4pk8"]
+[ext_resource type="Script" uid="uid://dv0rbnba2864c" path="res://scripts/enemy_manager.gd" id="58_335wh"]
+[ext_resource type="Script" uid="uid://dvdcq0lhqdrnd" path="res://scripts/under_world_kill_box.gd" id="58_qr2g0"]
+[ext_resource type="PackedScene" uid="uid://bw8nx2c7jvd3m" path="res://scenes/leaf_manager.tscn" id="65_brcwu"]
+[ext_resource type="PackedScene" uid="uid://dg72alaxq1lp7" path="res://scenes/scaffolding1.tscn" id="65_fw04e"]
+[ext_resource type="SpriteFrames" uid="uid://bbdmg24cvolf2" path="res://sprites/cait_sprite_frames.tres" id="66_y57op"]
+[ext_resource type="Texture2D" uid="uid://dtau5c5gb1u6n" path="res://images/new/scaffolding_foreground.png" id="75_37xlc"]
+[ext_resource type="Texture2D" uid="uid://c6dxgv1cpubla" path="res://images/Sprite-0001.png" id="83_eh25q"]
 [ext_resource type="PackedScene" path="res://scenes/mobile_controls.tscn" id="100_mobctl"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
@@ -302,20 +287,14 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("7_gdeaw")
 
-[node name="FadeOverlay" type="ColorRect" parent="UI/InitialFadeIn" unique_id=669343212 instance=ExtResource("7_lcs47")]
+[node name="FadeOverlay" parent="UI/InitialFadeIn" unique_id=669343212 instance=ExtResource("7_lcs47")]
 visible = false
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 color = Color(0, 0, 0, 1)
-script = ExtResource("9_r4ag1")
 
 [node name="GameOverContainer" type="CenterContainer" parent="UI" unique_id=949263884]
 visible = false
-z_index = 1
+z_index = 4
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -338,32 +317,30 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 31
 text = "Restart"
 
-[node name="MobileUI" type="Control" parent="UI" unique_id=1905073212 instance=ExtResource("100_mobctl")]
-layout_mode = 3
+[node name="MobileUI" parent="UI" unique_id=1905073212 instance=ExtResource("100_mobctl")]
 anchors_preset = 12
-anchor_right = 1.0
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 0.0
 offset_top = -360.0
 offset_right = 0.0
 offset_bottom = 0.0
-script = ExtResource("12_v0wtd")
+grow_horizontal = 2
+grow_vertical = 0
 
-[node name="Background" type="Node2D" parent="." unique_id=1104501429 instance=ExtResource("13_sgvw8")]
+[node name="Background" parent="." unique_id=1104501429 instance=ExtResource("13_sgvw8")]
 
 [node name="Level" type="Node2D" parent="." unique_id=133142066]
 
 [node name="SceneItemsBackground" type="Node2D" parent="Level" unique_id=2002840042]
 position = Vector2(1875, -1)
 
-[node name="BuildingGroup1" type="Node2D" parent="Level/SceneItemsBackground" unique_id=442957732 instance=ExtResource("14_ygd8o")]
-position = Vector2(-1294, 0)
+[node name="BuildingGroup1" parent="Level/SceneItemsBackground" unique_id=442957732 instance=ExtResource("14_ygd8o")]
 
-[node name="BuildingGroup2" type="Node2D" parent="Level/SceneItemsBackground" unique_id=657802005 instance=ExtResource("15_xrs0c")]
-position = Vector2(2549, 0)
+[node name="BuildingGroup2" parent="Level/SceneItemsBackground" unique_id=657802005 instance=ExtResource("15_xrs0c")]
 
-[node name="BuildingGroup3" type="Node2D" parent="Level/SceneItemsBackground" unique_id=340492269 instance=ExtResource("16_e755i")]
+[node name="BuildingGroup3" parent="Level/SceneItemsBackground" unique_id=340492269 instance=ExtResource("16_e755i")]
 
 [node name="TileMapLayer" type="TileMapLayer" parent="Level/SceneItemsBackground" unique_id=711133090]
 z_index = 1
@@ -382,16 +359,13 @@ position = Vector2(0, 3)
 tile_map_data = PackedByteArray("AADLAAEAAAAAAAMAAADMAAEAAAAAAAMAAADNAAEAAAAAAAMAAADOAAEAAAAAAAMAAADLAAAAAAAAAAMAAADMAAAAAAAAAAMAAADNAAAAAAAAAAMAAADOAAAAAAAAAAMAAAA=")
 tile_set = ExtResource("41_01ywe")
 
-[node name="BuildingGroup4" type="Node2D" parent="Level/SceneItemsBackground" unique_id=1676439319 instance=ExtResource("18_1v6qk")]
-position = Vector2(0, 2)
+[node name="BuildingGroup4" parent="Level/SceneItemsBackground" unique_id=1676439319 instance=ExtResource("18_1v6qk")]
 
-[node name="RightBoundary" type="Node2D" parent="Level/SceneItemsBackground" unique_id=1220517773 instance=ExtResource("19_ty1g6")]
+[node name="RightBoundary" parent="Level/SceneItemsBackground" unique_id=1220517773 instance=ExtResource("19_ty1g6")]
 
-[node name="LeftBoundary" type="Node2D" parent="Level/SceneItemsBackground" unique_id=1295130492 instance=ExtResource("20_ty1g6")]
-position = Vector2(-10154, -83)
+[node name="LeftBoundary" parent="Level/SceneItemsBackground" unique_id=1295130492 instance=ExtResource("20_ty1g6")]
 
-[node name="AtomicRobotBuildingGroup" type="Node2D" parent="Level/SceneItemsBackground" unique_id=1945495896 instance=ExtResource("20_nvyfr")]
-position = Vector2(-1875, 1)
+[node name="AtomicRobotBuildingGroup" parent="Level/SceneItemsBackground" unique_id=1945495896 instance=ExtResource("20_nvyfr")]
 
 [node name="Sprite2D2" type="Sprite2D" parent="Level" unique_id=2019873599]
 visible = false
@@ -410,16 +384,12 @@ texture = ExtResource("21_0bwfm")
 [node name="Intersection" type="Node2D" parent="Level/SceneItems" unique_id=1354148568]
 position = Vector2(1119, 0)
 
-[node name="Streetlight2" type="Sprite2D" parent="Level/SceneItems/Intersection" unique_id=1280717431 node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
+[node name="Streetlight2" parent="Level/SceneItems/Intersection" unique_id=1280717431 node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
 position = Vector2(2899, -78.5)
-texture = ExtResource("68_roort")
-script = ExtResource("69_gm02q")
 player = NodePath("../../../../Player")
 
-[node name="Streetlight4" type="Sprite2D" parent="Level/SceneItems/Intersection" unique_id=177965147 node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
+[node name="Streetlight4" parent="Level/SceneItems/Intersection" unique_id=177965147 node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
 position = Vector2(3339, -78.5)
-texture = ExtResource("68_roort")
-script = ExtResource("69_gm02q")
 player = NodePath("../../../../Player")
 
 [node name="Lightpost3" type="Sprite2D" parent="Level/SceneItems/Intersection" unique_id=1735524091]
@@ -434,16 +404,12 @@ flip_h = true
 [node name="Intersection2" type="Node2D" parent="Level/SceneItems" unique_id=788291475]
 position = Vector2(36, 0)
 
-[node name="Streetlight" type="Sprite2D" parent="Level/SceneItems/Intersection2" unique_id=1960887590 node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
+[node name="Streetlight" parent="Level/SceneItems/Intersection2" unique_id=1960887590 node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
 position = Vector2(1551, -79)
-texture = ExtResource("68_roort")
-script = ExtResource("69_gm02q")
 player = NodePath("../../../../Player")
 
-[node name="Streetlight3" type="Sprite2D" parent="Level/SceneItems/Intersection2" unique_id=1235828866 node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
+[node name="Streetlight3" parent="Level/SceneItems/Intersection2" unique_id=1235828866 node_paths=PackedStringArray("player") instance=ExtResource("31_euxwc")]
 position = Vector2(1991, -79)
-texture = ExtResource("68_roort")
-script = ExtResource("69_gm02q")
 player = NodePath("../../../../Player")
 
 [node name="Lightpost" type="Sprite2D" parent="Level/SceneItems/Intersection2" unique_id=2051308135]
@@ -460,149 +426,41 @@ flip_h = true
 [node name="EnemyManager" type="Node2D" parent="Managers" unique_id=818627881]
 script = ExtResource("58_335wh")
 
-[node name="LeafManager" type="Node2D" parent="Managers" unique_id=487693304 groups=["leaf_manager"] instance=ExtResource("65_brcwu")]
-z_index = 1
-script = ExtResource("73_07pt3")
+[node name="LeafManager" parent="Managers" unique_id=487693304 groups=["leaf_manager"] instance=ExtResource("65_brcwu")]
 
-[node name="Scaffolding" type="Sprite2D" parent="." unique_id=2131062882 instance=ExtResource("65_fw04e")]
+[node name="Scaffolding" parent="." unique_id=2131062882 instance=ExtResource("65_fw04e")]
 z_index = 1
 position = Vector2(-210, -241)
 texture = SubResource("AtlasTexture_vrrw6")
 
-[node name="Player" parent="." unique_id=757394762 groups=["player"] instance=ExtResource("2_5jk15")]
+[node name="Player" parent="." unique_id=757394762 instance=ExtResource("2_5jk15")]
 top_level = true
 position = Vector2(-292, -21)
-collision_mask = 122
-platform_floor_layers = 4294901762
-platform_wall_layers = 64
-script = ExtResource("77_83607")
-
-[node name="CollisionShape2D" parent="Player" index="0"]
-position = Vector2(0, -6)
-shape = ExtResource("78_vny5k")
 
 [node name="DefaultSprite" parent="Player" index="1"]
 material = SubResource("ShaderMaterial_mw4su")
-position = Vector2(2, 20)
 sprite_frames = ExtResource("66_y57op")
-animation = &"Attack"
 frame = 6
-offset = Vector2(0, -33.19)
-
-[node name="Area2D" parent="Player" index="2"]
-position = Vector2(0, 20)
-collision_layer = 0
-collision_mask = 652
-monitorable = false
+frame_progress = 0.0
 
 [node name="CollisionShape2D" parent="Player/Area2D" index="0"]
-position = Vector2(48, -27)
 shape = SubResource("CircleShape2D_sv8s5")
 
-[node name="JumpAudioPlayer" parent="Player" index="3"]
-position = Vector2(0, 20)
-stream = ExtResource("80_8lcmr")
-
-[node name="HurtAudioPlayer" parent="Player" index="4"]
-position = Vector2(0, 20)
-stream = ExtResource("81_ga3rw")
-
-[node name="AttackAudioPlayer" parent="Player" index="5"]
-position = Vector2(0, 20)
-stream = ExtResource("82_f5chs")
-volume_db = 6.141
-
 [node name="CodySprite" parent="Player" index="6"]
-visible = false
 sprite_frames = SubResource("SpriteFrames_gtu8j")
-animation = &"idle"
-autoplay = "idle"
-frame_progress = 0.860659
+frame_progress = 0.0
 
 [node name="JumpingStreakSprite" parent="Player" index="7"]
-visible = false
-show_behind_parent = true
-position = Vector2(0, 44)
-scale = Vector2(1.5, 2.4)
 sprite_frames = SubResource("SpriteFrames_qydoc")
-frame = 2
-frame_progress = 1.0
-
-[node name="BossSpawnPosition" parent="Player" index="8"]
-position = Vector2(143, -140)
-
-[node name="EnemyAttackPosition" parent="Player" index="9"]
-position = Vector2(-1, -19)
+frame = 0
+frame_progress = 0.0
 
 [node name="AnimationPlayer" parent="Player" index="10"]
 libraries/ = SubResource("AnimationLibrary_qxslq")
 autoplay = &"RESET"
 
-[node name="Camera2D" parent="Player" index="11"]
-position = Vector2(0, 20)
-zoom = Vector2(2.5, 2.5)
-limit_bottom = 96
-limit_smoothed = true
-position_smoothing_speed = 1.0
-
-[node name="AttackAudio" parent="Player" index="12"]
-stream = ExtResource("84_joh2r")
-
-[node name="WalkAudio" parent="Player" index="13"]
-stream = ExtResource("85_yton5")
-
-[node name="HurtAudio" parent="Player" index="14"]
-stream = ExtResource("86_4ahvx")
-
-[node name="LandAudio" parent="Player" index="15"]
-stream = ExtResource("86_4ahvx")
-
-[node name="JumpFx" parent="Player" index="16"]
-position = Vector2(0, 19)
-emitting = false
-amount = 80
-lifetime = 0.3
-one_shot = true
-explosiveness = 0.8
-randomness = 1.0
-lifetime_randomness = 1.0
-emission_shape = 3
-emission_rect_extents = Vector2(16, 1)
-direction = Vector2(0, -1)
-spread = 180.0
-gravity = Vector2(0, -60)
-initial_velocity_min = 12.0
-initial_velocity_max = 15.0
-damping_max = 3.0
-scale_amount_min = 2.0
-scale_amount_max = 4.0
-
 [node name="RunParticles" parent="Player" index="17"]
-position = Vector2(-14, 17)
-emitting = false
-amount = 22
-lifetime = 0.16
-one_shot = true
-emission_shape = 3
-emission_rect_extents = Vector2(3, 3)
-direction = Vector2(0, -1)
-spread = 180.0
-gravity = Vector2(0, 0)
-initial_velocity_min = 6.0
-initial_velocity_max = 33.0
-damping_max = 3.0
-scale_amount_max = 2.0
 color_ramp = SubResource("Gradient_d2wvv")
-script = ExtResource("87_2cr71")
-
-[node name="Timer" parent="Player/RunParticles" index="0"]
-wait_time = 0.1
-
-[node name="PickupAudio" parent="Player" index="18"]
-stream = ExtResource("88_1hbcg")
-
-[node name="RobotAttackPosition" parent="Player" index="19"]
-position = Vector2(20, -4)
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1700183004]
 visible = false
