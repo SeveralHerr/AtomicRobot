@@ -14,7 +14,10 @@ extends CanvasLayer
 @onready var score_label: Label = $Hud/Rows/ScoreLabel
 @onready var combo_label: Label = $Hud/Rows/ComboLabel
 @onready var combo_bar: ProgressBar = $Hud/Rows/ComboBar
-@onready var powerup_label: Label = $Hud/Rows/PowerupLabel
+## Lives outside the top-right score column: buff timers sit centred under the health
+## orbs (whose row ends at y=118 in both main.tscn and boss_room.tscn), where the eye
+## already is during a fight, and large enough to read without looking away from it.
+@onready var powerup_label: Label = $PowerupLabel
 @onready var rank_card: CenterContainer = $RankCard
 @onready var rank_label: Label = $RankCard/Panel/Lines/RankLabel
 @onready var breakdown_label: Label = $RankCard/Panel/Lines/Breakdown

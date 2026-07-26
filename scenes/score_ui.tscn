@@ -1,6 +1,11 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/score_ui.gd" id="1_scrui"]
+[ext_resource type="FontFile" path="res://styles/KomikaTitlePaint-D3x.ttf" id="2_scrpu"]
+
+[sub_resource type="FontVariation" id="FontVariation_scrpu"]
+base_font = ExtResource("2_scrpu")
+spacing_glyph = 1
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scrui"]
 content_margin_left = 28.0
@@ -57,12 +62,19 @@ max_value = 1.0
 step = 0.001
 show_percentage = false
 
-[node name="PowerupLabel" type="Label" parent="Hud/Rows"]
-layout_mode = 2
+[node name="PowerupLabel" type="Label" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 124.0
+offset_bottom = 240.0
+grow_horizontal = 2
+mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 22
-horizontal_alignment = 2
+theme_override_constants/line_spacing = 2
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = SubResource("FontVariation_scrpu")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
 
 [node name="RankCard" type="CenterContainer" parent="."]
 visible = false
