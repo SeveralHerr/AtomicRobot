@@ -50,3 +50,8 @@ the single source of truth.)
   - Improvement: the already-proposed god-mode/health-pin verb, plus a `pause-spawner` toggle so a HUD test isn't racing the enemy AI.
 - Gap: **`get-state` on a `Control` omits `scale`/`rotation`** (Godot 4.7 reports `offset_transform_scale` instead, which stayed 1.0 while the node was visibly scaling), so the scale half of the effect could only be confirmed from a screenshot.
   - Improvement: have `get_state` include a node's real transform (`scale`, `rotation`, `pivot_offset`) for `Control`s rather than only the serialized property list.
+
+## 2026-07-25 — Commit the HUD damage animation and the leftover working-tree changes
+
+- Gap: **nothing compares two versions of a scene.** A 246-line editor re-save of `main.tscn` looked like it had dropped `groups=["player"]`, building positions, and script overrides; proving it hadn't meant writing HEAD's copy to a temp `.tscn`, running `tools/dump_level.gd` twice, and diffing the JSON by hand.
+  - Improvement: a `tools/diff_scene.gd` (or a `--baseline <git-ref>` flag on `dump_level.gd`) that instantiates a scene at two revisions and reports only the semantic differences — and have `/verify` run it automatically when the diff touches a `.tscn`.
