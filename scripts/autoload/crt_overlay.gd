@@ -15,6 +15,14 @@ extends Node
 
 const CRT_SHADER := preload("res://shaders/crt_overlay.gdshader")
 
+## CanvasLayer the overlay draws on. The shader reads hint_screen_texture, so it can
+## only treat what is already composited BELOW it: anything meant to look like it is
+## on the same CRT (the pause menu, any future full-screen menu) has to sit on a lower
+## layer. Sitting above this is what left the pause menu rendering crisp and flat over
+## a warped, scanlined game. DebugMenu deliberately shares this layer and draws after
+## it - a dev tool wants to be readable, not filmed through a tube.
+const OVERLAY_LAYER := 100
+
 @export_group("Grid")
 @export var resolution := Vector2(512.0, 320.0): set = _set_resolution
 @export var pixelate := true: set = _set_pixelate
@@ -64,7 +72,7 @@ func _ready() -> void:
 	_layer = CanvasLayer.new()
 	# Distinctive name so DevTools' HUD-layer fallback never grabs it.
 	_layer.name = "CRTOverlayLayer"
-	_layer.layer = 100
+	_layer.layer = OVERLAY_LAYER
 	add_child(_layer)
 
 	_rect = ColorRect.new()
