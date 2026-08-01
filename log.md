@@ -152,3 +152,9 @@ Log of skills that might have been useful for a given response, and why (short f
   work was UI layout that needed a screenshot loop, not a diff assertion. Enhancement
   idea: a lighter `/verify ui <scene>` entry point that loads one scene, validates it and
   screenshots it, without the full launch-and-assert-the-diff pass.
+
+## 2026-08-01 — Commit split
+
+- No skill invoked; this was git work. No skill in the list would have helped, and none
+  is obviously missing - `/code-review` would have been the one to reach for had the
+  request been "check this before committing" rather than "commit it".

@@ -349,3 +349,18 @@ one nobody ever looked at.
   succeeded, so the failure is intermittent rather than a clean death.
   - Improvement: as logged last turn — `/verify` Phase 2 should say to launch the game
     as a tracked background task, not with `&`.
+
+## 2026-08-01 — Committing the session's work
+
+- No devtools/`/verify` gaps this turn: the work was git, and lint + tests were re-run
+  against the committed tree (`Total: 133 | Passed: 133`, lint 6 pre-existing UID
+  mismatches).
+- Worth recording, though it is a repo effect rather than a harness gap:
+  `godot --headless --path . --import` (run to register `docs/screenshot.png`) rewrote
+  `uid://` refs in four files nobody had edited - `mobile_controls.tscn`,
+  `hud_logo_outline_mat.tres`, `hud_orb_outline_mat.tres`, `hp_1.tscn` - and they
+  surfaced as unexplained working-tree changes mid-commit.
+  - Improvement: have `/verify` (or a small `tools/` helper) print
+    `git status --short` before and after any `--import` it triggers, so import-authored
+    edits are attributed at the moment they happen instead of being mistaken for
+    someone else's in-editor work.
