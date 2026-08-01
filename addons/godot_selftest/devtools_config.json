@@ -6,7 +6,23 @@
   "scan_root": "res://",
   "fps_min": 30,
   "orphan_max": 0,
+  "orphan_growth_max": 20,
+  "safe_area_inset": {
+    "left": 0,
+    "top": 0,
+    "right": 0,
+    "bottom": 0
+  },
   "main_scene": "res://scenes/startscreen.tscn",
-  "entry_hook": { "node_path": "/root/Globals", "method": "debug_start_game" },
-  "mute": true
+  "entry_hook": {
+    "node_path": "/root/Globals",
+    "method": "debug_start_game"
+  },
+  "entry_points": {},
+  "mute": true,
+  "log_files": [
+    "log-devtools.md"
+  ],
+  "log_check_globs": [],
+  "log_check_block": false
 }

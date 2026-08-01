@@ -38,6 +38,51 @@ func register_commands(dev: Node) -> void:
 	_dev.register_command("spawn_entity", _cmd_spawn_entity)
 	_dev.register_command("get_actor_state", _cmd_get_actor_state)
 	_dev.register_command("reset_session", _cmd_reset_session)
+	_dev.register_command("revive_actor", _cmd_revive_actor)
+	# Not a verb: merged into EVERY response as "status". See _status().
+	_dev.register_status_provider(_status)
+
+
+## Liveness facts attached to every reply the bridge sends.
+##
+## The failure this prevents: once the thing under test is dead or frozen, every
+## gameplay query keeps returning well-formed zeros — nothing moving, no state
+## changing — which is indistinguishable from a genuine clean result. Runs have been
+## read as "the feature is broken" when the real answer was "your player died forty
+## samples ago". Putting liveness on every response makes that self-announcing.
+##
+## Keep the payload tiny; it rides on every single reply.
+func _status(_args: Dictionary) -> Dictionary:
+	var actor: Node = _dev.get_tree().get_first_node_in_group("player")
+	if actor == null:
+		return {"actor": "absent"}
+	# Duck-typed so this stays portable across projects.
+	var dead: bool = actor.get("is_dead") == true
+	return {"actor": "dead" if dead else "alive"}
+
+
+## Undo a death so a run can continue instead of being relaunched.
+##
+## Restoring a health value is usually NOT enough: the death flag and the state
+## machine outlive it, so the actor stays frozen and every later reading is garbage.
+## Clear the flag AND leave the death state, and prefer an invulnerability toggle for
+## long observation runs — re-writing health each sample loses the race to any hit
+## that lands between two writes.
+func _cmd_revive_actor(args: Dictionary) -> Dictionary:
+	var actor: Node = _dev.get_tree().get_first_node_in_group("player")
+	if actor == null:
+		return {"success": false, "message": "No node in group 'player'", "data": {}}
+	actor.set("is_dead", false)
+	if args.has("health"):
+		actor.set("health", int(args["health"]))
+	if args.has("invulnerable"):
+		actor.set("god_mode", bool(args["invulnerable"]))
+	# Adapt to your own state machine; without this the actor revives but stays parked
+	# in its death state, still playing the death animation.
+	var sm: Variant = actor.get("state_machine")
+	if sm != null and sm.has_method("change_state"):
+		sm.change_state(args.get("state", "IdleState"))
+	return {"success": true, "message": "revived", "data": {}}
 
 
 ## Instantiate a scene and add it to the current scene root.

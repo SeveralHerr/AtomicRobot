@@ -103,3 +103,26 @@ Log of skills that might have been useful for a given response, and why (short f
   generated `.uid` files are newly untracked. The incoming commit shipped
   `test/unit/test_mobile_controls.gd` without its `.gd.uid`, which the other 122 scripts
   all have; only a reimport surfaced it.
+
+## 2026-08-01 — Re-scaffold the godot-selftest-harness
+
+- Used `godot-selftest-harness:scaffold-godot-harness`. It was a refresh, not a first
+  install: the addon core, all four tool scripts, the example extension, and the
+  CLAUDE.md section were updated in place; `devtools_ext/commands.gd`, `test/unit/`,
+  and `log-devtools.md` were correctly left alone; `devtools_config.json` was patched
+  to add the six new keys while keeping this project's `hud_layer_name: "UI"`,
+  `main_scene`, and `entry_hook`.
+  - Enhancement idea, in simple words: the scaffolder should **say what changed** at the
+    end — a short list of "refreshed / created / left alone / backed up" per file. Right
+    now you only learn `dev_tools.gd` gained 714 lines by running `git diff` yourself,
+    and the three `.bak` files it leaves behind look like junk unless you go diff them.
+  - Second idea: it should **check the DevTools autoload is last** in `project.godot`,
+    not just present. Here it sits above five game autoloads that the project's own
+    debug verbs call into. Nothing broke (the verbs run later, not at registration),
+    but the ordering rule the command itself states is silently violated.
+- `godot-selftest-harness:verify` was not run: nothing about gameplay changed, so
+  headless lint + the 125 unit tests were the right-sized gate for a tooling refresh.
+- A skill that would have helped had it existed: "godot-fix-uids" — the lint smoke check
+  surfaced 9 pre-existing stale-UID errors and the remedy is a documented one-liner in
+  CLAUDE.md, but deciding whether rewriting nine `.tscn` files counts as in-scope for a
+  scaffold is a judgment call a small dedicated skill could just own.

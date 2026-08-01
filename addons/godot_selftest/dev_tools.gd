@@ -6,7 +6,8 @@ extends Node
 ##
 ## This is the game-agnostic core of the godot_selftest harness. It ships only
 ## engine-generic verbs (ping, screenshot, scene tree, state/method access,
-## input simulation, scene/UI validation, ...). Project-specific verbs live in a
+## action + touch input simulation, time stepping, engine feature flags,
+## scene/UI validation, ...). Project-specific verbs live in a
 ## registry extension script (see devtools_config.json -> "extension_script")
 ## that implements `register_commands(dev: Node) -> void` and calls
 ## `dev.register_command(action, handler)` for each verb it adds. Because the
@@ -20,11 +21,22 @@ const RESULTS_PATH: String = "user://devtools_results.json"
 const LOG_PATH: String = "user://devtools_log.jsonl"
 const CONFIG_PATH: String = "res://addons/godot_selftest/devtools_config.json"
 
+## Frames to let elapse after _ready() before sampling the orphan-node baseline, so
+## the main scene has finished coming up. ~0.5s at the default 60 FPS.
+const ORPHAN_BASELINE_FRAMES: int = 30
+
+## Hard ceiling on a single step_time request. The bridge serves one command at a
+## time, so a typo'd "seconds" would otherwise wedge it for as long as the typo says.
+const STEP_TIME_MAX_SECONDS: float = 60.0
+
 ## Default configuration, used verbatim when CONFIG_PATH is missing. Keys read by
-## this core: validator_script, extension_script, hud_layer_name, scan_root.
-## Remaining keys are consumed by sibling tools (lint_project.gd, run_tests.gd,
-## the Python client, and the /verify command) and are carried here so the whole
-## harness shares one schema.
+## this core: validator_script, extension_script, hud_layer_name, scan_root,
+## safe_area_inset. Remaining keys are consumed by sibling tools (lint_project.gd,
+## run_tests.gd, the Python client, and the /verify command) and are carried here so
+## the whole harness shares one schema.
+##
+## Every key MUST have a default here: a project whose devtools_config.json predates
+## a new key still has to work, and _load_config() only overlays the keys it finds.
 const DEFAULT_CONFIG: Dictionary = {
 	"validator_script": "res://addons/godot_selftest/scene_validator.gd",
 	"extension_script": "res://devtools_ext/commands.gd",
@@ -32,7 +44,18 @@ const DEFAULT_CONFIG: Dictionary = {
 	"test_dir": "res://test/unit",
 	"scan_root": "res://",
 	"fps_min": 30,
+	# Absolute orphan ceiling. Kept for compatibility; note that 0 is unreachable in
+	# a real project (a fresh launch routinely reports dozens before any test action),
+	# so prefer gating on orphan_growth_max. See _capture_orphan_baseline().
 	"orphan_max": 0,
+	# Tolerated growth in orphan nodes between the startup baseline and now. This is
+	# the number a run can actually be held to.
+	"orphan_growth_max": 20,
+	# Pixels trimmed off each viewport edge before validate_ui judges whether a
+	# control is on screen. Use it for a decorative overlay -- a CRT bezel, a notch,
+	# a rounded corner -- that eats screen edges the viewport rect knows nothing
+	# about. All-zero (the default) disables the check entirely.
+	"safe_area_inset": {"left": 0, "top": 0, "right": 0, "bottom": 0},
 	"main_scene": "",
 	"entry_hook": {"node_path": "", "method": ""},
 	"mute": true,
@@ -50,6 +73,23 @@ var _handlers: Dictionary = {}
 ## as "status". See register_status_provider().
 var _status_provider: Callable = Callable()
 var _active_simulated_inputs: Array[String] = []
+## Simulated touches currently held down: { index: int -> position: Vector2 }.
+## Kept so a release can default to the last known position, and so a run cannot
+## end leaving phantom fingers down. See _clear_all_simulated_touches().
+var _active_touches: Dictionary = {}
+## Orphan-node count sampled shortly after startup, or -1 before it is captured.
+## See _capture_orphan_baseline() for why an absolute orphan ceiling is useless.
+var _orphan_baseline: int = -1
+## The "id" of the command currently being served, echoed verbatim onto its reply
+## ("" when the request carried none).
+##
+## THIS IS A PURE ECHO AND NOT CONCURRENCY SUPPORT. The bridge is still strictly
+## single-in-flight: one command file, one result file, no locking, no queue. The id
+## exists only so that a crossed reply is DETECTABLE -- the client compares the
+## echoed id against the one it sent and can tell "this is not my answer" instead of
+## silently parsing another request's payload and reporting a missing key. Driving
+## the bridge from two threads is still wrong; it is now merely loud about it.
+var _current_request_id: String = ""
 # Live reference to the instantiated registry extension. MUST be held so the
 # Callables it bound (via register_command) are not freed out from under us.
 var _extension: RefCounted = null
@@ -74,6 +114,7 @@ func _ready() -> void:
 	})
 
 	_process_command_line_args()
+	_capture_orphan_baseline()
 
 
 func _process(_delta: float) -> void:
@@ -85,6 +126,7 @@ func _process(_delta: float) -> void:
 
 func _exit_tree() -> void:
 	_clear_all_simulated_inputs()
+	_clear_all_simulated_touches()
 
 
 # --- Public API ---
@@ -93,6 +135,18 @@ func _exit_tree() -> void:
 ## extension may override a generic verb by re-registering its action string.
 ## Handler signature: func(args: Dictionary) -> Dictionary returning exactly
 ## { "success": bool, "message": String, "data": Dictionary }.
+##
+## Guidance for SETTER verbs: leave the system in a state the game itself can reach.
+## A debug verb that writes one half of an invariant pair is a latent trap. It
+## manufactures a state no real play session can produce, so whatever you observe
+## afterwards is the behavior of an impossible state -- and the verb rots silently
+## the moment anything starts reading the other half. (Real case: a set_combo that
+## wrote the combo count but not the combo window. It looked fine while the HUD drew
+## the count unconditionally, and became useless the day the readout began fading on
+## the window timer. Nothing announced the change.) If the value you are writing has
+## a partner -- a timer, a window, a flag, a matching entry in some registry -- write
+## the partner too, or better, route the write through the same method the game
+## itself calls.
 func register_command(action: String, handler: Callable) -> void:
 	_handlers[action] = handler
 
@@ -147,7 +201,14 @@ func _register_generic_handlers() -> void:
 	register_command("input_clear", _cmd_input_clear)
 	register_command("input_actions", _cmd_input_actions)
 	register_command("input_sequence", _cmd_input_sequence)
+	register_command("touch_press", _cmd_touch_press)
+	register_command("touch_release", _cmd_touch_release)
+	register_command("touch_drag", _cmd_touch_drag)
+	register_command("touch_clear", _cmd_touch_clear)
+	register_command("touch_list", _cmd_touch_list)
+	register_command("set_feature", _cmd_set_feature)
 	register_command("set_game_speed", _cmd_set_game_speed)
+	register_command("step_time", _cmd_step_time)
 	register_command("wait_frames", _cmd_wait_frames)
 	register_command("clear_nodes", _cmd_clear_nodes)
 	register_command("validate_ui", _cmd_validate_ui)
@@ -207,6 +268,13 @@ func _check_for_commands() -> void:
 	var action: String = command.get("action", "")
 	var args: Dictionary = command.get("args", {})
 
+	# Echo the caller's opaque request id back on the reply. Absent -> "". See the
+	# _current_request_id declaration: this makes a crossed reply detectable, it does
+	# NOT make the bridge concurrency-safe.
+	var raw_id: Variant = command.get("id", "")
+	var request_id: String = str(raw_id) if raw_id != null else ""
+	_current_request_id = request_id
+
 	if action.is_empty():
 		_write_result("unknown", {"success": false, "message": "No action specified"})
 		return
@@ -220,11 +288,19 @@ func _check_for_commands() -> void:
 
 	var handler: Callable = _handlers[action]
 	var result: Dictionary = await handler.call(args)
+	# A command that arrived while this one was awaiting (step_time, input_tap, a
+	# long project verb) would have moved _current_request_id. Restore ours so this
+	# reply carries the id of the request it actually answers.
+	_current_request_id = request_id
 	_write_result(action, result)
 
 
+## Writes the single result file. `id` is always present -- the request's id verbatim,
+## or "" when the request carried none -- so a client can reject a reply that is not
+## its own instead of parsing it as an answer.
 func _write_result(action: String, result: Dictionary) -> void:
 	var response: Dictionary = {
+		"id": _current_request_id,
 		"action": action,
 		"success": result.get("success", false),
 		"message": result.get("message", ""),
@@ -394,6 +470,34 @@ func _cmd_validate_all(_args: Dictionary) -> Dictionary:
 	}
 
 
+## Reads a node's state. Two deliberate departures from a plain property dump:
+##
+## 1. args["properties"] -- an Array of property-name Strings (a bare String is also
+##    accepted) -- narrows the response to just those properties. An unfiltered read
+##    of a Label is ~120 keys and of a typical game node ~200, which is a lot of
+##    tokens to grep for one number. A requested name the node does NOT have is
+##    listed in data["missing"] rather than silently dropped: a silent omission is
+##    indistinguishable from "the value happens to be absent", which is exactly how
+##    the transform bug below stayed invisible for weeks. The read itself still
+##    reports success -- probing for an optional property is a legitimate use -- so
+##    check data["missing"], which is always present when a filter was supplied.
+##
+## 2. data["transform"] is ALWAYS present, filter or no filter, and is read straight
+##    off the node instead of through get_property_list(). This is not redundancy.
+##    Godot clears PROPERTY_USAGE_STORAGE on position/rotation/scale/pivot_offset for
+##    the children of a Container, so the enumeration above cannot see them at all --
+##    a scale animation on a VBoxContainer child is completely absent from the dump
+##    while working perfectly on screen. (Verified on 4.7.1: a Label under a plain
+##    Control reports scale with usage 6; the same Label under a VBoxContainer
+##    reports it with usage 0x10000004, which fails the filter.) Controls also expose
+##    offset_transform_scale, which stays 1.0 while the node visibly scales, so the
+##    enumerated dump can be actively misleading. data["transform"] is the value to
+##    assert on. Requesting "transform" in args["properties"] is accepted and never
+##    counts as missing.
+##
+##    Note: data["transform"] shadows the engine's own raw `transform` property (a
+##    Transform2D / Transform3D) on nodes that have one. Nothing readable was lost --
+##    that property carries usage 0 and so never passed the filter anyway.
 func _cmd_get_state(args: Dictionary) -> Dictionary:
 	var node_path: String = args.get("node_path", "")
 	if node_path.is_empty():
@@ -403,6 +507,15 @@ func _cmd_get_state(args: Dictionary) -> Dictionary:
 	if node == null:
 		return {"success": false, "message": "Node not found: %s" % node_path}
 
+	var wanted: Array = []
+	var raw_wanted: Variant = args.get("properties", [])
+	if raw_wanted is String:
+		wanted = [raw_wanted]
+	elif raw_wanted is Array:
+		wanted = raw_wanted
+	elif raw_wanted != null:
+		return {"success": false, "message": "args.properties must be an array of property names"}
+
 	var state: Dictionary = {}
 	for prop in node.get_property_list():
 		var usage: int = prop.get("usage", 0)
@@ -410,11 +523,90 @@ func _cmd_get_state(args: Dictionary) -> Dictionary:
 			var prop_name: String = prop["name"]
 			state[prop_name] = _serialize_variant(node.get(prop_name))
 
+	var data: Dictionary = state
+	var missing: Array = []
+
+	if not wanted.is_empty():
+		var filtered: Dictionary = {}
+		for entry: Variant in wanted:
+			var prop_name: String = str(entry)
+			if prop_name == "transform":
+				# Always served below, from the node itself.
+				continue
+			if state.has(prop_name):
+				filtered[prop_name] = state[prop_name]
+			elif prop_name in node:
+				# Present on the node but hidden from the enumeration above (container
+				# child, editor-only usage flags, ...). Read it directly.
+				filtered[prop_name] = _serialize_variant(node.get(prop_name))
+			else:
+				missing.append(prop_name)
+		filtered["missing"] = missing
+		data = filtered
+
+	data["transform"] = _read_transform(node)
+
+	var message: String = "State retrieved for %s" % node_path
+	if not missing.is_empty():
+		message += " -- %d requested propert%s not found on this node: %s" % [
+			missing.size(),
+			"y" if missing.size() == 1 else "ies",
+			", ".join(PackedStringArray(missing)),
+		]
+
 	return {
 		"success": true,
-		"message": "State retrieved for %s" % node_path,
-		"data": state,
+		"message": message,
+		"data": data,
 	}
+
+
+## Reads a node's live transform directly off the object, bypassing
+## get_property_list() entirely -- see _cmd_get_state for why that indirection is
+## unreliable. Returns an empty Dictionary for a node with no spatial transform.
+func _read_transform(node: Node) -> Dictionary:
+	var out: Dictionary = {}
+
+	if node is Node2D:
+		var n2d: Node2D = node as Node2D
+		out["space"] = "2d"
+		out["position"] = _serialize_variant(n2d.position)
+		out["global_position"] = _serialize_variant(n2d.global_position)
+		out["rotation"] = n2d.rotation
+		out["rotation_degrees"] = rad_to_deg(n2d.rotation)
+		out["scale"] = _serialize_variant(n2d.scale)
+		out["global_scale"] = _serialize_variant(n2d.global_scale)
+		out["skew"] = n2d.skew
+	elif node is Control:
+		var ctrl: Control = node as Control
+		out["space"] = "control"
+		out["position"] = _serialize_variant(ctrl.position)
+		out["global_position"] = _serialize_variant(ctrl.global_position)
+		out["size"] = _serialize_variant(ctrl.size)
+		out["global_rect"] = _serialize_variant(ctrl.get_global_rect())
+		out["rotation"] = ctrl.rotation
+		out["rotation_degrees"] = rad_to_deg(ctrl.rotation)
+		out["scale"] = _serialize_variant(ctrl.scale)
+		out["pivot_offset"] = _serialize_variant(ctrl.pivot_offset)
+	elif node is Node3D:
+		var n3d: Node3D = node as Node3D
+		out["space"] = "3d"
+		out["position"] = _serialize_variant(n3d.position)
+		out["global_position"] = _serialize_variant(n3d.global_position)
+		out["rotation"] = _serialize_variant(n3d.rotation)
+		out["rotation_degrees"] = _serialize_variant(n3d.rotation_degrees)
+		out["scale"] = _serialize_variant(n3d.scale)
+
+	if node is CanvasItem:
+		var item: CanvasItem = node as CanvasItem
+		out["visible"] = item.visible
+		out["effective_visible"] = _is_effectively_visible(item)
+		out["modulate_a"] = item.modulate.a
+		out["effective_modulate_a"] = _get_effective_alpha(item)
+	elif node is Node3D:
+		out["visible"] = (node as Node3D).visible
+
+	return out
 
 
 func _cmd_set_state(args: Dictionary) -> Dictionary:
@@ -466,7 +658,24 @@ func _cmd_run_method(args: Dictionary) -> Dictionary:
 	}
 
 
-func _cmd_performance(_args: Dictionary) -> Dictionary:
+## Collects engine metrics. Beyond the absolute counters it reports orphan GROWTH
+## against a baseline sampled at startup (see _capture_orphan_baseline), because the
+## absolute orphan count is not a number a project can be held to.
+##
+## args["reset_baseline"] = true re-samples the baseline from the current count
+## before reporting, so growth is measured from here on. Call it once the game has
+## reached the state a run actually starts from -- typically right after /verify's
+## entry hook -- otherwise the scene load itself dominates the delta.
+func _cmd_performance(args: Dictionary) -> Dictionary:
+	var orphan_nodes: int = int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT))
+
+	if bool(args.get("reset_baseline", false)):
+		_orphan_baseline = orphan_nodes
+		_write_log("system", "Orphan baseline reset", {"orphan_baseline": _orphan_baseline})
+
+	var baseline_captured: bool = _orphan_baseline >= 0
+	var orphan_growth: int = (orphan_nodes - _orphan_baseline) if baseline_captured else 0
+
 	var fps: float = Engine.get_frames_per_second()
 	var data: Dictionary = {
 		"fps": fps,
@@ -477,16 +686,53 @@ func _cmd_performance(_args: Dictionary) -> Dictionary:
 		"draw_calls": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
 		"objects": Performance.get_monitor(Performance.OBJECT_COUNT),
 		"nodes": Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
-		"orphan_nodes": Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT),
+		# Absolute count, unchanged and still reported.
+		"orphan_nodes": orphan_nodes,
+		# Growth against the startup baseline. -1 baseline means "not sampled yet".
+		"orphan_baseline": _orphan_baseline,
+		"orphan_baseline_captured": baseline_captured,
+		"orphan_growth": orphan_growth,
+		# Both thresholds are echoed so a gate does not have to re-read the config.
+		"orphan_max": int(_config.get("orphan_max", 0)),
+		"orphan_growth_max": int(_config.get("orphan_growth_max", 20)),
 		"physics_2d_active_objects": Performance.get_monitor(Performance.PHYSICS_2D_ACTIVE_OBJECTS),
 		"physics_3d_active_objects": Performance.get_monitor(Performance.PHYSICS_3D_ACTIVE_OBJECTS),
 	}
 
+	var message: String = "Performance metrics collected"
+	if baseline_captured:
+		message += " (orphans %d, baseline %d, growth %d)" % [orphan_nodes, _orphan_baseline, orphan_growth]
+	else:
+		message += " (orphan baseline not sampled yet; growth is not meaningful)"
+
 	return {
 		"success": true,
-		"message": "Performance metrics collected",
+		"message": message,
 		"data": data,
 	}
+
+
+## Samples the orphan-node count once the main scene has settled, so `performance`
+## can report orphan growth rather than only an absolute count.
+##
+## Why: an absolute ceiling of 0 is unreachable in a real project. A fresh launch
+## into a main scene routinely reports dozens of orphans before any test action, and
+## scene swaps push it into the hundreds; measured deltas of a few are noise. A
+## threshold nothing can ever satisfy trains you to skip the check, which is worse
+## than having no check. Growth against a launch baseline is a number a run can be
+## held to -- see `orphan_growth_max` in devtools_config.json.
+##
+## Deliberately fire-and-forget: _ready() does not await it, so a slow first scene
+## cannot delay the bridge coming up. Until it lands, _orphan_baseline stays -1 and
+## `performance` says so rather than reporting a fictitious growth of 0.
+func _capture_orphan_baseline() -> void:
+	for _i: int in range(ORPHAN_BASELINE_FRAMES):
+		await get_tree().process_frame
+	_orphan_baseline = int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT))
+	_write_log("system", "Orphan baseline captured", {
+		"orphan_baseline": _orphan_baseline,
+		"frames_waited": ORPHAN_BASELINE_FRAMES,
+	})
 
 
 func _cmd_quit(args: Dictionary) -> Dictionary:
@@ -641,10 +887,251 @@ func _cmd_input_tap(args: Dictionary) -> Dictionary:
 
 func _cmd_input_clear(_args: Dictionary) -> Dictionary:
 	var cleared: Array[String] = _clear_all_simulated_inputs()
+	var released: Array = _clear_all_simulated_touches()
 	return {
 		"success": true,
-		"message": "Cleared %d simulated inputs" % cleared.size(),
-		"data": {"cleared": cleared},
+		"message": "Cleared %d simulated inputs and released %d touches" % [cleared.size(), released.size()],
+		"data": {"cleared": cleared, "touches_released": released},
+	}
+
+
+# --- Touch Simulation Handlers ---
+
+## Touch has no polled equivalent of Input.action_press() -- InputEventScreenTouch /
+## InputEventScreenDrag are event-only -- so a simulated touch must be injected with
+## Input.parse_input_event(). Two consequences worth knowing before trusting a result:
+##
+##  * The game only sees these if it handles InputEventScreenTouch/Drag itself, or if
+##    Input.set_emulate_mouse_from_touch() is on (it is, by default) and the game
+##    handles the resulting mouse events.
+##  * A game that hides its touch UI behind DisplayServer.is_touchscreen_available()
+##    will not be showing that UI on a desktop run. Call `set_feature` with
+##    {"touchscreen": true} first -- that is what it is for.
+func _dispatch_touch(index: int, position: Vector2, pressed: bool) -> void:
+	var ev := InputEventScreenTouch.new()
+	ev.index = index
+	ev.position = position
+	ev.pressed = pressed
+	Input.parse_input_event(ev)
+
+
+func _dispatch_drag(index: int, position: Vector2, relative: Vector2, delta: float) -> void:
+	var ev := InputEventScreenDrag.new()
+	ev.index = index
+	ev.position = position
+	ev.relative = relative
+	# Velocity is what gesture code reads to decide flick vs. drag, so it has to be
+	# derived from a real interval rather than left at zero.
+	ev.velocity = relative / maxf(delta, 0.0001)
+	Input.parse_input_event(ev)
+
+
+## Presses a finger down. args: { "index": int = 0, "position": [x, y] }.
+## `position` is required for an index that is not already held; for one that is, it
+## defaults to that finger's last known position.
+func _cmd_touch_press(args: Dictionary) -> Dictionary:
+	var index: int = int(args.get("index", 0))
+	var position: Vector2 = Vector2.ZERO
+
+	if args.has("position"):
+		var parsed: Variant = _parse_vector2_or_null(args["position"])
+		if parsed == null:
+			return {"success": false, "message": "'position' must be [x, y] or {\"x\": x, \"y\": y}"}
+		position = parsed
+	elif _active_touches.has(index):
+		position = _active_touches[index]
+	else:
+		return {"success": false, "message": "touch_press on a new index requires 'position' as [x, y]"}
+
+	_dispatch_touch(index, position, true)
+	_active_touches[index] = position
+
+	return {
+		"success": true,
+		"message": "Touch %d pressed at (%.1f, %.1f)" % [index, position.x, position.y],
+		"data": {
+			"index": index,
+			"position": {"x": position.x, "y": position.y},
+			"active_touches": _serialize_touches(),
+		},
+	}
+
+
+## Lifts a finger. args: { "index": int = 0, "position": [x, y] optional }.
+## `position` defaults to the last known position for that index. Releasing an index
+## that is not held is allowed (it is the safe direction) and reported via
+## data["was_held"].
+func _cmd_touch_release(args: Dictionary) -> Dictionary:
+	var index: int = int(args.get("index", 0))
+	var was_held: bool = _active_touches.has(index)
+	var position: Vector2 = _active_touches.get(index, Vector2.ZERO)
+
+	if args.has("position"):
+		var parsed: Variant = _parse_vector2_or_null(args["position"])
+		if parsed == null:
+			return {"success": false, "message": "'position' must be [x, y] or {\"x\": x, \"y\": y}"}
+		position = parsed
+
+	_dispatch_touch(index, position, false)
+	_active_touches.erase(index)
+
+	return {
+		"success": true,
+		"message": "Touch %d released at (%.1f, %.1f)%s" % [
+			index, position.x, position.y,
+			"" if was_held else " (index was not held; released anyway)",
+		],
+		"data": {
+			"index": index,
+			"position": {"x": position.x, "y": position.y},
+			"was_held": was_held,
+			"active_touches": _serialize_touches(),
+		},
+	}
+
+
+## Drags a finger. args:
+##   { "index": int = 0, "to": [x, y], "from": [x, y] optional, "steps": int = 1 }
+##
+## The drag starts from `from`, else from that index's tracked position; an index
+## that is neither held nor given a `from` is an error rather than a drag from the
+## origin. With steps > 1 the events are spread one per process frame -- N drag
+## events inside a single frame is not something a real finger produces and gesture
+## recognisers can legitimately reject it -- so a multi-step drag takes steps-1
+## frames of wall time.
+func _cmd_touch_drag(args: Dictionary) -> Dictionary:
+	var index: int = int(args.get("index", 0))
+
+	if not args.has("to"):
+		return {"success": false, "message": "touch_drag requires 'to' as [x, y]"}
+	var to_parsed: Variant = _parse_vector2_or_null(args["to"])
+	if to_parsed == null:
+		return {"success": false, "message": "'to' must be [x, y] or {\"x\": x, \"y\": y}"}
+	var to_pos: Vector2 = to_parsed
+
+	var from_pos: Vector2 = Vector2.ZERO
+	if args.has("from"):
+		var from_parsed: Variant = _parse_vector2_or_null(args["from"])
+		if from_parsed == null:
+			return {"success": false, "message": "'from' must be [x, y] or {\"x\": x, \"y\": y}"}
+		from_pos = from_parsed
+	elif _active_touches.has(index):
+		from_pos = _active_touches[index]
+	else:
+		return {
+			"success": false,
+			"message": "Touch index %d is not held. Press it first, or pass 'from' as [x, y]." % index,
+		}
+
+	var steps: int = maxi(1, int(args.get("steps", 1)))
+	var delta: float = maxf(get_process_delta_time(), 0.0001)
+	var previous: Vector2 = from_pos
+	# Track from the start point, so a touch_clear after a failed run still lifts it.
+	_active_touches[index] = from_pos
+
+	for step: int in range(1, steps + 1):
+		var point: Vector2 = from_pos.lerp(to_pos, float(step) / float(steps))
+		_dispatch_drag(index, point, point - previous, delta)
+		previous = point
+		_active_touches[index] = point
+		if step < steps:
+			await get_tree().process_frame
+			delta = maxf(get_process_delta_time(), 0.0001)
+
+	return {
+		"success": true,
+		"message": "Touch %d dragged (%.1f, %.1f) -> (%.1f, %.1f) in %d step%s" % [
+			index, from_pos.x, from_pos.y, to_pos.x, to_pos.y, steps, "" if steps == 1 else "s",
+		],
+		"data": {
+			"index": index,
+			"from": {"x": from_pos.x, "y": from_pos.y},
+			"to": {"x": to_pos.x, "y": to_pos.y},
+			"steps": steps,
+			"active_touches": _serialize_touches(),
+		},
+	}
+
+
+## Lifts every tracked finger. Cheap insurance: a run that ends mid-gesture leaves
+## the game holding a touch nothing will ever finish, and the next run inherits it.
+func _cmd_touch_clear(_args: Dictionary) -> Dictionary:
+	var released: Array = _clear_all_simulated_touches()
+	return {
+		"success": true,
+		"message": "Released %d simulated touches" % released.size(),
+		"data": {"released": released},
+	}
+
+
+## Reports the fingers the harness believes are down. This is the harness's own
+## tracking, not a query of the OS -- it cannot see touches the harness did not send.
+func _cmd_touch_list(_args: Dictionary) -> Dictionary:
+	var touches: Array = _serialize_touches()
+	return {
+		"success": true,
+		"message": "%d simulated touch%s held" % [touches.size(), "" if touches.size() == 1 else "es"],
+		"data": {
+			"touches": touches,
+			"count": touches.size(),
+			"touchscreen_available": DisplayServer.is_touchscreen_available(),
+		},
+	}
+
+
+# --- Engine Feature Flags ---
+
+## Forces engine-level feature flags that a game queries to decide what UI to show.
+## args: { "touchscreen": bool }. The dictionary is deliberately open -- unrecognised
+## keys are reported back in data["unknown"] rather than rejected, so future flags
+## can be added without breaking a client.
+##
+## {"touchscreen": true} calls Input.set_emulate_touch_from_mouse(true). That IS the
+## lever behind DisplayServer.is_touchscreen_available(): verified on Godot 4.7.1
+## against both the headless and the real Windows display server, which reported
+## false before the call and true after. data["touchscreen_available"] returns the
+## live value so the caller can confirm it took effect on their build rather than
+## trusting this comment. Two caveats:
+##
+##  * It is a query, not a signal. A Control that read is_touchscreen_available()
+##    once in its own _ready() will not re-evaluate. Set the flag BEFORE the scene
+##    that reads it loads, or call that node's own refresh method afterwards.
+##  * It is real emulation: while on, mouse input in the window is also delivered as
+##    touch events. That is usually what you want for a touch-UI screenshot, but it
+##    means the session is no longer a faithful mouse session.
+func _cmd_set_feature(args: Dictionary) -> Dictionary:
+	var applied: Dictionary = {}
+	var unknown: Array = []
+
+	for key: String in args:
+		match key:
+			"touchscreen":
+				var want: bool = bool(args[key])
+				Input.set_emulate_touch_from_mouse(want)
+				applied["touchscreen"] = want
+			_:
+				unknown.append(key)
+
+	var data: Dictionary = {
+		"applied": applied,
+		"unknown": unknown,
+		"touchscreen_available": DisplayServer.is_touchscreen_available(),
+		"emulate_touch_from_mouse": Input.is_emulating_touch_from_mouse(),
+	}
+
+	if applied.is_empty():
+		return {
+			"success": false,
+			"message": "No known feature flags supplied. Supported: touchscreen (bool).",
+			"data": data,
+		}
+
+	return {
+		"success": true,
+		"message": "Applied %s. DisplayServer.is_touchscreen_available() is now %s. UI that read this flag during its own _ready() will not re-evaluate on its own." % [
+			str(applied), str(data["touchscreen_available"]),
+		],
+		"data": data,
 	}
 
 
@@ -830,6 +1317,114 @@ func _cmd_set_game_speed(args: Dictionary) -> Dictionary:
 	}
 
 
+## Advances the running game by (approximately) `seconds` of game time, so a tween or
+## animation can be sampled at a chosen moment instead of wherever a real-time sleep
+## happened to land. args: { "seconds": float }.
+##
+## READ THE LIMITS BEFORE TRUSTING A SAMPLE TAKEN THIS WAY.
+##
+##  * There is no manual tick. GDScript cannot drive SceneTree iterations, so there
+##    is no "advance the world by exactly N seconds and stop" primitive to build on.
+##    This verb runs the game at normal speed and returns once enough time has
+##    passed. The tree is NOT paused and NOT stepped, despite what the name suggests.
+##  * Engine.time_scale is pinned to 1.0 for the duration and restored afterwards, so
+##    a leftover `set_game_speed 0.05` cannot silently stretch the interval. That
+##    pinning is the part that makes repeated samples comparable.
+##  * PHYSICS IS EXACT. Physics deltas are fixed at 1/physics_ticks_per_second, so
+##    advancing N physics frames advances physics-driven state by exactly
+##    N/physics_ticks_per_second seconds. data["physics_seconds"] is that number and
+##    it is the one to trust. A Tween created with TWEEN_PROCESS_PHYSICS, or an
+##    AnimationPlayer set to ANIMATION_PROCESS_PHYSICS, lands on it.
+##  * PROCESS IS NOT EXACT. Tween defaults to TWEEN_PROCESS_IDLE and AnimationPlayer
+##    to ANIMATION_PROCESS_IDLE; both advance by the real frame delta, which is
+##    wall-clock and jittery. This verb therefore also accumulates the process deltas
+##    it actually observed and reports them as data["process_seconds"]. The sample
+##    lands within roughly one frame (~16 ms at 60 FPS) of the requested moment, not
+##    on it. Compare process_seconds against seconds_requested rather than assuming
+##    they match; for a tighter sample, drive the tween off physics.
+##  * A paused tree still emits process/physics frames while nothing in the game
+##    advances, so this would happily "step" a frozen game. data["tree_paused"] says
+##    whether that happened -- check it before concluding the animation did nothing.
+##  * The loop has a frame budget so a starved or stalled tree cannot wedge the
+##    single-in-flight command bus. data["budget_exhausted"] reports it and the
+##    command returns success:false.
+func _cmd_step_time(args: Dictionary) -> Dictionary:
+	var seconds: float = float(args.get("seconds", 0.0))
+	if seconds <= 0.0:
+		return {"success": false, "message": "step_time requires a positive 'seconds' value"}
+	if seconds > STEP_TIME_MAX_SECONDS:
+		return {
+			"success": false,
+			"message": "step_time refuses %.3fs; the maximum is %.1fs (the bridge serves one command at a time)" % [
+				seconds, STEP_TIME_MAX_SECONDS,
+			],
+		}
+
+	var ticks_per_second: int = Engine.physics_ticks_per_second
+	var target_physics_frames: int = ceili(seconds * float(ticks_per_second))
+	var previous_scale: float = Engine.time_scale
+	Engine.time_scale = 1.0
+
+	var start_physics_frames: int = int(Engine.get_physics_frames())
+	var start_process_frames: int = int(Engine.get_process_frames())
+	var start_msec: int = Time.get_ticks_msec()
+	var process_seconds: float = 0.0
+	# What the request should need, plus generous headroom for a loop running below
+	# real time. Purely a stuck-loop guard, not a pacing mechanism.
+	var frame_budget: int = target_physics_frames * 4 + 240
+	var frames_spent: int = 0
+	var budget_exhausted: bool = false
+
+	while true:
+		var physics_advanced: int = int(Engine.get_physics_frames()) - start_physics_frames
+		# Wait for BOTH clocks: the physics one so physics-driven state advances the
+		# full requested amount, the process one so idle tweens do too.
+		if physics_advanced >= target_physics_frames and process_seconds >= seconds:
+			break
+		if frames_spent >= frame_budget:
+			budget_exhausted = true
+			break
+		await get_tree().process_frame
+		frames_spent += 1
+		process_seconds += get_process_delta_time()
+
+	var physics_frames: int = int(Engine.get_physics_frames()) - start_physics_frames
+	var process_frames: int = int(Engine.get_process_frames()) - start_process_frames
+	var elapsed_ms: int = Time.get_ticks_msec() - start_msec
+	var tree_paused: bool = get_tree().paused
+	Engine.time_scale = previous_scale
+
+	var data: Dictionary = {
+		"seconds_requested": seconds,
+		"frames_advanced": physics_frames,
+		"physics_frames": physics_frames,
+		"target_physics_frames": target_physics_frames,
+		"physics_seconds": float(physics_frames) / float(maxi(1, ticks_per_second)),
+		"physics_ticks_per_second": ticks_per_second,
+		"process_frames": process_frames,
+		"process_seconds": process_seconds,
+		"elapsed_wall_ms": elapsed_ms,
+		"previous_time_scale": previous_scale,
+		"restored_time_scale": Engine.time_scale,
+		"tree_paused": tree_paused,
+		"budget_exhausted": budget_exhausted,
+	}
+
+	var message: String = "Advanced %.4fs of physics time (%d frames @ %d Hz, exact) and %.4fs of process time (approximate, +/- one frame); requested %.4fs. time_scale pinned to 1.0 and restored to %.3f." % [
+		data["physics_seconds"], physics_frames, ticks_per_second, process_seconds, seconds, previous_scale,
+	]
+	if tree_paused:
+		message += " WARNING: get_tree().paused is true, so node processing did not actually advance."
+	if budget_exhausted:
+		message += " WARNING: frame budget exhausted before the target was reached -- the loop is starved."
+
+	return {
+		"success": not budget_exhausted,
+		"message": message,
+		"data": data,
+	}
+
+
 func _cmd_wait_frames(args: Dictionary) -> Dictionary:
 	var count: int = int(args.get("count", 1))
 	var start_time := Time.get_ticks_msec()
@@ -907,11 +1502,28 @@ func _find_hud_node() -> Node:
 
 # --- UI Validation Command Handlers ---
 
-func _cmd_validate_ui(_args: Dictionary) -> Dictionary:
+## Runs the UI checks over the current scene.
+##
+## The safe-area check (issue code "ui_outside_safe_area") reads `safe_area_inset`
+## from devtools_config.json, overridable per call via args["safe_area_inset"]. It is
+## SKIPPED ENTIRELY when the inset is all zeros -- with a zero inset it would only
+## restate checks 1 and 5, and an existing project must see exactly the findings it
+## saw before this check existed.
+func _cmd_validate_ui(args: Dictionary) -> Dictionary:
 	var issues: Array = []
 	var interactive_controls: Array = []
 	var vp: Vector2 = Vector2(get_tree().root.size)
-	_validate_ui_recursive(get_tree().current_scene, vp, issues, interactive_controls)
+
+	var inset: Dictionary = _resolve_safe_area_inset(args)
+	var check_safe_area: bool = inset["left"] != 0.0 or inset["top"] != 0.0 \
+		or inset["right"] != 0.0 or inset["bottom"] != 0.0
+	var safe_rect: Rect2 = Rect2(
+		inset["left"],
+		inset["top"],
+		maxf(0.0, vp.x - inset["left"] - inset["right"]),
+		maxf(0.0, vp.y - inset["top"] - inset["bottom"]))
+
+	_validate_ui_recursive(get_tree().current_scene, vp, issues, interactive_controls, safe_rect, check_safe_area)
 
 	# Check for overlapping interactive controls
 	var overlaps: Array = _check_interactive_overlaps(interactive_controls)
@@ -927,11 +1539,36 @@ func _cmd_validate_ui(_args: Dictionary) -> Dictionary:
 	return {
 		"success": issues.is_empty(),
 		"message": "%d UI issues found" % issues.size() if not issues.is_empty() else "No UI issues found",
-		"data": {"issues": issues},
+		"data": {
+			"issues": issues,
+			"safe_area_checked": check_safe_area,
+			"safe_area_inset": inset,
+			"safe_area_rect": {
+				"x": safe_rect.position.x,
+				"y": safe_rect.position.y,
+				"w": safe_rect.size.x,
+				"h": safe_rect.size.y,
+			},
+		},
 	}
 
 
-func _validate_ui_recursive(node: Node, vp: Vector2, issues: Array, interactive_controls: Array = []) -> void:
+## Reads the safe-area inset (pixels trimmed off each viewport edge) from args, else
+## from `safe_area_inset` in devtools_config.json, else zero. Always returns all four
+## edges as floats so callers need no further guarding.
+func _resolve_safe_area_inset(args: Dictionary) -> Dictionary:
+	var inset: Dictionary = {"left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0}
+	var source: Variant = args.get("safe_area_inset", _config.get("safe_area_inset", {}))
+	if source is Dictionary:
+		var source_dict: Dictionary = source
+		for edge: String in ["left", "top", "right", "bottom"]:
+			var value: Variant = source_dict.get(edge, 0.0)
+			if _is_number(value):
+				inset[edge] = float(value)
+	return inset
+
+
+func _validate_ui_recursive(node: Node, vp: Vector2, issues: Array, interactive_controls: Array = [], safe_rect: Rect2 = Rect2(), check_safe_area: bool = false) -> void:
 	if node is Control and _is_effectively_visible(node):
 		var control: Control = node as Control
 		var rect: Rect2 = control.get_global_rect()
@@ -1058,8 +1695,26 @@ func _validate_ui_recursive(node: Node, vp: Vector2, issues: Array, interactive_
 					],
 				})
 
+		# Check 9: Safe-area inset. Only interactive or text-bearing controls are
+		# judged -- a full-bleed background legitimately covers the trimmed edges, and
+		# flagging it would bury the findings that matter. Skipped wholesale when the
+		# inset is all zeros, so an existing project sees no new findings.
+		if check_safe_area and control.visible:
+			var is_interactive: bool = control is Button or control is TextureButton or control is LinkButton
+			var carries_text: bool = not _get_control_text(control).is_empty()
+			if (is_interactive or carries_text) and not safe_rect.encloses(rect):
+				issues.append({
+					"severity": "warning",
+					"code": "ui_outside_safe_area",
+					"message": "%s '%s' falls outside the safe area (rect: %.0f,%.0f -> %.0f,%.0f, safe area: %.0f,%.0f -> %.0f,%.0f)" % [
+						control.get_class(), control.name,
+						rect.position.x, rect.position.y, rect.end.x, rect.end.y,
+						safe_rect.position.x, safe_rect.position.y, safe_rect.end.x, safe_rect.end.y,
+					],
+				})
+
 	for child in node.get_children():
-		_validate_ui_recursive(child, vp, issues, interactive_controls)
+		_validate_ui_recursive(child, vp, issues, interactive_controls, safe_rect, check_safe_area)
 
 
 func _cmd_get_ui_snapshot(_args: Dictionary) -> Dictionary:
@@ -1363,6 +2018,48 @@ func _clear_all_simulated_inputs() -> Array[String]:
 		_dispatch_action_event(action, false)
 	_active_simulated_inputs.clear()
 	return cleared
+
+
+## Mirrors _clear_all_simulated_inputs() for touch. Hooked into input_clear,
+## touch_clear and _exit_tree so a run cannot leave phantom fingers down: an
+## unreleased touch is a gesture the game is still waiting to complete, and it
+## outlives the run that started it.
+func _clear_all_simulated_touches() -> Array:
+	var released: Array = _serialize_touches()
+	for entry: Dictionary in released:
+		var position: Dictionary = entry["position"]
+		_dispatch_touch(int(entry["index"]), Vector2(position["x"], position["y"]), false)
+	_active_touches.clear()
+	return released
+
+
+func _serialize_touches() -> Array:
+	var out: Array = []
+	var indexes: Array = _active_touches.keys()
+	indexes.sort()
+	for index: int in indexes:
+		var position: Vector2 = _active_touches[index]
+		out.append({"index": index, "position": {"x": position.x, "y": position.y}})
+	return out
+
+
+func _is_number(value: Variant) -> bool:
+	return typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT
+
+
+## Parses [x, y] or {"x": ..., "y": ...} into a Vector2. Returns null -- not a zero
+## vector -- on anything else, so a malformed argument is rejected loudly rather than
+## silently reinterpreted as the top-left corner of the screen.
+func _parse_vector2_or_null(value: Variant) -> Variant:
+	if value is Array:
+		var arr: Array = value
+		if arr.size() >= 2 and _is_number(arr[0]) and _is_number(arr[1]):
+			return Vector2(float(arr[0]), float(arr[1]))
+	elif value is Dictionary:
+		var dict: Dictionary = value
+		if dict.has("x") and dict.has("y") and _is_number(dict["x"]) and _is_number(dict["y"]):
+			return Vector2(float(dict["x"]), float(dict["y"]))
+	return null
 
 
 func _clear_stale_files() -> void:

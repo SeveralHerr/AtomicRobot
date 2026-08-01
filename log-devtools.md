@@ -256,3 +256,31 @@ one nobody ever looked at.
   hidden until the intro sequence runs).
 - `pause-spawner` and `spawn_wave` staging verbs — project-side, still not written. The
   idle-test-player deaths that keep recurring in this log are the cost.
+
+## 2026-08-01 — Re-scaffolding the harness onto an already-scaffolded project
+
+- Gap: **the scaffolder overwrites `addons/godot_selftest/dev_tools.gd` with no backup**,
+  while `tools/*` gets the `.bak` treatment. That asymmetry is only safe because this
+  project happens to be under git — the local input-dispatch patch added on 2026-07-21
+  would otherwise have been unrecoverable. (It survived: the patch is upstream now.)
+  - Improvement: back up `dev_tools.gd` and `scene_validator.gd` on content mismatch
+    exactly like the tool scripts, or refuse to overwrite when the file differs from the
+    template *and* the project is not a clean git worktree.
+- Gap: **no post-scaffold self-check of the bridge.** Step 12 lints, which proves the
+  project still parses, but proves nothing about the thing that was actually installed.
+  A refreshed `dev_tools.gd` could fail to register a single command and the smoke check
+  would still print all-`OK`.
+  - Improvement: add a step that launches muted, `ping`s, runs `list-commands`, asserts
+    the project's own verbs are present, and quits. Roughly `/verify`'s first half.
+- Gap: **the config patcher can't tell "customized" from "stale default".** It preserved
+  `orphan_max: 0`, which this log has recorded as unreachable for months (a fresh launch
+  reports 50–100 orphans). It's harmless now that `orphan_growth_max` is the real gate,
+  but a dead key that reads like a threshold is a trap for the next reader.
+  - Improvement: when a key is superseded, the patcher should drop or comment it rather
+    than preserve it, and print which keys it added vs. kept.
+- Confirmed fixed from earlier entries: the Windows `python3` App-execution-alias trap —
+  probing by execution correctly picked `python` (`python3` fails here), and the Stop
+  hook wired to it runs and exits 0.
+
+**Still open, unchanged:** the boss-fight `entry_points` entry, `pause-spawner` /
+`spawn_wave` staging verbs, and the semantic scene diff.
