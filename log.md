@@ -158,3 +158,19 @@ Log of skills that might have been useful for a given response, and why (short f
 - No skill invoked; this was git work. No skill in the list would have helped, and none
   is obviously missing - `/code-review` would have been the one to reach for had the
   request been "check this before committing" rather than "commit it".
+
+## 2026-08-01 — Pause menu CRT + readability
+
+- No skill invoked. `godot-selftest-harness:verify` would have been the natural fit but
+  its Phase 2 launch/entry flow cannot reach a PAUSED frame at all (see log-devtools.md
+  this date), so the check was done by hand.
+- Would have helped, had it existed: a **"compare a UI state before/after a shader or
+  layer change"** skill — capture the same screen twice and diff, rather than eyeballing
+  two screenshots taken minutes apart.
+
+## 2026-08-01 — Public-repo push-permission audit
+
+- `security-review`: closest fit, but it reviews pending code changes on the branch, not repository hosting configuration — did not invoke.
+  - Enhancement idea: let it also look at the repo's GitHub settings, not just the diff — is the main branch locked, do the build robots hand secrets to strangers.
+- Would have been useful had it existed: a **repo-hardening** skill that answers "is my public repo safe" — checks branch protection, workflow triggers vs. secrets, collaborator list, and committed keys, then offers the fixes.
+- `update-config`: not applicable; the settings at issue are GitHub's, not `settings.json`.

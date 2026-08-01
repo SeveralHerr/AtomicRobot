@@ -58,6 +58,11 @@ the single source of truth.)
 
 ## 2026-07-25 — Diagnose the one-attacker wave bug, fan out approach A
 
+## 2026-08-01 — Check public repo push safety
+
+- Gap: local Git can confirm the remote URL and current branch status, but cannot determine GitHub branch protection or collaborator permissions from the workspace alone.
+  - Improvement: a devtools verb that fetches and reports remote GitHub repo branch protection / push-permission metadata would make this kind of safety check precise instead of heuristic.
+
 - Gap: **nothing verifies that a registered system is actually reachable from gameplay.** `Globals.request_attack_slot` and friends had six passing unit tests and not one caller; lint checks UIDs and scenes, `run_tests.gd` happily green-lights orphaned code. The bug survived because both gates said "clean".
   - Improvement: a lint rule (or a `tools/find_orphans.gd`) that flags script functions and autoload APIs referenced only from `test/`, and have `/verify` surface them as warnings.
 - Gap: **no way to assert "how many enemies are attacking right now".** The whole bug is a crowd-behaviour property, and the devtools vocabulary is per-node (`get-state`, `node-bounds`) — confirming it means reading each maid's state one call at a time and inferring.
@@ -364,3 +369,38 @@ one nobody ever looked at.
     `git status --short` before and after any `--import` it triggers, so import-authored
     edits are attributed at the moment they happen instead of being mistaken for
     someone else's in-editor work.
+
+## 2026-08-01 — Pause menu missing the CRT effect
+
+- Gap: **the devtools bridge dies the moment the game pauses.** Verifying a pause-menu
+  change means looking at a paused frame, but `run-method /root/PauseMenu toggle_pause`
+  is immediately followed by
+  `game not running: 'screenshot' was never picked up (2.0s grace...)` — the DevTools
+  autoload polls in `_process`, so `get_tree().paused = true` stops it, and the error
+  text says "dead game or wrong user:// dir", neither of which is what happened.
+  Workaround: relaunch and
+  `set-state --node /root/DevTools --property process_mode --value 3`
+  (PROCESS_MODE_ALWAYS) BEFORE pausing — once paused it is too late, because the verb
+  that would fix it can no longer be received.
+  - Improvement: set `process_mode = PROCESS_MODE_ALWAYS` on the DevTools autoload in
+    `dev_tools.gd` itself. It is one line, it is what every debug tool wants, and it
+    makes pause menus, game-over screens and hit-pauses testable at all.
+- Gap: **nothing describes the canvas-layer stack, so draw-order bugs are invisible.**
+  The pause menu sat on layer 101 against the CRT overlay's 100 and rendered above a
+  full-screen `hint_screen_texture` shader — correct in isolation, wrong composited, and
+  neither `validate-all`, `validate-ui` nor the unit suite can see it. Found only by
+  reading both files and confirming with a screenshot.
+  - Improvement: add a `canvas-layers` verb listing every CanvasLayer in the running
+    tree with its `layer`, name and visibility, so the compositing order can be asserted
+    (and eyeballed) instead of reconstructed from source.
+- Note: `log-devtools.md` picked up a `## 2026-08-01 — Check public repo push safety`
+  entry from another session, inserted mid-file between the 2026-07-25 heading and its
+  bullets. Left as found; flagging it because it makes that older entry read as if its
+  gaps belong to the new heading.
+
+## 2026-08-01 — Audited public-repo push permissions and Actions secret exposure
+
+- Gap: **No harness/devtools verb for repo-hosting posture** — `/verify` covers runtime and lint but nothing about GitHub-side risk (branch protection, workflow triggers, committed secrets). Had to hand-roll `Invoke-RestMethod` against api.github.com because `gh` is not installed on this machine (`gh : The term 'gh' is not recognized as the name of a cmdlet`).
+  - Improvement: a small `tools/audit_repo.py` (or `/verify --repo`) that reads the remote via the unauthenticated API and reports: `branches/<default>/protection` reachability, `protected` flag, every `.github/workflows/*.yml` trigger that combines `pull_request_target`/`pull_request` with `secrets.*`, and tracked files matching a secret-ish glob. All four checks are cheap and need no token.
+- Gap: **Unauthenticated API cannot see collaborators or rulesets** — `collaborators`, `branches/main/protection`, and `actions/permissions` all returned `401 Unauthorized`, so "who has write access" stayed unanswerable from the CLI.
+  - Improvement: note in CLAUDE.md's environment section that `gh` is absent, with the one-line winget install, so a future session reaches for auth before burning calls on 401s.
