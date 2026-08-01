@@ -230,3 +230,53 @@ func test_scene_gating() -> String:
 	if r != "":
 		return r
 	return _T.assert_false(L.scene_has_lanes("res://scenes/boss_room.tscn"), "boss room stays single-plane")
+
+
+# --- Baseline anchoring -------------------------------------------------------
+
+## The bug this rule exists for: the player walks onto a platform, the ground-lane
+## capture takes the platform's floor as the street line, and every road lane (plus
+## the enemies, cars and coins reading it) lifts off the road to follow them up.
+func test_baseline_refuses_raised_ground() -> String:
+	var street := -1.0
+	var platform := street - 120.0
+	var r: String = _T.assert_false(L.accepts_baseline(street, platform), "a platform is not the street")
+	if r != "":
+		return r
+	# A single lane step up must already be refused — that is the smallest elevation
+	# the depth axis is allowed to notice.
+	return _T.assert_false(L.accepts_baseline(street, street - L.LANE_SPACING),
+		"one lane step up is still not the street")
+
+
+## First contact has nothing to compare against, and a lower floor is either the real
+## street or a correction toward it — both must land.
+func test_baseline_accepts_first_capture_and_downward_correction() -> String:
+	var r: String = _T.assert_true(L.accepts_baseline(INF, -1.0), "first capture always wins")
+	if r != "":
+		return r
+	return _T.assert_true(L.accepts_baseline(-121.0, -1.0), "a lower floor corrects a raised capture")
+
+
+## Tile seams and float drift re-measure a flat walkway a hair high every few frames;
+## refusing those would freeze the baseline on whatever the first frame rounded to.
+func test_baseline_tolerates_measurement_drift() -> String:
+	var r: String = _T.assert_true(L.accepts_baseline(-1.0, -1.0 - L.BASELINE_TOLERANCE * 0.5),
+		"sub-tolerance drift is still the street")
+	if r != "":
+		return r
+	return _T.assert_true(L.BASELINE_TOLERANCE < L.LANE_SPACING,
+		"tolerance (%f) must stay under one lane spacing (%f)" % [L.BASELINE_TOLERANCE, L.LANE_SPACING])
+
+
+## at_baseline is what gates lane changes: a tap of S on a platform must not tween the
+## player through the air onto the road below.
+func test_at_baseline_separates_street_from_platform() -> String:
+	var street := -1.0
+	var r: String = _T.assert_true(L.at_baseline(street, street), "soles on the street line")
+	if r != "":
+		return r
+	r = _T.assert_false(L.at_baseline(street, street - 120.0), "soles up on a platform")
+	if r != "":
+		return r
+	return _T.assert_false(L.at_baseline(INF, -1.0), "nothing is street-level before the street is known")

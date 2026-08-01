@@ -155,6 +155,40 @@ static func same_lane(a: int, b: int) -> bool:
 	return a == b
 
 
+# --- Baseline anchoring -------------------------------------------------------
+
+## How far off the street line a floor may be and still count as the street (px).
+## Covers tile-seam and float drift, not authored elevation: the smallest thing the
+## lanes must refuse to follow is a one-lane step (LANE_SPACING = 24px).
+const BASELINE_TOLERANCE := 6.0
+
+
+## Should a freshly measured floor line replace the street baseline?
+##
+## The ground lane rides real collision, so a body standing on it re-measures the
+## floor under its own feet — and platforms, scaffolding and raised ledges are ALSO
+## ground-lane floors. Taking every measurement dragged the whole depth axis up with
+## the player: step onto a platform and lanes 1-3, the enemies standing on them, the
+## cars and the resting coins all lifted off the street to hang in mid-air under it.
+##
+## The street is the LOWEST floor in the level (the road strip below it has no
+## collision at all), so "never move the baseline up-screen" anchors it while still
+## self-healing downward if the first capture ever lands somewhere raised.
+static func accepts_baseline(current: float, candidate: float) -> bool:
+	if not is_finite(current):
+		return true
+	return candidate >= current - BASELINE_TOLERANCE
+
+
+## Are soles at `foot_y` resting on the street itself, rather than on raised
+## ground-lane geometry? False while the baseline is still unknown — nothing can be
+## called street-level before the street has been measured.
+static func at_baseline(baseline_floor_y: float, foot_y: float) -> bool:
+	if not is_finite(baseline_floor_y):
+		return false
+	return absf(foot_y - baseline_floor_y) <= BASELINE_TOLERANCE
+
+
 # --- In-lane depth jitter + draw sorting -------------------------------------
 
 ## Max in-lane depth offset (px) for a road-lane enemy, so a lane doesn't read as a

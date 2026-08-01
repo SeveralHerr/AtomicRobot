@@ -345,7 +345,13 @@ func _update_lane_floor() -> void:
 	# feet and the player's 19.75px, so an origin-based baseline could not be shared
 	# between them without one of the two standing at the wrong height.
 	if is_on_floor() and lane == Lanes.GROUND_LANE:
-		lane_floor_y = global_position.y + foot_offset()
+		# Platform maids and anyone knocked onto raised geometry are still on the
+		# ground lane; Lanes.accepts_baseline keeps their street line from climbing up
+		# to whatever they happen to be standing on (it feeds coin and power-up drop
+		# heights as well as this body's own virtual floors).
+		var candidate := global_position.y + foot_offset()
+		if Lanes.accepts_baseline(lane_floor_y, candidate):
+			lane_floor_y = candidate
 		return
 	# Authored straight onto a road lane (starting_lane 1-3): _ready kept real ground
 	# collision so we'd land on something. First contact defines the walkway line;

@@ -279,7 +279,12 @@ func _update_lane_floor() -> void:
 	# the virtual road-lane floors are measured from. Stored as the FLOOR (soles),
 	# not this node's Y, so enemies with different collision boxes can reuse it.
 	if is_on_floor() and current_lane == Lanes.GROUND_LANE and not is_changing_lane:
-		lane_floor_y = global_position.y + foot_offset()
+		# Platforms and scaffolding are ground-lane floors too, so not every floor the
+		# player stands on is the street — Lanes.accepts_baseline drops the raised ones
+		# instead of letting the depth axis ride up onto them.
+		var candidate := global_position.y + foot_offset()
+		if Lanes.accepts_baseline(lane_floor_y, candidate):
+			lane_floor_y = candidate
 		_apply_spawn_lane()
 
 	# Road lanes have no physical floor: snap onto the lane's virtual floor line.
@@ -343,8 +348,20 @@ func _process_lane_input(delta: float) -> void:
 	_up_prev = up_now
 	_down_prev = down_now
 
+## Standing on the street, as opposed to raised ground-lane geometry (a platform, the
+## scaffolding). Always true off the ground lane — road lanes ARE the street.
+func is_on_street() -> bool:
+	if current_lane != Lanes.GROUND_LANE:
+		return true
+	return Lanes.at_baseline(lane_floor_y, global_position.y + foot_offset())
+
 func try_change_lane(dir: int) -> bool:
 	if is_changing_lane or not lanes_active() or not is_grounded():
+		return false
+	# The lanes are street lanes. Stepping into one from a platform would tween the
+	# player straight through the air down to the road, so hold them on the walkway
+	# until they come back down to it.
+	if not is_on_street():
 		return false
 	var st = state_machine.current_state
 	if not (st is IdleState or st is WalkState or st is RunState):
