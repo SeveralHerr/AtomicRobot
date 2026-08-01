@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
 [ext_resource type="Script" uid="uid://dc00l4kuir5j0" path="res://scripts/health_container.gd" id="2_vq1rx"]
 [ext_resource type="Texture2D" uid="uid://xaol7ee44k8q" path="res://images/ART-Mobile-logo (1).png" id="4_vq1rx"]
+[ext_resource type="Material" path="res://shaders/hud_logo_outline_mat.tres" id="4_hudol"]
 [ext_resource type="Script" uid="uid://o2h3iex6u6ps" path="res://scripts/game_over_container.gd" id="5_sj8ng"]
 [ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://styles/font_v2.tres" id="5_yhyvh"]
 [ext_resource type="Script" uid="uid://fv8o1x5w5344" path="res://scripts/notificataion_container.gd" id="7_2pg4o"]
@@ -39,7 +40,8 @@
 font = ExtResource("51_k4pk8")
 font_size = 100
 font_color = Color(0.462745, 0, 0, 1)
-outline_size = 6
+outline_size = 14
+outline_color = Color(1, 1, 1, 1)
 shadow_size = 18
 shadow_color = Color(0, 0, 0, 1)
 shadow_offset = Vector2(0, 0)
@@ -233,6 +235,7 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="TextureRect" type="TextureRect" parent="UI/MarginContainer" unique_id=1157025695]
+material = ExtResource("4_hudol")
 custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
 texture = ExtResource("4_vq1rx")

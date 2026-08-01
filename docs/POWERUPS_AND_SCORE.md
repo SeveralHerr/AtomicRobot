@@ -179,14 +179,38 @@ It's driven entirely by autoload signals, so there's nothing to wire per level, 
 one injection point covers both levels plus every sandbox instead of three copies that
 drift apart.
 
-Score, combo, combo bar and the active-buff timers stack in a single column centred at
-the top of the screen, set in the character-select face (`styles/white_font.tres`,
-Bangers). It begins at y=126, below the health orbs (top-**left**, running to x=544,
-y=118) — the column is wide enough that a long buff line would otherwise clip them.
+Score, combo and the active-buff timers stack in a single column centred at the top of
+the screen, set in the character-select face (`styles/white_font.tres`, Bangers). It
+begins at y=126, below the health orbs (top-**left**, running to x=544, y=118) — the
+column is wide enough that a long buff line would otherwise clip them.
 
 The rank card centres in the **top 45%** of the screen on purpose: the existing
 `win_container.gd` shows its RESTART button dead-centre on the same `boss_death`
 signal, and this layer draws above it.
+
+#### Animation
+
+Every live element animates off a **decaying float ticked in `_process`**, not off a
+`Tween`. Hits, kills and pickups arrive faster than a tween's duration in a real scrap,
+and overlapping tweens on the same property fight each other and strand a label scaled
+or tinted — the failure `health_container.gd` needs per-orb tween bookkeeping to avoid.
+Re-setting a float to 1.0 on each event simply restarts the animation.
+
+- **Combo** — just the hit count (`7 HITS!`), no multiplier prefix and **no timer bar**.
+  Each hit scrolls the line up from below with a scale punch (a bigger one when the
+  multiplier tiers up, since the `x3` that used to announce it is gone), then the line
+  fades and drifts upward as the window drains. *The fade is the timer* — that is why
+  the `ProgressBar` was removed. Tier colour still comes from `MULTIPLIER_COLORS`.
+  It lives in a fixed-height `ComboSlot` `Control` rather than directly in the
+  `VBoxContainer`, so it can own its own `position` — a container re-sorts its children
+  every time the text changes width and would fight the animation.
+- **Score** — punches and flashes toward the current tier colour on each award, scaled
+  by the award's size, so an 800-point kill reads differently from a 10-point jab.
+- **Buffs** — pop on `powerup_started`, then blink through the last 1.5 seconds.
+
+`combo_fraction()` reaching 0 while `combo > 0` is not a reachable game state
+(`register_hit()` sets both together), so the readout treats it as expired and hides.
+The `set_combo` devtools verb refreshes the window for that reason.
 
 ---
 

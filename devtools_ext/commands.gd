@@ -729,14 +729,22 @@ func _cmd_score_state(_args: Dictionary) -> Dictionary:
 
 ## Force the combo count so a multiplier tier can be asserted without landing 36
 ## hits. args: {"combo": int}
+##
+## Refreshes the combo window too. A live combo with no time left on it is not a state
+## the game can reach — register_hit() always sets both together, and the frame the
+## timer runs out is the frame _reset_combo() zeroes the count — so leaving the timer
+## alone here produced a combo the HUD correctly treated as already expired
+## (combo_fraction() drives the readout's fade-out, scripts/score_ui.gd).
 func _cmd_set_combo(args: Dictionary) -> Dictionary:
 	if not args.has("combo"):
 		return _fail("missing arg: combo")
 	ScoreSystem.combo = maxi(0, int(args["combo"]))
+	ScoreSystem._combo_timer = ScoreRules.COMBO_WINDOW if ScoreSystem.combo > 0 else 0.0
 	ScoreSystem.combo_changed.emit(ScoreSystem.combo, ScoreSystem.multiplier())
 	return {"success": true, "message": "combo set", "data": {
 		"combo": ScoreSystem.combo,
 		"multiplier": ScoreSystem.multiplier(),
+		"combo_fraction": ScoreSystem.combo_fraction(),
 	}}
 
 

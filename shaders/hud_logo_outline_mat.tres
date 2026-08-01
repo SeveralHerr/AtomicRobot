@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://shaders/hud_outline.gdshader" id="1_logol"]
+
+[resource]
+resource_name = "HudLogoOutline"
+shader = ExtResource("1_logol")
+shader_parameter/outline_color = Color(1, 1, 1, 1)
+shader_parameter/width = 0.0125
+shader_parameter/art_scale = 0.96
