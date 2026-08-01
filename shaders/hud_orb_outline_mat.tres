@@ -1,9 +1,10 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://b5qu31hertai1"]
 
-[ext_resource type="Shader" path="res://shaders/hud_outline.gdshader" id="1_orbol"]
+[ext_resource type="Shader" uid="uid://cg8we10630wvx" path="res://shaders/hud_outline.gdshader" id="1_orbol"]
 
 [resource]
 resource_name = "HudOrbOutline"
 shader = ExtResource("1_orbol")
 shader_parameter/outline_color = Color(1, 1, 1, 1)
-shader_parameter/width = 0.02
+shader_parameter/width = 0.15999999642368
+shader_parameter/art_scale = 0.999999988824
