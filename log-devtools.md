@@ -157,3 +157,102 @@ the single source of truth.)
   console (it is the non-console build), so every headless run must redirect to a file
   and be read back. Worth stating in the harness docs; the first lint run looked like a
   silent success.
+
+## 2026-08-01 — Upstream the log itself, then close what it recorded (harness 0.4.0)
+
+This turn was harness work, not gameplay: `godot-selftest-harness` 0.4.0 makes this very
+file a scaffolded feature and acts on the backlog above. Recording it here because
+closures are entries too — an open gap that quietly got fixed is indistinguishable from
+one nobody ever looked at.
+
+**Closed upstream (re-run `/scaffold-godot-harness` to pick these up):**
+
+- `get-state --property NAME` (repeatable) — logged twice, on 2026-07-25 and 2026-07-26.
+- `get-state` now always returns a `transform` sub-dictionary read off the node. The
+  container-child bug was reproduced on 4.7.1 before fixing: the same `Label` reports
+  `scale` with usage `6` under a plain `Control` and `READ_ONLY|EDITOR` under a
+  `VBoxContainer`, so the property dump legitimately omits it while the node scales.
+- `step-time --seconds N`, with an honest caveat: it does **not** pause and step the
+  tree (GDScript cannot tick the SceneTree). Physics time is exact; process time — what
+  a default `Tween` runs on — lands within ~1 frame, and the verb reports the measured
+  `process_seconds` so you can see the overshoot instead of assuming precision. Use
+  `TWEEN_PROCESS_PHYSICS` when the sample point matters.
+- Bridge liveness: a dead game now fails in ~2s with `game not running` instead of
+  hanging for the full timeout. No extra ping needed — the autoload deletes the command
+  file on pickup, so a file still sitting there *is* the signal.
+- `orphan_max: 0` retired as a gate. `performance` reports `orphan_growth` vs a startup
+  baseline, with `--reset-baseline` to re-baseline after the entry hook.
+- `touch press|release|drag|clear|list` and `set-feature --touchscreen true` — both
+  2026-07-31 mobile gaps. The latter verified empirically: `Input.set_emulate_touch_from_mouse()`
+  really does flip `DisplayServer.is_touchscreen_available()`, so the touch UI stops
+  hiding itself and the five manual `visible` overrides are gone.
+- `await _T.instantiate_ui(scene, viewport_size)` / `_T.free_ui(node)` in the test
+  runner, so headless Control tests resolve anchors and run `@onready`.
+- `validate-ui` honours a configurable `safe_area_inset` — the CRT overlay eating ~50px
+  of the edges is now expressible.
+- Lint: real exit codes (`0`/`1`/`2` — `2` means the linter itself failed, so a broken
+  gate can't read as clean), duplicate `ext_resource`/`sub_resource` id detection,
+  `--baseline` splitting `NEW` from `PRE-EXISTING`, and `--find-orphans` for functions
+  called only from `test/`. Same exit contract on `run_tests.gd`.
+- Harness drift check in `/verify` Phase 0 (installed files vs plugin templates) —
+  the 2026-07-25 gap where the local input patch had silently diverged.
+- `entry_points` config + diff-aware selection in `/verify`, the mechanism the boss-room
+  gap asked for. **Still needs configuring on this project** — see below.
+- The non-console-Godot-on-Windows note is now in the harness docs, and both runners tell
+  you to redirect to a file.
+
+**Partially closed — do not read as fixed:**
+
+- Bridge concurrency. Requests now carry an id the game echoes verbatim, so a crossed
+  reply **errors** (`Crossed replies: ...`) instead of silently returning another
+  request's data. That is detection, not concurrency: the bus is still one command file
+  and one result file. The rule is unchanged — one in-flight command at a time.
+
+**New gaps, found while building the above:**
+
+- Gap: **each half of the bridge was tested against a fake counterpart and both passed,
+  while three real request/response key mismatches sat between them.** `set_feature`
+  returned the resulting state under `touchscreen_available` while the client read
+  `touchscreen`; `touch_clear` returned `released` while the client read `cleared`;
+  `step_time` returned `physics_seconds`/`frames_advanced` while the client read
+  `advanced`/`frames`. The `touch_clear` one printed **"No active touches to clear"
+  while successfully clearing two** — a tool lying about what it just did, which is the
+  exact failure class this log exists for. Only running the real client against the real
+  game exposed any of it.
+  - Improvement: ship a contract test with the harness — a script that launches a
+    scratch project and drives every generic verb over the real bus, asserting the keys
+    each side promises. Cheap to run in `/verify` Phase 0 after a drift finding, and it
+    would have caught all three before they shipped.
+- Gap: **a test script with a parse error still `load()`s**, and `.new()` on it raised a
+  runtime error that aborted the *calling* function — so `run_tests.gd` printed
+  `Total: 0 | ALL TESTS PASSED` with **exit 0** while a real test file sat undiscovered
+  beside it. Fixed upstream with a `can_instantiate()` guard, but it was live this whole
+  time, which means any green test run before today is worth one skeptical look at the
+  test *count*.
+  - Improvement (still open): `/verify` should assert the test count is non-zero and
+    ideally non-decreasing, not just that the suite said "passed".
+- Gap: **a runtime error inside a test method is indistinguishable from a pass.**
+  GDScript has no exception handling; the error aborts only that method and returns the
+  declared type's default — `""` for a `-> String` test, i.e. success. A return-type
+  heuristic was tried and backed out because the aborted call is genuinely identical to
+  a clean one. **Unfixable from inside the runner.**
+  - Improvement: `/verify` must capture and read **stderr** on the test step, not just
+    the exit code — `[ERR]`/`[SCRIPT ERROR]` lines are the only evidence this happened.
+- Gap: **`command -v python3` succeeds on Windows and then refuses to run.** Windows
+  ships a Microsoft Store *App execution alias* stub at `python3.exe`; existence is not
+  executability. Every `python3 tools/devtools.py` line in the docs assumes otherwise.
+  - Improvement: probe interpreters by executing them (`"$c" -c "import sys"`). The
+    scaffolder now does this; the docs now say so.
+
+**Still open, unchanged:**
+
+- No semantic scene diff (`tools/diff_scene.gd` / `--baseline <git-ref>` on
+  `dump_level.gd`). The duplicate-id lint covers the *corruption* case from 2026-08-01,
+  but proving a 246-line editor re-save dropped nothing still means dumping twice and
+  diffing by hand.
+- The boss fight is reachable *in principle* now via `entry_points`, but nothing is
+  configured — this project still needs an entry naming the boss scene and whatever
+  method actually starts the encounter (loading the room is not enough; the boss is
+  hidden until the intro sequence runs).
+- `pause-spawner` and `spawn_wave` staging verbs — project-side, still not written. The
+  idle-test-player deaths that keep recurring in this log are the cost.
