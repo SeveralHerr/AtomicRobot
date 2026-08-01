@@ -103,3 +103,21 @@ the single source of truth.)
 - Gap: **nothing keeps the installed harness and the upstream template in sync.** This divergence survived unnoticed until a diff happened to be run for another reason, and the only thing at risk was a fix the project depended on.
   - Improvement: have `/verify` (or the scaffolder) diff the installed `addons/godot_selftest/` and `tools/` against the plugin's templates and report drift, naming which side is ahead.
 - Still open from previous runs: bridge concurrency, unreachable `orphan_max: 0`, and no path into the boss fight.
+
+## 2026-07-31 — Mobile controls relayout
+
+- No way to simulate touch: `devtools.py input` only presses input *actions*, so the
+  multi-touch path (`InputEventScreenTouch` with two indexes) can't be exercised on the
+  running game at all. Suggestion: add `touch <press|release|drag> --index N --pos X,Y`.
+- No way to fake a touchscreen: touch UI hides itself when
+  `DisplayServer.is_touchscreen_available()` is false, so every screenshot needed five
+  manual `set-state --property visible` calls. Suggestion: a `--force-touch-ui` /
+  `set-feature touchscreen true` verb, or a config flag the harness applies at boot.
+- Headless unit tests get no frames, so Control anchors never resolve (`size` stays 0)
+  and `@onready` vars never initialize — the test has to call
+  `propagate_notification(NOTIFICATION_READY)` and recompute rects by hand. Suggestion:
+  a runner helper like `_T.instantiate_ui(scene, viewport_size)` that does both.
+- `node-bounds` reports rects fine but there's no "assert this control is inside the
+  viewport / doesn't overlap that one" verb; the CRT overlay also eats ~50px of the
+  edges, which no validator knows about. Suggestion: `validate-ui` should flag controls
+  outside a configurable safe-area inset.

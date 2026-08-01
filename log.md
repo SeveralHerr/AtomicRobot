@@ -69,3 +69,15 @@ Log of skills that might have been useful for a given response, and why (short f
 - No skill invoked — a one-line root-cause fix, two regression tests, and a file sync between two repos.
 - `godot-selftest-harness:verify` — not run in full; lint + 116 tests are clean and the fix was confirmed live with the new `attack_slots` verb across a player death. The verbs added last turn are what made that a single command instead of a hand-written sampler.
 - A skill that doesn't exist and would have helped: something like "mutation-check" — reintroduce a fix's root cause, confirm the new test fails, then restore. I did that by hand this turn and my restore path was wrong, so the bug briefly stayed reintroduced; a skill that owns the backup/restore step would not have slipped.
+
+## 2026-07-31 — Mobile controls relayout (joystick left, actions right)
+
+- `run` — would have helped: launching + screenshotting the game to confirm the touch
+  layout; I drove it by hand through the devtools bridge instead. Enhancement idea:
+  teach it to auto-run the project's `entry_hook` so the first screenshot is of the
+  playable scene, not the start screen.
+- `simplify` — not used, but a good follow-up on `scripts/mobile_ui.gd` now that the
+  per-finger tracking replaced the copy-pasted per-button branches.
+- A "godot-scene-layout" skill would have helped had it existed: editing anchors and
+  offsets in `.tscn` text by hand is error prone, and there is no headless way to ask
+  Godot "what rect would this control get at 1280x800" without running the game.
