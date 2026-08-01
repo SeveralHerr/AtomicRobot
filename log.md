@@ -126,3 +126,29 @@ Log of skills that might have been useful for a given response, and why (short f
   surfaced 9 pre-existing stale-UID errors and the remedy is a documented one-liner in
   CLAUDE.md, but deciding whether rewriting nine `.tscn` files counts as in-scope for a
   scaffold is a judgment call a small dedicated skill could just own.
+
+## 2026-08-01 — Lane baseline anchored to street level
+
+- `godot-selftest-harness:verify` — used. Caught nothing new here (lint/tests were
+  already green before it), but it is what forced the runtime check of the platform
+  case rather than trusting the unit tests. Enhancement idea: let it print, per changed
+  file, which runtime test covered it — so a script that got no runtime coverage is
+  named out loud instead of blending into a green summary.
+- A skill that would have helped, had it existed: **"repro a reported gameplay bug"** —
+  take a screenshot/description, find the geometry involved, drive the game into that
+  exact situation, and confirm the misbehaviour BEFORE the fix. Most of the runtime time
+  this turn went into locating a platform and standing on it.
+- `simplify` / `/code-review` — not used; the change is small and self-contained.
+
+## 2026-08-01 — README, controls page, web-font glyph fix
+
+- No skill was invoked this turn (the work was scene/doc editing plus runtime screenshots).
+- Would have helped, had it existed: **"capture a game screenshot for docs"** — launch,
+  reach a representative moment, compose it (spread enemies, full health, good backdrop),
+  save into the repo and reference it from a doc. Doing it by hand took 5 candidate shots
+  and 3 relaunches.
+- `godot-selftest-harness:verify` — not run as a whole this turn; its Phase 1 (lint,
+  tests) and Phase 3 (validate-ui, performance) steps were run individually because the
+  work was UI layout that needed a screenshot loop, not a diff assertion. Enhancement
+  idea: a lighter `/verify ui <scene>` entry point that loads one scene, validates it and
+  screenshots it, without the full launch-and-assert-the-diff pass.

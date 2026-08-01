@@ -284,3 +284,68 @@ one nobody ever looked at.
 
 **Still open, unchanged:** the boss-fight `entry_points` entry, `pause-spawner` /
 `spawn_wave` staging verbs, and the semantic scene diff.
+
+## 2026-08-01 — Anchor the lane baseline to street level (bug: lanes followed the player onto platforms)
+
+- Gap: **No way to place the player on a specific piece of level geometry.** Reproducing
+  "player stands on a platform" needed the platform's world Y, and the only route was
+  reading it off a patrolling enemy in `lane_report`
+  (`"node": "LaneSortLayer/MeterMaid", "foot_y": -63.5747375488281`), then
+  `cmd teleport_player --args '{"x": 2401, "y": -140}'` + `wait-frames 60` and hoping
+  something solid was under that column.
+  - Improvement: a `surface_at --x N` verb (raycast down from a given x, return the
+    first floor Y per collision layer), or `teleport_player --args '{"x": N, "snap": "floor"}'`.
+- Gap: **`scene-tree` omits nodes, so a wrong node path reads as "the node is missing".**
+  `run-method --node /root/Main/Player` returned `Failed: Node not found: /root/Main/Player`
+  while `cmd player_state` happily reported the same player — the Player had been
+  reparented into `LaneSortLayer`, and grepping the tree dump for `"Player"` found
+  nothing until I searched for a child sprite name (`JumpingStreakSprite` →
+  `/root/Main/LaneSortLayer/Player`).
+  - Improvement: have the project verbs that already resolve a body (`player_state`,
+    `lane_report`, `list_enemies`) include its `path` in `data`; `list_enemies` currently
+    prints `"node": None` per enemy, which is the same gap.
+- Gap: **A game launched with `&` from the Bash tool dies between calls.** `ping`,
+  `run-method` and `validate-all` all worked, then `cmd lane_report` returned
+  `game not running: 'lane_report' was never picked up` with a clean-exit tail in the
+  log (`ERROR: 7 RID allocations ... leaked at exit`) and no script error — the process
+  was reaped when its shell went away. Relaunching via the tool's own background mode
+  survived the whole run.
+  - Improvement: state in the `/verify` Phase 2 launch step that the game must be
+    launched as a tracked background task, not with a trailing `&`.
+- Gap (recurrence): **idle test players get killed by spawn waves.** Between discovery
+  commands the player went to `"is_dead": true, "health": 0`; `revive_player` +
+  `kill_enemies` fixed it, but every run pays this toll.
+  - Improvement: a `pause_spawning` / `peace_mode` toggle so a diagnostic session can
+    hold the level still (`god_mode` stops damage but not the swarm crowding the body).
+
+## 2026-08-01 — Controls page rewrite (web-font glyph bug), README + screenshot
+
+- Gap: **No way to reload a changed scene into a running game.** Editing
+  `controls_splash.tscn` and re-issuing
+  `cmd start_game --args '{"scene":"res://scenes/controls_splash.tscn"}'` produced a
+  pixel-identical screenshot — the `PackedScene` was still cached from the first load.
+  Every layout iteration cost a full quit + relaunch + re-enter (~10s each, 4 rounds).
+  - Improvement: a `reload_scene` verb that calls
+    `ResourceLoader.load(path, "", CACHE_MODE_IGNORE_DEEP)` before
+    `change_scene_to_packed`, so a `.tscn` edit can be seen without relaunching.
+- Gap: **`validate-ui`'s `ui_text_overflow` measures a multi-line Label as one line.**
+  It reported `Label 'ActionsLabel' text 'MOVE\nJUMP\nATTACK...' exceeds width
+  (text: 564px, label: 225px)` for a 9-line label whose every line fits comfortably —
+  2 of 5 reported issues were this false positive, which trains you to skim the check.
+  - Improvement: split on `\n` and compare the widest LINE against the label width
+    (and skip the check entirely when `autowrap_mode != OFF`).
+- Gap: **Nothing checks that on-screen text is drawable in the font that draws it.**
+  The reported bug was em dashes on the controls page vanishing in the deployed web
+  build; `has_char(0x2014)` is `false` for `AldotheApache.ttf`, but desktop Godot silently
+  falls back to a system font, so lint, `validate-ui` and every local playtest passed.
+  Added `test/unit/test_font_glyph_coverage.gd` for this project (mutation-checked: it
+  fails with `uses glyph(s) [—] the body font has no character for`).
+  - Improvement: promote it into the harness as a lint rule — scan every `.tscn` `text =`
+    against the fonts actually assigned to those nodes. It is a whole class of
+    "works locally, broken on web" that nothing else in the harness can see.
+- Gap (recurrence, third time): **a game launched with a trailing `&` dies between
+  calls** — mid-session `cmd teleport_player` and `cmd spawn_enemy` both returned
+  `game not running: ... was never picked up` while `screenshot` in the same loop
+  succeeded, so the failure is intermittent rather than a clean death.
+  - Improvement: as logged last turn — `/verify` Phase 2 should say to launch the game
+    as a tracked background task, not with `&`.
