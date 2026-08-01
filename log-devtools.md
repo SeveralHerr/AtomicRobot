@@ -132,3 +132,28 @@ the single source of truth.)
   viewport / doesn't overlap that one" verb; the CRT overlay also eats ~50px of the
   edges, which no validator knows about. Suggestion: `validate-ui` should flag controls
   outside a configurable safe-area inset.
+
+## 2026-08-01 — Pull main, resolve the log conflicts, commit the HUD work
+
+- Gap: **the lint runner exits 1 on a clean project.** All 74 scenes reported OK and the
+  only findings were pre-existing uid warnings, but the process still returned 1 because
+  Godot reports leaked RIDs/ObjectDB instances at shutdown. Any CI gate or `/verify`
+  step keying off the exit code is reading noise.
+  - Improvement: have `lint_project.gd` call `quit(n)` with its own finding count so the
+    exit code means "lint failed", not "Godot leaked at exit".
+- Gap: **lint does not separate pre-existing findings from ones the current diff caused.**
+  Nine `uid mismatch` warnings printed; deciding they were untouched repo debt meant
+  hand-checking `git log`/`git diff` per file. This is the same "is this noise mine?"
+  problem already logged for `orphan_max`, now on a second tool.
+  - Improvement: a `--baseline` flag that records findings at the merge-base and prints
+    only the delta — one mechanism would cover lint, orphans and UI warnings at once.
+- Gap: **nothing validates a merge result specifically.** The risky failure here was two
+  branches independently adding `[ext_resource]` ids to the same `.tscn`; a duplicate id
+  loads without complaint and silently binds the wrong resource. I checked by listing
+  ids by hand.
+  - Improvement: have the scene lint assert `ext_resource`/`sub_resource` ids are unique
+    within a file — cheap, and exactly the class of corruption a text-merged scene has.
+- Environment note: the Godot binary on this machine writes nothing to a PowerShell
+  console (it is the non-console build), so every headless run must redirect to a file
+  and be read back. Worth stating in the harness docs; the first lint run looked like a
+  silent success.

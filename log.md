@@ -87,3 +87,19 @@ Log of skills that might have been useful for a given response, and why (short f
 - A "godot-scene-layout" skill would have helped had it existed: editing anchors and
   offsets in `.tscn` text by hand is error prone, and there is no headless way to ask
   Godot "what rect would this control get at 1280x800" without running the game.
+
+## 2026-08-01 — Pull main, resolve the log conflicts, commit the HUD work
+
+- No skill invoked — committing a working tree, merging one commit, and resolving two
+  append-only log conflicts. `godot-selftest-harness:verify` was deliberately not run in
+  full: nothing was authored this turn, and the merge was non-overlapping (theirs moved
+  `MobileUI` anchors, mine added a HUD material), so headless lint + the 125 unit tests
+  were the proportionate gate. Both passed.
+- A skill that doesn't exist and would have helped: something like "append-log-merge" —
+  auto-resolve conflicts in files that are only ever appended to (changelogs, these two
+  logs) by keeping both sides in date order. Git conflicts on every one of these merges
+  and the resolution is mechanical every time.
+- A second one worth having: "godot-post-pull" — run `--import`, then diff which
+  generated `.uid` files are newly untracked. The incoming commit shipped
+  `test/unit/test_mobile_controls.gd` without its `.gd.uid`, which the other 122 scripts
+  all have; only a reimport surfaced it.
