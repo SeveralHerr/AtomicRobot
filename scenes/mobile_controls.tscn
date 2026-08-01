@@ -20,155 +20,191 @@ Button/styles/pressed = SubResource("StyleBoxTexture_43wfq")
 
 [node name="MobileUI" type="Control" unique_id=1382352139]
 layout_mode = 3
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -360.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_rvv1d")
 
 [node name="Virtual Joystick2" parent="." unique_id=1537507440 instance=ExtResource("2_snoiw")]
 layout_mode = 1
-offset_left = 20.0
-offset_top = 70.0
-offset_right = 320.0
-offset_bottom = 370.0
-scale = Vector2(0.9, 0.9)
+offset_left = 40.0
+offset_top = -340.0
+offset_right = 340.0
+offset_bottom = -40.0
 visibility_mode = 1
 
-[node name="Base" parent="Virtual Joystick2" index="0"]
-offset_left = -75.55555
-offset_top = -480.00003
-offset_right = 124.44446
-offset_bottom = -280.00003
-
-[node name="JumpButton" type="CenterContainer" parent="." unique_id=431943688]
-custom_minimum_size = Vector2(150, 150)
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -170.0
-offset_top = 190.0
-offset_right = -20.0
-offset_bottom = 340.0
-
-[node name="TextureRect2" type="TextureRect" parent="JumpButton" unique_id=2078213372]
-custom_minimum_size = Vector2(120, 150)
-layout_mode = 2
-texture = ExtResource("3_nee3u")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Button" type="Button" parent="JumpButton" unique_id=1868800855]
-custom_minimum_size = Vector2(150, 150)
-layout_mode = 2
-theme = SubResource("Theme_0j376")
-
-[node name="PanelContainer" type="PanelContainer" parent="JumpButton" unique_id=1022087378]
-layout_mode = 2
-
-[node name="CrouchUI" type="CenterContainer" parent="." unique_id=24643055]
-custom_minimum_size = Vector2(90, 90)
-layout_mode = 0
-offset_left = 310.0
-offset_top = 70.0
-offset_right = 400.0
-offset_bottom = 160.0
-
-[node name="TextureRect2" type="TextureRect" parent="CrouchUI" unique_id=498574936]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-texture = ExtResource("3_nee3u")
-expand_mode = 1
-stretch_mode = 5
-flip_v = true
-
-[node name="Button" type="Button" parent="CrouchUI" unique_id=1236708074]
-custom_minimum_size = Vector2(90, 90)
-layout_mode = 2
-theme = SubResource("Theme_0j376")
-
-[node name="PanelContainer" type="PanelContainer" parent="CrouchUI" unique_id=807604985]
-layout_mode = 2
-
 [node name="AttackButton" type="CenterContainer" parent="." unique_id=653615460]
-custom_minimum_size = Vector2(90, 90)
+custom_minimum_size = Vector2(160, 160)
 layout_mode = 1
-anchors_preset = 1
+anchors_preset = 3
 anchor_left = 1.0
+anchor_top = 1.0
 anchor_right = 1.0
-offset_left = -140.0
-offset_top = 85.0
-offset_right = -50.0
-offset_bottom = 175.0
+anchor_bottom = 1.0
+offset_left = -190.0
+offset_top = -190.0
+offset_right = -30.0
+offset_bottom = -30.0
+grow_horizontal = 0
+grow_vertical = 0
 
 [node name="TextureRect2" type="TextureRect" parent="AttackButton" unique_id=211393767]
-custom_minimum_size = Vector2(60, 60)
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
+mouse_filter = 2
 texture = ExtResource("6_qsdwx")
 expand_mode = 1
 stretch_mode = 5
 flip_h = true
 
 [node name="Button" type="Button" parent="AttackButton" unique_id=1399033903]
-custom_minimum_size = Vector2(90, 90)
+custom_minimum_size = Vector2(160, 160)
 layout_mode = 2
+mouse_filter = 2
+theme = SubResource("Theme_0j376")
+
+[node name="JumpButton" type="CenterContainer" parent="." unique_id=431943688]
+custom_minimum_size = Vector2(160, 160)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -370.0
+offset_top = -190.0
+offset_right = -210.0
+offset_bottom = -30.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="TextureRect2" type="TextureRect" parent="JumpButton" unique_id=2078213372]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_nee3u")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Button" type="Button" parent="JumpButton" unique_id=1868800855]
+custom_minimum_size = Vector2(160, 160)
+layout_mode = 2
+mouse_filter = 2
+theme = SubResource("Theme_0j376")
+
+[node name="CrouchUI" type="CenterContainer" parent="." unique_id=24643055]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -330.0
+offset_right = -60.0
+offset_bottom = -210.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="TextureRect2" type="TextureRect" parent="CrouchUI" unique_id=498574936]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_nee3u")
+expand_mode = 1
+stretch_mode = 5
+flip_v = true
+
+[node name="Button" type="Button" parent="CrouchUI" unique_id=1236708074]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+mouse_filter = 2
 theme = SubResource("Theme_0j376")
 
 [node name="InteractButton" type="CenterContainer" parent="." unique_id=1504481144]
-custom_minimum_size = Vector2(90, 90)
-layout_mode = 0
-offset_left = 310.0
-offset_top = 170.0
-offset_right = 400.0
-offset_bottom = 260.0
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -330.0
+offset_top = -330.0
+offset_right = -210.0
+offset_bottom = -210.0
+grow_horizontal = 0
+grow_vertical = 0
 
 [node name="TextureRect2" type="TextureRect" parent="InteractButton" unique_id=1263387254]
-custom_minimum_size = Vector2(60, 60)
+custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
+mouse_filter = 2
 texture = ExtResource("3_nee3u")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="Button" type="Button" parent="InteractButton" unique_id=334594393]
-custom_minimum_size = Vector2(90, 90)
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
+mouse_filter = 2
 theme = SubResource("Theme_0j376")
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 30
+text = "USE"
 
 [node name="RunButton" type="CenterContainer" parent="." unique_id=1222433334]
-custom_minimum_size = Vector2(90, 90)
-layout_mode = 0
-offset_left = 310.0
-offset_top = 260.0
-offset_right = 400.0
-offset_bottom = 350.0
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -480.0
+offset_top = -330.0
+offset_right = -360.0
+offset_bottom = -210.0
+grow_horizontal = 0
+grow_vertical = 0
 
 [node name="TextureRect2" type="TextureRect" parent="RunButton" unique_id=1123962055]
-custom_minimum_size = Vector2(60, 60)
+custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
+mouse_filter = 2
 texture = ExtResource("3_nee3u")
 expand_mode = 1
 stretch_mode = 5
 flip_h = true
 
 [node name="Button" type="Button" parent="RunButton" unique_id=1411037057]
-custom_minimum_size = Vector2(90, 90)
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
+mouse_filter = 2
 theme = SubResource("Theme_0j376")
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 30
+text = "RUN"
 
 [node name="PauseButton" type="CenterContainer" parent="."]
-custom_minimum_size = Vector2(120, 120)
-layout_mode = 0
-offset_left = 1120.0
-offset_top = 650.0
-offset_right = 1240.0
-offset_bottom = 770.0
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -170.0
+offset_top = 50.0
+offset_right = -70.0
+offset_bottom = 150.0
+grow_horizontal = 0
+grow_vertical = 1
 
 [node name="TextureRect2" type="TextureRect" parent="PauseButton"]
-custom_minimum_size = Vector2(90, 90)
+custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("7_pause")
@@ -176,7 +212,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Button" type="Button" parent="PauseButton"]
-custom_minimum_size = Vector2(120, 120)
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 theme = SubResource("Theme_0j376")
 

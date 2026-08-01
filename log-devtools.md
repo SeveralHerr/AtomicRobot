@@ -114,3 +114,21 @@ the single source of truth.)
   - Improvement, generalised: a debug verb that writes one half of an invariant pair is a latent trap. Worth a note in the harness docs that setter verbs should leave the system in a state the game itself can reach.
 - Recurring, still open: `orphan_max: 0` remains unreachable (47 orphans at HEAD, 50 with this change — I had to `git stash` and relaunch to establish that the delta was noise). The stale-player problem also bit again: the idle test player died to an enemy wave mid-session, which set `ScoreSystem.running = false` and froze the stage clock, so a fade test read a *constant* `combo_fraction` of exactly 1.0. The `status` field said `player: alive` because the player had already been revived — liveness of the *player* was not liveness of the *stage*.
   - Improvement: let the status provider carry stage/session liveness (here `ScoreSystem.running` + `stage_seconds`), not just player liveness, so a frozen subsystem announces itself the same way a dead player now does.
+
+## 2026-07-31 — Mobile controls relayout
+
+- No way to simulate touch: `devtools.py input` only presses input *actions*, so the
+  multi-touch path (`InputEventScreenTouch` with two indexes) can't be exercised on the
+  running game at all. Suggestion: add `touch <press|release|drag> --index N --pos X,Y`.
+- No way to fake a touchscreen: touch UI hides itself when
+  `DisplayServer.is_touchscreen_available()` is false, so every screenshot needed five
+  manual `set-state --property visible` calls. Suggestion: a `--force-touch-ui` /
+  `set-feature touchscreen true` verb, or a config flag the harness applies at boot.
+- Headless unit tests get no frames, so Control anchors never resolve (`size` stays 0)
+  and `@onready` vars never initialize — the test has to call
+  `propagate_notification(NOTIFICATION_READY)` and recompute rects by hand. Suggestion:
+  a runner helper like `_T.instantiate_ui(scene, viewport_size)` that does both.
+- `node-bounds` reports rects fine but there's no "assert this control is inside the
+  viewport / doesn't overlap that one" verb; the CRT overlay also eats ~50px of the
+  edges, which no validator knows about. Suggestion: `validate-ui` should flag controls
+  outside a configurable safe-area inset.

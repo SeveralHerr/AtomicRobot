@@ -75,3 +75,15 @@ Log of skills that might have been useful for a given response, and why (short f
 - `godot-selftest-harness:verify` — used, and it earned its keep twice. Lint caught a shader-compiler error I had just introduced (Godot cannot take the built-in `TEXTURE` as a user function argument), and `validate-ui` caught the combo label sitting visible-but-fully-transparent when no combo is running. Neither is visible in a screenshot. Enhancement idea, in simple words: let `/verify` take a "before" reading of the noisy numbers (orphan nodes, UI warnings) on the unchanged code automatically, so it can say "these 3 warnings were already here" instead of leaving me to stash my work and relaunch the game twice to find that out by hand.
 - `simplify` — not run; the change is additive and the one helper I wrote badly (a `_tint()` that looked its cache up by string name) I replaced by hand before committing.
 - A skill that doesn't exist and would have helped: something like "godot-uv-shader-preflight" — given a shader and the nodes it is assigned to, report the drawn pixel size and aspect of each one, and warn when a UV-space radius will come out anisotropic or will be clipped by the art's own margin. Both problems were real here (a 794x500 logo would have got a rim 1.6x fatter top-and-bottom, and only ~1.4% of vertical margin to draw it in), and I only caught them by measuring the PNG's alpha bounding box in Python first.
+
+## 2026-07-31 — Mobile controls relayout (joystick left, actions right)
+
+- `run` — would have helped: launching + screenshotting the game to confirm the touch
+  layout; I drove it by hand through the devtools bridge instead. Enhancement idea:
+  teach it to auto-run the project's `entry_hook` so the first screenshot is of the
+  playable scene, not the start screen.
+- `simplify` — not used, but a good follow-up on `scripts/mobile_ui.gd` now that the
+  per-finger tracking replaced the copy-pasted per-button branches.
+- A "godot-scene-layout" skill would have helped had it existed: editing anchors and
+  offsets in `.tscn` text by hand is error prone, and there is no headless way to ask
+  Godot "what rect would this control get at 1280x800" without running the game.
