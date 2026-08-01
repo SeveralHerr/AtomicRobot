@@ -155,6 +155,83 @@ static func same_lane(a: int, b: int) -> bool:
 	return a == b
 
 
+# --- Level baseline registry -------------------------------------------------
+#
+# The walkway floor line is a property of the LEVEL, not of whatever a body happens
+# to be standing on. main.tscn stacks several colliding TileMapLayers — the walkway
+# at Y=-1, raised building ledges at Y=-33 and Y=-65 — and every one of them satisfies
+# is_on_floor(). Bodies used to re-capture the baseline from their own contact every
+# frame, so walking onto a ledge at X~2600 lifted the whole lane stack 62.5px (2.6
+# lane widths) up-screen, and any enemy spawned during that window kept the lifted
+# value forever (only the ground lane ever re-captured). One value per scene fixes
+# both: authored if the level says so, otherwise seeded once by the first body that
+# stands on real ground and never rewritten.
+
+## Optional authored Marker2D, a direct child of the scene root, whose global Y is
+## the walkway floor line. Authoritative wherever it exists.
+const BASELINE_MARKER_NAME := "LaneBaseline"
+## Scene-root metadata key the resolved baseline is cached under. Lives on the scene
+## instance, so a reload starts clean without any explicit reset.
+const BASELINE_META := "lane_baseline_floor_y"
+
+
+## The scene instance `node` belongs to, or null outside the tree.
+static func _scene_root(node: Node) -> Node:
+	if node == null or not node.is_inside_tree():
+		return null
+	var tree := node.get_tree()
+	if tree == null:
+		return null
+	return tree.current_scene
+
+
+## The walkway floor line recorded on `root`, or INF when nothing has established one.
+##
+## Resolution order: the cached value, then an authored BASELINE_MARKER_NAME child. A
+## level that authors the marker therefore has a correct baseline from frame zero,
+## before anything has touched the ground.
+##
+## Takes the scene root directly rather than reaching for it, so the registry can be
+## exercised without a running tree — see test/unit/test_lane_baseline.gd.
+static func baseline_on_root(root: Node) -> float:
+	if root == null:
+		return INF
+	if root.has_meta(BASELINE_META):
+		return float(root.get_meta(BASELINE_META))
+	var marker := root.get_node_or_null(NodePath(BASELINE_MARKER_NAME))
+	if marker is Node2D:
+		var y: float = (marker as Node2D).global_position.y
+		root.set_meta(BASELINE_META, y)
+		return y
+	return INF
+
+
+## Record `candidate` on `root` if no baseline exists yet, and return whatever the
+## level's baseline now is.
+##
+## FIRST WRITER WINS — this is the whole fix. A later contact on higher or lower
+## geometry reads the established value back instead of overwriting it, so the lane
+## floors stay put no matter what the body is standing on.
+static func seed_on_root(root: Node, candidate: float) -> float:
+	var existing := baseline_on_root(root)
+	if is_finite(existing):
+		return existing
+	if root == null or not is_finite(candidate):
+		return INF
+	root.set_meta(BASELINE_META, candidate)
+	return candidate
+
+
+## The level's walkway floor line for a body in the tree, or INF when unknown.
+static func baseline_floor_y(node: Node) -> float:
+	return baseline_on_root(_scene_root(node))
+
+
+## Offer `candidate` as the level baseline on behalf of `node`. See seed_on_root.
+static func seed_baseline(node: Node, candidate: float) -> float:
+	return seed_on_root(_scene_root(node), candidate)
+
+
 # --- In-lane depth jitter + draw sorting -------------------------------------
 
 ## Max in-lane depth offset (px) for a road-lane enemy, so a lane doesn't read as a

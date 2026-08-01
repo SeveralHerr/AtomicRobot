@@ -81,3 +81,37 @@ Log of skills that might have been useful for a given response, and why (short f
 - A "godot-scene-layout" skill would have helped had it existed: editing anchors and
   offsets in `.tscn` text by hand is error prone, and there is no headless way to ask
   Godot "what rect would this control get at 1280x800" without running the game.
+
+## 2026-07-31 — Confirm lane baseline rebases on a second ground layer
+
+- No skill invoked — this was an investigation, not a change: read `scripts/lane_system.gd`
+  + the two capture sites, dumped `main.tscn` geometry, then wrote a throwaway SceneTree
+  script to park the player on each surface and read `lane_floor_y`.
+- `run` — would have helped: I launched the game by hand and drove `teleport_player` /
+  `lane_report` through the bridge, and the player's lane kept getting reset out from
+  under the probe. Enhancement idea: let it hold a node property pinned across frames
+  ("keep `current_lane` at 0 while I move the player"), so a probe isn't fighting the
+  game's own per-frame writes.
+- A "godot-repro-script" skill would have helped had it existed: the unit runner
+  (`tools/run_tests.gd`) is synchronous `RefCounted` tests with no frame stepping, so
+  anything involving physics needs a hand-rolled `extends SceneTree` script, copied into
+  `res://`, run, then deleted. A skill that scaffolds that (and knows autoload
+  singletons aren't bound under `--script`, so `EnemySpawner` must be `preload`ed)
+  would have saved two failed runs.
+
+## 2026-07-31 — Fix the lane baseline rebasing on raised ground
+
+- No skill invoked. `/verify` is referenced by CLAUDE.md as the required gate but the
+  harness skill wasn't in this session's skill list, so I ran its parts by hand: lint,
+  135 unit tests, a headless repro of the actual diff, and a live `lane_report`.
+  Enhancement idea for `/verify`: when the skill isn't installed, the failure should say
+  so rather than leaving the rule unfollowable.
+- `run` — would have helped for the live half (launch, drive to the raised ledge,
+  read state back). I hand-rolled launch + `teleport_player` + `lane_report` again.
+- `simplify` — worth a later pass on `enemy.gd:_update_lane_floor`, which now has a
+  read-shared path and a legacy local-fallback path sharing one function.
+- Still missing, would have helped: a "godot-physics-test" skill. The unit runner's
+  tree is never entered, so `is_inside_tree()` is false for every node a test creates —
+  I only found that after writing a whole test file against the tree-based API and
+  watching six tests fail. Any skill that knows this would have pointed straight at the
+  "take the root as a parameter" split I ended up doing.

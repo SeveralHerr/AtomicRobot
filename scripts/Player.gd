@@ -275,11 +275,15 @@ func _refresh_depth_z() -> void:
 
 func _update_lane_floor() -> void:
 	_refresh_depth_z()
-	# The ground lane rides real collision; capture its walkway line as the baseline
-	# the virtual road-lane floors are measured from. Stored as the FLOOR (soles),
-	# not this node's Y, so enemies with different collision boxes can reuse it.
+	# The ground lane rides real collision; its walkway line is the baseline the
+	# virtual road-lane floors are measured from. Offered as the FLOOR (soles), not
+	# this node's Y, so enemies with different collision boxes can reuse it.
+	#
+	# SEEDED, not assigned: main.tscn has raised ledges (Y=-33, Y=-65) that also
+	# satisfy is_on_floor(), and re-capturing on one used to lift every lane floor
+	# with it. Lanes.seed_baseline keeps the first value and hands it straight back.
 	if is_on_floor() and current_lane == Lanes.GROUND_LANE and not is_changing_lane:
-		lane_floor_y = global_position.y + foot_offset()
+		lane_floor_y = Lanes.seed_baseline(self, global_position.y + foot_offset())
 		_apply_spawn_lane()
 
 	# Road lanes have no physical floor: snap onto the lane's virtual floor line.

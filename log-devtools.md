@@ -121,3 +121,43 @@ the single source of truth.)
   viewport / doesn't overlap that one" verb; the CRT overlay also eats ~50px of the
   edges, which no validator knows about. Suggestion: `validate-ui` should flag controls
   outside a configurable safe-area inset.
+
+## 2026-07-31 — Lane baseline vs multiple ground layers
+
+- No way to hold state while probing: `set-state --property current_lane --value 0`
+  is overwritten by the player's own `_physics_process` on the next frame, and
+  `teleport_player` drops you wherever gravity takes you. Every probe reported a lane
+  I hadn't asked for. Suggestion: `pin-state --node P --property N --value V` that
+  re-applies each frame until cleared, and `teleport_player --settle N` that steps N
+  frames and reports where the body actually came to rest.
+- `lane_report` shows each body's `lane_floor_y` but nothing says what the *authored*
+  walkway line is, so a rebased baseline looks identical to a correct one. Suggestion:
+  report an `expected_floor_y` (from config or the level dump) alongside, and flag
+  bodies whose baseline differs — `foot_spread_by_lane` already spotted 175.5px of
+  spread on lane 0 and called it 0 violations.
+- Physics repros have no home: `run_tests.gd` can't step frames, so I had to copy an
+  `extends SceneTree` script into `tools/`, run it, and delete it. Suggestion: a
+  `test/integration/` dir the runner executes in a separate frame-stepping pass.
+- Running the editor/game rewrote `scripts/enemy.gd` (stripped a trailing newline) and
+  emitted an untracked `test/unit/test_mobile_controls.gd.uid`, so `git status` was
+  dirty for reasons unrelated to my work. Suggestion: `/verify` should call out
+  Godot-authored churn separately from the user's diff.
+
+## 2026-07-31 — Lane baseline fix
+
+- `lane_report` reported `violations: []` while lane 0 showed `foot_spread_by_lane`
+  of 175.5px and three bodies held baselines of -63/-193/-239 against the player's -1.
+  It only checks road lanes for mismatch. Suggestion: also flag any non-`lane_locked`
+  body whose baseline differs from the scene baseline, now that
+  `Lanes.baseline_on_root()` makes "the scene baseline" a real, queryable number.
+- No verb exposes the new registry. Suggestion: `lane_baseline` (read the scene's
+  resolved value + where it came from: authored marker vs seeded by whom), which would
+  have replaced the whole headless repro script I wrote.
+- `get-state --property lane_locked` returned unparseable output for three nodes and I
+  had to identify them via `list_enemies` `script` fields instead. Suggestion: make
+  `get-state` always emit valid JSON, with an explicit error object for a missing
+  property.
+- Unit tests can't step physics AND can't use the tree at all (`is_inside_tree()` is
+  false inside `_initialize`). Suggestion: document that in the harness README, and add
+  a frame-stepping integration pass so a repro like this one lives in the repo instead
+  of a scratchpad file that gets copied into `tools/` and deleted.

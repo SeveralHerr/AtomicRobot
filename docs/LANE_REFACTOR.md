@@ -34,6 +34,18 @@ the old camera clamp; `limit_bottom` went 30 → 64 → 96 to reveal it.
 
 - **`scripts/lane_system.gd`** (`class_name Lanes`): `GROUND_LANE` owns physics;
   `y_offset()` is +LANE_SPACING per lane toward the camera. Unit-tested.
+- **Baseline registry** — ONE walkway floor line per scene, resolved by
+  `Lanes.baseline_on_root()` and cached in scene-root metadata. `main.tscn` authors it
+  as a `LaneBaseline` Marker2D at Y=-1 (the street's top face); scenes without one get
+  the first value a body seeds by standing on real ground, and nothing rewrites it
+  afterwards. Levels stack several *colliding* TileMapLayers — raised building ledges
+  at Y=-33 and Y=-65 in `main.tscn` — and all of them satisfy `is_on_floor()`, so the
+  old per-body re-capture lifted the entire lane stack 62.5px (2.6 lane widths) when
+  the player walked onto a ledge, and enemies spawned during that window kept the
+  lifted value permanently. Enemies now READ the registry and never write to it; only
+  the Player (or the authored marker) establishes it. `lane_locked` maids are exempt —
+  they stand on platforms 60-240px above the street and their own floor line is what
+  positions the power-up they drop. Covered by `test/unit/test_lane_baseline.gd`.
 - **Collision handling**: the walkway tiles' collision strips occupy the road band,
   so road-lane bodies disable Ground(2)/Platforms(6) (player also Meter(4)) via
   `_set_ground_collision()` — off when leaving the walkway (tween start), back on

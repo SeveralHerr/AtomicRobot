@@ -111,6 +111,12 @@ func _ready() -> void:
 	lane = Lanes.clamp_lane(starting_lane)
 	z_index = Lanes.z_for(lane)
 	_refresh_depth_z()
+	# Adopt the level's walkway line straight away where one exists (an authored
+	# LaneBaseline marker, or a baseline the player has already seeded), so an enemy
+	# authored onto a road lane starts on the right virtual floor instead of falling
+	# to whatever real geometry happens to be under it first.
+	if lane_floor_y == INF and not lane_locked:
+		lane_floor_y = Lanes.baseline_floor_y(self)
 	# Ground collision stays ON while the walkway line is still unknown, even on a
 	# road lane: a hand-placed enemy authored straight onto lane 1-3 has no baseline
 	# and nothing virtual to stand on, so dropping the mask here left it falling
@@ -340,16 +346,39 @@ func _update_lane_floor() -> void:
 	_refresh_depth_z()
 	if is_changing_lane:
 		return
-	# Capture the walkway ground line whenever physically standing on it. Stored as
-	# the FLOOR (soles), not this node's Y — a maid's origin sits 27px above its
-	# feet and the player's 19.75px, so an origin-based baseline could not be shared
-	# between them without one of the two standing at the wrong height.
+
+	# Enemies READ the level's walkway line, they never define it. A platform or
+	# window maid stands on geometry 60-240px above the street, and a street maid can
+	# be shoved onto a raised ledge, so letting either publish what it is standing on
+	# would move every other body's lane floors. Re-read every tick rather than
+	# latching: an enemy spawned before the baseline was known (the spawner copies
+	# whatever the player had at the time) then picks it up instead of keeping a stale
+	# copy for the rest of its life.
+	# Lane-locked maids (platform, window) are not lane participants at all: they never
+	# lane-chase, they stand on authored geometry 60-240px above the street, and their
+	# floor line is what positions the power-up they drop (Utils.drop_powerup). Handing
+	# them the street baseline would drop their loot through the platform, so they keep
+	# using their own contact.
+	var shared := INF if lane_locked else Lanes.baseline_floor_y(self)
+	if is_finite(shared):
+		if lane_floor_y != shared:
+			lane_floor_y = shared
+			# A road-lane enemy that was standing on a stale floor belongs on the real
+			# one now; the ground lane rides collision and needs no correction.
+			if lane != Lanes.GROUND_LANE:
+				_set_ground_collision(false)
+				global_position.y = lane_stand_y(lane)
+		return
+
+	# No baseline established yet (a sandbox scene with no player, or the first frames
+	# before the player has touched down). Fall back to this body's own floor contact
+	# so it still has somewhere to stand — kept local, never published.
 	if is_on_floor() and lane == Lanes.GROUND_LANE:
 		lane_floor_y = global_position.y + foot_offset()
 		return
 	# Authored straight onto a road lane (starting_lane 1-3): _ready kept real ground
-	# collision so we'd land on something. First contact defines the walkway line;
-	# from here on the lane's virtual floor takes over.
+	# collision so we'd land on something. First contact gives it a floor line; from
+	# here on the lane's virtual floor takes over.
 	if is_on_floor() and lane_floor_y == INF:
 		lane_floor_y = global_position.y + foot_offset()
 		_set_ground_collision(false)
