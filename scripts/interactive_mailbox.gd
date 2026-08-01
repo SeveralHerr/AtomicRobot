@@ -11,7 +11,10 @@ var cooldown_time: float = 300.0 # 5 minutes in seconds
 var notification_duration: float = 4.0 # seconds
 var newspaper_texts := [
 	"City Council Approves New Parking Tax: Breathing Near Meters Now $0.25",
-	"Meter Maid Union Demands Heavier Quarters: ‘These Ones Don’t Leave a Dent’",
+	# Straight quotes only: the body font (AldotheApache) has no curly quote or em
+	# dash glyph, and the web build has no system font to fall back on, so a smart
+	# quote here renders as a blank box on the deployed mobile page.
+	"Meter Maid Union Demands Heavier Quarters: 'These Ones Don't Leave a Dent'",
 	"Local Tattoo Artist Wins Award for Most Controversial Dolphin Sleeve",
 	"Parking Meter Develops Sentience, Immediately Quits Job",
 	"Robot Parade Scheduled for Friday!"

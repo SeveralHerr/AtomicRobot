@@ -1,11 +1,11 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene format=3 uid="uid://c5plqygsfeeie"]
 
 [ext_resource type="Script" uid="uid://dgfrky70ry3v" path="res://scripts/mobile_ui.gd" id="1_rvv1d"]
 [ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="2_snoiw"]
-[ext_resource type="Texture2D" uid="uid://do55skr27qvfd" path="res://images/arrow_n.png" id="3_nee3u"]
+[ext_resource type="Texture2D" uid="uid://dqq46oxnoeohx" path="res://images/arrow_n.png" id="3_nee3u"]
 [ext_resource type="StyleBox" uid="uid://vb5n0pdp6vf" path="res://sprites/mobile_button_normal.tres" id="4_m1a23"]
-[ext_resource type="Texture2D" uid="uid://b2y7hrpauia37" path="res://images/mobile_button.png" id="5_pwq8n"]
-[ext_resource type="Texture2D" uid="uid://b3yvdhkilwb4o" path="res://images/tool_sword_b.png" id="6_qsdwx"]
+[ext_resource type="Texture2D" uid="uid://cd5kg8ii4dvyd" path="res://images/mobile_button.png" id="5_pwq8n"]
+[ext_resource type="Texture2D" uid="uid://sb5lh21xpued" path="res://images/tool_sword_b.png" id="6_qsdwx"]
 [ext_resource type="Texture2D" uid="uid://hpogdiga4x5d" path="res://images/check_square_grey.png" id="7_pause"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_43wfq"]
@@ -141,6 +141,7 @@ grow_horizontal = 0
 grow_vertical = 0
 
 [node name="TextureRect2" type="TextureRect" parent="InteractButton" unique_id=1263387254]
+visible = false
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
@@ -173,6 +174,7 @@ grow_horizontal = 0
 grow_vertical = 0
 
 [node name="TextureRect2" type="TextureRect" parent="RunButton" unique_id=1123962055]
+visible = false
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
@@ -190,30 +192,43 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 30
 text = "RUN"
 
-[node name="PauseButton" type="CenterContainer" parent="."]
+[node name="Button2" type="Button" parent="RunButton" unique_id=1014570434]
+visible = false
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+mouse_filter = 2
+theme = SubResource("Theme_0j376")
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 30
+text = "RUN"
+
+[node name="PauseButton" type="CenterContainer" parent="." unique_id=1513221270]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -170.0
-offset_top = 50.0
-offset_right = -70.0
-offset_bottom = 150.0
+offset_left = -128.0
+offset_top = 335.0
+offset_right = -28.0
+offset_bottom = 435.0
 grow_horizontal = 0
-grow_vertical = 1
 
-[node name="TextureRect2" type="TextureRect" parent="PauseButton"]
+[node name="Button" type="Button" parent="PauseButton" unique_id=330207190]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme = SubResource("Theme_0j376")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 26
+text = "MENU"
+
+[node name="TextureRect2" type="TextureRect" parent="PauseButton" unique_id=1513355309]
+visible = false
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("7_pause")
 expand_mode = 1
 stretch_mode = 5
-
-[node name="Button" type="Button" parent="PauseButton"]
-custom_minimum_size = Vector2(100, 100)
-layout_mode = 2
-theme = SubResource("Theme_0j376")
 
 [editable path="Virtual Joystick2"]

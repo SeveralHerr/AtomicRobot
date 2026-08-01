@@ -8,9 +8,25 @@
 [ext_resource type="PackedScene" uid="uid://cd687fbnvb516" path="res://scenes/fade_overlay.tscn" id="6_fade"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_body"]
-line_spacing = 10.0
+line_spacing = -14.0
 font = ExtResource("5_body")
-font_size = 32
+font_size = 36
+shadow_size = 8
+shadow_color = Color(0, 0, 0, 0.384314)
+
+[sub_resource type="LabelSettings" id="LabelSettings_keys"]
+line_spacing = -14.0
+font = ExtResource("5_body")
+font_size = 36
+font_color = Color(1, 0.85, 0.35, 1)
+shadow_size = 8
+shadow_color = Color(0, 0, 0, 0.384314)
+
+[sub_resource type="LabelSettings" id="LabelSettings_note"]
+line_spacing = 2.0
+font = ExtResource("5_body")
+font_size = 28
+font_color = Color(0.85, 0.85, 0.85, 1)
 shadow_size = 8
 shadow_color = Color(0, 0, 0, 0.384314)
 
@@ -55,7 +71,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(700, 0)
+custom_minimum_size = Vector2(820, 0)
 layout_mode = 2
 alignment = 1
 theme_override_constants/separation = 20
@@ -67,18 +83,47 @@ label_settings = ExtResource("4_header")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ButtonsLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="ControlsGrid" type="GridContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
-text = "MOVE — A/D / Left/Right Arrow
-CHANGE LANE — W/Up Arrow (back), S/Down Arrow tap (forward)
-CROUCH — Hold S/Down Arrow
-RUN — Shift
-ATTACK — F
-INTERACT — E"
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 40
+theme_override_constants/v_separation = 6
+columns = 2
+
+[node name="ActionsLabel" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+text = "MOVE
+JUMP
+ATTACK
+USE
+RUN
+STEP BACK
+STEP FORWARD
+CROUCH
+PAUSE"
 label_settings = SubResource("LabelSettings_body")
+horizontal_alignment = 2
+
+[node name="KeysLabel" type="Label" parent="CenterContainer/VBoxContainer/ControlsGrid"]
+layout_mode = 2
+text = "A D or ARROWS
+SPACE
+F
+E
+HOLD SHIFT
+W or UP
+TAP S or DOWN
+HOLD S or DOWN
+ESC"
+label_settings = SubResource("LabelSettings_keys")
+
+[node name="PauseLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "PAUSE MENU: VOLUME, CRT EFFECT, RESUME
+ON A PHONE: JOYSTICK AND BUTTONS ON SCREEN"
+label_settings = SubResource("LabelSettings_note")
 horizontal_alignment = 1
 vertical_alignment = 1
-autowrap_mode = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
