@@ -404,3 +404,34 @@ one nobody ever looked at.
   - Improvement: a small `tools/audit_repo.py` (or `/verify --repo`) that reads the remote via the unauthenticated API and reports: `branches/<default>/protection` reachability, `protected` flag, every `.github/workflows/*.yml` trigger that combines `pull_request_target`/`pull_request` with `secrets.*`, and tracked files matching a secret-ish glob. All four checks are cheap and need no token.
 - Gap: **Unauthenticated API cannot see collaborators or rulesets** — `collaborators`, `branches/main/protection`, and `actions/permissions` all returned `401 Unauthorized`, so "who has write access" stayed unanswerable from the CLI.
   - Improvement: note in CLAUDE.md's environment section that `gh` is absent, with the one-line winget install, so a future session reaches for auth before burning calls on 401s.
+
+## 2026-08-04 — Fixed overlapping lines on the controls splash
+
+- Gap: **No check catches text drawn on top of itself.** `lint_project.gd` and
+  `run_tests.gd` both pass a scene whose lines overlap by 14px:
+  `lint: 79 error(s), 1 warning(s)` (all pre-existing UID mismatches, identical before
+  and after the fix) and `Total: 135 | Passed: 135 | Failed: 0`. The defect was
+  `line_spacing = -14.0` against a font whose height is 31px at that size, so nine rows
+  rendered 17px apart. Had to hand-write `tools/measure_controls.gd` to see it.
+  - Improvement: fold that probe into `validate-ui` / `lint_project.gd` — for every
+    `Label`, compare per-line advance `(size.y - font_h) / (lines - 1)` against
+    `font.get_height(font_size)` and fail when the advance is smaller. It is a two-line
+    rule and it catches the entire class of "squished text" bugs at lint time, with no
+    running game.
+- Gap: **No headless screenshot, so visual confirmation needs a hand-rolled harness.**
+  `--headless` uses the dummy renderer, so `get_texture().get_image()` returns nothing
+  usable; a real before/after comparison only worked via
+  `xvfb-run <godot> --rendering-driver opengl3 --script ...` with a throwaway script that
+  instantiates the scene, strips its script (otherwise `_ready` fades in and the scene
+  transitions away), waits 20 frames and saves a PNG.
+  - Improvement: ship that as `tools/shoot_scene.gd` plus a `screenshot-scene` verb —
+    `--scene res://... --out shot.png` — using Xvfb when no display is present. One
+    scene, one PNG, no game session and no entry hook to steer.
+- Gap: **CLAUDE.md's environment section is Windows-only**, so a Linux session starts by
+  discovering there is no Godot at all (`which godot` -> nothing). Downloading
+  `Godot_v4.7.1-stable_linux.x86_64.zip` and running `--import` took ~3 minutes before
+  any verification could start.
+  - Improvement: add the Linux download line to the environment section, and note that a
+    fresh `--import` on another OS regenerates UIDs, so `lint_project.gd` reports ~79
+    pre-existing `uid mismatch` errors that are environmental — run the lint once on
+    `HEAD` first and compare counts rather than triaging them.

@@ -8,14 +8,14 @@
 [ext_resource type="PackedScene" uid="uid://cd687fbnvb516" path="res://scenes/fade_overlay.tscn" id="6_fade"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_body"]
-line_spacing = -14.0
+line_spacing = 6.0
 font = ExtResource("5_body")
 font_size = 36
 shadow_size = 8
 shadow_color = Color(0, 0, 0, 0.384314)
 
 [sub_resource type="LabelSettings" id="LabelSettings_keys"]
-line_spacing = -14.0
+line_spacing = 6.0
 font = ExtResource("5_body")
 font_size = 36
 font_color = Color(1, 0.85, 0.35, 1)
@@ -23,7 +23,7 @@ shadow_size = 8
 shadow_color = Color(0, 0, 0, 0.384314)
 
 [sub_resource type="LabelSettings" id="LabelSettings_note"]
-line_spacing = 2.0
+line_spacing = 6.0
 font = ExtResource("5_body")
 font_size = 28
 font_color = Color(0.85, 0.85, 0.85, 1)

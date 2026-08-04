@@ -174,3 +174,15 @@ Log of skills that might have been useful for a given response, and why (short f
   - Enhancement idea: let it also look at the repo's GitHub settings, not just the diff — is the main branch locked, do the build robots hand secrets to strangers.
 - Would have been useful had it existed: a **repo-hardening** skill that answers "is my public repo safe" — checks branch protection, workflow triggers vs. secrets, collaborator list, and committed keys, then offers the fixes.
 - `update-config`: not applicable; the settings at issue are GitHub's, not `settings.json`.
+
+## 2026-08-04 — Controls splash text unreadable (overlapping lines)
+
+- No skill invoked; this was a scene-resource fix verified with the project's own
+  headless runners. `/run` was the closest listed fit — it launches the app to confirm a
+  change works — but it does not know how to reach the controls splash specifically, so
+  the scene was instantiated directly instead.
+  - Enhancement idea for `/run`: let it take a scene path and just show that one screen,
+    so checking a single menu does not mean playing through the start screens.
+- Would have helped, had it existed: a **text-layout sanity** skill that flags label
+  settings whose line spacing is smaller than the font's own height — the whole bug was
+  one negative `line_spacing` value, and nothing in the repo could see it.
