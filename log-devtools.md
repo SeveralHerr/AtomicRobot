@@ -435,3 +435,13 @@ one nobody ever looked at.
     fresh `--import` on another OS regenerates UIDs, so `lint_project.gd` reports ~79
     pre-existing `uid mismatch` errors that are environmental — run the lint once on
     `HEAD` first and compare counts rather than triaging them.
+
+## 2026-09-28 — Raspberry Pi 1 GB suitability check (no code changes)
+
+- Gap: **no way to measure export size or memory without a full export** — the sizes had to
+  come from the live itch page (`"fileSizes":{"index.pck":58959368,"index.wasm":39509339}`)
+  because the committed `bin/` is stale (`index.pck` 6,194,368 bytes, last touched 2025-09-29).
+  - Improvement: a `lint_project.gd --find-unused-assets` flag listing files under
+    `scan_root` referenced by no `.tscn`/`.tres`/`.gd` (here: `sounds/Train.wav` 69 MB,
+    `sounds/21 this is healing .wav` 39 MB, `sounds/boss.wav` 29 MB, …), and a
+    `performance` field for `OS.get_static_memory_usage()` so a memory budget can be gated.

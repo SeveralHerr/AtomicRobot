@@ -186,3 +186,11 @@ Log of skills that might have been useful for a given response, and why (short f
 - Would have helped, had it existed: a **text-layout sanity** skill that flags label
   settings whose line spacing is smaller than the font's own height — the whole bug was
   one negative `line_spacing` value, and nothing in the repo could see it.
+
+## 2026-09-28 — Raspberry Pi 1 GB suitability check (code + live itch build)
+
+- No skill was used; this was a read-only audit of `project.godot`, `export_presets.cfg`,
+  asset sizes and the live itch.io `GODOT_CONFIG`.
+- Would have helped, had it existed: a **target-device budget** skill that reports export
+  size, unreferenced assets and renderer requirements against a named device (e.g. "Pi 4
+  1 GB") — the biggest finding, ~150 MB of WAVs no scene references, took manual greps.
