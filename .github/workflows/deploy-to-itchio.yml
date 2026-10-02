@@ -28,6 +28,14 @@ jobs:
         mv ~/.local/share/godot/export_templates/4.7.stable/templates/* ~/.local/share/godot/export_templates/4.7.stable/
         rmdir ~/.local/share/godot/export_templates/4.7.stable/templates
 
+    - name: Run unit tests
+      run: |
+        godot --headless --path . --import
+        godot --headless --path . --script res://tools/run_tests.gd
+
+    - name: Run gameplay sandbox selftests
+      run: python3 tools/run_sandbox_selftests.py
+
     - name: Export project
       run: godot --headless --export-release "Web" "bin/index.html"
 

@@ -3,9 +3,8 @@ class_name SandboxSelfTest
 
 ## Headless behaviour check for the enemy sandboxes.
 ##
-## The unit runner (tools/run_tests.gd) is synchronous — a test method returns a
-## String, so it can never await a physics frame. Enemy AI is entirely a
-## multi-frame story, so the bugs that actually bite (an enemy that stops moving,
+## The unit runner (tools/run_tests.gd) runs one test at a time in a bare tree.
+## Enemy AI is a multi-frame story across a whole scene, so the bugs that actually bite (an enemy that stops moving,
 ## a swing that never closes, a maid that walks backwards) are invisible to it.
 ## This node runs inside a real scene with real autoloads, samples every physics
 ## frame, and fails the process on anything that looks stuck.

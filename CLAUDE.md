@@ -5,8 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Environment (this machine)
 
 - Godot **4.7.1** is NOT on PATH. Use the full path:
-  `C:\Users\gotmi\Documents\Godot_v4.7.1-stable_win64.exe`
-  (no console build alongside it — this exe works fine for `--headless` runs). Treat
+  `C:\Users\gotmi\Downloads\Godot_v4.7.1_fixed\Godot_v4.7.1-stable_win64_console.exe`
+  (use the `_console` build for `--headless` runs so output reaches the shell). Treat
   `godot` in any command below as an alias for that path. Older 4.5.1/4.6.1 builds
   also sit in `Downloads\` — don't use them, the project targets 4.7.
 - Python 3.12 is installed user-scope (`python`, not `python3`). If a shell can't find
@@ -22,6 +22,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Open project in Godot editor and press F5 to run
 - Command line: `godot --path .` (add `--mute` for automated runs)
+
+**Testing:**
+
+- `godot --headless --path . --script res://tools/run_tests.gd` (add `-- --filter NAME`
+  to run only matching test methods). Exit 0 pass, 1 fail, 2 broken test script.
+- Tests live in `test/unit/test_*.gd`; see `test/unit/test_example.gd` for the contract.
+- Gameplay: `python tools/run_sandbox_selftests.py` boots each `test/scenes/*.tscn`
+  sandbox headless for ~5s of real physics and asserts on sampled enemy behaviour
+  (see `test/scenes/README.md`). For a player feature, write a unit test that loads
+  the real scene and steps frames with `Input.action_press` (`test_crouch_input.gd`).
+- CI runs both before every itch.io deploy; a failure blocks the ship.
 
 **Exporting:**
 
@@ -198,7 +209,7 @@ Always make the changes to the AGENTS.md with these changes. Update this very li
 
 ## Validation Loop 
 
-When doing with an iteration or feature, take a screenshot and look for 3 things to improve. Do this 40 times. 
+When doing an iteration or feature, take a screenshot and look for 3 things to improve. Do this 10 times. 
 
 ## Canary
 

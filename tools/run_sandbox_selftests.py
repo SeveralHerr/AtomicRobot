@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Run every enemy-behaviour sandbox in test/scenes/ headless and report.
 
-The unit runner (tools/run_tests.gd) is synchronous, so it can only cover pure
-logic. Enemy AI bugs are multi-frame — an enemy that stops moving, a swing that
+The unit runner (tools/run_tests.gd) runs isolated tests in a bare tree. Enemy AI bugs are multi-frame — an enemy that stops moving, a swing that
 never closes, a maid that walks backwards — so those are checked here instead, by
 running each sandbox scene for a few seconds with real autoloads and asserting on
 sampled behaviour (test/scenes/sandbox_selftest.gd).
@@ -28,7 +27,7 @@ REPO = Path(__file__).resolve().parent.parent
 SCENE_DIR = REPO / "test" / "scenes"
 
 # Godot 4.7 is not on PATH on the dev machine (see CLAUDE.md); allow an override.
-DEFAULT_GODOT = Path(r"C:\Users\gotmi\Documents\Godot_v4.7.1-stable_win64.exe")
+DEFAULT_GODOT = Path(r"C:\Users\gotmi\Downloads\Godot_v4.7.1_fixed\Godot_v4.7.1-stable_win64_console.exe")
 
 # Each scenario samples for WARMUP + DURATION seconds of physics time; give it
 # generous headroom for engine start-up and resource import.

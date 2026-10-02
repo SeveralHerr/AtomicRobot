@@ -29,9 +29,9 @@ that readout is usually faster than watching the sprites.
 
 ## Running them as tests
 
-`tools/run_tests.gd` is synchronous (a test method returns a `String`), so it can only
-cover pure logic. Enemy AI is a multi-frame story, so the failures that actually bite
-are invisible to it. `sandbox_selftest.gd` fills that gap: attached automatically when
+`tools/run_tests.gd` runs one test at a time in a bare tree, which suits logic and
+single-node checks. Enemy AI is a multi-frame story across a whole scene, so the failures
+that actually bite are invisible to it. `sandbox_selftest.gd` fills that gap: attached automatically when
 `--sandbox-selftest` is passed, it samples every physics frame and fails the process on
 
 - an enemy that never moves and never reaches attack range,

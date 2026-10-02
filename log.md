@@ -195,3 +195,20 @@ Log of skills that might have been useful for a given response, and why (short f
   removed in 06e113f, so running two test files meant restoring it from git into a
   scratch copy. Also CLAUDE.md's Godot path is stale (exe is under
   `Downloads\Godot_v4.7.1_fixed\`).
+
+## 2026-10-02 — Commit + ship crouch button
+
+- No skill invoked. `itch-ci-deploy` was the nearest fit: confirming the push-triggered
+  itch deploy went green (it did: run 37077555115).
+
+## 2026-10-02 — New lean test runner
+
+- No skill invoked. `extract-a-testable-seam` / `scope-vs-claim` fit: old runner counted
+  a test that hit a runtime error as a pass; new `tools/run_tests.gd` hooks Godot's
+  `Logger` so script errors fail the test.
+- `itch-ci-deploy` would have helped wiring the CI test gate before export.
+
+## 2026-10-02 — Does the suite play the game? Wire gameplay selftests into CI
+
+- No skill invoked. `cycle` fit (gate → commit → push loop); sandbox selftests already
+  existed but nothing ran them and their Godot default path was stale.
