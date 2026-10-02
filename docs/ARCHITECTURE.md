@@ -34,7 +34,6 @@ game over / win ──> character_select.tscn        restart ──> startscreen
 | `AudioManager` | `scripts/autoload/audio_manager.gd` | Plays looping music; minimal API |
 | `EnemySpawner` | `scripts/autoload/enemy_spawner.gd` | `spawn_enemy(...)` — random maid/melee at `Vector2(spawn_x, player.position.y)` (line 25) |
 | `LeafSystem` | `scripts/autoload/leaf_system.gd` | Bridges to scene `LeafManager` (gusts, sword-swing leaves) |
-| `DevTools` | `addons/godot_selftest/dev_tools.gd` | Self-test harness bridge (see CLAUDE.md) |
 
 ## Global signals (`globals.gd:3-11`)
 

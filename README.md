@@ -49,9 +49,3 @@ it, open `project.godot` in the editor, and press F5 to play.
 - `docs/LANE_REFACTOR.md` — the four-lane depth system
 - `docs/POWERUPS_AND_SCORE.md` — power-ups and scoring rules
 
-Quick checks, no editor needed:
-
-```bash
-godot --headless --path . --script res://tools/lint_project.gd   # scene + resource lint
-godot --headless --path . --script res://tools/run_tests.gd      # unit tests
-```

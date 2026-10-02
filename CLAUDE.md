@@ -28,7 +28,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Web: `godot --export-release "Web" bin/index.html`
 - Windows: `godot --export-release "Windows Desktop" path/to/output.exe`
 
-**Testing/linting:** headless runners exist — see the Self-Test Harness section below.
 
 ## Deep-dive docs (read these before non-trivial changes)
 
@@ -123,150 +122,84 @@ Virtual joystick addon is included in `addons/virtual_joystick/` for mobile/web 
 - `scenes/`: Game objects and level scenes
 - `scripts/`: All GDScript code organized by function
 
-<!-- BEGIN godot-selftest-harness -->
-## Self-Test Harness (godot-selftest-harness)
-
-This project ships a **self-test harness**: a file-based DevTools bridge (control a
-running game from the CLI), headless lint + unit-test runners (no game needed), and a
-diff-aware **`/verify`** pre-commit gate. It is game-agnostic; project-specific behavior
-is discovered at runtime or read from the config file below.
-
-### DEVELOPMENT RULE (REQUIRED)
-After **any** gameplay, script, or scene change, run **`/verify`** before considering the
-work complete — don't wait for a commit request. It runs lint + tests, launches the game
-muted, and asserts your actual diff at runtime (catching errors lint/tests can't).
-Headless lint and unit tests need **no running game**; run them anytime:
-
-```bash
-godot --headless --path . --script res://tools/lint_project.gd   # UID + scene + dup-id lint
-godot --headless --path . --script res://tools/run_tests.gd      # unit tests (test_dir)
-```
-
-Exit codes (both): `0` pass, `1` findings, `2` **the runner couldn't run** — a `2` means you
-verified nothing. Redirect to a file and read it back; the Windows Godot build often prints
-nothing to the console, so a failed run looks like silent success.
-Lint flags (after `--`): `--strict` (warnings fail), `--baseline-write PATH` /
-`--baseline PATH` (split findings into `NEW` vs `PRE-EXISTING` so repo debt isn't re-triaged
-by hand), `--find-orphans` (public functions called only from tests — advisory).
-
-**Writing tests.** Alongside `_T.assert_*`, use `await _T.instantiate_ui(scene, Vector2i(w, h))`
-/ `_T.free_ui(node)` for anything `Control`-shaped: headless pumps no frames, so without it
-`size` stays `(0, 0)` and `@onready` vars never initialize. Test methods may `await`.
-**Always read stderr**: a runtime error inside a test aborts only that method and returns
-`""` for a `-> String` test — identical to a pass. `[ERR]` lines are the only signal.
-
-### DEVTOOLS LOG (REQUIRED)
-At the end of **every** response, append an entry to `log-devtools.md` (create it if
-missing) recording any gaps in `/verify` or the devtools harness that would have helped
-with this task, each with a suggested improvement. If nothing was missing, write one
-explicit "no gaps this turn" line — that is what makes an absent gap distinguishable
-from a forgotten log.
-
-```markdown
-## YYYY-MM-DD — <what this response did>
-
-- Gap: **<what was missing>** — <the command run, the output it gave, the workaround used>
-  - Improvement: <the smallest change that would have closed it>
-```
-
-Quote real output; a gap without evidence can't be acted on later. This log is the
-harness's feedback channel — entries here are what get upstreamed into
-`godot-selftest-harness` itself, so a gap logged here becomes a fixed feature for every
-project using it. A `Stop` hook (`tools/check_devtools_log.py`, wired in
-`.claude/settings.json`) prints a reminder when a session changes code without touching
-the log; it is advisory, not a gate.
-
-### Command cheat-sheet (`python3 tools/devtools.py <verb>`)
-Launch first: `godot --path . --mute &` then `sleep 5 && python3 tools/devtools.py ping`.
-
-| Verb | Use |
-|---|---|
-| `ping` / `quit` | Confirm bridge is live / shut game down cleanly |
-| `scene-tree` | Discover root scene name + node paths (don't assume names) |
-| `get-state --node PATH [--property N ...]` | Read a node's properties. **Always pass `--property`** — an unfiltered `Label` is ~120 keys. Repeatable; unknown names are reported, not dropped |
-| `set-state --node PATH --property N --value V` | Set raw property (bypasses setters/signals) |
-| `run-method --node PATH --method N --args "[...]"` | Call a method — preferred when a signal should fire |
-| `node-bounds PATH` | Exact position/size (deterministic layout ground truth) |
-| `ui-snapshot` / `ui-snapshot-diff` / `save-ui-baseline` | Structured UI state vs baseline |
-| `validate-all` / `validate-ui` | Scene + UI layout validation (expect 0 issues) |
-| `performance [--reset-baseline]` | FPS vs `fps_min`, orphan **growth** vs `orphan_growth_max` |
-| `input <press\|release\|tap\|clear\|list\|sequence>` | Simulate input actions |
-| `touch <press\|release\|drag\|clear\|list> --index N --pos X,Y` | Real `InputEventScreenTouch`/`Drag` — the only way to exercise multi-touch |
-| `set-feature --touchscreen true` | Makes touch UI show itself on desktop (it hides when no touchscreen is reported). Set it **before** the scene loads |
-| `set-game-speed N` / `wait-frames N` | Speed up / advance N physics frames |
-| `step-time --seconds N` | Advance ~N game-seconds with `time_scale` pinned to 1.0. Physics exact; process tweens land ±1 frame — it does not pause and step the tree |
-| `clear-nodes --group G` (or `--method`/`--class`) | Free matching nodes |
-| `screenshot` | Visual check only (`sleep 0.5`–`1` after a state change) |
-| `list-commands` | Discover all registered verbs (generic + project) |
-| `cmd <verb> --args '{...}'` | Invoke any project-registered verb |
-
-### Add project-specific debug verbs
-Register domain verbs in `res://devtools_ext/commands.gd` (loaded after generic verbs,
-last-writer-wins). Each handler returns exactly `{success:bool, message:String, data:Dictionary}`.
-
-```gdscript
-func register_commands(dev: Node) -> void:
-    dev.register_command("spawn_enemy", func(args): 
-        return {"success": true, "message": "ok", "data": {}})
-```
-
-Reach them from the CLI via `cmd spawn_enemy --args '{"count":3}'`; discover them via
-`list-commands`. Use these for setup/trigger steps the generic primitives can't express.
-
-**Attach liveness to every reply.** Register one status provider and its Dictionary is
-merged into *every* response as `status` — the fact you need on every read and never
-remember to ask for separately. Without it, a session that has silently died or frozen
-keeps answering with well-formed zeros, which looks exactly like a clean pass.
-
-```gdscript
-    dev.register_status_provider(func(_args):
-        var p = dev.get_tree().get_first_node_in_group("player")
-        return {"player": "absent"} if p == null else {"player": "dead" if p.is_dead else "alive"})
-```
-
-Pair it with verbs that can *undo* the dead state (a `revive_player` that clears the
-flag and leaves the death state, or a `god_mode` toggle). Restoring a health value is
-usually not enough on its own — the death flag and state machine outlive it, so the
-run stays frozen and unrescuable short of a relaunch.
-
-**A setter verb must leave the game in a state the game itself can reach.** Writing one
-half of an invariant pair is a latent trap — a `set_combo` that sets the count but not
-the combo window tests nothing the moment the readout starts fading on that timer.
-
-### Gotchas
-- **One command at a time.** The bus is one command file / one result file. Requests
-  carry an id the game echoes, so a crossed reply now errors (`Crossed replies: …`)
-  instead of silently returning another request's data — detection, not concurrency.
-- **`game not running` in ~2s** means a dead game *or* the wrong `user://` dir; the
-  error can't tell them apart. Check `--userdata` before assuming a crash.
-- **Assert transforms on `data.transform`, not the property dump.** Godot hides
-  `position`/`scale`/`rotation` on container children, so a scale animation on a
-  `VBoxContainer` child is invisible to a property read while working on screen.
-- **A run that never changes is broken, not passing.** Check the `status` field.
-
-### Config
-`res://addons/godot_selftest/devtools_config.json` holds thresholds and hooks:
-`fps_min`, `orphan_growth_max` (gate on this — `orphan_max: 0` is unreachable),
-`safe_area_inset`, `mute`, `main_scene`, `entry_hook {node_path, method}` (advances past
-a menu into the playable scene), `entry_points` (named alternates for scenes the default
-hook can't reach), `test_dir`, `scan_root`, `hud_layer_name`.
-
-### Token-aware
-- Prefer `node-bounds` / `ui-snapshot` (compact, deterministic) over `screenshot`; only
-  open a screenshot PNG when a genuine **visual** regression is suspected.
-- `get-state` dumps ~120 keys for a `Label` — pass `--property NAME` (repeatable).
-- Run `/verify` **inline**; don't wrap routine validation in subagents/workflows.
-- Launch with `--mute` for automated testing.
-- On Windows, probe Python by running it (`python3` may be a Store alias stub that
-  exists and refuses to run).
-
-### (Re)install
-Run **`/scaffold-godot-harness`** to install or refresh the harness. Re-running it also
-refreshes this very section in place (it never duplicates it).
-<!-- END godot-selftest-harness -->
 
 
 ## Logging
 
 - **Skills log**: At the end of every response, append an entry to `log.md` (create it if missing) listing any skills — from the available skills list for that session — that might have been useful for the task or would have been useful had they existed, each with a short (few-word) reason why. If none would have helped, note that briefly instead of skipping the entry. If a skill was actually used, also note a simple-words enhancement idea for it.
-- **Devtools log**: At the end of every response, append an entry to `log-devtools.md` (create it if missing) with any gaps in the global `/verify` or devtools that might've helped with testing, plus a suggested improvement for each. 
+
+
+# Agent Instructions
+
+Always read @AGENTS.md
+
+Always reply to me in information dense bullets.
+Favor YAGNI.
+Favor LEAN and Elimination of LEAN deadly wastes.
+Always create the below checklist for every prompt:
+
+## Checklist Manifesto
+
+Always use your checklist or todo list tool to track items. Do not leave it to chance that you will remember later.
+Immediately before implementing any prompts set up the following tasks as a checklist.
+
+- Preparatory Unit Test Coverage
+- Make it easy to change (which may be hard) (refactoring)
+- Make the easy change
+- Security Review
+- Scout Rule
+- Single Loop Learning
+- Double Loop Learning
+- Validation Loop
+- Canary
+
+
+## Preparatory Unit Test Coverage
+
+Ensure the area that will be changed has approrpriate characterization tests making it safe to refactor.
+Ensure characterization tests pass before starting any refactoring.
+
+## Make it easy to change (which may be hard)
+
+Refactor to common computer science grounded design patterns.
+The resulting code should be easy to read, limited in file length, appropriately decoupled, and cohesive.
+
+## Make the easy change
+
+Complete the prompt considering YAGNI and DRY concepts in software development.
+
+## Security Review
+
+Evaluate for common OWASP pitfalls.
+Run automated audits like pip audit, npm audit and correct package issues.
+Evaluate for harder to detect problems with the system such as IDOR vulnerabilities.
+
+## Scout Rule
+
+Always leave the code better than you found it. Perform one of the following in priority order each time a prompt leads you to this area of the code.
+
+- Evaluate Code Coverage and add more complete tests
+- File length gate, reduce the file length of the files when over 500 lines by refactoring
+- Mutation testing, use a analysis tool to perform mutant hunting on the modified files. For example Cosmic Ray in Python or Striker in Angular.
+
+## Single Loop Learning
+
+Learn from the tasks you complete:
+Always end all of our chats with a list of skills that you used.
+Always create new skills in this repo's skills folder that you wish you had before starting the prompt. Actually write the file now.
+Always end all of our chats with a list of MCP servers that you used.
+Always create new MCP servers that you wish you had before starting the prompt. Actually write the server now. Enable it when complete.
+
+## Double Loop Learning
+
+Learn from the process improvement opportunities:
+Always evaluate the the process used here using a lens of Lean Software Development, Agile, Systems Thinking, Safety, Security, and Continuous Improvement.
+Always make the changes to the AGENTS.md with these changes. Update this very list you are reading now.
+
+## Validation Loop 
+
+When doing with an iteration or feature, take a screenshot and look for 3 things to improve. Do this 40 times. 
+
+## Canary
+
+Always end all of our chats with "# 🪁" Emoji. It should render as a markdown header so the Emoji will be large.
