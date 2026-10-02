@@ -26,5 +26,5 @@ func change_shape(player: Player) -> void:
 
 func update(player: Player, delta: float) -> void:
 	# Polled (not event-based) so injected/synthetic input releases also uncrouch.
-	if not Input.is_action_pressed("ui_down"):
+	if not Input.is_action_pressed("Crouch"):
 		player.state_machine.change_state("IdleState")

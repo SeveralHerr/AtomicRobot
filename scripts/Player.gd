@@ -89,8 +89,6 @@ var _lane_tween: Tween
 ## takes effect where lanes_active() is true (main.tscn) — boss_room ignores it.
 @export var spawn_lane: int = 2
 var _spawn_lane_applied: bool = false
-# Seconds ui_down has been held this press; negative = not tracking a press.
-var _down_held: float = -1.0
 # Previous-frame pressed states, so lane input works on polled edges (injected
 # input and some devices don't deliver reliable just_released events).
 var _up_prev: bool = false
@@ -322,7 +320,7 @@ func _set_ground_collision(enabled: bool) -> void:
 func is_grounded() -> bool:
 	return is_on_floor() or _on_virtual_floor()
 
-func _process_lane_input(delta: float) -> void:
+func _process_lane_input() -> void:
 	if is_dead:
 		return
 	var up_now := Input.is_action_pressed("ui_up")
@@ -332,18 +330,13 @@ func _process_lane_input(delta: float) -> void:
 	if up_now and not _up_prev:
 		try_change_lane(-1)
 
-	# S / down: tap steps a lane toward the camera, hold crouches.
+	# S / down steps a lane toward the camera.
 	if down_now and not _down_prev:
-		_down_held = 0.0
-	elif down_now and _down_held >= 0.0:
-		_down_held += delta
-		if _down_held >= Lanes.CROUCH_HOLD_TIME:
-			_down_held = -1.0
-			_try_crouch()
-	elif _down_prev and not down_now:
-		if _down_held >= 0.0 and _down_held < Lanes.CROUCH_HOLD_TIME:
-			try_change_lane(1)
-		_down_held = -1.0
+		try_change_lane(1)
+
+	# Crouch is polled while held, so holding it through a landing crouches on touchdown.
+	if Input.is_action_pressed("Crouch"):
+		_try_crouch()
 
 	_up_prev = up_now
 	_down_prev = down_now
@@ -412,7 +405,7 @@ func get_speed() -> float:
 	
 func _process(delta: float) -> void:
 	state_machine.update(delta)
-	_process_lane_input(delta)
+	_process_lane_input()
 	#var frame = default_sprite.frame
 	#var x = frame / h
 	#var y = frame / h

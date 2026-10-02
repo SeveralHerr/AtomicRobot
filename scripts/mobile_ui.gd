@@ -17,7 +17,7 @@ extends Control
 @onready var _action_buttons: Dictionary = {
 	jump_ui: "ui_accept",
 	attack_ui: "Attack",
-	crouch_ui: "ui_down",
+	crouch_ui: "Crouch",
 	interact_ui: "Interact",
 	run_ui: "Run",
 }

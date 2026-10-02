@@ -39,7 +39,7 @@ the old camera clamp; `limit_bottom` went 30 → 64 → 96 to reveal it.
   `_set_ground_collision()` — off when leaving the walkway (tween start), back on
   when arriving at it (tween end). Walls/car bits stay on.
 - **Player**: spawns on the walkway (lane 0); S taps toward camera, W back;
-  hold-S crouches. Jump verified within road lanes.
+  crouch is its own `Crouch` action (C / joypad B). Jump verified within road lanes.
 - **Enemies**: `@export starting_lane` (hand-placed default = walkway) and
   `@export lane_locked`; lane-chase is wired into **ChasePlayerState** (the earlier
   chase_player() wiring was dead code — removed). Spawner picks a weighted random
@@ -67,7 +67,7 @@ the old camera clamp; `limit_bottom` went 30 → 64 → 96 to reveal it.
   back to the walkway from lane 3 can read as an AI stall.
 - `_pick_spawn_lane` keeps 40% on the player's lane; the remaining 60% now splits
   three ways (20% each) instead of two, so spawns are more thinly spread.
-- Lane spacing 24px and crouch-hold 0.25s are feel parameters, untested by hand.
+- Lane spacing 24px is a feel parameter, untested by hand.
 - Boss room intentionally single-plane. VirtualJoystick addon class name collides
   with a Godot 4.7 native class (mobile builds only, pre-existing).
 
@@ -85,10 +85,8 @@ the old camera clamp; `limit_bottom` went 30 → 64 → 96 to reveal it.
   (bg -1, ground/props 1, accents 2) — lane z values must slot between those.
 - Gate **all combat interactions by lane equality** (melee overlap, projectiles,
   line-of-sight, knockback).
-- Input: `ui_up`/`ui_down` already exist with keyboard+gamepad bindings. `ui_up` is
-  FREE (only referenced by dead ClimbState). `ui_down` currently means CROUCH in
-  idle/walk/run/fall/attack — decide: tap = lane-down, hold = crouch? or move crouch
-  to another key.
+- Input (decided): `ui_up`/`ui_down` are pure lane steps; crouch moved to its own
+  `Crouch` action (C, joypad button 1/B, touch CrouchUI button).
 
 ## Player-side touch points
 
@@ -97,7 +95,7 @@ the old camera clamp; `limit_bottom` went 30 → 64 → 96 to reveal it.
 | 1 | `scripts/Player.gd:134-153` `_physics_process` | Gravity + auto-FallState fire whenever airborne; lane Y-tween will fight gravity unless lane motion is flagged (e.g. `is_changing_lane`) or done via floor re-basing |
 | 2 | `scripts/Player.gd` (new) | Add `current_lane`, lane-move method, lane→z_index/collision update |
 | 3 | `scripts/states/climb_state.gd` | DEAD state already reading `Input.get_axis("ui_up","ui_down")` and moving velocity.y — skeleton for `LaneMoveState`; registered at `Player.gd:97` but never entered |
-| 4 | `idle_state.gd:22`, `walk_state.gd:39`, `run_state.gd:21`, `fall_state.gd:54`, `attack_state.gd:62` | All hard-wire `ui_down` → CrouchState; add `ui_up`/`ui_down` → lane transitions here |
+| 4 | `idle_state.gd:22`, `walk_state.gd:39`, `run_state.gd:21`, `fall_state.gd:54`, `attack_state.gd:62` | Originally hard-wired `ui_down` → CrouchState; now `Crouch` → CrouchState, `ui_up`/`ui_down` → lane steps |
 | 5 | `is_on_floor()` uses | `Player.gd:136,142,148,156,204` + every ground state — fine if lanes re-base the floor; broken if lanes are pure Y-offsets without collision |
 | 6 | `scenes/platform.tscn` | `one_way_collision` assumes gravity-down; per-lane platforms need per-lane layers |
 | 7 | `scripts/under_world_kill_box.gd`, `fall_death_collision.gd` | Y-triggered death volumes must not fire on a legitimate "down" lane |

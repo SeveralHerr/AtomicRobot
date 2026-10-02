@@ -186,3 +186,12 @@ Log of skills that might have been useful for a given response, and why (short f
 - Would have helped, had it existed: a **text-layout sanity** skill that flags label
   settings whose line spacing is smaller than the font's own height — the whole bug was
   one negative `line_spacing` value, and nothing in the repo could see it.
+
+## 2026-10-02 — Crouch off S/Down: mobile button, controls screen, docs
+
+- No skill invoked. `derive-the-list` was the nearest fit: the controls-screen needle
+  list and the mobile button->action map are both hand-written lists that drift.
+- Would have helped, had it existed: a **unit-test runner** — `tools/run_tests.gd` was
+  removed in 06e113f, so running two test files meant restoring it from git into a
+  scratch copy. Also CLAUDE.md's Godot path is stale (exe is under
+  `Downloads\Godot_v4.7.1_fixed\`).

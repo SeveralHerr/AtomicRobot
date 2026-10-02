@@ -112,8 +112,8 @@ F
 E
 HOLD SHIFT
 W or UP
-TAP S or DOWN
-HOLD S or DOWN
+S or DOWN
+C
 ESC"
 label_settings = SubResource("LabelSettings_keys")
 

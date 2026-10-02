@@ -29,8 +29,8 @@ Walk down the street, punch meter maids, and don't run out of health.
 | Attack | F |
 | Use / interact | E |
 | Run | Hold Shift |
-| Step back / forward a lane | W or Up / tap S or Down |
-| Crouch | Hold S or Down |
+| Step back / forward a lane | W or Up / S or Down |
+| Crouch | Hold C |
 | Pause | Esc |
 
 Pause opens volume, the CRT screen effect, and resume. On a phone, use the on-screen

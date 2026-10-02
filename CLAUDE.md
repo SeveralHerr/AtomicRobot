@@ -94,7 +94,7 @@ Global signals for major game events:
 
 - Viewport: 1280x800 with canvas item stretching
 - Physics layers: Player (1), Ground (2), Enemy (3), Platforms (6), Wall (7)
-- Input: WASD + Arrow keys, F (Attack), E (Interact), Shift (Run)
+- Input: WASD + Arrow keys, F (Attack), E (Interact), Shift (Run), C (Crouch)
 
 ## Key Development Notes
 

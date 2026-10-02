@@ -24,8 +24,6 @@ const GROUND_LANE := BACK_LANE
 const LANE_SPACING := 24.0
 ## Seconds for a lane-step tween (player).
 const CHANGE_DURATION := 0.12
-## Holding ui_down at least this long crouches; a shorter tap steps a lane forward.
-const CROUCH_HOLD_TIME := 0.25
 
 ## Lane play only happens in the street level for now (boss room stays single-plane).
 const LANE_SCENES: Array[String] = ["res://scenes/main.tscn"]

@@ -154,6 +154,13 @@ func test_every_action_button_maps_to_a_real_input_action() -> String:
 	return ""
 
 
+func test_crouch_button_drives_the_crouch_action() -> String:
+	# S/Down is a lane step now (fed by the joystick); the button must not step lanes.
+	return _T.assert_eq(
+		_ui._action_buttons[_ui.get_node("CrouchUI")], "Crouch", "CrouchUI should press Crouch"
+	)
+
+
 func test_touch_holds_the_button_until_release() -> String:
 	_touch(0, "AttackButton", true)
 	var err: String = _T.assert_eq(

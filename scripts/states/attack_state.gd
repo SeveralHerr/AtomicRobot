@@ -61,7 +61,7 @@ func _on_frame_changed(player: Player):
 func handle_input(player: Player, event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept") and player.is_grounded():
 		player.state_machine.change_state("JumpState")
-	# ui_down is handled centrally by Player._process_lane_input (tap = lane, hold = crouch)
+	# ui_down (lane step) and Crouch are handled centrally by Player._process_lane_input
 
 func exit_state(player: Player) -> void:
 	player.default_sprite.animation_finished.disconnect(_on_animation_finished.bind(player))

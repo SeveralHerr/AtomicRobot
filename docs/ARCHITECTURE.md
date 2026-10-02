@@ -81,22 +81,22 @@ each receiving `player`.
 
 | State | Movement | Notes |
 |---|---|---|
-| Idle | `velocity.x = 0` | axis→Walk/Run, `ui_accept`→Jump, `Attack`, `ui_down`→Crouch |
+| Idle | `velocity.x = 0` | axis→Walk/Run, `ui_accept`→Jump, `Attack`, `Crouch`→Crouch |
 | Walk / Run | `velocity.x = move_toward(vx, dir*speed, ACCEL*dt)` | Run = Shift held |
 | Jump | `velocity.y = -450` on enter; air control ×0.6; release halves vy | |
 | Fall | air control; squash tween on land | entered automatically from `_physics_process` |
 | Attack | `velocity = ZERO`; per-character projectile or Area2D overlap hits | frame timing from `Globals.get_current_character_attack_frame()` |
-| Crouch | swaps body collision shape; `ui_down` held | |
+| Crouch | swaps body collision shape; `Crouch` held | |
 | Climb | **DEAD CODE** — registered but never entered; only vertical-movement code in repo | natural seed for lane movement |
 | Knockback | decays `velocity.x` | **BUG**: methods named `enter`/`exit` instead of `enter_state`/`exit_state` → timer never init, exits almost immediately |
 | Dead | zero velocity, emits `player_death` | terminal |
 
 ### Input actions (`project.godot` [input])
 
-`ui_left`/`ui_right` (A/D, arrows, dpad, stick), `ui_up` (W/up — **only used by dead
-ClimbState, effectively free**), `ui_down` (S/down — crouch in idle/walk/run/fall/attack),
+`ui_left`/`ui_right` (A/D, arrows, dpad, stick), `ui_up` (W/up — tap = lane step back),
+`ui_down` (S/down — tap = lane step toward camera; also fed by the touch joystick),
 `ui_accept` (jump; built-in default, includes joypad button 0/A), `Attack` (F, joypad
-button 2/X), `Interact` (E, joypad button 0/A), `Run` (Shift, joypad button 5/R1).
+button 2/X), `Crouch` (C, joypad button 1/B; touch CrouchUI button), `Interact` (E, joypad button 0/A), `Run` (Shift, joypad button 5/R1).
 `debug_menu` is keyboard-only by design (dev-only, not player-facing).
 
 ## Enemies
