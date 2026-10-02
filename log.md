@@ -212,3 +212,11 @@ Log of skills that might have been useful for a given response, and why (short f
 
 - No skill invoked. `cycle` fit (gate → commit → push loop); sandbox selftests already
   existed but nothing ran them and their Godot default path was stale.
+
+## 2026-10-02 — Arcade button remapping in the pause menu
+
+- Fanned out 2 subagents on disjoint files against a fixed `InputRemap` API contract
+  (logic+tests / UI+tests); both landed green first try (166/166).
+- No skill invoked. `godot-game-ui` fit (pause sub-screen); `extract-a-testable-seam` fit
+  (panel exposes `_capture` so listen mode is testable without real input).
+- Missing skill written: `skills/godot-headful-screenshot` (validation-loop screenshots).

@@ -11,6 +11,9 @@ const MASTER_BUS := 0
 @onready var _crt_checkbox: CheckBox = $CenterContainer/Panel/Margin/VBoxContainer/CRTRow/CRTCheckBox
 @onready var _resume_button: Button = $CenterContainer/Panel/Margin/VBoxContainer/ResumeButton
 @onready var _exit_button: Button = $CenterContainer/Panel/Margin/VBoxContainer/HeaderRow/ExitButton
+@onready var _controls_button: Button = $CenterContainer/Panel/Margin/VBoxContainer/ControlsButton
+@onready var _main_panel: Control = $CenterContainer/Panel
+@onready var _remap_panel = $CenterContainer/RemapPanel
 
 
 func _ready() -> void:
@@ -20,15 +23,21 @@ func _ready() -> void:
 	# Apply persisted settings immediately (slider + AudioServer + CRTOverlay)
 	# before any signals are connected, so this doesn't trigger a redundant save.
 	_load_and_apply_settings()
+	# Saved button remaps must apply at boot, not only once the menu is opened.
+	InputRemap.load_and_apply()
 
 	_volume_slider.value_changed.connect(_on_volume_changed)
 	_crt_checkbox.toggled.connect(_on_crt_toggled)
 	_resume_button.pressed.connect(_on_resume_pressed)
 	_exit_button.pressed.connect(_on_resume_pressed)
+	_controls_button.pressed.connect(_show_controls)
+	_remap_panel.closed.connect(_hide_controls)
 
 
 func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("pause"):
+	# Input state sees a press even when _input swallowed it, so the remap panel
+	# (open or listening) must veto pause here or binding Start would close the menu.
+	if Input.is_action_just_pressed("pause") and not _remap_panel.visible:
 		toggle_pause()
 
 
@@ -37,7 +46,19 @@ func toggle_pause() -> void:
 	get_tree().paused = new_paused
 	visible = new_paused
 	if new_paused:
+		_hide_controls()
 		_volume_slider.grab_focus()
+
+
+func _show_controls() -> void:
+	_main_panel.visible = false
+	_remap_panel.open()
+
+
+func _hide_controls() -> void:
+	_remap_panel.visible = false
+	_main_panel.visible = true
+	_controls_button.grab_focus()
 
 
 func _on_resume_pressed() -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Texture2D" uid="uid://celoqs2lympxv" path="res://images/background_small.png" id="1_bg"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="3_whitefont"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://drlbejg4ojdha" path="res://images/check_square_grey_checkmark.png" id="5_checkmark"]
 [ext_resource type="Texture2D" uid="uid://hpogdiga4x5d" path="res://images/check_square_grey.png" id="6_uncheck"]
 [ext_resource type="Script" path="res://scripts/autoload/pause_menu.gd" id="7_script"]
+[ext_resource type="Script" path="res://scripts/ui/remap_panel.gd" id="8_remap"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 bg_color = Color(0, 0, 0, 0.65)
@@ -155,6 +156,15 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_pressed")
 theme_override_icons/checked = ExtResource("5_checkmark")
 theme_override_icons/unchecked = ExtResource("6_uncheck")
 
+[node name="ControlsButton" type="Button" parent="CenterContainer/Panel/Margin/VBoxContainer"]
+custom_minimum_size = Vector2(260, 72)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_fontvar")
+theme_override_font_sizes/font_size = 40
+text = "CONTROLS"
+
 [node name="ResumeButton" type="Button" parent="CenterContainer/Panel/Margin/VBoxContainer"]
 custom_minimum_size = Vector2(260, 72)
 layout_mode = 2
@@ -163,3 +173,9 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_fontvar")
 theme_override_font_sizes/font_size = 40
 text = "RESUME"
+
+[node name="RemapPanel" type="PanelContainer" parent="CenterContainer"]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+script = ExtResource("8_remap")
