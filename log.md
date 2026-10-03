@@ -294,3 +294,10 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: none from the list (repo `godot-headful-screenshot` + `godot-input-test` recipes). Enhancement for godot-input-test: added flush-on-record, precondition asserts, tilt/stamp/touch-control gotchas.
 - Would have helped: `mockup-on-screenshot` (mock the card on a real frame before coding), `godot-game-ui` (comic re-skin kit), wished-for "sibling-game-style" skill (extract tokens/flow from a related repo into a Godot theme).
 - 320/320 unit, 9/9 sandbox, 19/19 mutants killed (3 after tightening). Artifact: https://claude.ai/artifact/BXTHrWgYfZo3BetDA3nH9z
+
+## 2026-10-03 — Autoplay bot for self-testing, judge panel, full playthrough report
+- Skills used: godot-headful-screenshot (windowed snaps), artifact-design via quickstart (report page). Enhancement idea for godot-headful-screenshot: point to `tools/autoplay.py --window` + `snap`/`snap_every` instead of throwaway SceneTree scripts.
+- Created: `skills/godot-autoplay-test/SKILL.md`.
+- Would have helped: `extract-a-testable-seam` (brain kept pure for tests), `derive-the-list` (used the idea: METRICS pinned to recorder both ways), `scope-vs-claim` (judges caught `max_stuck_s` that could never fail), `godot-2d-placement-audit` (crate collider walls off road lanes).
+- Process lessons: worktree under the OneDrive path failed on long filenames — fixed with `core.longpaths` + short worktree path; a bot that "passes" needs a metric that can fail (prove it red first, as with the boss soft lock).
+- Report: https://claude.ai/artifact/G2ieWdXVsPtTuYCbu64AhH. Merged to main; 373/373 unit, 6/6 autoplay scenarios.
