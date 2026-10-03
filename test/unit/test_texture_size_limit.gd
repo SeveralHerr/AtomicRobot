@@ -65,7 +65,31 @@ func test_scene_images_are_found() -> String:
 func test_no_referenced_image_exceeds_gpu_limit() -> String:
 	var over := []
 	for path in _referenced_images():
-		var size := Image.load_from_file(path).get_size()
+		var image := Image.load_from_file(path)
+		if image == null:
+			continue  # reported by test_referenced_images_exist_with_exact_case
+		var size := image.get_size()
 		if maxf(size.x, size.y) > MAX_TEXTURE_PX:
 			over.append("%s %dx%d" % [path, size.x, size.y])
 	return _T.assert_eq(over, [], "images over %d px" % MAX_TEXTURE_PX)
+
+
+## Windows matches paths case-insensitively; Linux CI and the exported pck do not, so a
+## "Tiles/" vs "tiles/" slip passes locally and ships a missing texture. Walk each
+## segment against the real directory listing.
+func _exact_case_exists(path: String) -> bool:
+	var dir := "res://"
+	for part in path.trim_prefix("res://").split("/"):
+		var names := DirAccess.get_directories_at(dir) + DirAccess.get_files_at(dir)
+		if part not in names:
+			return false
+		dir = dir.path_join(part)
+	return true
+
+
+func test_referenced_images_exist_with_exact_case() -> String:
+	var bad := []
+	for path in _referenced_images():
+		if not _exact_case_exists(path):
+			bad.append(path)
+	return _T.assert_eq(bad, [], "referenced images missing or wrong-cased")
