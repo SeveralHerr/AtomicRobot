@@ -1,0 +1,8 @@
+{
+  "scene": "res://scenes/boss_room.tscn",
+  "character": "Robot",
+  "seed": 1,
+  "timeout": 120,
+  "steps": ["brain advance 110"],
+  "expect": ["boss_hp <= 12", "errors == 0", "engine_errors == 0"]
+}

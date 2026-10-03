@@ -115,7 +115,11 @@ Variants (each registers its own states in `_ready`):
   Its scene includes the window frame, so it overrides `_death_blink_target()` /
   `_on_death_blink_finished()` (Enemy.die hooks): only the sprite blinks and hides, the
   smashed window stays.
-- **FinalBoss** (`city_council_boss.gd`): briefcase spirals; emits `boss_death`.
+- **FinalBoss** (`city_council_boss.gd`): 3 health-keyed phases (tuning table `scripts/boss/boss_rules.gd`): aimed
+  briefcase throws (aim locks at the wind-up tell) -> upward fans + telegraphed ceiling drops + maid
+  reinforcements -> charge (`BossDashState`). `boss_room.gd` directs the intro, waves, banners
+  (`boss/boss_banner.gd`), HUD card (`boss/boss_health_bar.gd`) and finale; `Globals.boss_death` fires
+  after the finale slow-mo. `Globals.boss_fight(bool)` swaps the music (AudioManager).
 
 ### Enemy state contract (important invariants)
 
@@ -145,7 +149,7 @@ timed random waves, gated by `player.is_near_ground()`) + `EnemyEvent` Area2D tr
 (`enemy_event.gd`) + `window_event_building.gd` + `boss_room.gd`.
 
 Projectiles: `robot_bullet.gd`/`flipflop_bullet.gd` (player; pure `position.x += dir*10`),
-`coin_bullet.gd` (RigidBody2D gravity arc at player), `briefcase_bullet.gd` (homing spiral).
+`coin_bullet.gd` (RigidBody2D gravity arc at player); briefcases are the same script with a briefcase sprite.
 
 ## Characters (`Globals.character_dict`, `globals.gd:14-130`)
 

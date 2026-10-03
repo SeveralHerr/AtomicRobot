@@ -123,29 +123,17 @@ static func throw_coin_from_enemy(enemy: Node, use_arc: bool = false, offset: in
 	var agnostic: bool = enemy.lane_locked if enemy is Enemy else false
 	throw_coin(spawn_pos, target_pos, enemy.player.get_parent(), use_arc, lane, agnostic)
 	
-## Coin throwing factory methods
-static func throw_briefcase(spawn_position: Vector2, target_position: Vector2, parent_node: Node, use_arc: bool = false, gravity: float = 0.55, is_falling: bool = false) -> void:
+## Briefcases: the boss's throws and the ceiling drops. `speed` is the launch speed in
+## px/s — slower than a coin so a briefcase reads as lobbed and can be dodged.
+static func throw_briefcase(spawn_position: Vector2, target_position: Vector2, parent_node: Node, use_arc: bool = false, gravity: float = 0.55, is_falling: bool = false, speed: float = 600.0) -> Bullet:
 	var instance = BRIEFCASE_BULLET.instantiate()
 	parent_node.add_child(instance)
 	var direction = (target_position - spawn_position).normalized()
-	
+	instance.initial_speed = speed
 	if is_falling:
 		instance.enable_passthrough()
 	instance.start(spawn_position, direction, use_arc, gravity)
-
-static func throw_briefcase_from_enemy(enemy: Node, use_arc: bool = false, offset: int = 0) -> void:
-	var player = enemy.get_tree().get_first_node_in_group("player")
-	if not enemy or not player:
-		return
-	# global_position, not global + LOCAL offset: set_facing() mirrors the enemy's
-	# transform on x, so a raw local offset put the projectile on the maid's back
-	# whenever she faced left. (Currently a no-op — the marker sits at (0,0) — but
-	# it silently breaks the moment anyone moves it off centre.)
-	var spawn_pos = enemy.coin_spawn_point.global_position
-	var target_pos = player.enemy_attack_position.global_position
-	target_pos.y += offset
-	target_pos.x += randf_range(-PROJECTILE_TARGET_JITTER, PROJECTILE_TARGET_JITTER)
-	throw_briefcase(spawn_pos, target_pos, enemy.player.get_parent(), use_arc)
+	return instance
 
 static func throw_coin_delayed(enemy: Node, delay: float = 0.3, use_arc: bool = false) -> void:
 	if not enemy:

@@ -4,7 +4,6 @@
 [ext_resource type="Script" path="res://scripts/health_container.gd" id="3_c7j7s"]
 [ext_resource type="Texture2D" path="res://images/ART-Mobile-logo (1).png" id="4_4e86d"]
 [ext_resource type="Material" path="res://shaders/hud_logo_outline_mat.tres" id="4_hudol"]
-[ext_resource type="SpriteFrames" path="res://sprites/boss_ani.tres" id="4_bggbs"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="4_g2a2m"]
 [ext_resource type="Script" path="res://scripts/notificataion_container.gd" id="5_xmdvo"]
 [ext_resource type="LabelSettings" path="res://styles/font_v2.tres" id="6_okx5s"]
@@ -47,20 +46,8 @@ shadow_size = 6
 shadow_color = Color(0, 0, 0, 0.243137)
 shadow_offset = Vector2(2, 2)
 
-[sub_resource type="LabelSettings" id="LabelSettings_010di"]
-font = ExtResource("2_010di")
-font_size = 80
-outline_size = 8
-outline_color = Color(0, 0, 0, 1)
-shadow_size = 6
-shadow_color = Color(0, 0, 0, 0.243137)
-shadow_offset = Vector2(2, 2)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_entrance"]
 size = Vector2(200, 400)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ee80j"]
-size = Vector2(24, 56)
 
 [sub_resource type="Shader" id="Shader_27hpx"]
 code = "shader_type canvas_item;
@@ -299,32 +286,6 @@ grow_vertical = 2
 color = Color(0, 0, 0, 1)
 script = ExtResource("8_skgx8")
 
-[node name="BossIntroContainer" type="CenterContainer" parent="UI" unique_id=778758246]
-z_index = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="BossWordsLabel" type="Label" parent="UI/BossIntroContainer" unique_id=1232267876]
-layout_mode = 2
-text = "\"We are charging for 
-parking on sundays\""
-label_settings = SubResource("LabelSettings_010di")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/BossIntroContainer" unique_id=1510494629]
-layout_mode = 2
-
-[node name="FinalBossLabel" type="Label" parent="UI/BossIntroContainer/VBoxContainer" unique_id=1571748807]
-layout_mode = 2
-text = "Final boss"
-label_settings = ExtResource("6_okx5s")
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="MobileUI" type="Control" parent="UI" unique_id=1180746398 instance=ExtResource("100_mobctl")]
 layout_mode = 3
 anchors_preset = 15
@@ -351,29 +312,6 @@ collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Triggers/EntranceTrigger" unique_id=1742018031]
 shape = SubResource("RectangleShape2D_entrance")
-
-[node name="CityCouncilBoss" type="CharacterBody2D" parent="." unique_id=192557567]
-visible = false
-position = Vector2(-104, 174)
-collision_layer = 4
-collision_mask = 102
-
-[node name="BossSprite" type="AnimatedSprite2D" parent="CityCouncilBoss" unique_id=1484122526]
-sprite_frames = ExtResource("4_bggbs")
-animation = &"Attack"
-autoplay = "Idle"
-frame = 10
-frame_progress = 1.0
-
-[node name="AttackTimer" type="Timer" parent="CityCouncilBoss" unique_id=1637563051]
-wait_time = 3.0
-one_shot = true
-
-[node name="BulletSpawnPoint" type="Node2D" parent="CityCouncilBoss" unique_id=721533183]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CityCouncilBoss" unique_id=1875825464]
-position = Vector2(2, 5)
-shape = SubResource("RectangleShape2D_ee80j")
 
 [node name="Player" parent="." unique_id=1875136205 groups=["player"] instance=ExtResource("4_g2a2m")]
 position = Vector2(-290, 211)

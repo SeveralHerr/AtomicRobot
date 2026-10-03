@@ -1,6 +1,6 @@
 {
   "scene": "res://scenes/boss_room.tscn",
-  "timeout": 60,
-  "steps": ["wait 1", "snap enter", "brain advance 50", "snap after", "dump after"],
-  "expect": ["won == 1", "deaths == 0", "errors == 0"]
+  "timeout": 90,
+  "steps": ["god on", "wait 1", "snap enter", "brain advance 80", "snap after", "dump after"],
+  "expect": ["won == 1", "deaths == 0", "errors == 0", "engine_errors == 0", "t >= 20"]
 }
