@@ -17,7 +17,9 @@ static func load_unlocked(path: String) -> PackedStringArray:
 		return PackedStringArray()
 	var out := PackedStringArray()
 	for key in cfg.get_section_keys(SECTION):
-		if cfg.get_value(SECTION, key, false):
+		# Strictly bool true: a hand-edited save can hold any Variant, Objects included.
+		var v: Variant = cfg.get_value(SECTION, key, false)
+		if typeof(v) == TYPE_BOOL and v:
 			out.append(key)
 	return out
 

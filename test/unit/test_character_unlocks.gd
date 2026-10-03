@@ -135,3 +135,35 @@ func test_already_unlocked_is_not_reannounced_after_restart() -> String:
 	Globals.load_unlocks()
 	Globals.boss_death.emit()
 	return _T.assert_eq(_announced.size(), 0, "beating the boss again doesn't re-announce Robot")
+
+
+func test_use_unlock_save_restores_shipped_then_applies() -> String:
+	Globals.character_dict["Robot"].unlocked = true
+	Globals.use_unlock_save(SAVE)  # empty scratch save
+	var r: String = _T.assert_false(_robot().unlocked, "back to shipped: Robot locked")
+	if r != "":
+		return r
+	Unlocks.save_unlocked(SAVE, "Robot")
+	Globals.use_unlock_save(SAVE)
+	return _T.assert_true(_robot().unlocked, "then that save's unlocks apply")
+
+
+func test_tests_never_touch_the_real_save() -> String:
+	return _T.assert_eq(Globals.unlocks_path, SAVE, "runner points Globals at the scratch save")
+
+
+func test_only_bool_true_unlocks() -> String:
+	var f := FileAccess.open(SAVE, FileAccess.WRITE)
+	f.store_string('[unlocked]\nRobot="yes"\nCody=1\nSara=true\n')
+	f.close()
+	return _T.assert_eq(Array(Unlocks.load_unlocked(SAVE)), ["Sara"], "strings/ints don't count as unlocked")
+
+
+func test_end_card_restart_keeps_the_reveal() -> String:
+	# End card RESTART runs Globals.reset() before opening character select.
+	Globals.boss_death.emit()
+	Globals.reset()
+	var r: String = _T.assert_true(_robot().unlocked, "reset doesn't re-lock Robot")
+	if r != "":
+		return r
+	return _T.assert_eq(Array(Globals.unseen_unlocks), ["Robot"], "reveal still queued for select")

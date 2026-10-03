@@ -55,7 +55,9 @@ var confirmed := false
 ## Seconds after opening before a pick counts, so the A that left the title screen
 ## (held, or mashed) can't instantly choose a fighter. Tests set 0.
 var accept_grace := 0.35
-var _opened_ms := 0
+## Game-time seconds since opening. Game time, not wall clock: the autoplay bot runs
+## at a high Engine.time_scale and its taps must clear the grace like a player's.
+var _age := 0.0
 ## Last input family seen: "pad", "keys" or "touch". Drives the prompt and two-tap.
 var device := "pad"
 ## Swappable so tests can press EXIT GAME without ending the test run.
@@ -86,7 +88,6 @@ func _ready() -> void:
 	sfx = AudioStreamPlayer.new()
 	add_child(sfx)
 	_wire_focus()
-	_opened_ms = Time.get_ticks_msec()
 	initial_card().grab_focus()
 	_intro()
 	var fresh := revealing()
@@ -127,7 +128,7 @@ func card_for(character: String) -> Button:
 
 ## A pressed on `card`. Locked: shake no. Unlocked: pick it, celebrate, then go.
 func confirm(card: Button) -> void:
-	if confirmed or Time.get_ticks_msec() - _opened_ms < accept_grace * 1000.0:
+	if confirmed or _age < accept_grace:
 		return
 	if not card.is_unlocked():
 		card.reject()
@@ -196,6 +197,10 @@ func _on_card_pressed(card: Button) -> void:
 
 
 ## Attack is the cabinet's big button: it picks too. Back leaves for the title.
+func _process(delta: float) -> void:
+	_age += delta
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if confirmed:
 		return

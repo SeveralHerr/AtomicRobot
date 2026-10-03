@@ -614,3 +614,17 @@ func test_early_pick_keeps_ready_over_reveal() -> String:
 	if r != "":
 		return r
 	return _T.assert_eq(_scene.hero.stamp.text, "READY!", "reveal doesn't overwrite the pick")
+
+
+func test_accept_grace_counts_game_time() -> String:
+	# The autoplay bot runs at a high time_scale: 0.35 game-seconds pass in a few
+	# real milliseconds, and its Enter taps must still land.
+	Globals.selected_character = "Ryan"
+	await _mount()
+	_scene.accept_grace = 0.35
+	_scene._age = 0.0
+	Engine.time_scale = 50.0
+	await _tree().create_timer(0.5).timeout  # 0.5 game-s, ~10ms real
+	Engine.time_scale = 1.0
+	await _pad(PAD_A)
+	return _T.assert_true(_scene.confirmed, "grace measured in game time, not wall clock")

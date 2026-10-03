@@ -20,7 +20,7 @@ var plate: Label
 var _frame_cold: StyleBoxFlat
 var _frame_hot: StyleBoxFlat
 var _hot_tween: Tween
-var _focus_ms := -1000
+var _focus_frame := -100
 
 
 func setup(character_name: String, slot: int) -> Button:
@@ -38,7 +38,7 @@ func _ready() -> void:
 		add_theme_stylebox_override(state, StyleBoxEmpty.new())
 	mouse_entered.connect(grab_focus)
 	focus_entered.connect(_set_hot.bind(true))
-	focus_entered.connect(func() -> void: _focus_ms = Time.get_ticks_msec())
+	focus_entered.connect(func() -> void: _focus_frame = Engine.get_process_frames())
 	focus_exited.connect(_set_hot.bind(false))
 	_build()
 	resized.connect(_center_pivot)
@@ -53,9 +53,10 @@ func is_unlocked() -> bool:
 	return config().unlocked
 
 
-## Focus arrived within the same tap that pressed it (touch: hover + press land together).
+## Focus arrived within the same tap that pressed it (touch: hover + press land
+## together). Counted in frames so time_scale can't stretch or shrink it.
 func just_focused() -> bool:
-	return Time.get_ticks_msec() - _focus_ms < 150
+	return Engine.get_process_frames() - _focus_frame <= 2
 
 
 func is_hot() -> bool:

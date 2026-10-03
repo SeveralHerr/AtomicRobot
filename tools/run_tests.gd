@@ -99,23 +99,15 @@ func _run_test(obj: RefCounted, name: String, path: String) -> void:
 ## test that emits Globals.boss_death would unlock Robot for real). Point Globals at
 ## a scratch file and restore the shipped lock states before every test.
 const TEST_UNLOCKS := "user://test_unlocks.cfg"
-var _shipped_unlocks := {}
 
 
 func _isolate_unlocks() -> void:
-	var fresh: Node = load("res://scripts/autoload/globals.gd").new()
-	for c in fresh.character_dict:
-		_shipped_unlocks[c] = fresh.character_dict[c].unlocked
-	fresh.free()
-	root.get_node("Globals").unlocks_path = TEST_UNLOCKS
+	_reset_unlocks()
 
 
 func _reset_unlocks() -> void:
-	var g: Node = root.get_node("Globals")
-	for c in _shipped_unlocks:
-		g.character_dict[c].unlocked = _shipped_unlocks[c]
-	g.unseen_unlocks = PackedStringArray()
-	DirAccess.remove_absolute(TEST_UNLOCKS)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_UNLOCKS))
+	root.get_node("Globals").use_unlock_save(TEST_UNLOCKS)
 
 
 static func assert_eq(actual: Variant, expected: Variant, context: String = "") -> String:

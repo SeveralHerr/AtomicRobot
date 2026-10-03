@@ -141,10 +141,24 @@ var meter_maid_boss_killed: int = 0
 var unlocks_path := CharacterUnlocks.DEFAULT_PATH
 ## Fighters unlocked this session that the select screen hasn't revealed yet.
 var unseen_unlocks: PackedStringArray = []
+## Lock states as shipped, before any save is applied.
+var _shipped_unlocks := {}
 
 func _ready() -> void:
+	for c in character_dict:
+		_shipped_unlocks[c] = character_dict[c].unlocked
 	load_unlocks()
 	boss_death.connect(_on_boss_death)
+
+
+## Swap to another save (unit tests, the autoplay bot) so a bot beating the boss
+## never unlocks Robot in the player's real save: back to shipped locks, then `path`.
+func use_unlock_save(path: String) -> void:
+	unlocks_path = path
+	unseen_unlocks = PackedStringArray()
+	for c in _shipped_unlocks:
+		character_dict[c].unlocked = _shipped_unlocks[c]
+	load_unlocks()
 
 
 ## Apply the save on top of the shipped lock states.

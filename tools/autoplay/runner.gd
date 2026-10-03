@@ -18,6 +18,8 @@ const WALK_TIMEOUT_S := 20.0
 ## Steps that act on the player: with none in the scene they fail, never no-op.
 const PLAYER_VERBS := ["walk_to", "lane", "teleport", "spawn", "hp"]
 const WALK_ARRIVE_PX := 12.0
+## The bot beats the boss; that must not unlock Robot in the developer's real save.
+const UNLOCKS := "user://autoplay_unlocks.cfg"
 
 var sc: Dictionary = {}
 var pad: Pad
@@ -51,6 +53,8 @@ func setup(source: String, out_dir: String) -> void:
 		return
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	seed(sc["seed"])
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(UNLOCKS))
+	Globals.use_unlock_save(UNLOCKS)
 	Globals.selected_character = sc["character"]
 	_run.call_deferred()
 
