@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "godot-tests": {
+      "command": "python",
+      "args": ["tools/mcp/godot_tests_mcp.py"]
+    }
+  }
+}

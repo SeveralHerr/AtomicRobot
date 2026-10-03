@@ -21,6 +21,9 @@ signal stage_finished(result: Dictionary)
 
 const SAVE_PATH := "user://scores.cfg"
 const SAVE_SECTION := "best"
+const TABLE_SECTION := "high_scores"
+const TABLE_KEY := "entries"
+const LAST_INITIALS_KEY := "last_initials"
 const SCORE_UI: PackedScene = preload("res://scenes/score_ui.tscn")
 
 var score: int = 0
@@ -29,6 +32,21 @@ var stage_seconds: float = 0.0
 var damage_taken: int = 0
 var running: bool = false
 var current_scene_path: String = ""
+## Swappable so tests never touch the player's real save.
+var save_path: String = SAVE_PATH
+## The arcade list, best first. See HighScoreTable for the entry shape.
+var high_scores: Array = []
+## True from a qualifying run until submit_initials(). The end card shows the
+## initials entry instead of the list while this is set.
+var awaiting_initials: bool = false
+## How the last run ended, for the end card. Written on a clear or a death BEFORE the
+## level's own handlers run (this autoload connects to Globals first):
+## {"won", "total", "rank" ("" on a death), "slot" (-1 = not on the list), plus the
+## ScoreRules.summarise() breakdown on a clear}.
+var last_run: Dictionary = {}
+## Pre-filled on the next entry, so a regular only confirms their initials.
+var last_initials: String = HighScoreTable.DEFAULT_INITIALS
+var _pending: Dictionary = {}
 
 var _combo_timer: float = 0.0
 ## Guards against a second finish for the same stage — Globals.boss_death is emitted
@@ -47,7 +65,7 @@ var _hud: CanvasLayer = null
 
 
 func _ready() -> void:
-	_best.load(SAVE_PATH)
+	reload()
 	Globals.meter_maid_death.connect(register_kill)
 	Globals.meter_maid_boss_death.connect(register_kill)
 	Globals.boss_death.connect(_on_boss_death)
@@ -93,6 +111,10 @@ func begin_stage(scene_path: String = current_scene_path) -> void:
 	_combo_timer = 0.0
 	_finished = false
 	running = true
+	# A restart in the middle of entering initials abandons that offer.
+	_pending = {}
+	awaiting_initials = false
+	last_run = {}
 	# Before the signals below: add_child runs the HUD's _ready synchronously, so it
 	# is already subscribed by the time stage_started goes out.
 	_ensure_hud()
@@ -107,7 +129,8 @@ func begin_stage(scene_path: String = current_scene_path) -> void:
 ## autoload's signals, so there is nothing to wire per level, and one injection point
 ## covers main.tscn, boss_room.tscn and every sandbox under test/scenes/ instead of
 ## three copies that drift apart. It goes on the scene root (its own CanvasLayer at
-## layer 3) so it does not depend on any level's UI node layout.
+## layer 1, under the level UI at 2 so the EndCard covers it) so it does not
+## depend on any level's UI node layout.
 func _ensure_hud() -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
@@ -178,7 +201,10 @@ func _reset_combo() -> void:
 
 func _on_player_death() -> void:
 	# A death ends the run without a rank card — you do not get graded on a stage you
-	# did not finish.
+	# did not finish — but a big enough score still goes on the board, arcade-style.
+	if running:
+		last_run = {"won": false, "total": score, "rank": ""}
+		_offer_high_score(score, "")
 	running = false
 	_reset_combo()
 
@@ -209,6 +235,9 @@ func finish_stage() -> Dictionary:
 	result["is_new_best"] = is_new_best
 	if is_new_best:
 		_save_best(current_scene_path, int(result["total"]), String(result["rank"]))
+	last_run = result.duplicate()
+	last_run["won"] = true
+	_offer_high_score(int(result["total"]), String(result["rank"]))
 	stage_finished.emit(result)
 	return result
 
@@ -224,13 +253,59 @@ func best_rank_for(scene_path: String) -> String:
 func _save_best(scene_path: String, total: int, rank: String) -> void:
 	_best.set_value(SAVE_SECTION, scene_path + "/score", total)
 	_best.set_value(SAVE_SECTION, scene_path + "/rank", rank)
-	var err := _best.save(SAVE_PATH)
+	_save()
+
+
+func _save() -> void:
+	_best.set_value(TABLE_SECTION, TABLE_KEY, high_scores)
+	_best.set_value(TABLE_SECTION, LAST_INITIALS_KEY, last_initials)
+	var err := _best.save(save_path)
 	if err != OK:
-		push_warning("ScoreSystem: could not save best score (%d)" % err)
+		push_warning("ScoreSystem: could not save scores (%d)" % err)
+
+
+## Re-read the save file. The list goes through HighScoreTable.from_variant because
+## the file is user-editable: junk rows are dropped, initials re-sanitised.
+func reload() -> void:
+	_best = ConfigFile.new()
+	_best.load(save_path)
+	high_scores = HighScoreTable.from_variant(_best.get_value(TABLE_SECTION, TABLE_KEY, []))
+	last_initials = HighScoreTable.sanitize_initials(str(_best.get_value(TABLE_SECTION, LAST_INITIALS_KEY, "")))
+
+
+# --- High-score list ---------------------------------------------------------
+
+func _offer_high_score(total: int, rank: String) -> void:
+	last_run["slot"] = -1
+	# Ranked scenes only: the enemy sandboxes score for tests, not for the list.
+	if not current_scene_path in ScoreRules.SCORED_SCENES:
+		return
+	var slot := HighScoreTable.slot_for(high_scores, total)
+	if slot < 0:
+		return
+	last_run["slot"] = slot
+	_pending = {"score": total, "rank": rank}
+	awaiting_initials = true
+
+
+## Write the pending run under `initials`. Returns its row, or -1 when there is no
+## pending run (already submitted, or a restart dropped it).
+func submit_initials(initials: String) -> int:
+	if _pending.is_empty():
+		return -1
+	var entry := HighScoreTable.make_entry(initials, int(_pending["score"]), String(_pending["rank"]))
+	_pending = {}
+	awaiting_initials = false
+	last_initials = String(entry["initials"])
+	var slot := HighScoreTable.insert(high_scores, entry)
+	_save()
+	return slot
 
 
 ## Wipe every stored best. Used by the devtools verb; there is deliberately no
 ## in-game path to this.
 func clear_records() -> void:
 	_best.clear()
-	_best.save(SAVE_PATH)
+	high_scores.clear()
+	last_initials = HighScoreTable.DEFAULT_INITIALS
+	_best.save(save_path)

@@ -39,7 +39,8 @@ func _physics_process(delta: float) -> void:
 
 		show()
 		if speed == 0:
-			randomize()
+			# No randomize(): Godot seeds at startup, and reseeding from the clock here
+			# made seeded autoplay runs unrepeatable.
 			speed = randi_range(150,450)
 			print("new speed ", speed)
 		current_speed = delta * speed

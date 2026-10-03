@@ -1,0 +1,5 @@
+{
+  "steps": ["dump start", "spawn melee 200", "brain clear 20", "dump end"],
+  "expect": ["kills >= 1", "errors == 0", "deaths == 0"],
+  "timeout": 40
+}

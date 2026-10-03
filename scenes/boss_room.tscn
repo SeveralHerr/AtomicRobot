@@ -27,9 +27,7 @@
 [ext_resource type="PackedScene" path="res://scenes/mobile_controls.tscn" id="100_mobctl"]
 [ext_resource type="Script" path="res://scripts/boss_room.gd" id="200_broomgd"]
 [ext_resource type="Script" path="res://scripts/news_paper_notification_container.gd" id="201_npnc"]
-[ext_resource type="Script" path="res://scripts/game_over_container.gd" id="202_goc"]
-[ext_resource type="Script" path="res://scripts/win_container.gd" id="203_wc"]
-
+[ext_resource type="PackedScene" path="res://scenes/end_card.tscn" id="900_endcard"]
 [sub_resource type="LabelSettings" id="LabelSettings_votf5"]
 font = ExtResource("2_010di")
 font_size = 100
@@ -301,31 +299,6 @@ grow_vertical = 2
 color = Color(0, 0, 0, 1)
 script = ExtResource("8_skgx8")
 
-[node name="GameOverContainer" type="CenterContainer" parent="UI" unique_id=2063545137]
-visible = false
-z_index = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("202_goc")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOverContainer" unique_id=1032477581]
-layout_mode = 2
-
-[node name="GameOverLabel" type="Label" parent="UI/GameOverContainer/VBoxContainer" unique_id=932849051]
-layout_mode = 2
-text = "Game Over"
-label_settings = ExtResource("6_okx5s")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Button" type="Button" parent="UI/GameOverContainer/VBoxContainer" unique_id=1063719288]
-layout_mode = 2
-theme_override_font_sizes/font_size = 31
-text = "Restart"
-
 [node name="BossIntroContainer" type="CenterContainer" parent="UI" unique_id=778758246]
 z_index = 1
 anchors_preset = 15
@@ -352,31 +325,6 @@ label_settings = ExtResource("6_okx5s")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="WinContainer" type="CenterContainer" parent="UI" unique_id=1160796697]
-visible = false
-z_index = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("203_wc")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/WinContainer" unique_id=185985167]
-layout_mode = 2
-
-[node name="WinLabel" type="Label" parent="UI/WinContainer/VBoxContainer" unique_id=1059817973]
-layout_mode = 2
-text = "You win!"
-label_settings = ExtResource("6_okx5s")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Button" type="Button" parent="UI/WinContainer/VBoxContainer" unique_id=1031686047]
-layout_mode = 2
-theme_override_font_sizes/font_size = 31
-text = "Restart"
-
 [node name="MobileUI" type="Control" parent="UI" unique_id=1180746398 instance=ExtResource("100_mobctl")]
 layout_mode = 3
 anchors_preset = 15
@@ -387,6 +335,8 @@ offset_top = 0.0
 offset_right = 0.0
 offset_bottom = 0.0
 script = ExtResource("10_gjhnn")
+
+[node name="EndCard" parent="UI" instance=ExtResource("900_endcard")]
 
 [node name="Environment" type="Node2D" parent="." unique_id=1932166895 instance=ExtResource("11_geu3j")]
 

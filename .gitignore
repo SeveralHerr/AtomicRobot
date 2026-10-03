@@ -7,3 +7,6 @@
 # Python bytecode from tools/ helpers
 __pycache__/
 *.pyc
+
+# Autoplay bot reports and screenshots (tools/autoplay.py)
+autoplay_out/
