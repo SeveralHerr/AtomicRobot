@@ -1,6 +1,7 @@
 extends Control
 
 const GAME: PackedScene = preload("res://scenes/main.tscn")
+const AnyButton := preload("res://scripts/any_button.gd")
 @onready var fade_overlay: FadeOverlay = $FadeOverlay
 var delay: bool = false
 var is_transitioning: bool = false
@@ -10,11 +11,8 @@ func _ready() -> void:
 	fade_overlay.fade_in()
 
 func _input(event: InputEvent) -> void:
-	if delay and not is_transitioning:
-		if event is InputEventMouseButton and event.pressed:
-			_start_transition()
-		elif event is InputEventKey and event.pressed:
-			_start_transition()
+	if delay and not is_transitioning and AnyButton.is_press(event):
+		_start_transition()
 
 func _start_transition() -> void:
 	is_transitioning = true

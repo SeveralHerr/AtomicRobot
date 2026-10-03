@@ -4,6 +4,7 @@
 [ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://styles/font_v2.tres" id="2_m77mk"]
 [ext_resource type="Script" uid="uid://chic8djxflbae" path="res://scripts/sway.gd" id="2_oya25"]
 [ext_resource type="Script" uid="uid://6ek3ot0hh754" path="res://scripts/character_slot.gd" id="2_p1ay4"]
+[ext_resource type="Script" path="res://scripts/character_select.gd" id="1_csel"]
 [ext_resource type="Texture2D" uid="uid://xplp1fy1ybpa" path="res://images/ARTBot-Web-Header.png" id="3_0sghn"]
 [ext_resource type="Material" uid="uid://bbeo0ug80m7w3" path="res://shaders/rays_shader_mat.tres" id="6_fqvby"]
 [ext_resource type="Texture2D" uid="uid://de5ug1q13hab1" path="res://images/Logo_small.png" id="7_0sghn"]
@@ -65,7 +66,21 @@ font_size = 60
 shadow_size = 8
 shadow_color = Color(0, 0, 0, 0.337255)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pj2qx"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_focus"]
+draw_center = false
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 0.85, 0.35, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+expand_margin_left = 6.0
+expand_margin_top = 6.0
+expand_margin_right = 6.0
+expand_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ckm5t"]
 
@@ -91,6 +106,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_csel")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 1
@@ -713,7 +729,7 @@ custom_minimum_size = Vector2(55, 10)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("14_pj2qx")
 theme_override_font_sizes/font_size = 35
-theme_override_styles/focus = SubResource("StyleBoxEmpty_pj2qx")
+theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
 theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_ckm5t")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_qgi8m")
 theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_3338a")

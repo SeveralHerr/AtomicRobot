@@ -83,6 +83,15 @@ func _input(event: InputEvent) -> void:
 	_capture(event)
 
 
+## ui_cancel (pad B / Esc) backs out, so a cabinet player needn't walk 10 rows down
+## to BACK. Listening swallows input in _input first, so B can still be bound. Esc is
+## also "pause"; that press is left alone (pause is vetoed while this panel is open).
+func _unhandled_input(event: InputEvent) -> void:
+	if visible and event.is_action_pressed("ui_cancel") and not event.is_action("pause"):
+		get_viewport().set_input_as_handled()
+		_on_back()
+
+
 ## Bind `event` to the listened-for action. Returns true if it was taken.
 func _capture(event: InputEvent) -> bool:
 	# is_bindable already rejects releases, echoes and a resting stick.

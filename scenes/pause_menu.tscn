@@ -31,7 +31,21 @@ font_color = Color(1, 1, 1, 1)
 shadow_size = 6
 shadow_color = Color(0, 0, 0, 0.337255)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_focus"]
+draw_center = false
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 0.8, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+expand_margin_left = 6.0
+expand_margin_top = 6.0
+expand_margin_right = 6.0
+expand_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_disabled_mirrored"]
 
@@ -106,9 +120,11 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 size_flags_vertical = 4
+focus_neighbor_top = NodePath("../../ResumeButton")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_fontvar")
 theme_override_font_sizes/font_size = 32
+theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
 text = "X"
 
 [node name="VolumeRow" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBoxContainer"]
@@ -128,6 +144,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 max_value = 1.0
+theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
 step = 0.05
 value = 1.0
 
@@ -147,7 +164,7 @@ custom_minimum_size = Vector2(55, 10)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("4_fontvar")
 theme_override_font_sizes/font_size = 35
-theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
 theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_disabled_mirrored")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_disabled")
 theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_hover_pressed_mirrored")
@@ -163,15 +180,18 @@ size_flags_horizontal = 4
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_fontvar")
 theme_override_font_sizes/font_size = 40
+theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
 text = "CONTROLS"
 
 [node name="ResumeButton" type="Button" parent="CenterContainer/Panel/Margin/VBoxContainer"]
 custom_minimum_size = Vector2(260, 72)
 layout_mode = 2
 size_flags_horizontal = 4
+focus_neighbor_bottom = NodePath("../HeaderRow/ExitButton")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_fontvar")
 theme_override_font_sizes/font_size = 40
+theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
 text = "RESUME"
 
 [node name="RemapPanel" type="PanelContainer" parent="CenterContainer"]

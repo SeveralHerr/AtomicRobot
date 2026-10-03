@@ -4,6 +4,7 @@ extends Control
 @onready var continue_label: Label = $MarginContainer/ContinueLabel
 
 const CONTROLS_SPLASH: PackedScene = preload("res://scenes/controls_splash.tscn")
+const AnyButton := preload("res://scripts/any_button.gd")
 var current_label_index: int = 0
 var labels: Array[Label]
 var can_proceed: bool = false
@@ -26,12 +27,11 @@ func _ready() -> void:
 	show_next_label()
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventKey or event is InputEventMouseButton:
-		if event.pressed and can_proceed:
-			if current_label_index < labels.size():
-				show_next_label()
-			else:
-				transition_to_game()
+	if can_proceed and AnyButton.is_press(event):
+		if current_label_index < labels.size():
+			show_next_label()
+		else:
+			transition_to_game()
 
 func transition_to_game() -> void:
 	can_proceed = false

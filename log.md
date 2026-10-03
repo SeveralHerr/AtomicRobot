@@ -220,3 +220,17 @@ Log of skills that might have been useful for a given response, and why (short f
 - No skill invoked. `godot-game-ui` fit (pause sub-screen); `extract-a-testable-seam` fit
   (panel exposes `_capture` so listen mode is testable without real input).
 - Missing skill written: `skills/godot-headful-screenshot` (validation-loop screenshots).
+
+## 2026-10-02 — Arcade joypad navigation audit (all UIs)
+
+- Fanned out 3 agents by UI area on disjoint files (front-end / overlays / pause+input map);
+  42 new pad-driven tests; 208/208 unit + 9/9 sandbox green.
+- Big finds: title/story/controls screens were key+mouse only (pad could not start the game);
+  all ui_* pad binds pinned to device 0 (2nd encoder pad dead); Game Over RESTART unfocused.
+- No skill invoked. `godot-game-ui` fit (focus styles); `extract-a-testable-seam` fit (stub
+  scene-change methods so tests don't boot main). `pi-game-deploy` appeared late — next step
+  for putting the build on the cabinet.
+- Skill used last time `godot-headful-screenshot` (repo skills/) worked again; enhancement:
+  include a pad-event helper for driving focus before the shot.
+- Follow-up: RESTART mash guard (`GameOver.arm`, 0.6s disabled), `[e]` prompts -> `[interact]`,
+  deleted dead ui_container/restart_ui/scene_transition/fade_utility.
