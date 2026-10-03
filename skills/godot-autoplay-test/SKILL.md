@@ -15,6 +15,8 @@ python tools/autoplay.py                  # all test/autoplay/*.json, headless, 
 python tools/autoplay.py full_run         # title -> street -> boss -> YOU WIN (god mode)
 python tools/autoplay.py my.json --window # windowed: `snap` steps / snap_every save PNGs
 python tools/autoplay.py my.json --events hurt,stuck,step_failed,why   # print events
+python tools/autoplay.py my.json --window --resolution 1688x780         # landscape-phone snaps
+python tools/autoplay_sweep.py --chars Ryan,Robot --seeds 1,2   # balance table, no god mode
 ```
 Exit 0 pass · 1 fail · 2 BROKEN (invalid scenario). Read the ~12-line summary first;
 `--events` or `autoplay_out/<name>.json` (`events`) for detail. Headless runs skip snaps
@@ -35,7 +37,8 @@ FAILS the run with `step failed: ...`. Remaining steps are skipped once the play
 
 Metrics: `t frames scene x y lane hp max_hp state kills damage_taken hits_taken heals
 deaths won boss_reached enemies_near max_stuck_s stuck_spots step_failures errors
-engine_errors warnings score`. `scene`/`state` take `==`/`!=`; the rest are numbers.
+engine_errors warnings score boss_hp` (`boss_hp` = -1 until the boss spawns; how far a
+lost fight got). `scene`/`state` take `==`/`!=`; the rest are numbers.
 `max_stuck_s` = longest time, during `brain advance` or `walk_to`, without a new best
 position in the travel direction (fighting doesn't count). `errors` = script errors and
 `push_error`; `engine_errors` = C++-side (e.g. missing animation).
@@ -53,6 +56,14 @@ held lane step / remember road block -> seeded random back-off + running jump). 
 report's `why` events are its decision trail — read them first when a run stalls.
 
 ## Gotchas
+- A script that fails to PARSE never runs, so `errors` stays 0; autoplay.py scans stdout and
+  reports `SCRIPT-ERROR`. Most common cause: a NEW `class_name` not yet in the class cache —
+  run `godot --headless --path . --import` after adding one.
+- Auto-snaps are named `t<centiseconds>` so `snap_every` < 1 doesn't overwrite. GIF recipe:
+  `snap_every 0.125` windowed, then PIL `quantize(96)` + `save(save_all=True, duration=125)`.
+- Balance: `hurt` events carry `near` (closest enemy) — count them per source to see which
+  attack is doing the damage before touching numbers. Pin the result with a seeded mortal
+  scenario both ways (`boss_balance_ryan` must win, `boss_balance_robot` must reach half).
 - `--fixed-fps 60`: deterministic and faster than real time. Same seed = same frames. If
   a rerun diverges, something reads the wall clock or calls `randomize()`.
 - Main street x≈2700-2950: the door-encounter barrier and a crate stack whose collider

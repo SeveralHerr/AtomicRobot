@@ -56,7 +56,7 @@ const BRAIN_GOALS := ["advance", "clear", "monkey"]
 ## lists equal in both directions, so a check can be validated before the run.
 const METRICS := ["t", "frames", "scene", "x", "y", "lane", "hp", "max_hp", "state", "kills",
 	"damage_taken", "hits_taken", "heals", "deaths", "won", "boss_reached", "enemies_near",
-	"max_stuck_s", "stuck_spots", "step_failures", "errors", "engine_errors", "warnings", "score"]
+	"max_stuck_s", "stuck_spots", "step_failures", "errors", "engine_errors", "warnings", "score", "boss_hp"]
 ## Metrics compared as text (== / != only); every other metric needs a number.
 const TEXT_METRICS := ["scene", "state"]
 

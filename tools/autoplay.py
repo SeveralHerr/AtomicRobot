@@ -51,11 +51,13 @@ def targets(filters: list[str]) -> list[Path]:
     return out
 
 
-def run_one(godot: str, source: str, window: bool, verbose: bool) -> tuple[str, str, str]:
+def run_one(godot: str, source: str, window: bool, verbose: bool, resolution: str = "") -> tuple[str, str, str]:
     """Returns (status, report name, output to print)."""
     cmd = [godot, "--path", str(REPO), "--mute", "--fixed-fps", "60"]
     if not window:
         cmd.insert(1, "--headless")
+    if resolution:
+        cmd += ["--resolution", resolution]
     # `source` may be inline JSON: list-form argv passes it through unquoted-safe.
     cmd += ["--", "--autoplay", source, "--autoplay-out", str(OUT_DIR)]
     try:
@@ -69,12 +71,16 @@ def run_one(godot: str, source: str, window: bool, verbose: bool) -> tuple[str, 
     # A crash after the summary printed must not read as a pass.
     if status == "PASS" and proc.returncode != 0:
         status = f"EXIT-{proc.returncode}"
+    # A script that fails to PARSE never runs, so the in-game error counter never sees
+    # it — the run "passes" with the feature silently missing. Catch it from stdout.
+    if status == "PASS" and ("Parse Error" in out or "Failed to load script" in out):
+        status = "SCRIPT-ERROR"
     n = NAME_RE.search(out)
     name = n.group(1) if n else "?"
     if verbose:
         return status, name, out
     keep = [ln for ln in out.splitlines() if SUMMARY_RE.match(ln) or "scenario error" in ln]
-    if status in ("ERROR", "NO-RESULT"):
+    if status in ("ERROR", "NO-RESULT", "SCRIPT-ERROR"):
         keep += [ln for ln in out.splitlines() if "ERROR" in ln][:15]
     return status, name, "\n".join(keep)
 
@@ -96,6 +102,7 @@ def main() -> int:
     ap.add_argument("--window", action="store_true", help="run windowed so snaps are saved")
     ap.add_argument("--events", help="comma list of event kinds to print after each run, "
                                      "e.g. hurt,stuck,death,step_failed,why")
+    ap.add_argument("--resolution", default="", help="windowed size WxH, e.g. 1688x780 (landscape phone)")
     ap.add_argument("-v", "--verbose", action="store_true", help="print full Godot output")
     args = ap.parse_args()
 
@@ -115,7 +122,7 @@ def main() -> int:
     failures, broken = [], False
     for src in sources:
         started = time.time()
-        status, name, out = run_one(godot, src, args.window, args.verbose)
+        status, name, out = run_one(godot, src, args.window, args.verbose, args.resolution)
         print(out)
         if args.events:
             print_events(name, args.events.split(","))

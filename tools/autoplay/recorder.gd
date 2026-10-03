@@ -116,7 +116,8 @@ func sample(snap: Dictionary, tree: SceneTree) -> void:
 	_track_stuck(snap)
 	if snap_every > 0.0 and t >= _next_auto_snap:
 		_next_auto_snap = t + snap_every
-		snap("t%04d" % int(t))
+		# Centiseconds, so a sub-second cadence doesn't overwrite one file per second.
+		snap("t%06d" % int(t * 100.0))
 
 
 func _track_scene(tree: SceneTree) -> void:
@@ -270,7 +271,16 @@ func metrics(tree: SceneTree) -> Dictionary:
 		"errors": errors.script_errors, "engine_errors": errors.engine_errors,
 		"warnings": errors.warnings,
 		"score": ScoreSystem.score if tree.root.has_node("ScoreSystem") else 0,
+		"boss_hp": _boss_hp(tree),
 	}
+
+
+## The final boss's health, or -1 when none is spawned — how far a lost fight got.
+static func _boss_hp(tree: SceneTree) -> int:
+	for e in tree.get_nodes_in_group("enemies"):
+		if e is FinalBoss:
+			return maxi(e.health, 0)
+	return -1
 
 
 func dump(label: String) -> Dictionary:
