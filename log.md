@@ -274,3 +274,7 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: artifact-design (artifact page); godot-headful-screenshot (repo skill, exit-button shots). Enhancement: added GIF recipe + "--import after new class_name" gotcha to it.
 - Fanned out 2 general-purpose subagents (comic popups; cat + GIF). Cat building was ambiguous → 2 corrections from user; a screenshot up front would have saved a loop.
 - Would have helped: `mockup-on-screenshot` (confirm target building against a real screenshot before building), `extract-a-testable-seam` (used the idea: `Streetlight.player_in_range()`), wished-for "godot-level-landmarks" skill — name→world-coords map of buildings so "the first skyscraper" resolves without guessing.
+
+## 2026-10-02 — No popup on enemy death, ship, Pi deploy, Pi shutdown
+- Skills used: pi-game-deploy (deploy + verify). Enhancement idea: add a `pi_shutdown` helper (sudo -S fed from .env; pie has no passwordless sudo) and note that the `.env` lives in atomic-pinball, not each game repo.
+- Would have helped: itch-ci-deploy (watch the run; done by hand with gh run watch).
