@@ -301,3 +301,8 @@ Log of skills that might have been useful for a given response, and why (short f
 - Would have helped: `extract-a-testable-seam` (brain kept pure for tests), `derive-the-list` (used the idea: METRICS pinned to recorder both ways), `scope-vs-claim` (judges caught `max_stuck_s` that could never fail), `godot-2d-placement-audit` (crate collider walls off road lanes).
 - Process lessons: worktree under the OneDrive path failed on long filenames — fixed with `core.longpaths` + short worktree path; a bot that "passes" needs a metric that can fail (prove it red first, as with the boss soft lock).
 - Report: https://claude.ai/artifact/G2ieWdXVsPtTuYCbu64AhH. Merged to main; 373/373 unit, 6/6 autoplay scenarios.
+
+## 2026-10-03 — Boss fight rework (worktree boss-fight-juice)
+- Skills used: godot-autoplay-test (bot runs, snaps, balance). Enhancement: document GIF recipe + sweep tool (done).
+- Would have helped: godot-boss-juice (created) — presentation checklist + fairness rules; somewhat-useful-claude-skills:godot-game-ui-juicy (motion patterns, container-scale gotcha); extract-a-testable-seam (pure `contact`/`link_fan`).
+- MCP: none used (godot-tests MCP available; ran suites via shell for full output).

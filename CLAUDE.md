@@ -218,6 +218,12 @@ Batch it: one throwaway SceneTree script captures every state of the feature per
 plus a `--resolution 1688x780` (landscape phone) round; review a PIL contact sheet.
 Drive the REAL flow (emit the real signal, e.g. `Globals.boss_death`) — calling an inner
 method directly skipped the Win overlay and hid a sequencing check.
+The CRT overlay hides ~40px of every screen edge: judge edge UI (bars, HUD) on the real
+screenshot, never on node rects. Add `--resolution` to `tools/autoplay.py` rounds.
+After adding a `class_name`, run `--import` first — otherwise the script fails to parse and
+the feature is silently absent (autoplay now reports SCRIPT-ERROR).
+When the user asks for presentation/juice, sweep balance AFTER the presentation pass:
+banner timing changed fight length enough to flip a seeded balance scenario.
 
 ## Sibling-game conventions
 
