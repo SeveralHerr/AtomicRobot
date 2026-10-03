@@ -14,5 +14,9 @@
       "mcp__serena__replace_symbol_body"
     ],
     "deny": []
-  }
+  },
+  "enabledMcpjsonServers": [
+    "godot-tests"
+  ],
+  "enableAllProjectMcpServers": true
 }
