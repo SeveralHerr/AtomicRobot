@@ -211,6 +211,22 @@ Always make the changes to the AGENTS.md with these changes. Update this very li
 ## Validation Loop 
 
 When doing an iteration or feature, take a screenshot and look for 3 things to improve. Do this 10 times. 
+Batch it: one throwaway SceneTree script captures every state of the feature per round,
+plus a `--resolution 1688x780` (landscape phone) round; review a PIL contact sheet.
+Drive the REAL flow (emit the real signal, e.g. `Globals.boss_death`) — calling an inner
+method directly skipped the Win overlay and hid a sequencing check.
+
+## Sibling-game conventions
+
+This game shares the arcade cabinet with `../atomic-pinball`. Before building any
+menu/end screen, check how pinball does it and match it (look, flow, input rules).
+Integrate new UI into the existing screen; never layer a second overlay over an old one.
+
+## Input-driven features
+
+Read `skills/godot-input-test/SKILL.md` before testing pad/key/touch UI. Mutation-check
+new guards with a `(file, original, mutant, filter)` script; add a test per survivor.
+The `godot-tests` MCP server (`.mcp.json`) runs the unit/sandbox suites with a short summary.
 
 ## Canary
 

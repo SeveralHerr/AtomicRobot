@@ -278,3 +278,19 @@ Log of skills that might have been useful for a given response, and why (short f
 ## 2026-10-02 — No popup on enemy death, ship, Pi deploy, Pi shutdown
 - Skills used: pi-game-deploy (deploy + verify). Enhancement idea: add a `pi_shutdown` helper (sudo -S fed from .env; pie has no passwordless sudo) and note that the `.env` lives in atomic-pinball, not each game repo.
 - Would have helped: itch-ci-deploy (watch the run; done by hand with gh run watch).
+
+## 2026-10-03 — Q: do we have a play-test method?
+- Answer only, no code. Skills used: none. Would have helped: `run` (launch/screenshot game), repo `godot-headful-screenshot`; wished-for "playtest-bot" skill (scripted input replay through full run + assertions).
+
+## 2026-10-03 — High-score list + arcade initials entry (pad / keys / touch)
+- Skills used: repo `godot-headful-screenshot` (10 validation rounds). Enhancement: add a contact-sheet + `--resolution` phone recipe (now in CLAUDE.md / new skill).
+- Would have helped: `godot-game-ui` / `godot-game-ui-juicy` (menu kit; skipped to match the existing Bangers/rank-card look), `extract-a-testable-seam` (hint_text(touch) seam), `derive-the-list` (glyph test derived from ALPHABET), `scope-vs-claim` (mutation survivors exposed 2 over-claiming tests).
+- New skill written: `skills/godot-input-test` (frame-start input injection, just_pressed-first polling, WASD-vs-typing, mutation script).
+- New MCP server: `tools/mcp/godot_tests_mcp.py` (`godot-tests`, enabled in `.mcp.json`).
+- 311/311 unit (45 new), 9/9 sandbox, 16/16 mutants killed.
+
+## 2026-10-03 — Integrate end screens into one pinball-style EndCard (+ GIF artifact)
+- User feedback: new UIs were "slapped on top"; Game Over sat behind the high-score menus. Fixed: one `UI/EndCard` (rank stamp, score, badge, initials → list, RESTART/EXIT) replaces Game Over/Win containers, HUD rank card and overlays; styled after atomic-pinball.
+- Skills used: none from the list (repo `godot-headful-screenshot` + `godot-input-test` recipes). Enhancement for godot-input-test: added flush-on-record, precondition asserts, tilt/stamp/touch-control gotchas.
+- Would have helped: `mockup-on-screenshot` (mock the card on a real frame before coding), `godot-game-ui` (comic re-skin kit), wished-for "sibling-game-style" skill (extract tokens/flow from a related repo into a Godot theme).
+- 320/320 unit, 9/9 sandbox, 19/19 mutants killed (3 after tightening). Artifact: https://claude.ai/artifact/BXTHrWgYfZo3BetDA3nH9z

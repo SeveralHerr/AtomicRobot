@@ -3,7 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://csmg52xs05d1e" path="res://scenes/player.tscn" id="2_5jk15"]
 [ext_resource type="Script" uid="uid://dc00l4kuir5j0" path="res://scripts/health_container.gd" id="2_vq1rx"]
 [ext_resource type="Texture2D" uid="uid://xaol7ee44k8q" path="res://images/ART-Mobile-logo (1).png" id="4_vq1rx"]
-[ext_resource type="Script" uid="uid://o2h3iex6u6ps" path="res://scripts/game_over_container.gd" id="5_sj8ng"]
 [ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://styles/font_v2.tres" id="5_yhyvh"]
 [ext_resource type="Script" uid="uid://fv8o1x5w5344" path="res://scripts/notificataion_container.gd" id="7_2pg4o"]
 [ext_resource type="Script" uid="uid://bljv8wkcve17e" path="res://scripts/initial_fade_in.gd" id="7_gdeaw"]
@@ -34,6 +33,7 @@
 [ext_resource type="Texture2D" uid="uid://dtau5c5gb1u6n" path="res://images/new/scaffolding_foreground.png" id="75_37xlc"]
 [ext_resource type="Texture2D" uid="uid://c6dxgv1cpubla" path="res://images/Sprite-0001.png" id="83_eh25q"]
 [ext_resource type="PackedScene" uid="uid://c5plqygsfeeie" path="res://scenes/mobile_controls.tscn" id="100_mobctl"]
+[ext_resource type="PackedScene" path="res://scenes/end_card.tscn" id="900_endcard"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("51_k4pk8")
@@ -292,32 +292,9 @@ visible = false
 layout_mode = 1
 color = Color(0, 0, 0, 1)
 
-[node name="GameOverContainer" type="CenterContainer" parent="UI" unique_id=949263884]
-visible = false
-z_index = 4
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("5_sj8ng")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOverContainer" unique_id=1769720115]
-layout_mode = 2
-
-[node name="GameOverLabel" type="Label" parent="UI/GameOverContainer/VBoxContainer" unique_id=435076184]
-layout_mode = 2
-text = "Game Over"
-label_settings = ExtResource("5_yhyvh")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Button" type="Button" parent="UI/GameOverContainer/VBoxContainer" unique_id=2006455776]
-layout_mode = 2
-theme_override_font_sizes/font_size = 31
-text = "Restart"
-
 [node name="MobileUI" parent="UI" unique_id=1905073212 instance=ExtResource("100_mobctl")]
+
+[node name="EndCard" parent="UI" instance=ExtResource("900_endcard")]
 
 [node name="Background" parent="." unique_id=1104501429 instance=ExtResource("13_sgvw8")]
 

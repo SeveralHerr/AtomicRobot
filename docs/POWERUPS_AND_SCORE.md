@@ -19,7 +19,10 @@ existing sprite through a shader. Nothing requires a new animation.
 | `shaders/flash.gdshader` | Extended with `buff_*` uniforms (strict superset — hit flash unchanged). |
 | `scripts/score_rules.gd` | `ScoreRules` — combo tiers, bonuses, rank table. Pure. |
 | `scripts/autoload/score_system.gd` | `ScoreSystem` autoload — combo timer, stage clock, persistence, rank. |
-| `scripts/score_ui.gd` / `scenes/score_ui.tscn` | HUD + end-of-stage rank card. |
+| `scripts/score_ui.gd` / `scenes/score_ui.tscn` | Live HUD (score, combo, buffs). Hides when the run ends. |
+| `scripts/high_score_table.gd` | `HighScoreTable` — top-10 list ordering, initials sanitising, save repair. Pure. |
+| `scripts/ui/end_card.gd` / `scenes/end_card.tscn` | The one end-of-run card (atomic-pinball style): rank, score, initials, list, RESTART/EXIT. |
+| `scripts/ui/initials_entry.gd`, `scripts/ui/score_table_view.gd`, `scripts/ui/comic_style.gd` | Card sections (initials entry, HIGH SCORES list) and the shared comic look. |
 | `test/unit/test_powerup_rules.gd`, `test/unit/test_score_rules.gd` | 40 headless tests over both rule tables. |
 
 All balance lives in the two `*_rules.gd` files. The autoloads decide *when*, never
@@ -171,9 +174,42 @@ the unit tests — `hud_present: false` with a `stage_seconds` larger than the s
 A player death ends the run with **no** rank card — you don't get graded on a stage
 you didn't finish.
 
+### End card and high-score list
+
+Both levels end on ONE screen, `UI/EndCard` (`scripts/ui/end_card.gd`), styled after
+atomic-pinball's game-over card so both cabinet games match: white comic card (ink
+border, hard shadow, -1.5° tilt) over the dimmed level. Left: GAME OVER / YOU WIN!,
+the rank stamp (clears only, slams in), FINAL SCORE, the clear breakdown, the
+"NEW HIGH SCORE!" / "YOU PLACED #N!" badge. Right, past a dashed rule: ENTER YOUR
+INITIALS if the run made the list, replaced in place by HIGH SCORES (new row lit)
+once saved. Foot: RESTART / EXIT GAME, hidden until the initials are in. It replaced
+the old Game Over / You Win containers and the HUD's rank card, so nothing stacks.
+It also hides the level's touch controls (they eat taps by position) and the HUD
+hides its rolling score, which would disagree with the final total.
+
+ScoreSystem connects to `Globals.player_death` / `boss_death` before any level, so
+`ScoreSystem.last_run` (`won`, `total`, `rank`, `slot`, breakdown) and
+`awaiting_initials` are already set when the card reads them.
+
+One game-wide top 10 (`user://scores.cfg`, section `high_scores`, plus
+`last_initials`). A run qualifies when it beats 10th place (a tie does not), on a
+clear or on a death with a score. Only `ScoreRules.SCORED_SCENES` write to it.
+
+Initials (same rules as pinball): A-Z only, pre-filled with the last initials used;
+cursor walks the three letters then OK. Stick/d-pad up/down dials (hold repeats),
+left/right moves, JUMP next / save on OK, B back; keyboard types (W/A/S/D type, they
+do not move); touch has arrows per letter (≥104×88 design px) and OK. Input ignored
+for the first 0.6s (jump-mash guard). Left idle 30s it saves the letters showing.
+The title screen's attract loop swaps in a small tilted HIGH SCORES card every 6s.
+
+The save file is user-editable, so the list is rebuilt through
+`HighScoreTable.from_variant()` on load (junk rows dropped, re-sorted, initials
+re-sanitised to A-Z).
+
 ### HUD injection
 
-`score_ui.tscn` is a self-contained `CanvasLayer` (layer 3) that `ScoreSystem` adds to
+`score_ui.tscn` is a self-contained `CanvasLayer` (layer 1, under the levels' UI
+layer 2 so the end card covers it) that `ScoreSystem` adds to
 the scene root when a scored stage begins, rather than being authored into each level.
 It's driven entirely by autoload signals, so there's nothing to wire per level, and
 one injection point covers both levels plus every sandbox instead of three copies that
@@ -183,10 +219,6 @@ Score, combo and the active-buff timers stack in a single column centred at the 
 the screen, set in the character-select face (`styles/white_font.tres`, Bangers). It
 begins at y=126, below the health orbs (top-**left**, running to x=544, y=118) — the
 column is wide enough that a long buff line would otherwise clip them.
-
-The rank card centres in the **top 45%** of the screen on purpose: the existing
-`win_container.gd` shows its RESTART button dead-centre on the same `boss_death`
-signal, and this layer draws above it.
 
 #### Animation
 

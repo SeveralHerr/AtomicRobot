@@ -1,6 +1,7 @@
 extends CanvasLayer
 
-## Score / combo / active-power-up HUD, plus the end-of-stage rank card.
+## Score / combo / active-power-up HUD. The end-of-run rank, initials and high-score
+## list live on the level's EndCard (scripts/ui/end_card.gd), not here.
 ##
 ## Injected into the running level by ScoreSystem rather than authored into each
 ## level scene: it is driven entirely by autoload signals, so there is nothing to
@@ -13,10 +14,6 @@ extends CanvasLayer
 ## top edge: the health orbs run to x=544, y=118, and the column is wide enough that a
 ## long buff line ("ATOMIC RAGE 8.0") would otherwise clip their right-hand orb.
 ##
-## The rank card deliberately centres in the TOP 45% of the screen: the existing Win
-## container (scripts/win_container.gd) shows its RESTART button dead-centre on the
-## same boss_death signal, and this layer draws above it.
-##
 ## Every live animation here runs off a decaying float ticked in _process rather than
 ## off a Tween. Hits, kills and pickups arrive faster than a tween's duration during a
 ## real scrap, and overlapping tweens on the same property fight each other and leave a
@@ -24,13 +21,10 @@ extends CanvasLayer
 ## around with its per-orb tween bookkeeping. A float that is re-set to 1.0 on every
 ## event simply restarts the animation, which is exactly the wanted behaviour.
 
+@onready var hud: Control = $Hud
 @onready var score_label: Label = $Hud/Rows/ScoreLabel
 @onready var combo_label: Label = $Hud/Rows/ComboSlot/ComboLabel
 @onready var powerup_label: Label = $Hud/Rows/PowerupLabel
-@onready var rank_card: CenterContainer = $RankCard
-@onready var rank_label: Label = $RankCard/Panel/Lines/RankLabel
-@onready var breakdown_label: Label = $RankCard/Panel/Lines/Breakdown
-@onready var best_label: Label = $RankCard/Panel/Lines/BestLabel
 
 ## Bar/label colour per multiplier tier, indexed by multiplier - 1. Runs cool-to-hot
 ## so the tier is readable from peripheral vision without reading the number.
@@ -106,13 +100,16 @@ var _powerup_pop: float = 0.0
 var _powerup_color: Color = Color.WHITE
 
 
+
 func _ready() -> void:
-	rank_card.hide()
 	ScoreSystem.score_changed.connect(_on_score_changed)
 	ScoreSystem.combo_changed.connect(_on_combo_changed)
 	ScoreSystem.stage_started.connect(_on_stage_started)
-	ScoreSystem.stage_finished.connect(_on_stage_finished)
 	PowerupSystem.powerup_started.connect(_on_powerup_started)
+	# The run is over: the EndCard shows the final score, and a still-rolling fight
+	# score above it would disagree with it.
+	Globals.player_death.connect(_on_run_ended)
+	Globals.boss_death.connect(_on_run_ended)
 	_shown_score = float(ScoreSystem.score)
 	_last_score = ScoreSystem.score
 	_on_combo_changed(ScoreSystem.combo, ScoreSystem.multiplier())
@@ -235,51 +232,15 @@ func _color_for(multiplier: int) -> Color:
 	return MULTIPLIER_COLORS[index]
 
 
-## Quick scale punch, for the one-shot rank card. The HUD's own labels animate from
-## _process instead — see the class comment.
-func _pop(node: Control) -> void:
-	node.pivot_offset = node.size * 0.5
-	var tween := create_tween()
-	tween.tween_property(node, "scale", Vector2(1.35, 1.35), 0.08).set_trans(Tween.TRANS_BACK)
-	tween.tween_property(node, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_SINE)
+func _on_run_ended() -> void:
+	hud.hide()
 
 
 func _on_stage_started(_scene_path: String) -> void:
-	rank_card.hide()
+	hud.show()
 	_shown_score = 0.0
 	_last_score = 0
 	_last_multiplier = 1
 	_score_pop = 0.0
 	_combo_pop = 0.0
 	_powerup_pop = 0.0
-
-
-func _on_stage_finished(result: Dictionary) -> void:
-	rank_label.text = String(result.get("rank", "?"))
-	rank_label.add_theme_color_override("font_color", _rank_color(String(result.get("rank", ""))))
-	var seconds := float(result.get("seconds", 0.0))
-	var lines: Array[String] = [
-		"FIGHT  %d" % int(result.get("fight_score", 0)),
-		"TIME  %d:%02d   +%d" % [int(seconds) / 60, int(seconds) % 60, int(result.get("time_bonus", 0))],
-		"%s  +%d" % [
-			"NO DAMAGE" if bool(result.get("perfect", false)) else "HEALTH LEFT",
-			int(result.get("no_damage_bonus", 0)),
-		],
-		"TOTAL  %d" % int(result.get("total", 0)),
-	]
-	breakdown_label.text = "\n".join(lines)
-	if bool(result.get("is_new_best", false)):
-		best_label.text = "NEW BEST!"
-	else:
-		best_label.text = "BEST  %d" % int(result.get("best", 0))
-	rank_card.show()
-	_pop(rank_label)
-
-
-func _rank_color(rank: String) -> Color:
-	match rank:
-		"S": return Color(0.45, 0.90, 1.00)
-		"A": return Color(1.00, 0.85, 0.20)
-		"B": return Color(0.80, 1.00, 0.60)
-		"C": return Color(1.00, 1.00, 1.00)
-		_: return Color(0.75, 0.75, 0.75)

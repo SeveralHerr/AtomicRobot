@@ -19,7 +19,7 @@ game over / win ──> character_select.tscn        restart ──> startscreen
 - `scripts/startscreen.gd:12` → character select
 - `scripts/character_slot.gd:34-39` sets `Globals.selected_character`, → `main.tscn` / `story.tscn`
 - `scripts/final_boss_enter.gd` — Area2D on `SceneItemsBackground/BuildingGroup4/Enter` in main.tscn → boss room
-- `scripts/game_over_container.gd:14`, `win_container.gd:13`
+- `scripts/ui/end_card.gd` — the one end-of-run screen (`UI/EndCard` in both levels): RESTART → character select
 
 `final_boss.tscn` is the **boss actor** (CharacterBody2D), not a room; the room is `boss_room.tscn`.
 
@@ -39,9 +39,9 @@ game over / win ──> character_select.tscn        restart ──> startscreen
 
 | Signal | Emitted from | Listened by |
 |---|---|---|
-| `player_death` | `states/dead_state.gd:9`, `states/boss_dead_state.gd:9` | `enemy.gd:64` (freeze), `boss_room.gd:28`, `game_over_container.gd:16` |
+| `player_death` | `states/dead_state.gd:9`, `states/boss_dead_state.gd:9` | `enemy.gd:64` (freeze), `boss_room.gd:28`, `ui/end_card.gd` (card), `score_ui.gd` (hides HUD) |
 | `meter_maid_death` | `enemy.gd:150` | (kill counting) |
-| `boss_death` | `city_council_boss.gd:21` | `win_container.gd:15` |
+| `boss_death` | `city_council_boss.gd:21` | `ui/end_card.gd` (card), `score_ui.gd` (hides HUD) |
 | `boss_fight(status)` | boss room | `audio.gd:8` |
 | `event(status)` | `enemy_event.gd:47,56` | `enemy_manager.gd:20`, `Player.gd:113`, `notificataion_container.gd:7` |
 | `unlocked(name, desc)` | unlock logic | `notification.gd:11` |
