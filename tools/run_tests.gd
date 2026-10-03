@@ -72,6 +72,10 @@ func _run_script(path: String, filter: String) -> void:
 
 
 func _run_test(obj: RefCounted, name: String, path: String) -> void:
+	# Start every test from an idle frame: a previous test that ended on
+	# `await physics_frame` would otherwise leave this one running inside the
+	# physics step, where get_process_frames() hasn't ticked yet.
+	await process_frame
 	if obj.has_method("setup"):
 		await obj.call("setup")
 	var errors_before := _errors.count

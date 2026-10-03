@@ -242,3 +242,20 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skill used: `godot-headful-screenshot` (repo) — enhancement written: gameplay timed-sequence section + class_name compile gotcha.
 - Would have fit: `extract-a-testable-seam` (blink split out of die() for tests), `scope-vs-claim` (test proven to fail w/o fix).
 - 212/212 unit, 9/9 sandbox green.
+
+## 2026-10-02 — /pi-game-deploy Atomic Robot to Picade
+- pi-game-deploy (used): deploy worked first try. Enhancement: check that Godot export templates are installed before exporting, and warn when the game's keys don't land on Picade buttons.
+- itch-ci-deploy: would have shown the CI template-download step to copy locally.
+- Wished-for skill: "godot-export-templates" — fetch only the web template zips from the 1.2 GB tpz.
+- Follow-up "Aw snap": Chromium was OOM-killed (1 GB Pi). Fixed by excluding 66 MB of unused WAVs from export, and the launcher now uses its own empty labwc config so the Pi desktop doesn't autostart. pi-game-deploy enhancement: check dmesg for OOM in the debug loop, and warn when the pck is large.
+- Follow-up "error code 9": renderer still OOM. Measured with a headless-Chrome memory probe on the PC (a headless probe ON the Pi froze it — never do that). Music WAV set to stream playback (885→514 MB), big backgrounds VRAM-compressed + ETC2 (gpu 420→297 MB). Wished-for skill: "web-game-memory-budget" (measure tab+GPU memory before deploying to a low-RAM device).
+- Follow-up Ryan black square + exit button: Ryan2.png 170x4712 exceeded Pi GPU's 4096 px limit, so it was repacked to a 4-column grid (pixel-identical, guard test added). Pause menu got a QUIT GAME button (desktop quit, cabinet window.close via ?exit=1, hidden on itch). pi-game-deploy enhancement: done — added the OOM/4096/launcher gotchas to SKILL.md. godot-headful-screenshot (used): worked as written; idea: show how to push ui_down to screenshot a focused button.
+- "Thoroughly test": broadened 4096-px test to every image a scene references; mutation-tested the quit logic (7 mutants: 6 killed, 1 survivor = web-only window.close branch, untestable headless). Built picade_keys.py (uinput key injection, no evdev) + memlog.sh, left on the Pi. Found separate bug: Pinball GPU process crash (exit_code=8704) → labwc abort 134 → user had to power-cycle. Wished-for skill: "cabinet-e2e" (launch port remotely + grim + uinput drive). Local Chrome E2E blocked: background tab throttled to 1 FPS.
+
+## 2026-10-02 — Investigate Pi lag (advice only, no code changed)
+- pi-game-deploy: would have helped — has the Pi launcher/Chromium context. Enhancement idea: add a "perf checklist" (screen-texture mipmaps, full-res canvas, physics bodies) to SKILL.md.
+- webgl-antialiasing: near-fit (WebGL canvas cost), not directly needed.
+- Wished-for skill: "web-game-perf-budget" — headless Chrome frame-time probe on PC with CPU throttling to mimic a Pi, before shipping.
+- Follow-up: removed unused shaders/water.gdshader (+.uid). 219/219 unit green. Spotted orphans water.gd + splash_particles.tscn + stale LEVELS.md WaterHandler line — left for user decision. Would have fit: derive-the-list (orphan-asset finder from references, not memory).
+- Follow-up: removed debug/settings/stdout/print_fps from project.godot (no on-screen FPS label existed). Tests re-run.
+- Follow-up leaf perf: pooled leaves now PROCESS_MODE_DISABLED (were still falling in physics — test proved 11px drop), sleeping leaves skip raycast, LeafManager rescans only after player moves 32px. New test/unit/test_leaf_perf.gd (4). Runner now awaits process_frame before each test (physics_frame-ending test broke remap test order). 223/223 unit, 9/9 sandbox. Would have fit: extract-a-testable-seam (should_rescan pure seam) — enhancement idea: mention "test ended on physics_frame poisons the next test" gotcha.

@@ -34,10 +34,6 @@ PauseMenu="*res://scenes/pause_menu.tscn"
 PowerupSystem="*res://scripts/autoload/powerup_system.gd"
 ScoreSystem="*res://scripts/autoload/score_system.gd"
 
-[debug]
-
-settings/stdout/print_fps=true
-
 [display]
 
 window/size/viewport_width=1280

@@ -9,6 +9,8 @@ signal leaf_interaction(leaf: DroppedLeaf, interaction_type: String)
 @export var ground_y_offset: float = 0  # offset from ground level
 @export var leaf_pool_size: int = 100
 @export var max_active_leaves: int = 280
+## Player must move this far (px) before the spawn/cleanup scan runs again.
+@export var rescan_distance: float = 32.0
 
 @onready var player: Player = $"../../Player"
 
@@ -16,7 +18,7 @@ var ground_y = -1
 var leaf_pool: Array[DroppedLeaf] = []
 var active_leaves: Array[DroppedLeaf] = []
 var camera: Camera2D
-var last_spawn_x: float = 0.0
+var last_spawn_x: float = INF
 var leaf_scene = preload("res://scenes/leaf.tscn")
 const LEAF_2 = preload("res://scenes/leaf2.tscn")
 const PAPER = preload("res://scenes/paper.tscn")
@@ -37,7 +39,6 @@ var clump_radius: float = 30.0  # How spread out leaves are within a clump
 func _ready() -> void:
 	if player:
 		camera = player.get_node("Camera2D") if player.has_node("Camera2D") else null
-		last_spawn_x = player.global_position.x
 		setup_leaf_pool()
 		
 
@@ -69,15 +70,15 @@ func setup_leaf_pool() -> void:
 	for i in range(leaf_pool_size):
 		var selected_debris = get_random_debris_type()
 		var debris = selected_debris.scene.instantiate() as DroppedLeaf
-		debris.set_physics_process(false)
-		debris.visible = false
+		debris.reset_for_pool()
 		add_child(debris)
 		leaf_pool.append(debris)
 
 func _process(delta: float) -> void:
-	if not player:
+	if not player or not should_rescan(player.global_position.x):
 		return
-		
+	last_spawn_x = player.global_position.x
+
 	# Spawn leaves around player
 	spawn_leaves_around_player()
 	
@@ -86,6 +87,11 @@ func _process(delta: float) -> void:
 	
 	# Limit active leaves for performance
 	limit_active_leaves()
+
+## The clump scan is O(clumps x leaves); running it every frame while standing
+## still only re-checks the same ground.
+func should_rescan(player_x: float) -> bool:
+	return absf(player_x - last_spawn_x) >= rescan_distance
 
 func spawn_leaves_around_player() -> void:
 	if leaf_pool.size() == 0:

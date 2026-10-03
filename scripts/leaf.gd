@@ -35,8 +35,13 @@ func randomize_properties() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	$"Floor Raycast".global_rotation = 0
-	if $"Floor Raycast".is_colliding():
+	# A settled leaf has nothing to probe for; skip its raycast until something
+	# (a gust, a car) wakes the body again.
+	floor_raycast.enabled = not sleeping
+	if sleeping:
+		return
+	floor_raycast.global_rotation = 0
+	if floor_raycast.is_colliding():
 		linear_damp = 8.0
 		angular_damp = 8.0
 		#$Sprite.scale = lerp($Sprite.scale, original_scale*0.8, 0.03)
@@ -68,13 +73,15 @@ func reset_for_pool():
 	linear_velocity = Vector2.ZERO
 	angular_velocity = 0
 	frames = 0
-	set_physics_process(false)
+	# DISABLED also pulls the body out of the physics world (disable_mode REMOVE),
+	# so pooled leaves stop costing a simulation step each.
+	process_mode = Node.PROCESS_MODE_DISABLED
 	visible = false
 
 func activate_from_pool(position: Vector2):
 	is_pooled = false
 	global_position = position
 	randomize_properties()
-	set_physics_process(true)
+	process_mode = Node.PROCESS_MODE_INHERIT
 	visible = true
 	frames = 0
