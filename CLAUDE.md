@@ -169,6 +169,7 @@ Immediately before implementing any prompts set up the following tasks as a chec
 
 Ensure the area that will be changed has approrpriate characterization tests making it safe to refactor.
 Ensure characterization tests pass before starting any refactoring.
+Prove a new bug test can fail: `git stash push <fixed file>`, run with `--filter`, `git stash pop`.
 
 ## Make it easy to change (which may be hard)
 

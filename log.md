@@ -1,4 +1,4 @@
-# Skills Log
+﻿# Skills Log
 
 Log of skills that might have been useful for a given response, and why (short form).
 
@@ -234,3 +234,11 @@ Log of skills that might have been useful for a given response, and why (short f
   include a pad-event helper for driving focus before the shot.
 - Follow-up: RESTART mash guard (`GameOver.arm`, 0.6s disabled), `[e]` prompts -> `[interact]`,
   deleted dead ui_container/restart_ui/scene_transition/fade_utility.
+
+## 2026-10-02 — Window maid death no longer blinks/removes the window
+
+- Cause: `Enemy.die()` tweened `self.modulate` + `queue_free()`; window frame sprites are children of MeterMaidWindow.
+- Fix: hooks `_death_blink_target()` / `_on_death_blink_finished()`; window maid blinks + hides only AnimatedSprite2D.
+- Skill used: `godot-headful-screenshot` (repo) — enhancement written: gameplay timed-sequence section + class_name compile gotcha.
+- Would have fit: `extract-a-testable-seam` (blink split out of die() for tests), `scope-vs-claim` (test proven to fail w/o fix).
+- 212/212 unit, 9/9 sandbox green.

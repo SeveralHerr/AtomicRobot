@@ -51,6 +51,14 @@ func _physics_process(delta: float) -> void:
 		return
 	enemy_state_machine.update(delta)
 
+## The window frame is part of this scene: only the maid blinks out on death, and
+## the node stays so the smashed window remains in the wall.
+func _death_blink_target() -> CanvasItem:
+	return animated_sprite_2d
+
+func _on_death_blink_finished() -> void:
+	animated_sprite_2d.hide()
+
 func _check_activation() -> void:
 	if visible and not is_player_in_line_of_sight() and not can_see_player():
 		queue_free()

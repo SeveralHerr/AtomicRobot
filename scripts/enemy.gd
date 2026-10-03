@@ -481,23 +481,26 @@ func die() -> void:
 	set_collision_layer_value(10, false)
 	set_collision_mask_value(1, false)
 	await get_tree().create_timer(1.5).timeout
-	
-	# Create blinking effect
-	var tween = create_tween()
-	#tween.set_loops(6) # 3 full blinks (fade out + fade in = 2 tweens per blink)
+	await _play_death_blink()
+	_on_death_blink_finished()
 
-	tween.tween_property(self, "modulate:a", 0.0, 0.1)
-	tween.chain().tween_property(self, "modulate:a", 1.0, 0.1).set_delay(0.2)
-
-	tween.chain().tween_property(self, "modulate:a", 0.0, 0.1).set_delay(0.5)
-	tween.chain().tween_property(self, "modulate:a", 1.0, 0.1).set_delay(0.2)
-	tween.chain().tween_property(self, "modulate:a", 0.0, 0.1).set_delay(0.5)
-	tween.chain().tween_property(self, "modulate:a", 1.0, 0.1).set_delay(0.2)
-	tween.chain().tween_property(self, "modulate:a", 0.0, 0.1).set_delay(0.4)
-	tween.chain().tween_property(self, "modulate:a", 1.0, 0.1).set_delay(0.2)
-	# Wait for blinking to finish, then free the self
+## Blinks the corpse out: 4 fade-out/fade-in pulses on _death_blink_target().
+func _play_death_blink() -> void:
+	var target := _death_blink_target()
+	var tween := create_tween()
+	for delays in [[0.0, 0.2], [0.5, 0.2], [0.5, 0.2], [0.4, 0.2]]:
+		tween.tween_property(target, "modulate:a", 0.0, 0.1).set_delay(delays[0])
+		tween.tween_property(target, "modulate:a", 1.0, 0.1).set_delay(delays[1])
 	await tween.finished
-	queue_free()	
+
+## What blinks on death. The whole enemy by default; subclasses whose scene carries
+## scenery (a window frame) narrow it to just the maid's sprite.
+func _death_blink_target() -> CanvasItem:
+	return self
+
+## Called once the blink-out is done. The default removes the corpse.
+func _on_death_blink_finished() -> void:
+	queue_free()
 
 ## Roll the drop table for this kill. Rolled from die() rather than after the 1.5s
 ## death fade so the pickup lands while the fight it was earned in is still going.

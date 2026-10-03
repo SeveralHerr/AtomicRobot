@@ -112,6 +112,9 @@ Variants (each registers its own states in `_ready`):
 - **PlatformMeterMaid** (`meter_maid_platform_patrol.gd`): edge-aware patrol via down raycasts.
 - **MeterMaidWindow** (`meter_maid_window.gd`): stationary; Hold/Attack/Dead. Overrides
   `_physics_process` (no gravity/move_and_slide) but **must still step the state machine**.
+  Its scene includes the window frame, so it overrides `_death_blink_target()` /
+  `_on_death_blink_finished()` (Enemy.die hooks): only the sprite blinks and hides, the
+  smashed window stays.
 - **FinalBoss** (`city_council_boss.gd`): briefcase spirals; emits `boss_death`.
 
 ### Enemy state contract (important invariants)
