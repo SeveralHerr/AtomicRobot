@@ -1,12 +1,12 @@
 extends Node2D
 const BRIEFCASE_BULLET_2 = preload("res://scenes/briefcase_bullet2.tscn")
 const FINAL_BOSS = preload("res://scenes/final_boss.tscn")
-@onready var boss_room_background_sprite: Sprite2D = $BossRoomBackgroundSprite
+@onready var boss_room_background_sprite: Sprite2D = $Environment/BossRoomBackgroundSprite
 @onready var boss_words_label: Label = $UI/BossIntroContainer/BossWordsLabel
 @onready var player: Player = $Player
 
 @onready var final_boss_label: Label = $UI/BossIntroContainer/VBoxContainer/FinalBossLabel
-@onready var entrance_trigger: Area2D = $EntranceTrigger
+@onready var entrance_trigger: Area2D = $Triggers/EntranceTrigger
 
 var intro_played: bool = false
 var is_player_dead: bool = false

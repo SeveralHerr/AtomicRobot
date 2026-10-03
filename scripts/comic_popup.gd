@@ -125,7 +125,10 @@ static func pick_word(kind: StringName) -> String:
 ## True (and stamps the time) when `kind` has not fired within its cooldown.
 static func try_acquire(kind: StringName, now_ms: int = -1) -> bool:
 	if now_ms < 0:
-		now_ms = Time.get_ticks_msec()
+		# Game clock, not wall clock: matches real time whenever physics keeps up (it
+		# only lags below ~7 fps), and is deterministic under --fixed-fps, so seeded
+		# autoplay runs replay exactly.
+		now_ms = int(Engine.get_physics_frames() * 1000.0 / Engine.physics_ticks_per_second)
 	var gap_ms := int(float(KINDS.get(kind, {}).get("cooldown", 0.0)) * 1000.0)
 	if _last_spawn_ms.has(kind) and now_ms - int(_last_spawn_ms[kind]) < gap_ms:
 		return false
