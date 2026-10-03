@@ -11,9 +11,13 @@ const MASTER_BUS := 0
 @onready var _crt_checkbox: CheckBox = $CenterContainer/Panel/Margin/VBoxContainer/CRTRow/CRTCheckBox
 @onready var _resume_button: Button = $CenterContainer/Panel/Margin/VBoxContainer/ResumeButton
 @onready var _exit_button: Button = $CenterContainer/Panel/Margin/VBoxContainer/HeaderRow/ExitButton
+@onready var _quit_button: Button = $CenterContainer/Panel/Margin/VBoxContainer/QuitButton
 @onready var _controls_button: Button = $CenterContainer/Panel/Margin/VBoxContainer/ControlsButton
 @onready var _main_panel: Control = $CenterContainer/Panel
 @onready var _remap_panel = $CenterContainer/RemapPanel
+
+## Swappable so tests can press QUIT GAME without ending the test run.
+var quit_game: Callable = _quit_game
 
 
 func _ready() -> void:
@@ -30,6 +34,8 @@ func _ready() -> void:
 	_crt_checkbox.toggled.connect(_on_crt_toggled)
 	_resume_button.pressed.connect(_on_resume_pressed)
 	_exit_button.pressed.connect(_on_resume_pressed)
+	_quit_button.pressed.connect(func() -> void: quit_game.call())
+	_quit_button.visible = can_quit(OS.has_feature("web"), _web_query())
 	_controls_button.pressed.connect(_show_controls)
 	_remap_panel.closed.connect(_hide_controls)
 
@@ -63,6 +69,26 @@ func _hide_controls() -> void:
 
 func _on_resume_pressed() -> void:
 	toggle_pause()
+
+
+## Desktop builds can always quit. On the web only the arcade kiosk can: its launcher
+## opens the game with ?exit=1 in a one-tab window that window.close() is allowed to
+## shut. An itch.io embed ignores window.close(), so the button stays hidden there.
+static func can_quit(on_web: bool, query: String) -> bool:
+	return not on_web or "exit=1" in query.trim_prefix("?").split("&")
+
+
+func _web_query() -> String:
+	if not OS.has_feature("web"):
+		return ""
+	return str(JavaScriptBridge.eval("window.location.search"))
+
+
+func _quit_game() -> void:
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.close()")
+	else:
+		get_tree().quit()
 
 
 func _on_volume_changed(value: float) -> void:

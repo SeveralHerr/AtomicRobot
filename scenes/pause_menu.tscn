@@ -120,7 +120,7 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 size_flags_vertical = 4
-focus_neighbor_top = NodePath("../../ResumeButton")
+focus_neighbor_top = NodePath("../../QuitButton")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_fontvar")
 theme_override_font_sizes/font_size = 32
@@ -187,12 +187,24 @@ text = "CONTROLS"
 custom_minimum_size = Vector2(260, 72)
 layout_mode = 2
 size_flags_horizontal = 4
-focus_neighbor_bottom = NodePath("../HeaderRow/ExitButton")
+focus_neighbor_bottom = NodePath("../QuitButton")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_fontvar")
 theme_override_font_sizes/font_size = 40
 theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
 text = "RESUME"
+
+[node name="QuitButton" type="Button" parent="CenterContainer/Panel/Margin/VBoxContainer"]
+custom_minimum_size = Vector2(260, 72)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_neighbor_top = NodePath("../ResumeButton")
+focus_neighbor_bottom = NodePath("../HeaderRow/ExitButton")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_fontvar")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
+text = "QUIT GAME"
 
 [node name="RemapPanel" type="PanelContainer" parent="CenterContainer"]
 visible = false

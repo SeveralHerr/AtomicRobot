@@ -170,20 +170,20 @@ func test_dpad_left_right_changes_volume() -> String:
 func test_dpad_walks_every_control_and_wraps() -> String:
 	await _open_menu()
 	var down := []
-	for i in 5:
+	for i in 6:
 		await _tap(JOY_BUTTON_DPAD_DOWN)
 		down.append(_name(_focus()))
 	var r: String = _T.assert_eq(down,
-		["CRTCheckBox", "ControlsButton", "ResumeButton", "ExitButton", "VolumeSlider"],
+		["CRTCheckBox", "ControlsButton", "ResumeButton", "QuitButton", "ExitButton", "VolumeSlider"],
 		"d-pad down cycle")
 	if r != "":
 		return r
 	var up := []
-	for i in 5:
+	for i in 6:
 		await _tap(JOY_BUTTON_DPAD_UP)
 		up.append(_name(_focus()))
 	return _T.assert_eq(up,
-		["ExitButton", "ResumeButton", "ControlsButton", "CRTCheckBox", "VolumeSlider"],
+		["ExitButton", "QuitButton", "ResumeButton", "ControlsButton", "CRTCheckBox", "VolumeSlider"],
 		"d-pad up cycle")
 
 
@@ -221,10 +221,38 @@ func test_a_on_resume_resumes() -> String:
 	return _T.assert_false(_tree().paused, "RESUME resumes")
 
 
+func test_a_on_quit_quits() -> String:
+	var quits := [0]
+	var real_quit: Callable = _menu.quit_game
+	_menu.quit_game = func() -> void: quits[0] += 1
+	await _open_menu()
+	for i in 4:
+		await _tap(JOY_BUTTON_DPAD_DOWN)
+	await _tap(JOY_BUTTON_A)
+	_menu.quit_game = real_quit
+	return _T.assert_eq(quits[0], 1, "QUIT GAME quits once")
+
+
+func test_quit_shown_only_where_it_works() -> String:
+	var menu_script = _menu.get_script()
+	var cases := [
+		[false, "", true],          # desktop build: get_tree().quit()
+		[true, "?exit=1", true],    # cabinet kiosk: window.close() is allowed
+		[true, "", false],          # itch embed: window.close() does nothing
+		[true, "?exit=0", false],
+		[true, "?exit=10", false],
+		[true, "?mode=x&exit=1", true],
+	]
+	for c in cases:
+		if menu_script.can_quit(c[0], c[1]) != c[2]:
+			return "can_quit(web=%s, %s) should be %s" % c
+	return ""
+
+
 func test_every_menu_control_shows_focus() -> String:
 	var fails := []
 	for path in ["HeaderRow/ExitButton", "VolumeRow/VolumeSlider", "CRTRow/CRTCheckBox",
-			"ControlsButton", "ResumeButton"]:
+			"ControlsButton", "ResumeButton", "QuitButton"]:
 		var c := _n(path)
 		var box := c.get_theme_stylebox("focus")
 		if box == null or box is StyleBoxEmpty:
