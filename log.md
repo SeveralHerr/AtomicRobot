@@ -301,3 +301,13 @@ Log of skills that might have been useful for a given response, and why (short f
 - Would have helped: `extract-a-testable-seam` (brain kept pure for tests), `derive-the-list` (used the idea: METRICS pinned to recorder both ways), `scope-vs-claim` (judges caught `max_stuck_s` that could never fail), `godot-2d-placement-audit` (crate collider walls off road lanes).
 - Process lessons: worktree under the OneDrive path failed on long filenames — fixed with `core.longpaths` + short worktree path; a bot that "passes" needs a metric that can fail (prove it red first, as with the boss soft lock).
 - Report: https://claude.ai/artifact/G2ieWdXVsPtTuYCbu64AhH. Merged to main; 373/373 unit, 6/6 autoplay scenarios.
+
+## 2026-10-03 — Character select redo (worktree char-select-juice)
+- Used: none of the listed skills directly. Followed repo skills godot-input-test + godot-headful-screenshot by hand.
+- Would have helped: somewhat-useful-claude-skills:godot-game-ui-juicy (tween/Container gotchas pre-solved); godot-2d-placement-audit (cursor/feet placement asserted numerically); a judge-panel skill (written: skills/juicy-screen-review in the worktree).
+- Enhancement idea (godot-headful-screenshot): ship the round.sh + sheet.py pair so each validation round is one command.
+
+## 2026-10-03 — Robot unlock (locked → first boss win, overpowered); merged to main
+- Used: godot-autoplay-test (repo skill) — caught the wall-clock grace bug that unit tests missed.
+- Would have helped: somewhat-useful-claude-skills:derive-the-list (OP badge/gold pips derived from roster, not hand-listed).
+- Enhancement idea (godot-autoplay-test): note that any boss-winning scenario hits persistent saves; isolate them like the runner now does.
