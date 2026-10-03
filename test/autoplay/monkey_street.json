@@ -1,0 +1,6 @@
+{
+  "seed": 3,
+  "timeout": 90,
+  "steps": ["god on", "brain monkey 60"],
+  "expect": ["errors == 0", "engine_errors == 0"]
+}

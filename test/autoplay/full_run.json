@@ -1,0 +1,9 @@
+{
+  "boot": true,
+  "character": "Ryan",
+  "seed": 1,
+  "timeout": 900,
+  "snap_every": 10,
+  "steps": ["menu 40", "god on", "dump street", "brain advance 840", "dump end"],
+  "expect": ["won == 1", "boss_reached == 1", "errors == 0", "max_stuck_s < 60"]
+}

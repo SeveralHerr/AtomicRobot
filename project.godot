@@ -33,6 +33,7 @@ DebugMenu="*res://scripts/autoload/debug_menu.gd"
 PauseMenu="*res://scenes/pause_menu.tscn"
 PowerupSystem="*res://scripts/autoload/powerup_system.gd"
 ScoreSystem="*res://scripts/autoload/score_system.gd"
+Autoplay="*res://scripts/autoload/autoplay.gd"
 
 [display]
 
