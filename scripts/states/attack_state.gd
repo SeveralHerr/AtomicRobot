@@ -52,6 +52,7 @@ func trigger_attack(player: Player)-> void:
 			player.land_hit(parent)
 		elif parent is Crack: 
 			parent.receive_hit()
+			ComicPopup.spawn(parent, parent.global_position, &"smash")
 			
 			
 func _on_frame_changed(player: Player):

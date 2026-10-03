@@ -339,6 +339,7 @@ position = Vector2(-288, 281)
 [node name="Crack" parent="." instance=ExtResource("18_nf1n6")]
 visible = false
 position = Vector2(647, -351)
+releases_cat = true
 
 [node name="AnimatedSprite2D" parent="Crack" index="0"]
 position = Vector2(-2, 20)

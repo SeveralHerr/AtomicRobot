@@ -25,6 +25,8 @@ func apply_shake(_randomStrength: float = 1.0, _duration: float = 1.0):
 
 	if not player:
 		player = get_tree().get_first_node_in_group("player")
+	if not player:
+		return
 
 	original_position = Vector2(player.camera_2d.offset)
 	shake_strength = _randomStrength
@@ -49,7 +51,6 @@ func _process(delta: float) -> void:
 				player.camera_2d.offset.x = original_position.x
 				player.camera_2d.offset.y  = original_position.y 
 			is_shaking = false
-			print("ready")
 
 func randomOffset() -> float:
 	return rng.randf_range(-shake_strength, shake_strength)

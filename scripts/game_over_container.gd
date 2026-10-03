@@ -5,13 +5,17 @@ class_name  GameOver
 @onready var player: Player = $"../../Player"
 const CHARACTER_SELECT ="res://scenes/character_select.tscn"
 @onready var button: Button = $VBoxContainer/Button
+var exit_button: Button
+## Swappable so tests can press EXIT GAME without ending the test run.
+var quit_game: Callable = func() -> void: QuitGame.quit(get_tree())
 
 func _ready() -> void:
 	hide()
 	button.pressed.connect(func(): 
 		Globals.reset()
 		get_tree().change_scene_to_file(CHARACTER_SELECT ))
-		
+	exit_button = QuitGame.add_button_after(button, func() -> void: quit_game.call())
+
 	Globals.player_death.connect(_present)
 
 ## Arcade (pad-only): focus must land on RESTART when the overlay appears. Grabbing it

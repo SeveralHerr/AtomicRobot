@@ -86,6 +86,24 @@ position = Vector2(-251, -35)
 [node name="Platform4" parent="Platforms" instance=ExtResource("3_3t3vt")]
 position = Vector2(-251, -99)
 
+[node name="FireEscapeTop" type="Sprite2D" parent="Platforms"]
+position = Vector2(-255, -160)
+texture = ExtResource("1_won0d")
+region_enabled = true
+region_rect = Rect2(0, 176, 66, 64)
+
+[node name="FireEscapeTop2" type="Sprite2D" parent="Platforms"]
+position = Vector2(-255, -224)
+texture = ExtResource("1_won0d")
+region_enabled = true
+region_rect = Rect2(0, 176, 66, 64)
+
+[node name="Platform5" parent="Platforms" instance=ExtResource("3_3t3vt")]
+position = Vector2(-251, -163)
+
+[node name="Platform6" parent="Platforms" instance=ExtResource("3_3t3vt")]
+position = Vector2(-251, -227)
+
 [node name="Area2D" type="Area2D" parent="."]
 position = Vector2(-325, 284)
 collision_layer = 0

@@ -26,3 +26,14 @@ The CRT overlay autoload is in the shot - judge legibility through it, it is wha
   `get_texture().get_image()`. Crop around the node (`get_global_transform_with_canvas().origin`,
   160px box, `resize(x3, INTERPOLATE_NEAREST)`) - small sprites are unreadable full-frame.
 - Script may live in the session scratchpad (absolute path works with `--script`).
+
+## Animated proof (GIF for an artifact)
+- Save every Nth frame (`f_%04d.png`) for a few seconds, then Pillow:
+  `frames[0].save("x.gif", save_all=True, append_images=frames[1:], duration=200, loop=0)`
+  after `thumbnail((640,640))`. ~70 frames at 640px ≈ 7 MB — fine for an Artifact `files` entry (16 MB cap).
+- Disable hazards that knock the player out of the shot (e.g. window maids) in the capture script only.
+
+## Gotchas
+- New `class_name` scripts (from you or a parallel agent) are unknown to `run_tests.gd` until
+  `godot --headless --path . --import` refreshes the global class cache -> "Identifier not declared".
+- Opening the editor/import can reorder `project.godot` sections; revert if the diff is order-only.

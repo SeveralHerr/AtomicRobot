@@ -29,7 +29,6 @@ func _ready() -> void:
 		sprite_2d.texture = CAR_RED
 
 	area_2d.body_entered.connect(_hit)
-	area_2d.body_exited.connect(_on_body_exited)
 	speed = randi_range(150,450)
 	hide()
 
@@ -64,6 +63,3 @@ func _hit(body: Node2D) -> void:
 		body.receive_hit(car_damage, enemy_knockback_strength)
 	elif body is DroppedLeaf:
 		body.do_gust(8, Vector2(global_position.x - 450, 0))
-
-func _on_body_exited(body: Node2D) -> void:
-	hit_bodies.erase(body)

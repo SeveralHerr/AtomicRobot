@@ -1,8 +1,8 @@
 extends RefCounted
 
 # Arcade cabinet: joystick + buttons only, no mouse, no keyboard. The in-game end
-# screens (Game Over, You Win) are the only interactive overlays during play, and each
-# is a single RESTART button. A pad player must land on it with focus already there,
+# screens (Game Over, You Win) are the only interactive overlays during play: You Win
+# is a single RESTART button, Game Over is RESTART above EXIT GAME. A pad player must land on it with focus already there,
 # see that it is selected, stay on it when nudging the stick, and press A to go.
 #
 # The real boss_room.tscn is loaded (it carries both containers) and the overlays are
@@ -16,6 +16,7 @@ const BOSS_ROOM := "res://scenes/boss_room.tscn"
 const MAIN := "res://scenes/main.tscn"
 const GAME_OVER_BUTTON := "UI/GameOverContainer/VBoxContainer/Button"
 const WIN_BUTTON := "UI/WinContainer/VBoxContainer/Button"
+const GAME_OVER_EXIT := "UI/GameOverContainer/VBoxContainer/ExitButton"
 
 var _level: Node
 var _activated := false
@@ -106,28 +107,57 @@ func test_win_restart_has_focus_when_shown() -> String:
 
 # --- d-pad / stick cannot wander off the only control ----------------------------
 
-func _stays_put(signal_name: String, button_path: String) -> String:
+## Focus may move between the overlay's own buttons, never off them.
+func _stays_put(signal_name: String, button_paths: Array) -> String:
 	await _load(BOSS_ROOM)
 	Globals.emit_signal(signal_name)
 	await _frames()
-	var button := _level.get_node(button_path) as Button
+	var buttons := button_paths.map(func(p): return _level.get_node(p))
 	for b in [JOY_BUTTON_DPAD_UP, JOY_BUTTON_DPAD_DOWN, JOY_BUTTON_DPAD_LEFT, JOY_BUTTON_DPAD_RIGHT]:
 		await _tap_button(b)
-		if not button.has_focus():
-			return "d-pad %d moved focus off RESTART to %s" % [b, _tree().root.gui_get_focus_owner()]
+		if not _tree().root.gui_get_focus_owner() in buttons:
+			return "d-pad %d moved focus off the overlay to %s" % [b, _tree().root.gui_get_focus_owner()]
 	for a in [[JOY_AXIS_LEFT_X, -1.0], [JOY_AXIS_LEFT_X, 1.0], [JOY_AXIS_LEFT_Y, -1.0], [JOY_AXIS_LEFT_Y, 1.0]]:
 		await _tap_axis(a[0], a[1])
-		if not button.has_focus():
-			return "stick %s moved focus off RESTART to %s" % [a, _tree().root.gui_get_focus_owner()]
+		if not _tree().root.gui_get_focus_owner() in buttons:
+			return "stick %s moved focus off the overlay to %s" % [a, _tree().root.gui_get_focus_owner()]
 	return ""
 
 
-func test_game_over_dpad_and_stick_keep_focus_on_restart() -> String:
-	return await _stays_put("player_death", GAME_OVER_BUTTON)
+func test_game_over_dpad_and_stick_keep_focus_on_overlay() -> String:
+	return await _stays_put("player_death", [GAME_OVER_BUTTON, GAME_OVER_EXIT])
 
 
 func test_win_dpad_and_stick_keep_focus_on_restart() -> String:
-	return await _stays_put("boss_death", WIN_BUTTON)
+	return await _stays_put("boss_death", [WIN_BUTTON])
+
+
+# --- EXIT GAME -------------------------------------------------------------------
+
+func test_game_over_dpad_down_reaches_exit_and_a_quits() -> String:
+	for scene in [MAIN, BOSS_ROOM]:
+		await _load(scene)
+		var container := _level.get_node("UI/GameOverContainer") as GameOver
+		var quits := [0]
+		container.quit_game = func() -> void: quits[0] += 1
+		Globals.emit_signal("player_death")
+		await _frames()
+		var exit := _level.get_node(GAME_OVER_EXIT) as Button
+		var r: String = _T.assert_true(exit.is_visible_in_tree(), "%s: EXIT GAME shows on Game Over" % scene)
+		if r != "":
+			return r
+		await _tap_button(JOY_BUTTON_DPAD_DOWN)
+		r = _T.assert_true(exit.has_focus(), "%s: d-pad down reaches EXIT GAME" % scene)
+		if r != "":
+			return r
+		await _tap_button(JOY_BUTTON_A)
+		r = _T.assert_eq(quits[0], 1, "%s: A on EXIT GAME quits" % scene)
+		if r != "":
+			return r
+		_level.queue_free()
+		_level = null
+		await _frames()
+	return ""
 
 
 # --- A activates ---------------------------------------------------------------

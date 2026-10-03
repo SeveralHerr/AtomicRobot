@@ -10,7 +10,8 @@ var current_state: LightState = LightState.RED
 var car_position: Vector2 = Vector2(713, 62)
 var car_y_pos: float 
 
-# Player detection
+# Player detection: horizontal reach only, so the whole vertical column above and
+# below the light triggers it (the road sits well below the lamp head).
 @export var detection_radius: float = 100.0
 @export var player: Player = null
 
@@ -26,10 +27,11 @@ func _ready():
 	green_light.visible = false
 
 func _process(_delta):
-	if player and can_change_state:
-		var distance = global_position.distance_to(player.global_position)
-		if distance <= detection_radius and current_state == LightState.RED:
-			change_to_green()
+	if can_change_state and current_state == LightState.RED and player_in_range():
+		change_to_green()
+
+func player_in_range() -> bool:
+	return player != null and absf(global_position.x - player.global_position.x) <= detection_radius
 
 func change_to_green():
 	can_change_state = false

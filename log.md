@@ -269,3 +269,8 @@ Log of skills that might have been useful for a given response, and why (short f
 ## 2026-10-02 — Picade menu btn, jump reach, door-burst grace, enemy oof -6dB (orchestrator)
 - Skills used: none (fanned out 4 general-purpose subagents).
 - Would help: `pi-game-deploy` — push the build to the Picade to feel-check; a "godot-feel-tuning" skill — playtest timing/jump values with screenshots.
+
+## 2026-10-02 — Cat easter egg, comic popups, car once-hit, stoplight column, Exit Game (orchestrator)
+- Skills used: artifact-design (artifact page); godot-headful-screenshot (repo skill, exit-button shots). Enhancement: added GIF recipe + "--import after new class_name" gotcha to it.
+- Fanned out 2 general-purpose subagents (comic popups; cat + GIF). Cat building was ambiguous → 2 corrections from user; a screenshot up front would have saved a loop.
+- Would have helped: `mockup-on-screenshot` (confirm target building against a real screenshot before building), `extract-a-testable-seam` (used the idea: `Streetlight.player_in_range()`), wished-for "godot-level-landmarks" skill — name→world-coords map of buildings so "the first skyscraper" resolves without guessing.

@@ -6,8 +6,14 @@ class_name Crack
 @onready var static_body_2d: StaticBody2D = $StaticBody2D
 @onready var crack_audio: AudioStreamPlayer = $CrackAudio
 
+const CAT_SCENE := preload("res://scenes/cat.tscn")
+
+## Set on the window-building crack: a cat (scripts/cat.gd) climbs out onto the roof.
+@export var releases_cat := false
+
 var hits: int = 0
 var player: Player
+var _opened := false
 
 func _ready() -> void:
 	area_2d.body_entered.connect(_on_area_entered)
@@ -47,3 +53,8 @@ func receive_hit() -> void:
 		if is_instance_valid(static_body_2d):
 			static_body_2d.queue_free()
 		interact_label.show()
+		if releases_cat and not _opened:
+			var cat: Node2D = CAT_SCENE.instantiate()
+			cat.position = animated_sprite_2d.position  # out of the hole itself
+			add_child(cat)
+		_opened = true

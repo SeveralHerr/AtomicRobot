@@ -310,3 +310,29 @@ func test_select_second_pad_navigates() -> String:
 		return r
 	await _pad(PAD_A, 1)
 	return _T.assert_eq(Globals.selected_character, "Cass", "pad 2 A picks the character")
+
+
+# --- EXIT GAME -------------------------------------------------------------------
+
+func test_select_right_of_skip_intro_reaches_exit_and_a_quits() -> String:
+	Globals.selected_character = "Ryan"
+	await _mount(SELECT)
+	var quits := [0]
+	_scene.quit_game = func() -> void: quits[0] += 1
+	var exit: Button = _scene.exit_button
+	var r: String = _T.assert_true(exit.is_visible_in_tree(), "EXIT GAME shows on character select")
+	if r != "":
+		return r
+	await _pad(PAD_DOWN)
+	await _pad(PAD_RIGHT)
+	r = _T.assert_eq(_focus(), exit, "down then right reaches EXIT GAME")
+	if r != "":
+		return r
+	await _pad(PAD_A)
+	return _T.assert_eq(quits[0], 1, "A on EXIT GAME quits")
+
+
+func test_select_exit_has_visible_focus_style() -> String:
+	await _mount(SELECT)
+	var sb: StyleBox = _scene.exit_button.get_theme_stylebox("focus")
+	return _T.assert_false(sb == null or sb is StyleBoxEmpty, "EXIT GAME focus is visible on an arcade screen")

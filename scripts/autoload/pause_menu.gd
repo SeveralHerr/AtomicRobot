@@ -35,7 +35,7 @@ func _ready() -> void:
 	_resume_button.pressed.connect(_on_resume_pressed)
 	_exit_button.pressed.connect(_on_resume_pressed)
 	_quit_button.pressed.connect(func() -> void: quit_game.call())
-	_quit_button.visible = can_quit(OS.has_feature("web"), _web_query())
+	_quit_button.visible = QuitGame.available()
 	_controls_button.pressed.connect(_show_controls)
 	_remap_panel.closed.connect(_hide_controls)
 
@@ -71,24 +71,12 @@ func _on_resume_pressed() -> void:
 	toggle_pause()
 
 
-## Desktop builds can always quit. On the web only the arcade kiosk can: its launcher
-## opens the game with ?exit=1 in a one-tab window that window.close() is allowed to
-## shut. An itch.io embed ignores window.close(), so the button stays hidden there.
 static func can_quit(on_web: bool, query: String) -> bool:
-	return not on_web or "exit=1" in query.trim_prefix("?").split("&")
-
-
-func _web_query() -> String:
-	if not OS.has_feature("web"):
-		return ""
-	return str(JavaScriptBridge.eval("window.location.search"))
+	return QuitGame.can_quit(on_web, query)
 
 
 func _quit_game() -> void:
-	if OS.has_feature("web"):
-		JavaScriptBridge.eval("window.close()")
-	else:
-		get_tree().quit()
+	QuitGame.quit(get_tree())
 
 
 func _on_volume_changed(value: float) -> void:

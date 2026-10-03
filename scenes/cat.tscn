@@ -1,0 +1,143 @@
+[gd_scene load_steps=20 format=3]
+
+[ext_resource type="Script" path="res://scripts/cat.gd" id="1_cat"]
+[ext_resource type="Texture2D" uid="uid://ca7m3pv6vsf7d" path="res://sprites/cat.png" id="2_cat"]
+
+[sub_resource type="AtlasTexture" id="idle_0_0"]
+atlas = ExtResource("2_cat")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="idle_0_1"]
+atlas = ExtResource("2_cat")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="idle_0_2"]
+atlas = ExtResource("2_cat")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="idle_0_3"]
+atlas = ExtResource("2_cat")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="idle_1_0"]
+atlas = ExtResource("2_cat")
+region = Rect2(0, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="idle_1_1"]
+atlas = ExtResource("2_cat")
+region = Rect2(128, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="idle_1_2"]
+atlas = ExtResource("2_cat")
+region = Rect2(256, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="idle_1_3"]
+atlas = ExtResource("2_cat")
+region = Rect2(384, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="walk_0"]
+atlas = ExtResource("2_cat")
+region = Rect2(0, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="walk_1"]
+atlas = ExtResource("2_cat")
+region = Rect2(128, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="walk_2"]
+atlas = ExtResource("2_cat")
+region = Rect2(256, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="walk_3"]
+atlas = ExtResource("2_cat")
+region = Rect2(384, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="walk_4"]
+atlas = ExtResource("2_cat")
+region = Rect2(512, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="walk_5"]
+atlas = ExtResource("2_cat")
+region = Rect2(640, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="walk_6"]
+atlas = ExtResource("2_cat")
+region = Rect2(768, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="walk_7"]
+atlas = ExtResource("2_cat")
+region = Rect2(896, 256, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cat"]
+animations = [{
+"frames": [
+{
+"duration": 1,
+"texture": SubResource("idle_0_0")
+}, {
+"duration": 1,
+"texture": SubResource("idle_0_1")
+}, {
+"duration": 1,
+"texture": SubResource("idle_0_2")
+}, {
+"duration": 1,
+"texture": SubResource("idle_0_3")
+}, {
+"duration": 1,
+"texture": SubResource("idle_1_0")
+}, {
+"duration": 1,
+"texture": SubResource("idle_1_1")
+}, {
+"duration": 1,
+"texture": SubResource("idle_1_2")
+}, {
+"duration": 1,
+"texture": SubResource("idle_1_3")
+}
+],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [
+{
+"duration": 1,
+"texture": SubResource("walk_0")
+}, {
+"duration": 1,
+"texture": SubResource("walk_1")
+}, {
+"duration": 1,
+"texture": SubResource("walk_2")
+}, {
+"duration": 1,
+"texture": SubResource("walk_3")
+}, {
+"duration": 1,
+"texture": SubResource("walk_4")
+}, {
+"duration": 1,
+"texture": SubResource("walk_5")
+}, {
+"duration": 1,
+"texture": SubResource("walk_6")
+}, {
+"duration": 1,
+"texture": SubResource("walk_7")
+}
+],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+}]
+
+[node name="Cat" type="Node2D"]
+z_index = 1
+script = ExtResource("1_cat")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.6, 0.6)
+sprite_frames = SubResource("SpriteFrames_cat")
+animation = &"idle"
+offset = Vector2(0, -33)

@@ -106,6 +106,7 @@ func take_damage(amount: int) -> void:
 	# source already goes through, so nothing can damage the player without the
 	# score system hearing about it.
 	ScoreSystem.register_player_damaged()
+	ComicPopup.spawn(self, global_position + Vector2(0.0, -40.0), &"hurt")
 
 	player_health_updated.emit(health)
 
@@ -127,6 +128,10 @@ func land_hit(target: Node) -> void:
 		return
 	target.receive_hit(get_damage())
 	ScoreSystem.register_hit()
+	# No comic word on the blow that finishes an enemy off.
+	if target is Node2D and not target.get("is_dead"):
+		var kind := &"boss_hit" if target is FinalBoss else &"hit"
+		ComicPopup.spawn(target, (target as Node2D).global_position + Vector2(0.0, -40.0), kind)
 
 ## Raw hit points at full health. Static so callers (debug menu, devtools) can ask
 ## without hardcoding the cap.
