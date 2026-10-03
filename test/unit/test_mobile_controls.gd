@@ -185,6 +185,13 @@ func test_second_finger_works_while_the_first_is_down() -> String:
 	)
 
 
+func test_menu_button_hidden_without_touchscreen() -> String:
+	# Headless has no touchscreen, same as the Picade cabinet (keyboard/arcade stick).
+	return _T.assert_false(
+		_ui.get_node("PauseButton").visible, "MENU button should only show on touch devices"
+	)
+
+
 func test_touch_outside_any_button_is_ignored() -> String:
 	var event := InputEventScreenTouch.new()
 	event.index = 0

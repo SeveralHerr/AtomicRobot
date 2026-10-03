@@ -34,13 +34,13 @@ func is_running_on_mobile() -> bool:
 func _ready() -> void:
 	# The joystick hides itself in _ready when there's no touchscreen (children are
 	# ready before the parent), so it doubles as the "are we on touch?" flag.
+	# MENU goes too: keyboard/arcade-stick builds (Picade, desktop) pause with a key.
 	if not virtual_joystick_2.visible:
 		for ui in _action_buttons:
 			ui.hide()
+		pause_ui.hide()
 
-	# Pause is always visible (desktop + mobile) and is intentionally outside the
-	# hide-all-touch-buttons branch above. It keeps a normal Button signal so it
-	# still works with a mouse on desktop.
+	# Pause keeps a normal Button signal (single tap, no multi-touch needed).
 	pause_button.pressed.connect(_on_pause)
 
 func _on_pause() -> void:

@@ -18,7 +18,7 @@ signal encounter_finished
 ## when they run dry, which walks them into a barrier if no meter is inside the
 ## arena — so keep this high unless the encounter is placed near parking meters.
 @export_range(0.0, 1.0) var melee_ratio: float = 0.75
-@export var spawn_interval: float = 0.25
+@export var spawn_interval: float = 0.15
 ## Barriers + camera limits while the fight is live. Off = burst with no lock.
 @export var lock_arena: bool = true
 ## Half-width of the locked arena in world px. Must exceed 256 — the camera shows
@@ -40,8 +40,14 @@ signal encounter_finished
 ## How long a spawned enemy takes to step from the crack out to its fan-out lane.
 ## Deliberately much slower than Enemy.LANE_CHANGE_DURATION (0.2s, tuned for snappy
 ## in-combat repositioning) — this is a "walking out of the doorway" beat, not a
-## combat dodge, so it should read as a walk, not a snap.
-@export var walk_out_seconds: float = 1.0
+## combat dodge, so it should read as a walk, not a snap. 0.6s: at 1.0s the
+## whole squad took ~2s to fill the lanes, long enough to read as sluggish.
+@export var walk_out_seconds: float = 0.6
+## Extra beat after the walk-out before a spawned enemy may attack. Its total
+## no-attack window is walk_out_seconds + this (Enemy.spawn_grace), so the squad
+## lands in its lanes before anyone swings instead of swarming the doorway.
+## Only the spawned enemies are held — the game itself never pauses.
+@export var settle_seconds: float = 0.3
 ## Move speed multiplier applied to a freshly-spawned enemy for walk_out_seconds,
 ## so it doesn't immediately sprint at full chase speed the instant it appears.
 @export_range(0.05, 1.0) var walk_out_speed_scale: float = 0.4
@@ -81,6 +87,11 @@ static func lane_for_index(index: int, pattern: Array = []) -> int:
 		var span: int = Lanes.FRONT_LANE - Lanes.BACK_LANE + 1
 		return Lanes.clamp_lane(Lanes.BACK_LANE + (index % span))
 	return Lanes.clamp_lane(int(pattern[index % pattern.size()]))
+
+
+## How long a freshly-spawned enemy is barred from attacking: walk out, then settle.
+func attack_grace_seconds() -> float:
+	return walk_out_seconds + settle_seconds
 
 
 func _ready() -> void:
@@ -180,6 +191,7 @@ func _spawn_one(index: int) -> void:
 	# at 0.0, so left alone it fires on the very first physics tick and steps the
 	# maid toward the PLAYER's lane instead of its assigned fan-out lane.
 	enemy.lane_change_cooldown = arm_seconds + 1.0
+	enemy.spawn_grace = attack_grace_seconds()
 	_spawned.append(enemy)
 	_walk_out(enemy, target_lane)
 

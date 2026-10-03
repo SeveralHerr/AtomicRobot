@@ -65,6 +65,9 @@ const FRICTION := 800
 var gravity: int = 1200
 const ACCELERATION = 1000.0  # Adjust as needed for smoother acceleration
 const AIR_CONTROL: float = 0.6
+## Airborne horizontal target = ground speed x this. 1.0 made gaps hard to clear;
+## 1.2 adds ~20% reach without touching jump height (test_jump_reach.gd).
+const AIR_SPEED_MULT: float = 1.2
 # --- JUMP PHYSICS TUNING ---
 const COYOTE_TIME: float = 0.1
 var coyote_timer: float = 0
@@ -230,19 +233,23 @@ func _physics_process(delta: float) -> void:
 	else:
 		coyote_timer -= delta
 
-	# Apply gravity and fall multiplier (suspended while tweening between lanes)
-	if not is_grounded() and not is_changing_lane:
-		if velocity.y > 0:
-			velocity.y += gravity * (fall_multiplier - 1.0) * delta
-		velocity.y += gravity * delta
-
-	# Switch to FallState if falling and not already in it or dead
-	if not is_grounded() and not is_changing_lane and velocity.y > 0:
-		if not (state_machine.current_state is FallState or state_machine.current_state is DeadState or state_machine.current_state is IdleState):
-			state_machine.change_state("FallState")
-
+	apply_gravity(delta)
 	state_machine.physics_update(delta)
 	move_and_slide()
+
+
+## Gravity + fall multiplier (suspended while tweening between lanes), then the
+## Jump->Fall hand-off once vy turns positive. Split out so tests can integrate a
+## jump arc without a physics space (test_jump_reach.gd).
+func apply_gravity(delta: float) -> void:
+	if is_grounded() or is_changing_lane:
+		return
+	if velocity.y > 0:
+		velocity.y += gravity * (fall_multiplier - 1.0) * delta
+	velocity.y += gravity * delta
+	if velocity.y > 0:
+		if not (state_machine.current_state is FallState or state_machine.current_state is DeadState or state_machine.current_state is IdleState):
+			state_machine.change_state("FallState")
 
 
 # --- Lane mechanics -------------------------------------------------------
@@ -402,6 +409,9 @@ func can_jump() -> bool:
 
 func get_speed() -> float:
 	return (SPEED + boost_speed) * speed_multiplier
+
+func get_air_speed() -> float:
+	return get_speed() * AIR_SPEED_MULT
 	
 func _process(delta: float) -> void:
 	state_machine.update(delta)

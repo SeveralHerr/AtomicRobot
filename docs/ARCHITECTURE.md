@@ -83,7 +83,7 @@ each receiving `player`.
 |---|---|---|
 | Idle | `velocity.x = 0` | axis→Walk/Run, `ui_accept`→Jump, `Attack`, `Crouch`→Crouch |
 | Walk / Run | `velocity.x = move_toward(vx, dir*speed, ACCEL*dt)` | Run = Shift held |
-| Jump | `velocity.y = -450` on enter; air control ×0.6; release halves vy | |
+| Jump | `velocity.y = -450` on enter; air target = speed ×`AIR_SPEED_MULT` (1.2), accel ×0.6; release halves vy | |
 | Fall | air control; squash tween on land | entered automatically from `_physics_process` |
 | Attack | `velocity = ZERO`; per-character projectile or Area2D overlap hits | frame timing from `Globals.get_current_character_attack_frame()` |
 | Crouch | swaps body collision shape; `Crouch` held | |

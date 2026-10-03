@@ -259,3 +259,13 @@ Log of skills that might have been useful for a given response, and why (short f
 - Follow-up: removed unused shaders/water.gdshader (+.uid). 219/219 unit green. Spotted orphans water.gd + splash_particles.tscn + stale LEVELS.md WaterHandler line — left for user decision. Would have fit: derive-the-list (orphan-asset finder from references, not memory).
 - Follow-up: removed debug/settings/stdout/print_fps from project.godot (no on-screen FPS label existed). Tests re-run.
 - Follow-up leaf perf: pooled leaves now PROCESS_MODE_DISABLED (were still falling in physics — test proved 11px drop), sleeping leaves skip raycast, LeafManager rescans only after player moves 32px. New test/unit/test_leaf_perf.gd (4). Runner now awaits process_frame before each test (physics_frame-ending test broke remap test order). 223/223 unit, 9/9 sandbox. Would have fit: extract-a-testable-seam (should_rescan pure seam) — enhancement idea: mention "test ended on physics_frame poisons the next test" gotcha.
+
+## Jump reach tune (subagent)
+- No skill used. Would help: a "godot-platformer-tuning" skill (measure jump arc headless, baseline-then-tune).
+
+## Door-burst spawn grace (subagent)
+- No skill used. Would have helped: `extract-a-testable-seam` (gate can_attack headless), a "godot-enemy-fixture" skill (real maid+player in tree for AI gate tests).
+
+## 2026-10-02 — Picade menu btn, jump reach, door-burst grace, enemy oof -6dB (orchestrator)
+- Skills used: none (fanned out 4 general-purpose subagents).
+- Would help: `pi-game-deploy` — push the build to the Picade to feel-check; a "godot-feel-tuning" skill — playtest timing/jump values with screenshots.

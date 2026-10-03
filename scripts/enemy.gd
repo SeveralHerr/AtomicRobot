@@ -21,6 +21,9 @@ var enemy_state_machine: EnemyStateMachine
 @onready var range_timer: Timer = $RangeTimer
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var receive_hit_audio: AudioStreamPlayer = $ReceiveHitAudio
+## Trim on every enemy's hurt "oof" (ReceiveHitAudio), on top of each scene's authored
+## volume_db: -6 dB halves amplitude. One knob for all maids; player/other sfx untouched.
+const HIT_SOUND_TRIM_DB: float = -6.0
 @onready var line_of_sight: LineOfSight = $LineOfSight
 @onready var meter_line_of_sight: LineOfSight = $MeterLineOfSight
 
@@ -97,6 +100,11 @@ var _lane_tween: Tween
 var lane_change_cooldown: float = 0.0
 const LANE_CHANGE_COOLDOWN := 0.7
 const LANE_CHANGE_DURATION := 0.2
+## Seconds left before this enemy may attack at all. Set by spawners that pour a
+## squad onto the street (BuildingDoorEncounter) so the squad files out into its
+## lanes before anyone swings — otherwise the player is swarmed at the doorway.
+## Only attacking is gated: the enemy still moves, chases and can be hit.
+var spawn_grace: float = 0.0
 
 # Runtime data
 var player: Player
@@ -108,6 +116,7 @@ func _init() -> void:
 
 func _ready() -> void:
 	_base_scale = Vector2(absf(scale.x), scale.y)
+	receive_hit_audio.volume_db += HIT_SOUND_TRIM_DB
 	lane = Lanes.clamp_lane(starting_lane)
 	z_index = Lanes.z_for(lane)
 	_refresh_depth_z()
@@ -149,6 +158,7 @@ func _physics_process(delta: float) -> void:
 	enemy_state_machine.update(delta)
 	turn_cooldown -= delta
 	lane_change_cooldown -= delta
+	spawn_grace = maxf(spawn_grace - delta, 0.0)
 	_apply_enemy_separation(delta)
 
 	move_and_slide()
@@ -609,6 +619,8 @@ func competes_for_attack_slots() -> bool:
 
 
 func can_attack() -> bool:
+	if spawn_grace > 0.0:
+		return false
 	if not attack_timer.is_stopped() or not is_player_in_attack_range:
 		return false
 	if player == null:
@@ -621,4 +633,3 @@ func can_attack() -> bool:
 	# The claim/release pair lives in AttackPlayerState; passing `self` means the enemy
 	# currently holding the slot keeps reading as available.
 	return Globals.has_attack_slot_available(attack_category, self)
-
