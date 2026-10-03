@@ -1,5 +1,7 @@
 extends Node
 
+const CharacterUnlocks := preload("res://scripts/character_unlocks.gd")
+
 signal player_death
 signal boss_death
 signal meter_maid_death
@@ -108,14 +110,16 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		4, # hp
 		1 # dmg
 	),
+	# Locked until the player first beats the boss, and deliberately overpowered:
+	# the reward run should feel like a victory lap. Unlock: CharacterUnlocks.
 	"Robot": CharacterConfig.new(
 		"Robot",
-		"Robot IS NOW PLAYABLE",
-		true,
+		"ROBOT IS NOW PLAYABLE",
+		false,
 		"Mascot of Atomic Robot Tattoo
-		+2 hp    +1 dmg", 
+		+8 hp    +4 dmg", 
 		preload("res://sprites/robot_sprite_frames.tres"),
-		"",
+		"Beat the boss to unlock!",
 		CharacterSounds.new(
 			preload("res://sounds/robot_noise.ogg"),
 			preload("res://sounds/robot_noise.ogg"),
@@ -124,8 +128,8 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/robot_attack.ogg")  # weapon sound
 		),
 		5,  # Attack frame
-		2, # hp
-		1 # dmg
+		8, # hp
+		4 # dmg
 	)
 }
 
@@ -133,8 +137,38 @@ var meters: Array
 var meter_maids_killed: int = 0
 var meter_maid_boss_killed: int = 0
 
+## Save file for earned unlocks. Tests point it at a temp file.
+var unlocks_path := CharacterUnlocks.DEFAULT_PATH
+## Fighters unlocked this session that the select screen hasn't revealed yet.
+var unseen_unlocks: PackedStringArray = []
+
 func _ready() -> void:
-	pass
+	load_unlocks()
+	boss_death.connect(_on_boss_death)
+
+
+## Apply the save on top of the shipped lock states.
+func load_unlocks() -> void:
+	for character in CharacterUnlocks.load_unlocked(unlocks_path):
+		if character_dict.has(character):
+			character_dict[character].unlocked = true
+
+
+## Earn `character`: unlock, save, announce. Repeat calls do nothing (boss_death can
+## fire on every hit after the boss reaches 0 HP).
+func unlock_character(character: String) -> void:
+	var cfg: CharacterConfig = character_dict.get(character)
+	if cfg == null or cfg.unlocked:
+		return
+	cfg.unlocked = true
+	CharacterUnlocks.save_unlocked(unlocks_path, character)
+	unseen_unlocks.append(character)
+	unlocked.emit(cfg.get_unlock_text(), cfg.get_description().split("
+")[0].strip_edges())
+
+
+func _on_boss_death() -> void:
+	unlock_character(CharacterUnlocks.BOSS_REWARD)
 
 
 ## Turn-taking attack slots (TMNT-style crowd combat): caps how many enemies can be
