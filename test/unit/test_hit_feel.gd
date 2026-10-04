@@ -159,3 +159,13 @@ func test_enemy_dies_same_frame() -> String:
 	e.health = 1
 	e.receive_hit(1)
 	return _T.assert_true(e.is_dead, "killing blow kills on the hit frame")
+
+
+func test_enemy_flash_is_on_during_the_hit_frame() -> String:
+	# The hitstop freezes time on the hit frame; the white flash must already be up.
+	var e: Enemy = _add(MAID_SCENE.instantiate())
+	e.set_physics_process(false)
+	e.health = 5
+	e.receive_hit(1)
+	var mat := e.animated_sprite_2d.material as ShaderMaterial
+	return _T.assert_float_eq(float(mat.get_shader_parameter("flash_value")), 1.0, 0.001, "flash_value on the hit frame")

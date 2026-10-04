@@ -565,6 +565,9 @@ func _play_hit_effects() -> void:
 	if animation_player.is_playing():
 		animation_player.stop()
 	animation_player.play("Hit")
+	# Apply the first key now: a hitstop freezes time this very frame, and the
+	# white flash has to be on screen for the freeze, not after it.
+	animation_player.advance(0.0)
 	receive_hit_audio.play()
 
 func _apply_damage(damage: int) -> void:
