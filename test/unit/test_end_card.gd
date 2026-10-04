@@ -303,6 +303,23 @@ func test_card_fits_screen_and_covers_hud() -> String:
 	return _T.assert_gt(ui_layer, hud_layer, "level UI (card) layer above the score HUD")
 
 
+## The boss room adds its HP card and banner to the same UI layer after the EndCard;
+## the card (and a death's grey-out) must still draw over them.
+func test_card_draws_over_the_boss_hud() -> String:
+	for sig in ["player_death", "boss_death"]:
+		var card: EndCard = await _level(BOSS_ROOM)
+		var ui := card.get_parent()
+		Globals.emit_signal(sig)
+		await _frames()
+		var r: String = _T.assert_eq(card.get_index(), ui.get_child_count() - 1, "%s: card is the last UI child" % sig)
+		if r != "":
+			return r
+		for n in _nodes:
+			n.free()
+		_nodes.clear()
+	return ""
+
+
 func test_card_turns_off_touch_controls() -> String:
 	var card: EndCard = await _level()
 	var mobile := card.get_parent().get_node("MobileUI")

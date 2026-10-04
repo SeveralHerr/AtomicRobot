@@ -27,6 +27,13 @@ const BADGE_TILT := 2.5
 const SLAM_SECONDS := 0.52
 const STAMP_SIZE := 118.0
 const DIM_SHADER := preload("res://shaders/end_card_dim.gdshader")
+## Show above every sibling: the boss room adds its health card and banner to the same
+## UI layer after the card, and they drew over GAME OVER / the grey-out.
+func _show_on_top() -> void:
+	move_to_front()
+	show()
+
+
 ## Pinball's cursor-pop: the card grows in from this scale with an overshoot.
 const POP_FROM := 0.85
 const POP_SECONDS := 0.3
@@ -232,7 +239,7 @@ func _on_player_death() -> void:
 		return
 	_disable_touch_controls()
 	_center.hide()
-	show()
+	_show_on_top()
 	await beat.play()
 	if is_inside_tree() and not _center.visible:
 		present(false)
@@ -263,7 +270,7 @@ func present(did_win: bool) -> void:
 	dim_material.set_shader_parameter("dim", 1.0)
 	var popping := not (visible and _center.visible)
 	_center.show()
-	show()
+	_show_on_top()
 	if popping:
 		_pop_card()
 	if _rank_row.visible:
@@ -324,7 +331,7 @@ func _pop_card() -> void:
 	_card.modulate.a = 0.0
 	_pop = create_tween().set_parallel()
 	_pop.tween_property(_card, "scale", Vector2.ONE, POP_SECONDS).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	_pop.tween_property(_card, "modulate:a", 1.0, POP_SECONDS * 0.5)
+	_pop.tween_property(_card, "modulate:a", 1.0, POP_SECONDS * 0.3)
 
 
 ## The level's on-screen joystick and buttons claim touches by position in their own
