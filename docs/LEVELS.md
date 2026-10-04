@@ -85,7 +85,11 @@ hand-edit it. Options:
   car drives) down a random road lane from either edge, telegraphed 1.5 s by an edge sign
   (CanvasLayer 3, above touch UI) and the off-screen engine. Kept inside the end buildings
   (`street_min_x/max_x`); own RNG (`fixed_seed`, set by autoplay) — never draw from the
-  global stream in new spawners. Intersections still spawn their own (`streetlight.gd`).
+  global stream in new spawners. Intersections still spawn their own (`streetlight.gd`):
+  on green, one car down the PLAYER's lane (sidewalk -> nearest road lane), driving in
+  from off screen under the same edge sign — both use `CarWarning` (`car_warning.gd`).
+- **Ledge maids** (`PlatformPatrolState`) turn back at `patrol_blockers`: trees
+  (`tree.gd`) and lamps (`lamp.gd`). A new prop a ledge runs through joins that group.
 - **Triggers**: `EnemyEvent` Area2Ds (`enemy_event.gd`) fire scripted waves;
   `BuildingGroup4/Enter` (`final_boss_enter.gd`) changes scene to boss_room;
   `building_door_encounter.tscn` (`BuildingDoorEncounter`) is the TMNT-style

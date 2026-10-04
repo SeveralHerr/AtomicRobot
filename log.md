@@ -549,3 +549,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - Useful skills: none listed fit directly; `derive-the-list` (heart list from levels — applied by hand), `godot-level-pickups` (pickup placement context).
 - Wished-for skill: `godot-pickup-fx` (written) — one glow/burst rule for every collectible.
 - Gate: 958 unit, 19 autoplay, 12 sandbox, lane audit clean.
+## 2026-10-04 — Review round 3 fixes (branch review3-fixes)
+- Approved: intersection cars get the ambient edge sign (shared `CarWarning`, extracted from AmbientTraffic), drive in off screen, and use the player's lane (sidewalk -> lane 1). End card hint is one line ("FIND 4 MORE SECRETS FOR B" / "+3,857 FOR A (15,000)").
+- Player report (images/image.png): BG1 ledge maid walked through Lamp2 (x 2572). `PlatformPatrolState` turns at `patrol_blockers` (trees + new lamp.gd). Real-level probe: x range 2354..2782 before, 2604..2782 after.
+- Found: a typed `track(car: Car)` param errored on a freed car (34k script errors in 9 autoplay scenarios) -> untyped. Another session fast-forwarded newspaper-juice into this branch mid-task; reimport fixed its stale class cache.
+- 970/970 unit, 19/19 autoplay, 12/12 sandbox, lane audit clean, 9 mutants: 8 killed + 1 equivalent; the 1 real survivor (parked car) got a test.
+- Skills used: none via tool (repo skills godot-autoplay-test, godot-input-test patterns). Would have helped: somewhat-useful-claude-skills:derive-the-list (blockers from the dump), extract-a-testable-seam (track() seam). MCP: none (CLI). No new MCP/skill (YAGNI; CLAUDE.md note instead).
