@@ -1,7 +1,7 @@
 extends RefCounted
 
 # The YOU WIN card's run summary (scripts/ui/run_summary.gd): STREET / BOSS / BONUS
-# subtotals, the secrets line, and the NEW FIGHTER stamp - the pure text first, then
+# subtotals and the NEW FIGHTER stamp - the pure text first, then
 # the card in the real boss room driven by the real signals.
 
 var _T
@@ -52,13 +52,10 @@ func _labels(rows: Array) -> Array:
 
 # --- Text -----------------------------------------------------------------------
 
-func test_summary_rows_are_street_boss_bonus_then_bonus_detail() -> String:
-	var rows: Array = RunSummary.breakdown_rows(_run())
-	var r: String = _T.assert_eq(_labels(rows), ["STREET", "BOSS", "BONUS", "TIME", "HEALTH", "SECRETS"], "row order")
-	if r != "":
-		return r
-	var details: Array = rows.map(func(row: Array) -> bool: return row[2])
-	return _T.assert_eq(details, [false, false, false, true, true, true], "bonus itemised beneath")
+## User: the card was too noisy through the CRT. The bonus is one row, not itemised
+## (time / health / secrets): the rank hint names the one part worth chasing.
+func test_summary_rows_are_street_boss_bonus_only() -> String:
+	return _T.assert_eq(_labels(RunSummary.breakdown_rows(_run())), ["STREET", "BOSS", "BONUS"], "row order")
 
 
 ## The three headline rows must add up to FINAL SCORE.
@@ -66,8 +63,7 @@ func test_summary_subtotals_add_up_to_the_total() -> String:
 	var run := _run()
 	var sum := 0
 	for row in RunSummary.breakdown_rows(run):
-		if not row[2]:
-			sum += int(String(row[1]).replace(",", "").replace("+", ""))
+		sum += int(String(row[1]).replace(",", "").replace("+", ""))
 	return _T.assert_eq(sum, int(run["total"]), "STREET + BOSS + BONUS")
 
 
@@ -78,13 +74,6 @@ func test_summary_boss_only_stage_has_no_street_row() -> String:
 
 func test_summary_death_has_no_rows() -> String:
 	return _T.assert_eq(RunSummary.breakdown_rows({"won": false, "total": 700, "rank": ""}), [], "nothing to break down")
-
-
-func test_summary_secrets_text() -> String:
-	var r: String = _T.assert_eq(RunSummary.secrets_text(_run()), "SECRETS 1/2 · NEWS 2/5", "found/total per kind")
-	if r != "":
-		return r
-	return _T.assert_eq(RunSummary.secrets_text({"fight_score": 1}), "", "no level totals, no line")
 
 
 func test_summary_unlock_text() -> String:
@@ -128,16 +117,6 @@ func test_summary_card_shows_street_and_boss_subtotals() -> String:
 	return _T.assert_true("BOSS 600" in text, "boss subtotal in '%s'" % text)
 
 
-func test_summary_card_shows_secret_counts() -> String:
-	var card := await _clear(7000, func() -> void:
-		Globals.secret_found.emit("wall", "A")
-		Globals.secret_found.emit("news", "B")
-		Globals.secret_found.emit("news", "B"))
-	var totals := SecretTally.totals_in(ScoreRules.SCORED_SCENES)
-	var want := "SECRETS 1/%d · NEWS 1/%d" % [totals["wall"], totals["news"]]
-	return _T.assert_true(want in _row_texts(card), "'%s' in '%s'" % [want, _row_texts(card)])
-
-
 ## The first clear unlocks Robot behind this card: the card has to say so.
 func test_summary_card_stamps_the_unlock() -> String:
 	var card := await _clear(7000)
@@ -167,18 +146,12 @@ func test_summary_death_card_has_no_stamp() -> String:
 	return _T.assert_false(card.summary.breakdown.visible, "no breakdown on a death")
 
 
-## Mutation survivor: a stage with no level secrets (a sandbox) shows no secrets row.
-func test_summary_no_secret_row_without_totals() -> String:
-	var rows: Array = RunSummary.breakdown_rows(ScoreRules.summarise(900, 40.0, 1, 2))
-	return _T.assert_eq(_labels(rows), ["BOSS", "BONUS", "TIME", "HEALTH"], "no empty secrets row")
-
-
 ## Player report: died at the boss and the card said 470 after a 1,710 street. The
 ## death card now shows the run's STREET / BOSS split, so it is plain the street
 ## counted.
 func test_summary_boss_death_shows_street_and_boss_split() -> String:
 	var rows := RunSummary.breakdown_rows({"won": false, "total": 1510, "rank": "", "street_score": 1500})
-	return _T.assert_eq(rows, [["STREET", "1,500", false], ["BOSS", "10", false]], "split on a death")
+	return _T.assert_eq(rows, [["STREET", "1,500"], ["BOSS", "10"]], "split on a death")
 
 
 func test_score_system_death_in_boss_room_records_the_street_part() -> String:

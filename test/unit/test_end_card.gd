@@ -418,3 +418,57 @@ func test_title_attract_skips_empty_list() -> String:
 	s._attract = s.ATTRACT_SECONDS
 	await _frames()
 	return _T.assert_false(s.board.visible, "no empty list in the attract loop")
+
+
+# --- Readability through the CRT (user: "too noisy, hard to read with CRT on") ---
+
+func test_card_tunes_the_crt_in_and_out() -> String:
+	CRTOverlay.reset_focus()
+	var card: EndCard = await _level()
+	card.present(true)
+	await _tree().create_timer(CRTOverlay.TUNE_SECONDS + 0.1).timeout
+	var r: String = _T.assert_float_eq(CRTOverlay.focus, 1.0, 0.001, "tube tuned in under the card")
+	card.get_parent().remove_child(card)
+	card.queue_free()
+	if r != "":
+		return r
+	return _T.assert_float_eq(CRTOverlay.focus, 0.0, 0.001, "normal look back when the card leaves")
+
+
+func test_card_list_hides_empty_places() -> String:
+	var card: EndCard = await _level()
+	ScoreSystem.high_scores = [HighScoreTable.make_entry("TOP", 1_000_000)]
+	ScoreSystem.awaiting_initials = false
+	card.present(true)
+	await _frames()
+	var shown := 0
+	for row in card.table._rows:
+		if row[0].visible:
+			shown += 1
+	return _T.assert_eq(shown, 1, "one saved score, one row; no column of dashes")
+
+
+## Footage: the HP orbs and the boss portrait sat above the card, more to read past.
+func test_card_fades_the_hud_out() -> String:
+	return await _fades_hud(MAIN)
+
+
+func test_card_fades_the_boss_room_hud_out() -> String:
+	return await _fades_hud(BOSS_ROOM)
+
+
+func _fades_hud(path: String) -> String:
+	var card: EndCard = await _level(path)
+	var orbs: Array = _tree().get_nodes_in_group(HudFade.CINEMATIC)
+	var names := orbs.map(func(n: Node) -> String: return n.name)
+	var r: String = _T.assert_true("HealthContainer" in names, "HP orbs fade with the HUD in %s" % path)
+	if r != "":
+		return r
+	card.present(true)
+	await _tree().create_timer(EndCard.HUD_FADE_SECONDS + 0.1).timeout
+	for n in orbs:
+		if is_instance_valid(n) and (n as CanvasItem).modulate.a > 0.01:
+			HudFade.release(_tree(), HudFade.CINEMATIC)
+			return "%s still showing (a=%.2f)" % [n.name, (n as CanvasItem).modulate.a]
+	HudFade.release(_tree(), HudFade.CINEMATIC)
+	return ""

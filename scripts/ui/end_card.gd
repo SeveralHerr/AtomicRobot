@@ -29,6 +29,13 @@ const DIM_SHADER := preload("res://shaders/end_card_dim.gdshader")
 ## Pinball's cursor-pop: the card grows in from this scale with an overshoot.
 const POP_FROM := 0.85
 const POP_SECONDS := 0.3
+## The rank stamp landing: the card jolts and thuds under it.
+const STAMP_SHAKE := 9.0
+const STAMP_SOUND: AudioStream = preload("res://Sounds/hit3.ogg")
+const Juice := preload("res://scripts/ui/select/juice.gd")
+## The HP orbs, portrait and score column fade out under the card: one less thing to
+## read past.
+const HUD_FADE_SECONDS := 0.25
 
 var won: bool = false
 ## The backdrop's grey/dim (shaders/end_card_dim.gdshader).
@@ -51,6 +58,7 @@ var _buttons: HBoxContainer
 var _center: CenterContainer
 var _card: PanelContainer
 var _pop: Tween
+var _thud: AudioStreamPlayer
 
 
 func _init() -> void:
@@ -68,6 +76,13 @@ func _ready() -> void:
 	Globals.player_death.connect(_on_player_death)
 	Globals.boss_death.connect(present.bind(true))
 	get_parent().child_entered_tree.connect(_on_sibling_added)
+
+
+## Leaving (restart, exit, scene change): the tube goes back to its normal look.
+func _exit_tree() -> void:
+	CRTOverlay.reset_focus()
+	if is_inside_tree():
+		HudFade.release(get_tree(), HudFade.CINEMATIC)
 
 
 ## Anything added to the UI layer while the card is up (boss letterbox bars, a
@@ -125,6 +140,7 @@ func _build() -> void:
 	columns.add_theme_constant_override("separation", 26)
 	body.add_child(columns)
 	summary = RunSummary.new()
+	summary.stamped.connect(_on_stamped)
 	columns.add_child(summary)
 	columns.add_child(_DashedRule.new())
 	var right := VBoxContainer.new()
@@ -134,7 +150,7 @@ func _build() -> void:
 	entry = InitialsEntry.new()
 	entry.submitted.connect(_on_initials_submitted)
 	right.add_child(entry)
-	table = ScoreTableView.new()
+	table = ScoreTableView.new(30)
 	right.add_child(table)
 
 	_buttons = HBoxContainer.new()
@@ -189,11 +205,15 @@ func present(did_win: bool) -> void:
 	dim_material.set_shader_parameter("grey", 0.0 if won else 1.0)
 	dim_material.set_shader_parameter("dim", 1.0)
 	var popping := not (visible and _center.visible)
+	# The tube tunes in under the card: at the CRT's normal 512x320 grid with its
+	# fringe and glare the card's text was mush (user report).
+	CRTOverlay.tune_in(true)
+	HudFade.fade(get_tree(), HudFade.CINEMATIC, 0.0, HUD_FADE_SECONDS)
 	_center.show()
 	_show_on_top()
 	if popping:
 		_pop_card()
-	summary.show_run(ScoreSystem.last_run, won)
+	summary.show_run(ScoreSystem.last_run, won, popping)
 	if ScoreSystem.awaiting_initials:
 		table.hide()
 		_buttons.hide()
@@ -203,14 +223,14 @@ func present(did_win: bool) -> void:
 		entry.open(ScoreSystem.last_initials)
 	else:
 		entry.hide()
-		table.show_entries(ScoreSystem.high_scores)
+		table.show_entries(ScoreSystem.high_scores, -1, false)
 		_show_buttons()
 
 
 func _on_initials_submitted(initials: String) -> void:
 	var slot := ScoreSystem.submit_initials(initials)
 	entry.hide()
-	table.show_entries(ScoreSystem.high_scores, slot)
+	table.show_entries(ScoreSystem.high_scores, slot, false)
 	_show_buttons()
 
 
@@ -224,6 +244,16 @@ func _show_buttons() -> void:
 func _show_on_top() -> void:
 	move_to_front()
 	show()
+
+
+func _on_stamped() -> void:
+	Juice.shake(_card, Vector2.ZERO, STAMP_SHAKE, 0.25)
+	if _thud == null:
+		_thud = AudioStreamPlayer.new()
+		_thud.stream = STAMP_SOUND
+		_thud.volume_db = -4.0
+		add_child(_thud)
+	_thud.play()
 
 
 ## Pinball's cursor-pop: grow in from POP_FROM with an overshoot while fading up.

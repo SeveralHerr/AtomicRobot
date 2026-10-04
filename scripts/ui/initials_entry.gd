@@ -101,7 +101,7 @@ func _build() -> void:
 		cursor = OK_SLOT
 		submit())
 	row.add_child(_ok)
-	var hint := ComicStyle.label(hint_text(DisplayServer.is_touchscreen_available()), ComicStyle.LABEL, 27, Color(ComicStyle.INK, 0.85))
+	var hint := ComicStyle.label(hint_text(DisplayServer.is_touchscreen_available()), ComicStyle.LABEL, 30)
 	hint.name = "Hint"
 	add_child(hint)
 

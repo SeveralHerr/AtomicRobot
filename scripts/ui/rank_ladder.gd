@@ -1,7 +1,7 @@
 class_name RankLadder
 extends VBoxContainer
 
-## The end card's rank hint (under the stamp and score in RunSummary): one line saying
+## The end card's rank hint (under the stamp and score in RunSummary): two lines saying
 ## how far the next rank is and the one thing in THIS run that would have got there.
 ##
 ## Player report: "my best full clear got ~7k points but still rank C. What do I need
@@ -11,7 +11,7 @@ extends VBoxContainer
 ## A clear faster than this is not a promise the tip makes (the bot's best 100% run
 ## is ~180 s).
 const FASTEST_SECONDS := 150.0
-const LINE_SIZE := 25
+const LINE_SIZE := 30
 const COMBO_TIP := "CHAIN COMBOS: KILLS PAY UP TO x8"
 
 ## One line: the gap to the next rank, then the tip ("+800 FOR B (8,000) · FIND 4
@@ -22,7 +22,8 @@ var next_label: Label
 func _init() -> void:
 	alignment = BoxContainer.ALIGNMENT_CENTER
 	add_theme_constant_override("separation", 2)
-	next_label = ComicStyle.label("", ComicStyle.LABEL, LINE_SIZE, ComicStyle.PLUM)
+	next_label = ComicStyle.label("", ComicStyle.LABEL, LINE_SIZE)
+	next_label.add_theme_constant_override("line_spacing", -6)
 	add_child(next_label)
 
 
@@ -81,10 +82,10 @@ func show_run(run: Dictionary, won: bool) -> void:
 	next_label.text = line_text(run, won)
 
 
-## The ladder's line for `run`: next_text, plus " · " and the tip on a ranked clear.
+## The hint for `run`: next_text, then the tip on its own line on a ranked clear.
 static func line_text(run: Dictionary, won: bool) -> String:
 	var ranked := won and String(run.get("rank", "")) != ""
 	var text := next_text(int(run.get("total", 0)), ranked)
 	var tip := tip_text(run) if ranked else ""
-	return text if tip == "" else text + " · " + tip
+	return text if tip == "" else text + "\n" + tip
 

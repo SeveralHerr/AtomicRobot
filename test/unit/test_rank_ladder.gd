@@ -73,7 +73,7 @@ func test_no_tip_at_the_top() -> String:
 
 
 func test_line_joins_gap_and_tip_on_a_clear() -> String:
-	return _T.assert_eq(L.line_text(_run(), true), "+800 FOR B (8,000) · FIND 4 MORE SECRETS", "one line")
+	return _T.assert_eq(L.line_text(_run(), true), "+800 FOR B (8,000)\nFIND 4 MORE SECRETS", "gap over tip")
 
 
 func test_line_on_a_death_has_no_tip() -> String:
