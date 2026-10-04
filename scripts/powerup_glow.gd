@@ -1,8 +1,9 @@
 class_name PowerupGlow
 extends Node2D
 
-## Halo + twinkles behind a level-PLACED PowerupPickup, so a reward perched on a
-## ledge reads from the street as "go get that" rather than as a stray decal.
+## Halo + twinkles behind a level-PLACED pickup (PowerupPickup adds one itself; the
+## roof heart has one authored as a child), so a reward perched on a ledge reads as
+## "go get that" rather than as a stray decal — or, for the heart, as a HUD orb.
 ## Drawn additively in the buff colour; dropped pickups don't get one (they already
 ## announce themselves by appearing mid-fight).
 ##
@@ -21,7 +22,7 @@ const TWINKLE_SIZE := 5.0
 const TWINKLE_RADIUS := 14.0
 const GOLDEN_ANGLE := 2.39996
 
-var color: Color = Color.WHITE
+@export var color: Color = Color.WHITE
 var _t: float = 0.0
 
 
