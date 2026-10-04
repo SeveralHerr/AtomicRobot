@@ -375,3 +375,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - Final: 567/567 unit, 9/9 sandbox, 12/12 autoplay, lane audit clean.
 - Skills used: godot-autoplay-test (death_restart scenario), godot-headful-screenshot (enhancement: phone recipe now in it). Would have helped: somewhat-useful-claude-skills:godot-2d-placement-audit (pin HUD/banner clearance numerically sooner).
 - MCP: none used.
+
+## 2026-10-03 — Payoff renamed STREET CLEAR!, shipped to itch.io
+- Clearance tests caught the longer word overlapping the combo line; burst scale 0.6 -> 0.5.
+- First deploy blocked by CI: end card buried by boss letterbox bars added after it moved to front (slow CI frames). Fix: card re-fronts on sibling add; test_card_stays_on_top_of_later_ui. Second deploy green (568/568, 9/9) and shipped.
+- Lesson: a test that "failed once under load" locally (split agent saw it) was a real race — chase it before shipping, not after.
+- Skills: none used; itch-ci-deploy would have helped read the failed run faster. MCP: none.
