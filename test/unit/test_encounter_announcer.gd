@@ -217,7 +217,7 @@ func test_announcer_clear_ducks_the_powerup_timers_then_restores_them() -> Strin
 	rig[0].squad_cleared.emit()
 	await tree.create_timer(0.4, true, false, true).timeout
 	var during := timers.modulate.a
-	await tree.create_timer(A.CLEAR_HOLD + 1.0, true, false, true).timeout
+	await tree.create_timer(A.clear_hold() + 1.0, true, false, true).timeout
 	var after := timers.modulate.a
 	rig[0].free()
 	timers.free()

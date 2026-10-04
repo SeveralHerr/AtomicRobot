@@ -14,8 +14,9 @@ class_name EncounterAnnouncer
 
 ## Above the HUD (UI layer 2, score 1), below the pause menu (99) and CRT overlay.
 const LAYER := 3
+## WAVE n/N is glanced, not read, and timed to the door's rearm (0.7 s): the maids
+## step out right after it, so it keeps its short hold (no ReadingTime).
 const WAVE_HOLD := 0.55
-const CLEAR_HOLD := 0.9
 const CLEAR_TITLE := "STREET CLEAR!"
 const CLEAR_SUB := "GO! GO! GO!"
 ## Stripe centre as a fraction of screen height, and callout scale: together they
@@ -32,6 +33,12 @@ const CLEAR_SIZE_K := 0.5
 ## Seconds BossBanner.slam_title takes to land a title (stripe/burst + title punch).
 const SLAM_IN := 0.3
 const CLEAR_STING := preload("res://sounds/power_up.wav")
+## STREET CLEAR! + its subtitle is the one callout here with words to read and no
+## fight waiting on it, so it stays up for the shared pop-up reading time.
+static func clear_hold() -> float:
+	return ReadingTime.seconds(CLEAR_TITLE + " " + CLEAR_SUB) - SLAM_IN
+
+
 ## Mid-door beat: same burst, smaller, quicker, no sting — it must read as a breath
 ## between waves, not as the door's payoff, and be gone before the next wave's
 ## stripe (wave_gap_seconds 0.8 after the kill) slams over it.
@@ -86,7 +93,7 @@ func _on_wave_cleared(_index: int, _total: int) -> void:
 
 func _on_squad_cleared() -> void:
 	_cleared = true
-	_slam(CLEAR_TITLE, CLEAR_SUB, CLEAR_Y, CLEAR_SIZE_K, CLEAR_HOLD, ComicStyle.BLUE, true)
+	_slam(CLEAR_TITLE, CLEAR_SUB, CLEAR_Y, CLEAR_SIZE_K, clear_hold(), ComicStyle.BLUE, true)
 	if _sting == null:
 		_sting = AudioStreamPlayer.new()
 		_sting.stream = CLEAR_STING

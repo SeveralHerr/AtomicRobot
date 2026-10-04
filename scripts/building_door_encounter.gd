@@ -377,4 +377,5 @@ func _end() -> void:
 	encounter_finished.emit()
 	if one_shot:
 		# Outlive the STREET CLEAR! callout, which lives under this node.
-		get_tree().create_timer(2.0).timeout.connect(queue_free)
+		var callout := EncounterAnnouncer.SLAM_IN + EncounterAnnouncer.clear_hold() + 0.5
+		get_tree().create_timer(callout).timeout.connect(queue_free)
