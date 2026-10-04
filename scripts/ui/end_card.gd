@@ -73,6 +73,14 @@ func _init() -> void:
 func _ready() -> void:
 	Globals.player_death.connect(_on_player_death)
 	Globals.boss_death.connect(present.bind(true))
+	get_parent().child_entered_tree.connect(_on_sibling_added)
+
+
+## Anything added to the UI layer while the card is up (boss letterbox bars, a
+## phase flash during the death beat) would draw over it; push the card back up.
+func _on_sibling_added(node: Node) -> void:
+	if visible and node != self and node.get_parent() == get_parent():
+		move_to_front.call_deferred()
 
 
 # --- Build ---------------------------------------------------------------------

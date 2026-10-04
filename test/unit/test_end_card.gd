@@ -320,6 +320,20 @@ func test_card_draws_over_the_boss_hud() -> String:
 	return ""
 
 
+## Something joining the UI layer after the card is up (the boss intro's letterbox
+## bars, a phase flash during the death beat) must not draw over it. CI's slow
+## frames let the intro land mid-test and buried the card under its bars.
+func test_card_stays_on_top_of_later_ui() -> String:
+	var card: EndCard = await _level(BOSS_ROOM)
+	var ui := card.get_parent()
+	Globals.player_death.emit()
+	await _frames()
+	var late := ColorRect.new()
+	ui.add_child(late)
+	await _frames()
+	return _T.assert_eq(card.get_index(), ui.get_child_count() - 1, "card stays the last UI child")
+
+
 func test_card_turns_off_touch_controls() -> String:
 	var card: EndCard = await _level()
 	var mobile := card.get_parent().get_node("MobileUI")
