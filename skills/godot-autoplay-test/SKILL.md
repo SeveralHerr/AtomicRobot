@@ -39,7 +39,7 @@ FAILS the run with `step failed: ...`. Once the player dies, the run stops at th
 that needs a live player; `wait tap menu snap dump assert` still run, so `menu` can drive the
 GAME OVER card -> RESTART -> back into main (`test/autoplay/death_restart.json`).
 
-Metrics: `t frames scene x y lane hp max_hp state kills damage_taken hits_taken heals
+Metrics: `t frames scene x y lane hp max_hp state kills damage_taken hits_taken heals powerups
 deaths won boss_reached enemies_near max_stuck_s stuck_spots step_failures errors
 engine_errors warnings score boss_hp secret_walls secret_news headlines cutscenes` (`boss_hp` = -1
 until the boss spawns; how far a lost fight got; `secret_*` count `Globals.secret_found`

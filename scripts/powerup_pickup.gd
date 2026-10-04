@@ -1,8 +1,14 @@
 extends Node2D
 class_name PowerupPickup
 
-## A dropped power-up waiting to be collected. Spawned by Utils.drop_powerup() from
-## Enemy.die(); grants its buff through PowerupSystem on contact.
+## A power-up waiting to be collected; grants its buff through PowerupSystem on contact.
+##
+## Two kinds share this scene:
+## - DROPPED: spawned by Utils.drop_powerup() from Enemy.die(). Blinks, then despawns
+##   after PowerupRules.PICKUP_LIFETIME.
+## - PLACED (`placed = true`): authored into a level as a reward for reaching a spot
+##   (a platform top, a scaffold). Permanent, glows, and stays under its level node.
+##   Platforms and scaffolds are ground-lane floors, so a placed pickup is GROUND_LANE.
 ##
 ## Lane-aware: only a player standing on the SAME lane can collect it, matching the
 ## rule combat already uses. Area overlap alone cannot express that — lanes are 24px
@@ -23,8 +29,10 @@ const SPIN_TIME := 2.5
 const BLINK_HZ := 4.0
 
 ## Set by Utils.drop_powerup() between instantiate() and add_child(), so _ready()
-## already sees the final values.
-var powerup_id: String = PowerupRules.RAGE
+## already sees the final values; exported so a placed pickup picks its buff in the editor.
+@export_enum("rage", "overclock") var powerup_id: String = PowerupRules.RAGE
+## Level-placed reward: no lifetime, no blink, no reparenting, plus a glow.
+@export var placed: bool = false
 var lane: int = Lanes.GROUND_LANE
 
 var _collected: bool = false
@@ -36,8 +44,12 @@ func _ready() -> void:
 	add_to_group("powerup_pickups")
 	# No new art: the buff reads purely as a colour on the shared pickup sprite.
 	sprite.modulate = PowerupRules.color(powerup_id)
-	# Deferred: reparenting inside _ready trips "parent node is busy setting up children".
-	Lanes.join_sort_layer.call_deferred(self)
+	if placed:
+		# Authored where it belongs; z 1 like the ground-lane bodies reaching for it.
+		add_child(PowerupGlow.new(PowerupRules.color(powerup_id)))
+	else:
+		# Deferred: reparenting inside _ready trips "parent node is busy setting up children".
+		Lanes.join_sort_layer.call_deferred(self)
 	_start_idle_motion()
 
 
@@ -54,6 +66,11 @@ func _process(delta: float) -> void:
 	if _collected:
 		return
 	_check_for_player()
+	if not placed:
+		_tick_lifetime(delta)
+
+
+func _tick_lifetime(delta: float) -> void:
 	_life -= delta
 	if _life <= 0.0:
 		queue_free()
