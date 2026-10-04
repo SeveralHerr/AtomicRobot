@@ -30,6 +30,11 @@ var _kills_since_drop: int = 0
 ## True when the last _apply() left non-neutral values on the player/shader, so a
 ## fully-expired set still gets one final write that resets them.
 var _needs_reset: bool = false
+## Set by the boss door: the next attach() is the same run's boss-room Player, so it
+## keeps the street's buffs (like Globals.carried_health) instead of wiping them.
+var _carry: bool = false
+## Countdowns frozen — the boss room holds them while its intro has the player frozen.
+var _held: bool = false
 
 
 ## Bind to the live player and take over its sprite material's shader.
@@ -45,9 +50,11 @@ func attach(player: Player) -> void:
 	_player = player
 	_sprite = player.default_sprite if player != null else null
 	# A new Player means a new run: drop any buff left over from the previous life
-	# and give the drop table a clean pity count.
-	_active.clear()
-	_kills_since_drop = 0
+	# and give the drop table a clean pity count — unless it walked through the boss door.
+	if not _carry:
+		_active.clear()
+		_kills_since_drop = 0
+	_carry = false
 	_install_shader()
 	_apply()
 	powerups_changed.emit()
@@ -69,7 +76,23 @@ func _install_shader() -> void:
 	mat.set_shader_parameter("flash_value", 0.0)
 
 
+## The street Player walked through the boss door: hand its buffs to the next one.
+func carry_through_door() -> void:
+	_carry = true
+
+
+## Freeze (true) or resume (false) every countdown. Buffs stay applied either way.
+func hold(on: bool) -> void:
+	_held = on
+
+
+func is_held() -> bool:
+	return _held
+
+
 func _process(delta: float) -> void:
+	if _held:
+		return
 	if _active.is_empty():
 		if _needs_reset:
 			_apply()
