@@ -14,6 +14,8 @@ var _throws_since_dash: int = 0
 ## misses. Without the lock the aim tracked you to the release frame — undodgeable.
 var _aim: Vector2
 var _aim_locked: bool = false
+## The phase _throws_since_dash is counting for: each phase earns its own charge.
+var _phase_seen: int = 0
 ## False until the fight's first swing has been held back by OPENING_GRACE.
 var _opened: bool = false
 
@@ -90,7 +92,16 @@ func _should_re_arm() -> bool:
 	return _boss().fighting and not _boss().staggered
 
 
+## A new phase restarts the count to its first charge, so the charge's tell never
+## lands under the phase banner — the new phase opens with throws.
+func _sync_phase() -> void:
+	if _boss().phase != _phase_seen:
+		_phase_seen = _boss().phase
+		_throws_since_dash = 0
+
+
 func update(delta: float) -> void:
+	_sync_phase()
 	var every: int = _boss().params()["dash_every"]
 	if attack_finished and every > 0 and _throws_since_dash >= every and _should_re_arm():
 		_throws_since_dash = 0

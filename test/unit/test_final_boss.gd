@@ -101,6 +101,22 @@ func test_first_throw_waits_out_the_opening_grace() -> String:
 	return r
 
 
+## Round-2 video: throws counted toward dash_every all fight long, so phase 3 opened
+## with an instant charge, its tell buried under the phase banner and speech bubble.
+func test_new_phase_restarts_the_dash_count() -> String:
+	_boss.begin_fight()
+	var st = _boss.enemy_state_machine.current_state
+	st._throws_since_dash = 5
+	_boss.phase = 2
+	st._sync_phase()
+	var r: String = _T.assert_eq(st._throws_since_dash, 0, "phase 3 throws dash_every times before charging")
+	if r == "":
+		st._throws_since_dash = 2
+		st._sync_phase()
+		r = _T.assert_eq(st._throws_since_dash, 2, "same phase: the count carries")
+	return r
+
+
 func test_dash_contact_box() -> String:
 	var cases := [
 		[0.0, 0.0, 10.0, 0.0, true, "standing beside him"],
