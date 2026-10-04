@@ -323,3 +323,12 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: godot-autoplay-test (bot runs, snaps, balance). Enhancement: document GIF recipe + sweep tool (done).
 - Would have helped: godot-boss-juice (created) — presentation checklist + fairness rules; somewhat-useful-claude-skills:godot-game-ui-juicy (motion patterns, container-scale gotcha); extract-a-testable-seam (pure `contact`/`link_fan`).
 - MCP: none used (godot-tests MCP available; ran suites via shell for full output).
+
+## 2026-10-03 — Speedrun self-test, crate invisible wall, human-style bot
+- **godot-autoplay-test** (used): ran six full title-to-win runs. Idea: add a `--chars` flag to `autoplay.py` so one call runs every character; record ran in parallel via a background shell.
+- **godot-lane-collision** (new): would have found the Wall-layer crate in one step. `tools/lane_wall_audit.py` plus the MCP `audit_lane_walls` tool.
+- **godot-ab-worktree**: useful for comparing crate-fix runs before and after (used stash instead).
+- **juicy-screen-review**: its judge-panel pattern was reused for the 3 code-audit agents.
+- **mockup-on-screenshot**: would help turn the juice ideas into visual mockups next.
+- **derive-the-list**: the lane-wall audit derives suspects from the dumped level instead of a hand-made list.
+- MCP: added `run_autoplay` and `audit_lane_walls` to `godot-tests`. Merging branch `human-bot` was refused by the permission classifier because the working tree had uncommitted changes; commit first, then merge.

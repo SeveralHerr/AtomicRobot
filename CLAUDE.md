@@ -118,7 +118,8 @@ When working with player/enemy behavior, states are managed through the StateMac
 
 ### Node Destruction Persistence
 
-The game tracks destroyed objects via `Globals.destroyed_nodes` to maintain state across scene reloads.
+`Globals.destroyed_nodes` / `mark_node_destroyed` exist but nothing calls them (2026-10-03):
+destroyed objects do NOT persist across reloads yet.
 
 ### Bug Tracking
 
@@ -234,6 +235,13 @@ you trust it in a demo.
 This game shares the arcade cabinet with `../atomic-pinball`. Before building any
 menu/end screen, check how pinball does it and match it (look, flow, input rules).
 Integrate new UI into the existing screen; never layer a second overlay over an old one.
+
+## Lane collision (street props)
+
+A walkway prop goes on Ground (2), never Wall (64): road lanes keep Wall, so a Wall prop is
+an invisible wall on every lane. `python tools/lane_wall_audit.py` (MCP `audit_lane_walls`)
+must stay clean; see `skills/godot-lane-collision/SKILL.md`. God runs hide soft-locks that
+mortal runs hit (heal-seeking) — gate both with `max_stuck_s`.
 
 ## Input-driven features
 
