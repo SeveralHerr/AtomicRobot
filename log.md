@@ -467,3 +467,12 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: godot-autoplay-test (sweep). Enhancement: ship a parallel `autoplay_sweep.py --jobs N` + mean-row summary (wrote sweep_all.sh/summ.py in scratch); note Sara and Caitlyn sweep rows are identical (check whether one is locked or same stats).
 - Would have helped: godot-ab-worktree (old-build baseline sweep — used a detached worktree by hand); a boss-only sweep preset matching boss_balance_* steps (sweep default `advance 140` != scenario `advance 110`, gave different hit counts).
 - MCP: none used (CLI direct).
+
+## 2026-10-04 — Player playtest feedback (orchestrator, branch player-feedback)
+- Fanned out 4 agents (combat, numbers, enemy AI, presentation) + balance + polish; merged all into `player-feedback`; 841 unit, 12 sandbox, 17/17 autoplay, lane audit clean, 0 warnings in the final recording.
+- User mid-run: drop rank chip row (noise) → one hint line kept; record only at the end.
+- Final footage found + fixed: last KO! drawn over STREET/WAVE CLEAR! burst (mutant killed).
+- Page: https://claude.ai/artifact/4ZhZApXDVpMJT9EirmEHox (before/after GIFs + final video).
+- Skills used: playthrough-video-review (enhancement: say "record at the END unless asked" — user stopped my up-front baseline), godot-speedrun-review. New: skills/godot-feedback-fanout.
+- Would have helped: somewhat-useful-claude-skills:enumerate-the-pairs (callout × hit-word overlap matrix), derive-the-list (character stat tables).
+- MCP: none used (godot-tests CLI equivalents). Open: autoplay_sweep `--base` with menu boot plays locked Robot as Cody; floating burst-hole decals in the park.
