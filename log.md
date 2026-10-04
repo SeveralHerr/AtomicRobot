@@ -435,3 +435,10 @@ Log of skills that might have been useful for a given response, and why (short f
   - Enhancement: autoplay-test should say `full_run_mortal` boots via the menu, so a locked Robot silently plays as the first unlocked fighter in `autoplay_sweep.py --base` (Robot rows == Cody rows); use a non-boot base for sweeps.
   - Enhancement: autoplay.py has no `--autoplay-out`; snaps always land in autoplay_out/.
 - Would have helped: a "balance-rescale" skill (checklist: enemy HP, boss, hazards, score tiers, select pips, scenario asserts in raw units); a GIF-from-scenario helper in tools/.
+## 2026-10-04 pf-combat (air attack, air control, combo/cancel, SFX pitch, coin reflect hook)
+- Root cause (air attack): AttackState zeroed velocity, then Player.apply_gravity forced FallState on the next frame (anim lost, hover); FallState.exit_state puffed landing fx on every exit.
+- Fixes: AttackChain (1.4x anim, cancel/chain 2 anim frames after hit, 3-swing string, lunge), air swings keep gravity/steer, FallState.land only on touchdown, AIR_ACCELERATION 1800, SfxPitch (+0.06/step, +-0.025 jitter) on attack/voice/jump/hurt + enemy oof, melee reflects `reflectable` coins in lane, RunState stops clobbering Overclock speed_scale.
+- Tests: 5 new files (~45 tests), all bug tests shown failing on old code; mutation 33/33 killed (7 first-pass survivors were filter misses or got new tests).
+- Skills used: godot-hit-feel, godot-input-test, godot-ab-worktree, godot-headful-screenshot. Enhancement: input-test skill should note Area2D does not report StaticBody2D stubs (use CharacterBody2D), and that `--filter` substrings make mutation runs miss tests whose names lack the word.
+- Would have helped: a checked-in `tools/mutate.py` (third agent to rewrite it) and a checked-in `tools/capture_timeline.gd` + `gif.py` for before/after GIFs.
+- MCP: none used (CLI direct).
