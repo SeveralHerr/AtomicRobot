@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://o61lmvx1pufs"]
+[gd_scene load_steps=7 format=3 uid="uid://o61lmvx1pufs"]
 
 [ext_resource type="Script" uid="uid://b4dpl0l1gdtam" path="res://scripts/coin_bullet.gd" id="1_yrbct"]
 [ext_resource type="Texture2D" uid="uid://bebxlupbocur" path="res://images/coin.png" id="2_w4kev"]
@@ -8,6 +8,9 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_w4kev"]
 radius = 2.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_reflect"]
+radius = 8.0
 
 [node name="CoinBullet" type="RigidBody2D"]
 collision_layer = 256
@@ -32,3 +35,11 @@ stream = ExtResource("3_vy3yn")
 lifetime = 0.25
 gravity = Vector2(0, 0)
 color = Color(1, 1, 0.858824, 1)
+
+[node name="ReflectArea" type="Area2D" parent="."]
+collision_layer = 128
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ReflectArea"]
+shape = SubResource("CircleShape2D_reflect")
