@@ -103,3 +103,18 @@ func test_placed_pickup_is_on_the_ground_lane() -> String:
 	# Platforms and scaffolds are ground-lane floors (Player._update_lane_floor).
 	var p := _spawn(true)
 	return _T.assert_eq(p.lane, Lanes.GROUND_LANE, "placed pickups sit on ground-lane geometry")
+
+
+func test_dropped_pickup_joins_the_lane_sort_layer() -> String:
+	_stage.scene_file_path = Lanes.LANE_SCENE_PREFIX + "pickup_stage.tscn"
+	var p := _spawn(false)
+	await _tree().process_frame
+	await _tree().process_frame
+	return _T.assert_eq(String(p.get_parent().name), Lanes.SORT_LAYER_NAME, "drops sort with the lane bodies")
+
+
+func test_placed_glow_draws_behind_the_sprite() -> String:
+	var p := _spawn(true)
+	await _tree().process_frame
+	var glow := p.get_node("Glow")
+	return _T.assert_true(glow.get_index() < p.sprite.get_index(), "glow is drawn before (under) the pickup sprite")
