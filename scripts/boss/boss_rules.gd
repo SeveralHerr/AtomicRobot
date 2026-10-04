@@ -23,32 +23,36 @@ const PHASE_STARTS: Array[float] = [1.0, 0.66, 0.33]
 ## the beat that lets the phase banner read and the player reset.
 const STAGGER_TIME := 1.4
 
+## Seconds after FIGHT! before his first throw: the FIGHT! flash would otherwise
+## cover the first wind-up, and the player has only just got control back.
+const OPENING_GRACE := 1.0
+
 ## Ceiling drops: how long the floor marker warns before the briefcase falls, and the
 ## minimum spacing between drops in one volley so there is always a gap to stand in.
 const DROP_WARN := 0.9
 const DROP_MIN_GAP := 110.0
 
 ## throw_delay is the fight's main difficulty knob: seconds he idles between throws.
-## Raised from 1.7/1.35/1.2 once health carried in from the street — the bot took ~16
+## Raised from 1.7/1.35/1.2 (now 2.0/1.7/1.5, plus OPENING_GRACE) once health carried in from the street — the bot took ~16
 ## hits a fight and arrived with ~5. Pinned by test_throw_cadence_leaves_room_to_hit_back
 ## and the seeded boss_balance_* / *_mortal autoplay scenarios.
 const PHASES: Array[Dictionary] = [
 	{
 		"title": "FINAL BOSS", "sub": "THE CITY COUNCILMAN",
 		"line": "We are charging for\nparking on SUNDAYS!",
-		"throw_delay": 2.2, "burst": 1, "spread_deg": 0.0,
+		"throw_delay": 2.0, "burst": 1, "spread_deg": 0.0,
 		"drop_every": 0.0, "drop_count": 0, "maids": 0, "dash_every": 0,
 	},
 	{
 		"title": "BUDGET CUTS!", "sub": "PHASE 2",
 		"line": "Meter maids,\nto the chamber!",
-		"throw_delay": 1.8, "burst": 3, "spread_deg": 14.0,
+		"throw_delay": 1.7, "burst": 3, "spread_deg": 14.0,
 		"drop_every": 4.5, "drop_count": 3, "maids": 2, "dash_every": 0,
 	},
 	{
 		"title": "OVERTIME!", "sub": "FINAL PHASE",
 		"line": "This meeting is\nNOT adjourned!",
-		"throw_delay": 1.6, "burst": 3, "spread_deg": 18.0,
+		"throw_delay": 1.5, "burst": 3, "spread_deg": 18.0,
 		"drop_every": 4.0, "drop_count": 3, "maids": 0, "dash_every": 3,
 	},
 ]

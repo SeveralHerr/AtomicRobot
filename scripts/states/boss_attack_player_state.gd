@@ -14,6 +14,8 @@ var _throws_since_dash: int = 0
 ## misses. Without the lock the aim tracked you to the release frame — undodgeable.
 var _aim: Vector2
 var _aim_locked: bool = false
+## False until the fight's first swing has been held back by OPENING_GRACE.
+var _opened: bool = false
 
 
 func _init(e: Enemy) -> void:
@@ -67,6 +69,12 @@ func _player_aim() -> Vector2:
 
 func _begin_swing() -> void:
 	_aim_locked = false
+	if not _opened:
+		# The opening beat: start "between throws", OPENING_GRACE short of a re-arm.
+		_opened = true
+		attack_finished = true
+		_hold = re_arm_delay - BossRules.OPENING_GRACE
+		return
 	super._begin_swing()
 
 
