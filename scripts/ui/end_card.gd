@@ -27,13 +27,6 @@ const BADGE_TILT := 2.5
 const SLAM_SECONDS := 0.52
 const STAMP_SIZE := 118.0
 const DIM_SHADER := preload("res://shaders/end_card_dim.gdshader")
-## Show above every sibling: the boss room adds its health card and banner to the same
-## UI layer after the card, and they drew over GAME OVER / the grey-out.
-func _show_on_top() -> void:
-	move_to_front()
-	show()
-
-
 ## Pinball's cursor-pop: the card grows in from this scale with an overshoot.
 const POP_FROM := 0.85
 const POP_SECONDS := 0.3
@@ -321,6 +314,13 @@ func _slam() -> void:
 	tw.tween_property(_stamp, "scale", Vector2.ONE * 0.92, SLAM_SECONDS * 0.6).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tw.tween_property(_stamp, "modulate:a", 1.0, SLAM_SECONDS * 0.4)
 	tw.chain().tween_property(_stamp, "scale", Vector2.ONE, SLAM_SECONDS * 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## Show above every sibling: the boss room adds its health card and banner to the same
+## UI layer after the card, and they drew over GAME OVER / the grey-out.
+func _show_on_top() -> void:
+	move_to_front()
+	show()
 
 
 ## Pinball's cursor-pop: grow in from POP_FROM with an overshoot while fading up.
