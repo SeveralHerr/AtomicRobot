@@ -535,3 +535,5 @@ Log of skills that might have been useful for a given response, and why (short f
 - "Meter maid talking over a tree" was the heart atom drawn behind a tree (z), not a speech bubble.
 - Skills used: jamcraft-splash (via agent; enhancement: guard awaits for a node freed by a scene change on frame 1), godot-feedback-fanout (enhancement: say "agents run the whole autoplay suite"). New: tools/level_pan.py + MCP `level_pan` + skills/godot-level-map (screenshot -> world x). Would have helped: godot-level-map (now exists), derive-the-list.
 - MCP: godot-tests (extended with level_pan).
+- Follow-up (user screenshot images/image.png): ledge platform maid walked into Tree9's canopy (x 2287) — the real "maid over a tree" bug; the heart z fix was a second, separate issue. PlatformPatrolState turns at foliage (trees group); 4 tests incl. real-physics maid, 4/4 mutants killed. 954 unit, 19/19 autoplay, 12/12 sandbox.
+- Lesson: an agent "explained" a player report with the first plausible match (heart z); ask for/locate the exact spot before closing a bug report.
