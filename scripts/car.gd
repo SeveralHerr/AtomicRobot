@@ -54,13 +54,14 @@ func _hit(body: Node2D) -> void:
 		if body.current_lane != lane:
 			return
 		hit_bodies.append(body)
-		ScreenShake.apply_shake(2, 0.2)
+		# The player's own hurt shake (6) stacks on top; strongest wins.
+		ScreenShake.apply_shake(8, 0.35)
 		body.receive_hit(global_position, car_damage, player_knockback_strength)
 	elif body is Enemy:
 		if body.lane != lane:
 			return
 		hit_bodies.append(body)
-		ScreenShake.apply_shake(2, 0.2)
+		ScreenShake.apply_shake(5, 0.25)
 		body.receive_hit(car_damage, enemy_knockback_strength)
 	elif body is DroppedLeaf:
 		body.do_gust(8, Vector2(global_position.x - 450, 0))

@@ -63,7 +63,7 @@ func _try_hit() -> void:
 			p.global_position.x, p.global_position.y + p.foot_offset()):
 		_hit = true
 		p.receive_hit(enemy.global_position, 1, 520.0)
-		ScreenShake.apply_shake(14.0, 1.1)
+		ScreenShake.apply_shake(10.0, 0.5)
 
 
 ## Whether a charging boss with feet at (bx, by) flattens a player with feet at

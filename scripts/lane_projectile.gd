@@ -57,7 +57,7 @@ func _spin(_delta: float) -> void:
 
 
 func _hit(enemy: Enemy) -> void:
-	ScreenShake.apply_shake(7)
+	# Shake, sparks and hitstop come from player.land_hit (HitFeel).
 	if player != null:
 		player.land_hit(enemy)
 	queue_free()

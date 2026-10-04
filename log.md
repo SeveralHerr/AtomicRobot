@@ -323,3 +323,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: godot-autoplay-test (bot runs, snaps, balance). Enhancement: document GIF recipe + sweep tool (done).
 - Would have helped: godot-boss-juice (created) — presentation checklist + fairness rules; somewhat-useful-claude-skills:godot-game-ui-juicy (motion patterns, container-scale gotcha); extract-a-testable-seam (pure `contact`/`link_fan`).
 - MCP: none used (godot-tests MCP available; ran suites via shell for full output).
+
+## 2026-10-03 — Combat feel sprint 1-4 (worktree juice-feel): shake fix, hurt shake, hitstop + sparks, same-frame reactions
+- Skills used: godot-headful-screenshot (frame capture; enhancement: say autoplay snaps can't see hitstop, tag frames with time_scale), godot-autoplay-test (full_run/mortal/balance), godot-boss-juice (slow-mo ownership), juicy-screen-review (round shape).
+- Would have helped: extract-a-testable-seam (ScreenShake.step / allow_headless_hit_pause seams), godot-ab-worktree (before/after; done by hand), godot-hit-feel (created).
+- MCP: none used (godot-tests MCP available; CLI needed for --filter + mutation loop). No new MCP server (YAGNI).
+- Process: shared scratchpad collided with the death-beat agent (shot.gd/sheet.py/shots/base) — rule added to CLAUDE.md.

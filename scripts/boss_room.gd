@@ -125,7 +125,7 @@ func _walk_in() -> void:
 
 func _on_phase_changed(phase: int) -> void:
 	var p := BossRules.params(phase)
-	_thud(16.0)
+	_thud(12.0)
 	BossJuice.flash(ui, Color(0.85, 0.1, 0.1, 0.45), 0.5)
 	_send_maids(p["maids"])
 	_drop_heart()
@@ -193,7 +193,7 @@ func _on_boss_defeated() -> void:
 	Globals.boss_fight.emit(false)
 	bar.hide_bar()
 	BossJuice.flash(ui, Color.WHITE, 0.9)
-	ScreenShake.apply_shake(22.0, 1.6)
+	ScreenShake.apply_shake(14.0, 1.2)
 	_play(BOOM)
 	banner.slam_title("ADJOURNED!", "MEETING OVER", 1.0, ComicStyle.RED, true)
 	# Nothing may hurt the player once the boss is down: clear the air and the crew.
@@ -210,7 +210,7 @@ func _on_boss_defeated() -> void:
 
 func _thud(strength: float) -> void:
 	_play(THUD)
-	ScreenShake.apply_shake(strength, 1.0)
+	ScreenShake.apply_shake(strength, 0.6)
 
 
 func _play(stream: AudioStream) -> void:
