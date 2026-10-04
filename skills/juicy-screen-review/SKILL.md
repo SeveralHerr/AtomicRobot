@@ -31,3 +31,14 @@ phone resolution. Then mutation-check new guards (`mut.py`, KILLED/SURVIVED per 
 - Test `InputEventAction` doesn't change "last device"; inject `InputEventKey` for that.
 - Stub subclasses set grace/timers to 0 in `_init()` (runs on `set_script`).
 - Flash overlay sits above the stage, but a card with `z_index = 1` draws over it.
+
+## Through the CRT (end card redo, 2026-10-04)
+- Force `CRTOverlay.set_enabled(true)` in capture scripts: a worktree's settings.cfg may
+  have it off, and every "it reads fine" shot was taken without the tube.
+- The CRT's 512x320 pixel grid eats text under ~40 px. Fix readability per screen with
+  `CRTOverlay.tune_in(true)` / `reset_focus()` (FOCUS preset) rather than shrinking content.
+- Scanlines/grille at a fine grid alias into wavy moiré on white cards — zero them in focus.
+- Smooth GIFs: run the capture under `--write-movie m.avi --fixed-fps 30` and cut with
+  ffmpeg palettegen; PNG-per-frame captures run at ~4 fps wall clock and drop the juice.
+- Capture waits: boss_room's intro fades the HUD back in at ~7 s; emit end signals after 9 s.
+- An empty `create_tween()` (no tweeners) is an engine error the autoplay gate catches.

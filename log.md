@@ -476,3 +476,11 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: playthrough-video-review (enhancement: say "record at the END unless asked" — user stopped my up-front baseline), godot-speedrun-review. New: skills/godot-feedback-fanout.
 - Would have helped: somewhat-useful-claude-skills:enumerate-the-pairs (callout × hit-word overlap matrix), derive-the-list (character stat tables).
 - MCP: none used (godot-tests CLI equivalents). Open: autoplay_sweep `--base` with menu boot plays locked Robot as Cody; floating burst-hole decals in the park.
+
+## 2026-10-04 — End card redo (presentation + juice through the CRT)
+- CRT tunes in under the card (CRTOverlay.focus/FOCUS); breakdown cut to STREET/BOSS/BONUS, RANK tag gone, bigger type, 2-line ink rank hint, empty list places hidden, HUD fades out.
+- Juice: rows drop in, ScoreTally count-up with rising coin ticks, stamp slam on last tick + card jolt + thud, hint fade, badge pop + power-up sound.
+- 10 capture rounds (last at 1688x780); 851 unit, 12 sandbox, 17/17 autoplay; 12/12 mutants killed (+1 covered by exact-text test). Found: scanline moiré, empty-tween engine error (death card).
+- Artifact: https://claude.ai/artifact/Asc6dfiNUQL2gGz52X8NoJ
+- Skills used: juicy-screen-review (enhanced: CRT capture section), godot-headful-screenshot. Would have helped: somewhat-useful-claude-skills:godot-game-ui-juicy (count-up/stagger recipes), a checked-in end-card capture script (scratch again).
+- MCP: none used.
