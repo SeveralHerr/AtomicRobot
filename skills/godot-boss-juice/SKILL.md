@@ -50,3 +50,20 @@ the score and the walkway maids. Size the banner by hand with TOP_LEFT anchors (
 first slam lands the frame it is added; full-rect + `size =` logs a warning). Wave
 callouts on BLUE (yellow-on-orange washed out), last wave RED. Payoff is `STREET CLEAR!`
 (user's call, over `BUSTED!`) even though ambient maids can still be up after the squad dies. A forced end (death/watchdog) hides the layer.
+Payoff burst now sits at `CLEAR_Y 0.45`, `k 0.5`; mid-door waves get a smaller sting-less
+`WAVE CLEAR!` (`wave_cleared` signal, `k 0.4`). Every callout goes through `_slam()`.
+
+## HUD vs callouts and cinematics (`HudFade`, scripts/ui/hud_fade.gd)
+- No room for a burst between the power-up timer stack (~y 241-340) and the player's head:
+  callouts DUCK `HudFade.POWERUPS` instead of moving. Pin it with a derived check: lay the
+  real `score_ui.tscn` out in a SubViewport and require every `Hud/Rows` child the burst
+  rect reaches to be in the duck group (`test_announcer_clear_burst_covers_only_ducked_hud_rows`).
+- Anything HudFade tweens must not be written per frame elsewhere: the timer blink moved to
+  `self_modulate`. Cinematics fade `HudFade.CINEMATIC`; the fade alpha is HELD for late
+  joiners (ScoreSystem injects the score column after the boss intro has started) and
+  released on fade-in / `boss_room._exit_tree`. Orbs are z_index 2 (draw over the bars):
+  fade out before `letterbox_in`, back with `delay = LETTERBOX_TIME` after `letterbox_out`.
+- Real-time tweens in unit tests: `await process_frame` first — the first frame after a
+  scene load carries the whole load as its delta and runs a 1s duck start-to-finish.
+- Godot 4.7: `get_meta(key, null)` treats null as "no default" and logs an ERROR (autoplay
+  counts it). Guard with `has_meta`.

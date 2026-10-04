@@ -16,6 +16,8 @@ const BOSS_MARK := -20.0
 const WALK_IN_TIME := 1.5
 ## Ceiling drops and reinforcements land within this many px of the player.
 const WAVE_REACH := 250.0
+## HUD out before the letterbox slides in (real seconds).
+const HUD_FADE_TIME := 0.15
 ## Banner stripe colour per phase: red, then hotter.
 const PHASE_TINTS: Array[Color] = [ComicStyle.RED, ComicStyle.ORANGE, ComicStyle.PLUM]
 
@@ -53,6 +55,8 @@ func _ready():
 
 func _exit_tree() -> void:
 	BossJuice.reset_time()
+	# Leaving mid-intro must not hand the next level a held-hidden HUD.
+	HudFade.release(get_tree(), HudFade.CINEMATIC)
 	Globals.boss_fight.emit(false)
 
 
@@ -81,8 +85,12 @@ func _on_player_entered(body):
 
 ## Letterbox -> boss strides in -> his line in a speech bubble -> FINAL BOSS slams
 ## onto a stripe -> card slides in and fills -> FIGHT! bursts -> controls back.
+## The HUD sits out the cinematic — the HP orbs (z_index 2) draw over the bars —
+## so it is gone before the bars slide in and back only once they have slid out.
 func play_boss_intro_sequence():
 	Globals.boss_fight.emit(true)
+	HudFade.fade(get_tree(), HudFade.CINEMATIC, 0.0, HUD_FADE_TIME)
+	await get_tree().create_timer(HUD_FADE_TIME, true, false, true).timeout
 	var bars := BossJuice.letterbox_in(ui)
 	boss = spawn_boss()
 	await _walk_in()
@@ -90,6 +98,7 @@ func play_boss_intro_sequence():
 	await banner.say(p["line"], boss, 0.8)
 	await banner.slam_title(p["title"], p["sub"], 1.1, PHASE_TINTS[0])
 	BossJuice.letterbox_out(bars)
+	HudFade.fade(get_tree(), HudFade.CINEMATIC, 1.0, 0.3, BossJuice.LETTERBOX_TIME)
 	bar.show_bar(boss.max_health)
 	await banner.slam_title("FIGHT!", "", 0.35, ComicStyle.RED, true)
 	BossJuice.flash(ui, Color(1, 1, 1, 0.5), 0.25)

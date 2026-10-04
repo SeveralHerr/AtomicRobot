@@ -7,6 +7,8 @@ class_name BossJuice
 ## Each slow_mo() call takes a ticket; only the newest restores time, so a quick
 ## hit-stop landing inside the finale's long slow-mo can't snap it back to 1.0 early.
 static var _ticket: int = 0
+## Seconds the letterbox bars take to slide in or out.
+const LETTERBOX_TIME := 0.35
 
 
 ## Run the game at `scale` for `real_seconds` of wall time, then restore 1.0.
@@ -46,7 +48,7 @@ static func flash(layer: Node, color: Color = Color(1, 1, 1, 0.85), seconds: flo
 ## the caller can slide them back out. The top bar is tall (the CRT bezel swallows its
 ## outer ~40px); the bottom one is thin, because the fighters stand on the bottom fifth
 ## of the screen and a tall bar hid the very entrance it was framing.
-static func letterbox_in(layer: Node, top_h: float = 130.0, bottom_h: float = 62.0, seconds: float = 0.35) -> Array[ColorRect]:
+static func letterbox_in(layer: Node, top_h: float = 130.0, bottom_h: float = 62.0, seconds: float = LETTERBOX_TIME) -> Array[ColorRect]:
 	# Plain positions, not anchors: a CanvasLayer child's anchor layout isn't settled
 	# on the frame it is added, so a tween read from it starts from the wrong place.
 	var view: Vector2 = layer.get_viewport().get_visible_rect().size
@@ -64,7 +66,7 @@ static func letterbox_in(layer: Node, top_h: float = 130.0, bottom_h: float = 62
 	return bars
 
 
-static func letterbox_out(bars: Array[ColorRect], seconds: float = 0.35) -> void:
+static func letterbox_out(bars: Array[ColorRect], seconds: float = LETTERBOX_TIME) -> void:
 	for i in bars.size():
 		var bar := bars[i]
 		if not is_instance_valid(bar):

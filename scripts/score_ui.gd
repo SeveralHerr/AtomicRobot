@@ -73,6 +73,9 @@ const COMBO_DRIFT := 16.0
 ## line bright through most of the window and drops it off late, so the fade reads as
 ## "you are about to lose this" rather than as a constant dimming.
 const COMBO_FADE_EXP := 0.65
+## Hits before the line shows: a lone "1 HIT!" is not a combo, just noise on every
+## first jab. The first hit still scores and opens the window the second extends.
+const COMBO_MIN_SHOWN := 2
 
 ## --- Power-up timers ---------------------------------------------------------
 const POWERUP_POP_TIME := 0.35
@@ -146,7 +149,7 @@ func _animate_score(delta: float) -> void:
 
 func _animate_combo(delta: float) -> void:
 	var fraction := ScoreSystem.combo_fraction()
-	if ScoreSystem.combo <= 0 or fraction <= 0.0:
+	if ScoreSystem.combo < COMBO_MIN_SHOWN or fraction <= 0.0:
 		# Hidden rather than left at alpha 0: a transparent-but-visible Control still
 		# costs a draw, and validate-ui flags it as a ui_transparent issue.
 		combo_label.visible = false
@@ -169,7 +172,7 @@ func _refresh_powerups(delta: float) -> void:
 	var ids := PowerupSystem.active_ids()
 	if ids.is_empty():
 		powerup_label.text = ""
-		powerup_label.modulate.a = 1.0
+		powerup_label.self_modulate.a = 1.0
 		powerup_label.scale = Vector2.ONE
 		return
 	var parts: Array[String] = []
@@ -192,10 +195,12 @@ func _refresh_powerups(delta: float) -> void:
 	# Blink out the last second and a half so a buff about to lapse is noticed without
 	# having to read the number. Driven off the countdown itself, so the blink lands on
 	# the same beat every time rather than wherever a free-running clock happens to be.
+	# On self_modulate: modulate belongs to HudFade, which ducks the stack under the
+	# STREET CLEAR! burst.
 	if soonest <= POWERUP_WARN_SECONDS:
-		powerup_label.modulate.a = 0.4 + 0.6 * absf(sin(soonest * PI * POWERUP_WARN_HZ))
+		powerup_label.self_modulate.a = 0.4 + 0.6 * absf(sin(soonest * PI * POWERUP_WARN_HZ))
 	else:
-		powerup_label.modulate.a = 1.0
+		powerup_label.self_modulate.a = 1.0
 
 
 func _on_score_changed(score: int) -> void:
@@ -211,12 +216,12 @@ func _on_score_changed(score: int) -> void:
 
 
 func _on_combo_changed(combo: int, multiplier: int) -> void:
-	if combo <= 0:
+	if combo < COMBO_MIN_SHOWN:
 		combo_label.text = ""
 		combo_label.visible = false
 		_last_multiplier = multiplier
 		return
-	combo_label.text = "%d HIT%s!" % [combo, "" if combo == 1 else "S"]
+	combo_label.text = "%d HITS!" % combo
 	combo_label.add_theme_color_override("font_color", _color_for(multiplier))
 	_combo_pop = 1.0
 	_combo_pop_amount = COMBO_TIER_POP_SCALE if multiplier > _last_multiplier else COMBO_POP_SCALE
