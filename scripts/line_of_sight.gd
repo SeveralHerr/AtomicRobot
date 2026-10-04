@@ -62,7 +62,23 @@ func is_player_line_of_sight() -> bool:
 		return false
 	if global_position.distance_to(player.global_position) > max_range:
 		return false
+	# A ray that STARTS inside a shape never reports it, so a player standing right
+	# on the enemy (after landing on her) was invisible and she idled under them
+	# forever. Nothing can stand between two overlapping bodies: that is sight.
+	if _starts_inside_player():
+		return true
 	return _probe(player.global_position) is Player
+
+
+## Whether the ray's origin lies inside the player's body.
+func _starts_inside_player() -> bool:
+	var query := PhysicsPointQueryParameters2D.new()
+	query.position = global_position
+	query.collision_mask = 1  # Player layer
+	for hit in get_world_2d().direct_space_state.intersect_point(query, 4):
+		if hit.collider == player:
+			return true
+	return false
 
 
 func is_meter_line_of_sight(meter_position: Vector2) -> bool:

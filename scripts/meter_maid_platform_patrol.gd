@@ -3,9 +3,9 @@ class_name PlatformMeterMaid
 
 func _ready() -> void:
 	#animated_sprite_2d.sprite_frames = METERMAID_MELEE_SPRITE_FRAMES
-	attack_cooldown = 1
-	move_speed = 70
-	lane_locked = true  # patrols a platform above the street; coins hit any lane
+	attack_cooldown = EnemyTuning.PLATFORM_ATTACK_COOLDOWN
+	move_speed = EnemyTuning.PLATFORM_MOVE_SPEED
+	lane_locked = true  # patrols a platform above the street; lobs onto your lane
 	super._ready()
 	#enemy_state_machine.add_state("ChasePlayerState", ChasePlayerState.new(self))
 	enemy_state_machine.add_state("PlatformPatrolState", PlatformPatrolState.new(self))

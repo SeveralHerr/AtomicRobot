@@ -34,6 +34,16 @@ var _failures: PackedStringArray = []
 var _coins_thrown: int = 0
 var _saw_attack_state: bool = false
 var _done: bool = false
+## Times the player lost health. Health starts at 9999, so it never ends the run.
+var _player_hits: int = 0
+var _last_player_health: int = -1
+## Lane steps the COIN_LANE_DODGE scenario made in answer to a wind-up.
+var _dodges: int = 0
+## Lowest a dodged coin flew (px above its lane floor) as it passed the player.
+## A coin aimed at the player's NEW lane dives to the floor and skids past.
+var _min_pass_height: float = INF
+## Swings that began with the player grounded right on top of the maid.
+var _point_blank_swings: int = 0
 
 
 class Track:
@@ -45,6 +55,7 @@ class Track:
 	var coins_seen: int = -1
 	var coins_spent: int = 0
 	var reached_range: bool = false
+	var was_attacking: bool = false
 	var facing_errors: int = 0
 	var facing_samples: int = 0
 	var label: String = "?"
@@ -75,6 +86,11 @@ func _sample(delta: float) -> void:
 	var player: Player = sandbox.player if sandbox != null else null
 	if player == null:
 		return
+	if _last_player_health >= 0 and player.health < _last_player_health:
+		_player_hits += 1
+	_last_player_health = player.health
+	_pin_player_on_maid(player)
+	_sample_coin_flight(player)
 	for node in get_tree().get_nodes_in_group("enemies"):
 		if not is_instance_valid(node) or node is not Enemy:
 			continue
@@ -107,8 +123,13 @@ func _sample(delta: float) -> void:
 		if state is AttackPlayerState:
 			_saw_attack_state = true
 			t.attack_dwell += delta
+			if not t.was_attacking:
+				_on_wind_up(player)
+				if _elapsed > WARMUP + 0.5 and absf(player.global_position.x - e.global_position.x) < 10.0:
+					_point_blank_swings += 1
 		else:
 			t.attack_dwell = 0.0
+		t.was_attacking = state is AttackPlayerState
 
 		# Walking the wrong way round is the single most visible AI bug in this
 		# game and it survived for a long time, so it gets sampled every frame.
@@ -118,6 +139,40 @@ func _sample(delta: float) -> void:
 				t.facing_samples += 1
 				if signi(dx) != e.facing:
 					t.facing_errors += 1
+
+
+## Point-blank scenarios keep the player standing exactly on the maid: knockback
+## from her first hit would otherwise slide them apart and hide a stall.
+func _pin_player_on_maid(player: Player) -> void:
+	if sandbox.scenario != EnemySandbox.Scenario.POINT_BLANK_RANGED 			and sandbox.scenario != EnemySandbox.Scenario.POINT_BLANK_MELEE:
+		return
+	for node in get_tree().get_nodes_in_group("enemies"):
+		if node is Enemy and not node.is_dead:
+			player.global_position.x = node.global_position.x
+			player.velocity.x = 0.0
+			return
+
+
+func _sample_coin_flight(player: Player) -> void:
+	if sandbox.scenario != EnemySandbox.Scenario.COIN_LANE_DODGE or not is_finite(player.lane_floor_y):
+		return
+	# Coins go next to the player, which Lanes re-parents under its sort layer.
+	for c in player.get_parent().get_children():
+		var coin := c as Bullet
+		if coin == null or coin.has_landed or absf(coin.global_position.x - player.global_position.x) > 30.0:
+			continue
+		var h := Lanes.floor_y(player.lane_floor_y, coin.lane) - coin.global_position.y
+		_min_pass_height = minf(_min_pass_height, h)
+
+
+## A swing just started. In the dodge scenario the player answers it the way a
+## person would: one lane step, away from the wall of the road.
+func _on_wind_up(player: Player) -> void:
+	if sandbox.scenario != EnemySandbox.Scenario.COIN_LANE_DODGE:
+		return
+	var dir := 1 if player.current_lane < Lanes.FRONT_LANE else -1
+	if player.try_change_lane(dir):
+		_dodges += 1
 
 
 func _fail(msg: String) -> void:
@@ -162,7 +217,9 @@ func _report() -> void:
 		print("  %-28s travel %6.1f  d %6.1f -> %6.1f  spent %d  facing %d/%d bad"
 			% [t.label, t.max_x - t.min_x, t.start_distance, t.last_distance,
 			   t.coins_spent, t.facing_errors, t.facing_samples])
-	print("  enemies sampled: %d   projectiles thrown: %d" % [_tracks.size(), _coins_thrown])
+	print("  min coin pass height: %.1f" % _min_pass_height)
+	print("  enemies sampled: %d   projectiles thrown: %d   player hits: %d   dodges: %d"
+		% [_tracks.size(), _coins_thrown, _player_hits, _dodges])
 	if _failures.is_empty():
 		print("  RESULT: PASS")
 		print("")
@@ -185,6 +242,9 @@ func _scenario_checks() -> void:
 				_fail("no enemy ever entered an attack state")
 			if _coins_thrown <= 0:
 				_fail("ranged maids closed but never threw a coin")
+			# Positive control for lane-bound coins: in-lane throws still connect.
+			if _player_hits <= 0:
+				_fail("no coin or swing ever hit a player standing still")
 
 		EnemySandbox.Scenario.COIN_REFILL:
 			# They start empty; reaching a meter is the whole scenario.
@@ -202,6 +262,28 @@ func _scenario_checks() -> void:
 			if _coins_thrown <= 0:
 				_fail("window maids never threw a coin (lane gate or re-arm broken)")
 			_check_window_maids_are_mortal()
+
+		EnemySandbox.Scenario.COIN_LANE_DODGE:
+			# A coin belongs to the lane it was thrown down. The old throw re-aimed at
+			# the player's lane on the release frame, so a step during the wind-up
+			# was tracked and the coin hit anyway.
+			if _dodges <= 0 or _coins_thrown <= 0:
+				_fail("no throw was dodged (dodges %d, coins %d) — scenario never engaged"
+					% [_dodges, _coins_thrown])
+			if _player_hits > 0:
+				_fail("player was hit %d time(s) after stepping out of the thrower's lane"
+					% _player_hits)
+			# Flying down HER lane at chest height, not diving at the player's lane.
+			if _min_pass_height < 12.0:
+				_fail("coin passed the player only %.1fpx above its lane floor" % _min_pass_height)
+
+		EnemySandbox.Scenario.POINT_BLANK_RANGED, EnemySandbox.Scenario.POINT_BLANK_MELEE:
+			# Standing on a maid put her sight ray's origin inside the player's box,
+			# so the ray never reported the player and she idled under you forever.
+			if _point_blank_swings <= 0:
+				_fail("maid under the player never attacked (point-blank sight lost)")
+			if _player_hits <= 0:
+				_fail("maid under the player never landed a hit")
 
 		EnemySandbox.Scenario.NO_LINE_OF_SIGHT:
 			# The point of the fix: sight is blocked, pursuit is not.
