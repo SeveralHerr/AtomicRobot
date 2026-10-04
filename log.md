@@ -302,6 +302,16 @@ Log of skills that might have been useful for a given response, and why (short f
 - Process lessons: worktree under the OneDrive path failed on long filenames — fixed with `core.longpaths` + short worktree path; a bot that "passes" needs a metric that can fail (prove it red first, as with the boss soft lock).
 - Report: https://claude.ai/artifact/G2ieWdXVsPtTuYCbu64AhH. Merged to main; 373/373 unit, 6/6 autoplay scenarios.
 
+## 2026-10-03 — Character select redo (worktree char-select-juice)
+- Used: none of the listed skills directly. Followed repo skills godot-input-test + godot-headful-screenshot by hand.
+- Would have helped: somewhat-useful-claude-skills:godot-game-ui-juicy (tween/Container gotchas pre-solved); godot-2d-placement-audit (cursor/feet placement asserted numerically); a judge-panel skill (written: skills/juicy-screen-review in the worktree).
+- Enhancement idea (godot-headful-screenshot): ship the round.sh + sheet.py pair so each validation round is one command.
+
+## 2026-10-03 — Robot unlock (locked → first boss win, overpowered); merged to main
+- Used: godot-autoplay-test (repo skill) — caught the wall-clock grace bug that unit tests missed.
+- Would have helped: somewhat-useful-claude-skills:derive-the-list (OP badge/gold pips derived from roster, not hand-listed).
+- Enhancement idea (godot-autoplay-test): note that any boss-winning scenario hits persistent saves; isolate them like the runner now does.
+
 ## 2026-10-03 — Boss fight rework (worktree boss-fight-juice)
 - Skills used: godot-autoplay-test (bot runs, snaps, balance). Enhancement: document GIF recipe + sweep tool (done).
 - Would have helped: godot-boss-juice (created) — presentation checklist + fairness rules; somewhat-useful-claude-skills:godot-game-ui-juicy (motion patterns, container-scale gotcha); extract-a-testable-seam (pure `contact`/`link_fan`).

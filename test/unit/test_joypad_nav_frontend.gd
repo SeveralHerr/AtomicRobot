@@ -1,7 +1,7 @@
 extends RefCounted
 
 # Arcade cabinet: joystick/d-pad + buttons only. Every front-end screen (title,
-# character select, story, controls splash) must advance or navigate from a pad.
+# story, controls splash; character select lives in test_character_select.gd) must advance or navigate from a pad.
 # Real scenes are loaded; scene-changing methods are stubbed via thin subclasses so
 # a test never boots main.tscn.
 
@@ -10,7 +10,6 @@ var _T
 const START := preload("res://scenes/startscreen.tscn")
 const STORY := preload("res://scenes/story.tscn")
 const CONTROLS := preload("res://scenes/controls_splash.tscn")
-const SELECT := preload("res://scenes/character_select.tscn")
 
 const PAD_A := 0
 const PAD_UP := 11
@@ -42,17 +41,14 @@ class StubControls:
 
 var _scene: Node
 var _saved_character: String
-var _saved_cody_unlocked: bool
 
 
 func setup() -> void:
 	_saved_character = Globals.selected_character
-	_saved_cody_unlocked = Globals.character_dict["Cody"].unlocked
 
 
 func teardown() -> void:
 	Globals.selected_character = _saved_character
-	Globals.character_dict["Cody"].unlocked = _saved_cody_unlocked
 	if is_instance_valid(_scene):
 		_scene.free()
 	_scene = null
@@ -106,29 +102,6 @@ func _stick(axis: int, value: float, device := 0) -> void:
 	rest.axis_value = 0.0
 	Input.parse_input_event(rest)
 	await _frames()
-
-
-func _focus() -> Control:
-	return _tree().root.gui_get_focus_owner()
-
-
-func _slot_button(n: int) -> Button:
-	return _scene.get_node("MarginContainer/VBoxContainer/HBoxContainer/Slot%d/Button" % n)
-
-
-func _check_box() -> CheckBox:
-	return _scene.get_node("MarginContainer2/HBoxContainer/CheckBox")
-
-
-## True when every ui_* nav binding listens to all pads (device -1). If project.godot
-## pins them to device 0, a second encoder can't drive menus; that is an InputMap
-## bug owned elsewhere, so device-1 assertions skip rather than fail this suite.
-func _ui_binds_all_devices() -> bool:
-	for a in ["ui_accept", "ui_left", "ui_right", "ui_up", "ui_down"]:
-		for e in InputMap.action_get_events(a):
-			if e is InputEventJoypadButton and e.device != -1:
-				return false
-	return true
 
 
 # --- Title screen ------------------------------------------------------------
@@ -196,143 +169,3 @@ func test_controls_splash_advances_on_pad_button() -> String:
 	s.delay = true
 	await _pad(PAD_A)
 	return _T.assert_eq(s.advanced, 1, "joypad A starts the game")
-
-
-# --- Character select ----------------------------------------------------------
-
-func test_select_opens_with_selected_character_focused() -> String:
-	Globals.selected_character = "Ryan"
-	await _mount(SELECT)
-	return _T.assert_eq(_focus(), _slot_button(2), "last-played Ryan (Slot2) owns focus on open")
-
-
-func test_select_focus_falls_back_to_first_unlocked() -> String:
-	Globals.selected_character = "Cody"
-	Globals.character_dict["Cody"].unlocked = false
-	await _mount(SELECT)
-	return _T.assert_eq(_focus(), _slot_button(2), "locked Cody skipped; first unlocked slot focused")
-
-
-func test_select_focused_slot_shows_highlight_and_name() -> String:
-	Globals.selected_character = "Ryan"
-	await _mount(SELECT)
-	var hl: Control = _scene.get_node("MarginContainer/VBoxContainer/HBoxContainer/Slot2/Background/TextureRect")
-	var r: String = _T.assert_true(hl.visible, "focused slot draws its highlight")
-	if r != "":
-		return r
-	var name_label: Label = _scene.get_node("MarginContainer/VBoxContainer/CharacterNameLabel")
-	return _T.assert_true(name_label.text != "", "focused slot shows its character name")
-
-
-func test_select_dpad_walks_every_slot_and_back() -> String:
-	Globals.selected_character = "Cody"
-	await _mount(SELECT)
-	for n in range(2, 7):
-		await _pad(PAD_RIGHT)
-		var r: String = _T.assert_eq(_focus(), _slot_button(n), "d-pad right reaches Slot%d" % n)
-		if r != "":
-			return r
-	for n in range(5, 0, -1):
-		await _pad(PAD_LEFT)
-		var r: String = _T.assert_eq(_focus(), _slot_button(n), "d-pad left reaches Slot%d" % n)
-		if r != "":
-			return r
-	var old_hl: Control = _scene.get_node("MarginContainer/VBoxContainer/HBoxContainer/Slot6/Background/TextureRect")
-	return _T.assert_false(old_hl.visible, "highlight leaves the slot focus left")
-
-
-func test_select_stick_moves_focus() -> String:
-	Globals.selected_character = "Ryan"
-	await _mount(SELECT)
-	await _stick(JOY_AXIS_LEFT_X, 1.0)
-	var r: String = _T.assert_eq(_focus(), _slot_button(3), "stick right moves to Slot3")
-	if r != "":
-		return r
-	await _stick(JOY_AXIS_LEFT_X, -1.0)
-	return _T.assert_eq(_focus(), _slot_button(2), "stick left moves back to Slot2")
-
-
-func test_select_down_reaches_skip_intro_and_up_returns() -> String:
-	Globals.selected_character = "Ryan"
-	await _mount(SELECT)
-	await _pad(PAD_DOWN)
-	var r: String = _T.assert_eq(_focus(), _check_box(), "d-pad down reaches SKIP INTRO")
-	if r != "":
-		return r
-	await _pad(PAD_A)
-	r = _T.assert_true(_check_box().button_pressed, "A toggles SKIP INTRO")
-	if r != "":
-		return r
-	await _stick(JOY_AXIS_LEFT_Y, -1.0)
-	var f := _focus()
-	return _T.assert_true(f is Button and f.get_parent().get_parent().name == "HBoxContainer",
-		"stick up returns to a character slot (got %s)" % f)
-
-
-func test_select_skip_intro_has_visible_focus_style() -> String:
-	await _mount(SELECT)
-	var sb := _check_box().get_theme_stylebox("focus")
-	return _T.assert_false(sb == null or sb is StyleBoxEmpty, "SKIP INTRO focus is visible on an arcade screen")
-
-
-func test_select_locked_slot_cannot_be_picked() -> String:
-	Globals.selected_character = "Ryan"
-	Globals.character_dict["Cody"].unlocked = false
-	await _mount(SELECT)
-	await _pad(PAD_LEFT)
-	var r: String = _T.assert_eq(_focus(), _slot_button(1), "locked slot is still reachable to read its hint")
-	if r != "":
-		return r
-	await _pad(PAD_A)
-	r = _T.assert_eq(Globals.selected_character, "Ryan", "A on a locked slot does not pick it")
-	if r != "":
-		return r
-	return _T.assert_eq(_tree().current_scene, null, "A on a locked slot does not change scene")
-
-
-func test_select_pad_a_picks_focused_character() -> String:
-	Globals.selected_character = "Ryan"
-	await _mount(SELECT)
-	await _pad(PAD_RIGHT)
-	await _pad(PAD_A)
-	return _T.assert_eq(Globals.selected_character, "Cass", "A picks the focused slot (Slot3 Cass)")
-
-
-func test_select_second_pad_navigates() -> String:
-	if not _ui_binds_all_devices():
-		print("SKIP test_select_second_pad_navigates: ui_* bound to a single device in project.godot")
-		return ""
-	Globals.selected_character = "Ryan"
-	await _mount(SELECT)
-	await _pad(PAD_RIGHT, 1)
-	var r: String = _T.assert_eq(_focus(), _slot_button(3), "pad 2 d-pad moves focus")
-	if r != "":
-		return r
-	await _pad(PAD_A, 1)
-	return _T.assert_eq(Globals.selected_character, "Cass", "pad 2 A picks the character")
-
-
-# --- EXIT GAME -------------------------------------------------------------------
-
-func test_select_right_of_skip_intro_reaches_exit_and_a_quits() -> String:
-	Globals.selected_character = "Ryan"
-	await _mount(SELECT)
-	var quits := [0]
-	_scene.quit_game = func() -> void: quits[0] += 1
-	var exit: Button = _scene.exit_button
-	var r: String = _T.assert_true(exit.is_visible_in_tree(), "EXIT GAME shows on character select")
-	if r != "":
-		return r
-	await _pad(PAD_DOWN)
-	await _pad(PAD_RIGHT)
-	r = _T.assert_eq(_focus(), exit, "down then right reaches EXIT GAME")
-	if r != "":
-		return r
-	await _pad(PAD_A)
-	return _T.assert_eq(quits[0], 1, "A on EXIT GAME quits")
-
-
-func test_select_exit_has_visible_focus_style() -> String:
-	await _mount(SELECT)
-	var sb: StyleBox = _scene.exit_button.get_theme_stylebox("focus")
-	return _T.assert_false(sb == null or sb is StyleBoxEmpty, "EXIT GAME focus is visible on an arcade screen")

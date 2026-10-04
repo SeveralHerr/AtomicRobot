@@ -37,6 +37,7 @@ func _initialize() -> void:
 	OS.add_logger(_errors)
 	# Let root finish entering the tree so tests that add_child() get a viewport.
 	await process_frame
+	_isolate_unlocks()
 	for path in _find_tests(TEST_DIR):
 		await _run_script(path, filter)
 
@@ -76,6 +77,7 @@ func _run_test(obj: RefCounted, name: String, path: String) -> void:
 	# `await physics_frame` would otherwise leave this one running inside the
 	# physics step, where get_process_frames() hasn't ticked yet.
 	await process_frame
+	_reset_unlocks()
 	if obj.has_method("setup"):
 		await obj.call("setup")
 	var errors_before := _errors.count
@@ -90,6 +92,22 @@ func _run_test(obj: RefCounted, name: String, path: String) -> void:
 		printerr("FAIL  %s::%s  %s" % [path.get_file(), name, msg])
 	if obj.has_method("teardown"):
 		await obj.call("teardown")
+
+
+## Fighter unlocks persist to user://. A test must never read the player's real save
+## (a player who beat the boss would see Robot-locked tests fail) nor write it (any
+## test that emits Globals.boss_death would unlock Robot for real). Point Globals at
+## a scratch file and restore the shipped lock states before every test.
+const TEST_UNLOCKS := "user://test_unlocks.cfg"
+
+
+func _isolate_unlocks() -> void:
+	_reset_unlocks()
+
+
+func _reset_unlocks() -> void:
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_UNLOCKS))
+	root.get_node("Globals").use_unlock_save(TEST_UNLOCKS)
 
 
 static func assert_eq(actual: Variant, expected: Variant, context: String = "") -> String:
