@@ -17,7 +17,7 @@ const PULSE_SCALE := 1.25
 ## One twinkle every TWINKLE_EVERY seconds, each lasting TWINKLE_LIFE.
 const TWINKLE_EVERY := 0.35
 const TWINKLE_LIFE := 0.45
-const TWINKLE_SIZE := 3.5
+const TWINKLE_SIZE := 5.0
 const TWINKLE_RADIUS := 14.0
 const GOLDEN_ANGLE := 2.39996
 

@@ -28,7 +28,7 @@ Exit 0 pass · 1 fail · 2 BROKEN (invalid scenario). Read the ~12-line summary 
 Everything is validated before the run (verbs, actions, lanes, metrics, numbers).
 
 Steps (`"verb args"`): `wait S` · `hold ACTION S` · `tap ACTION` · `press/release ACTION`
-· `walk_to X [T]` · `lane N` (0 walkway .. 3 front; main.tscn only) · `teleport X`
+· `walk_to X [T]` · `lane N` (0 walkway .. 3 front; main.tscn only) · `teleport X [Y]` (Y: onto raised geometry; `lane 0` first)
 · `spawn melee|ranged [DX] [LANE]` · `god on|off` (survives scene changes) · `hp N` (raw;
 3 per orb) · `kill_all` (not counted as kills) · `sink DY` (push live non-locked enemies DY px
 off their lane floor, lane unchanged) · `brain advance|clear|monkey [S] [X]` (X: advance

@@ -157,7 +157,7 @@ func _do(step: Dictionary) -> void:
 		"release": pad.release(a[0])
 		"walk_to": await _walk_to(step["text"], float(a[0]), float(a[1]) if a.size() > 1 else WALK_TIMEOUT_S)
 		"lane": await _lane(step["text"], int(a[0]))
-		"teleport": await _teleport(float(a[0]))
+		"teleport": await _teleport(float(a[0]), float(a[1]) if a.size() > 1 else NAN)
 		"spawn": await _spawn(step["text"], a)
 		"god":
 			god = a[0] == "on"
@@ -181,7 +181,12 @@ func _do(step: Dictionary) -> void:
 		"brain": await _brain(a[0], float(a[1]) if a.size() > 1 else sc["timeout"],
 				float(a[2]) if a.size() > 2 else INF)
 		"menu": await _menu(step["text"], float(a[0]) if a.size() > 0 else 30.0)
-		"snap": rec.snap(a[0] if a.size() > 0 else "t%04d" % int(rec.t))
+		"snap":
+			rec.snap(a[0] if a.size() > 0 else "t%04d" % int(rec.t))
+			# Hold the step until the PNG is grabbed: a teleport on the same frame
+			# landed in the picture meant for the spot before it.
+			if rec.can_snap():
+				await RenderingServer.frame_post_draw
 		"dump": rec.dump(a[0] if a.size() > 0 else "dump")
 		"assert": _check(step["check"])
 
@@ -265,9 +270,13 @@ func _lane(text: String, target: int) -> void:
 		rec.fail_step(text, "still on lane %s (lanes only exist in main.tscn, on the street)" % (q.current_lane if q else "?"))
 
 
-func _teleport(x: float) -> void:
+## `teleport X [Y]`: Y lifts the player onto raised geometry (be on `lane 0` first —
+## road lanes ignore platform collision and would fall straight through).
+func _teleport(x: float, y: float = NAN) -> void:
 	_with_player(func(p: Player) -> void:
 		p.global_position.x = x
+		if not is_nan(y):
+			p.global_position.y = y
 		p.velocity = Vector2.ZERO)
 	await _wait_frames(2)
 

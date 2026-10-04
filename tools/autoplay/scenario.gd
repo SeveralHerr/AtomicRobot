@@ -38,7 +38,7 @@ const VERBS := {
 	"release": ["action"],
 	"walk_to": ["num", "num?"],
 	"lane": ["lane"],
-	"teleport": ["num"],
+	"teleport": ["num", "num?"],
 	"spawn": ["kind", "num?", "lane?"],
 	"god": ["onoff"],
 	"hp": ["int"],
