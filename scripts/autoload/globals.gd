@@ -15,6 +15,9 @@ signal gust(position: Vector2, range: float)
 ## `id` is unique per secret in its level (node path) so repeats can be ignored.
 signal secret_found(kind: String, id: String)
 
+## Party Code (typed on the title): every meter maid bursts into confetti on defeat.
+## Lasts the whole boot (survives game over / back to title), never saved, not a secret.
+var party_mode: bool = false
 var selected_character: String = "Ryan"
 var character_dict: Dictionary[String, CharacterConfig] = {
 	"Cody": CharacterConfig.new(

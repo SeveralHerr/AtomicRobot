@@ -299,6 +299,8 @@ func die() -> void:
 	Globals.meter_maid_death.emit()
 	_maybe_drop_powerup()
 	animated_sprite_2d.play("death")
+	if PartyFx.pops(self):
+		PartyFx.maid_pop(self)
 	print("dead af")
 
 	# Deferred: die() can run inside a physics callback (a car's body_entered kills
