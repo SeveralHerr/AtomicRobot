@@ -503,3 +503,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: none via tool; repo skills godot-micro-cutscene (updated: hold-to-skip, settle rule, story captions), godot-autoplay-test. Would have helped: a "probe positions" helper (wrote 4 throwaway SceneTree probes — player from group, Player gets reparented so get_node("Player") is null).
 - MCP: none used (CLI).
 - Follow-up: opening's melee maids were authored 15-53px in the air (atomic_robot_area.tscn) -> authored at street level (y -28) right behind the red car (user: "like they're issuing a ticket"); enemies count as landed once their street baseline is captured (they rarely read is_on_floor()). New test: nothing in the opening's first shot falls (failed 53px on the old data). 883 unit, 18/18 autoplay, 12/12 sandbox. Merged to main via branch `cutscenes` (not pushed).
+
+## 2026-10-04 — Jamcraft boot splash (branch lj-splash)
+- `somewhat-useful-claude-skills:jamcraft-splash` pattern B (overlay on the title, like atomic-pinball's §11 splash): once per boot, any key/click/pad/tap skips and is swallowed, title anti-skip timer restarts at the reveal. Dropped the skill's `next_scene` mode (bypasses Transition; test_transition caught it); layer 99 under CRTOverlay (skill default 100 = CRT's layer).
+- 10 new tests (test_title_splash.gd), 13/13 mutants killed (touch mutant survived until emulate_mouse_from_touch was turned off in the test). 893 unit, full_run + full_run_mortal PASS.
+- Validation: --write-movie desktop round, 1688x780 window_set_size round, skip-at-0.35s round; no fixes needed.
+- Skills used: jamcraft-splash (enhancement: warn that `next_scene` calls change_scene directly and layer 100 may collide with a post-process overlay; `--write-movie` ignores `--resolution`). Would have helped: none extra. MCP: none.

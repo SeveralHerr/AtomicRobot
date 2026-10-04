@@ -8,6 +8,9 @@ const AnyButton := preload("res://scripts/any_button.gd")
 const ATTRACT_SECONDS := 6.0
 ## Room left under the card for the title's PRESS ANY BUTTON line.
 const PROMPT_GAP := 110.0
+## The Jamcraft studio logo plays once per boot, over this title (atomic-pinball's boot
+## splash): the title loads underneath and is revealed as the black fades away.
+static var splash_played := false
 var delay: bool = false
 var board: Control
 var table: ScoreTableView
@@ -28,6 +31,20 @@ func _ready() -> void:
 	table = ScoreTableView.new(30)
 	card.add_child(table)
 	board.add_child(EndCard.tilted(card, 1.5))
+	if not splash_played:
+		splash_played = true
+		_play_splash()
+
+## The splash swallows the press that skips it; the title's anti-skip delay (and the
+## attract clock) only start once the logo is gone, so a mash can't fall through.
+func _play_splash() -> void:
+	$Timer.stop()
+	var splash := JamcraftSplash.new()
+	splash.layer = Transition.LAYER  # under the CRT scanlines, like every screen
+	add_child(splash)
+	await splash.finished
+	_attract = 0.0
+	$Timer.start()
 
 func _process(delta: float) -> void:
 	_attract += delta
