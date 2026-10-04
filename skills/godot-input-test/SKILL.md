@@ -36,6 +36,12 @@ Runner: `godot --headless --path . --script res://tools/run_tests.gd -- --filter
   MouseButton (device `InputEvent.DEVICE_ID_EMULATION`) at the control's
   `get_global_transform_with_canvas() * size/2`, hold 1/6/30 frames
   (`_tap` in test_character_select.gd). Assert sizes vs `ComicStyle.TOUCH`.
+- `push_input` taps NEVER hit-test the full-rect root Control headless (even with a sized
+  root and window), so a STOP root that eats every real tap passes the suite. Guard it as
+  geometry: walk `find_children("*","Control")`, fail on any non-button, non-IGNORE control
+  whose global rect covers the tap spot (`test_nothing_swallows_taps_over_the_prompt`).
+  Prove the real bug in a WINDOWED SceneTree script: `Input.parse_input_event` +
+  `--resolution 1280x800`, connect root `gui_input` to see who ate it.
 - Autoload state (ScoreSystem): swap its `save_path` in `setup()`, restore + `reload()` in
   `teardown()`, never write to the player's real `user://` file.
 - A level loaded with `root.add_child()` is NOT `current_scene`; set autoload fields

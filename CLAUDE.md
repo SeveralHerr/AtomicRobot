@@ -286,6 +286,8 @@ Read `skills/godot-input-test/SKILL.md` before testing pad/key/touch UI. Mutatio
 new guards with a `(file, original, mutant, filter)` script; add a test per survivor.
 A touch test that emits `button.pressed` proved nothing: "tap again" was broken on a
 green suite. Drive real taps (`_tap` in test_character_select.gd) at several hold lengths.
+It broke AGAIN on a green suite: headless never hit-tests the root Control, so its STOP
+filter ate every real tap/click. Confirm tap fixes in a windowed script, guard catchers by rect.
 Draw order: an equal z_index silently loses to tree order — assert strict `>` against
 every in-lane depth (`test_vehicle_z_tops_its_lane...`), never one sample z.
 The `godot-tests` MCP server (`.mcp.json`) runs the unit/sandbox suites with a short summary.

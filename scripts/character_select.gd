@@ -68,6 +68,7 @@ var _cursor_tween: Tween
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	mouse_filter = Control.MOUSE_FILTER_IGNORE  # clicks off the cards reach _unhandled_input
 	_build_background()
 	_stage = Juice.layer(self)
 	_stage.pivot_offset = DESIGN / 2.0
@@ -222,11 +223,20 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		back_to_title()
-	elif event is InputEventScreenTouch and event.pressed and focused in cards:
+	elif _taps_off_strip(event) and focused in cards:
 		# "TAP AGAIN TO FIGHT!": a tap off the strip (the big fighter, the prompt)
 		# picks the previewed fighter too. Cards and buttons consume their own taps.
 		get_viewport().set_input_as_handled()
 		confirm(focused)
+
+
+## A finger, or a left click: a mouse reads as "touch" too, so the prompt says TAP
+## AGAIN and a click on it must pick. Reaches here only because the root ignores the
+## mouse (_ready); a STOP root ate every click off the cards.
+static func _taps_off_strip(event: InputEvent) -> bool:
+	if event is InputEventScreenTouch:
+		return event.pressed
+	return event is InputEventMouseButton and event.pressed 		and event.button_index == MOUSE_BUTTON_LEFT
 
 
 func back_to_title() -> void:

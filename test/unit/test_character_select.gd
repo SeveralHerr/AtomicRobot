@@ -684,6 +684,47 @@ func test_tap_on_the_big_fighter_picks_the_preview() -> String:
 	return _T.assert_eq(Globals.selected_character, "Cass", "TAP AGAIN on the prompt picks")
 
 
+## Headless never hit-tests the root, so taps there reach _unhandled_input whatever
+## its filter. In a real window a STOP control under the prompt ate every tap and
+## click (TAP AGAIN did nothing on phones). Guard it as geometry: nothing but the
+## cards and buttons may catch the pointer over the prompt or the big fighter.
+func test_nothing_swallows_taps_over_the_prompt() -> String:
+	await _mount()
+	_scene.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	_scene.size = _scene.DESIGN
+	await _frames()
+	var spots: Array[Vector2] = [
+		_scene.info.prompt.get_global_transform_with_canvas() * (_scene.info.prompt.size / 2.0),
+		_scene.hero.get_global_transform_with_canvas() * Vector2(0, -150)]
+	var catchers: Array[String] = []
+	for c in [_scene] + _scene.find_children("*", "Control", true, false):
+		if c is BaseButton or c.mouse_filter == Control.MOUSE_FILTER_IGNORE or not c.is_visible_in_tree():
+			continue
+		for at in spots:
+			if c.get_global_rect().has_point(at):
+				catchers.append("%s @ %s" % [c.get_path(), at])
+	return _T.assert_eq(catchers, [] as Array[String], "pointer catchers over the tap-again area")
+
+
+## Desktop mouse reads as "touch" (prompt says TAP AGAIN), so a click off the strip
+## must pick the previewed fighter too.
+func test_mouse_click_on_prompt_picks() -> String:
+	Globals.selected_character = "Ryan"
+	await _mount()
+	_card("Cass").grab_focus()  # hover focus
+	await _frames()
+	var at: Vector2 = _scene.info.prompt.get_global_transform_with_canvas() * (_scene.info.prompt.size / 2.0)
+	for pressed in [true, false]:
+		var m := InputEventMouseButton.new()
+		m.button_index = MOUSE_BUTTON_LEFT
+		m.position = at
+		m.global_position = at
+		m.pressed = pressed
+		_tree().root.push_input(m, true)
+		await _frames(4)
+	return _T.assert_eq(Globals.selected_character, "Cass", "click on the prompt picks")
+
+
 ## Desktop mouse: hovering already previews, so the first click picks.
 func test_mouse_click_on_hovered_card_picks() -> String:
 	Globals.selected_character = "Ryan"
