@@ -401,3 +401,8 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: godot-headful-screenshot (enhancement: window_set_size works inside --script captures — added), godot-autoplay-test, derive-the-list idea (secret totals both directions).
 - Would have helped: a SceneState-walk helper skill (instance nodes repeat their root's script — double counts); a "shared user:// across worktrees" warning (parallel agents race on settings.cfg/scores.cfg).
 - MCP: none used (godot-tests MCP not needed; CLI direct).
+## 2026-10-04 sr-balance (difficulty cliff: street -> boss)
+- Done: boss throws 1.7/1.35/1.2 -> 2.0/1.7/1.5 s + 1 s opening grace + per-phase dash count; street finale 6 -> 8 maids with a reward heart; power-ups carry through the boss door and hold during the intro; bot heart give-up + hearts group; completionist_mortal scenario; sweep `--base` route columns.
+- Skills used: godot-autoplay-test (enhancement: say `--record` diverges from headless — added), godot-speedrun-review (frame sheets).
+- Would have helped: a checked-in route-balance table (now `autoplay_sweep.py --base`); a frame-sheet script (rewrote PIL contact sheets in scratch again).
+- MCP: none used. Merge of speedrun-fixes was blocked by the permission classifier — left for the user.
