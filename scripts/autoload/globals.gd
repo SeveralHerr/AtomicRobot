@@ -11,6 +11,9 @@ signal boss_fight(status: bool)
 signal event(status: bool)
 signal newspaper(status: bool)
 signal gust(position: Vector2, range: float)
+## A secret was claimed: kind "wall" (cracked wall's orb taken) or "news" (stand read).
+## `id` is unique per secret in its level (node path) so repeats can be ignored.
+signal secret_found(kind: String, id: String)
 
 var selected_character: String = "Ryan"
 var character_dict: Dictionary[String, CharacterConfig] = {
