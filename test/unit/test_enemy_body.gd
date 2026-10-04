@@ -153,3 +153,24 @@ func test_die_counts_once_and_stops_interacting() -> String:
 	if r != "":
 		return r
 	return _T.assert_false(e.get_collision_layer_value(3), "off the enemy layer")
+
+
+func test_ledge_checks_only_apply_on_the_ground_lane() -> String:
+	var e := _maid()
+	e.global_position = Vector2(0, -5000)  # nothing under either down-ray
+	e.ray_cast_2d_left_down.force_raycast_update()
+	e.ray_cast_2d_right_down.force_raycast_update()
+	var r: String = _T.assert_true(e.is_near_edge(), "no floor under the rays on the walkway")
+	if r != "":
+		return r
+	r = _T.assert_true(e.is_near_edge_ahead(1), "leading ray sees no floor")
+	if r != "":
+		return r
+	r = _T.assert_false(e.is_near_edge_ahead(0), "standing still has no leading side")
+	if r != "":
+		return r
+	e.lane = 2
+	r = _T.assert_false(e.is_near_edge(), "road lanes are gapless virtual floors")
+	if r != "":
+		return r
+	return _T.assert_false(e.is_near_edge_ahead(-1), "road lanes never read a ledge ahead")
