@@ -104,8 +104,12 @@ button 2/X), `Crouch` (C, joypad button 1/B; touch CrouchUI button), `Interact` 
 
 Base `scripts/enemy.gd` (`class_name Enemy extends CharacterBody2D`); per-enemy
 `EnemyStateMachine` (`enemy_state_machine.gd`, blocks transitions after death).
-Gravity 300 in `_apply_gravity` (L139). **Movement is horizontal-only**:
-`move_towards_target()` (L99-105) normalizes 2D direction but sets only `velocity.x`.
+Gravity 300 in `_apply_gravity`. **Movement is horizontal-only**:
+`move_towards_target()` normalizes 2D direction but sets only `velocity.x`.
+Collaborators in `scripts/enemy/` (Enemy keeps thin delegators, so callers are
+unchanged): `EnemyLaneMover` (lane floor/baseline, lane steps, lane chase),
+`EnemySeparation` (same-lane push-apart), `EnemyKnockback`, `EnemyLedgeProbe`
+(down-ray ledge checks), `FacingTransform` (basis-mirror facing).
 
 Variants (each registers its own states in `_ready`):
 - **MeterMaid** (`meter_maid.gd`): ranged coin thrower; Chase/Attack/FindMeter/Dead. Coins are ammo — refills at parking meters (`FindMeterState`, `Globals.nearest_meter`).
