@@ -42,8 +42,10 @@ var is_player_in_attack_range: bool = false
 ##     kill and made the living queue up around a body instead of walking over it.
 var is_dead: bool = false
 
-# Stats
-var health: int = 2
+# Stats (on the DamageRules scale; fighters hit for 3-6)
+var health: int = DamageRules.MAID_HEALTH
+## Full health, for the hit pips' fraction. Subclasses that change `health` set both.
+var max_health: int = DamageRules.MAID_HEALTH
 var move_speed: float = 100.0
 var coins: int = 1
 var attack_range: int = 120
@@ -355,6 +357,8 @@ func receive_hit(damage: int, knockback_strength: float = 200.0) -> void:
 	_play_hit_effects()
 	_apply_damage(damage)
 	_apply_knockback(knockback_strength)
+	if flinches():
+		_flinch()
 
 	# Same frame as the blow: the Hit flash, the "oof" and the death all land with the
 	# hitstop. (A random 0-0.2s delay here used to read as input lag.)
@@ -373,7 +377,35 @@ func _play_hit_effects() -> void:
 
 func _apply_damage(damage: int) -> void:
 	health -= damage
-	print(health)
+	if shows_hp_pips():
+		EnemyHpPips.show_on(self)
+
+
+## Seconds a blow holds off this enemy's next swing. With kills taking 3-4 blows
+## (DamageRules), a maid that kept swinging through them traded hit for hit.
+const FLINCH_TIME := 0.8
+
+
+## A blow staggers her: a swing still winding up starts over, and no new one can
+## begin for FLINCH_TIME. A swing already released (coin in the air) is not undone.
+func _flinch() -> void:
+	if attack_timer.time_left < FLINCH_TIME:
+		var cooldown := attack_timer.wait_time
+		attack_timer.start(FLINCH_TIME)
+		attack_timer.wait_time = cooldown
+	var st = enemy_state_machine.current_state
+	if st is AttackPlayerState and not st.get("_released") 			and animated_sprite_2d.animation == st.clip:
+		animated_sprite_2d.set_frame_and_progress(0, 0.0)
+
+
+## Whether blows stagger this enemy. The boss is planted and has his own rhythm.
+func flinches() -> bool:
+	return true
+
+
+## The little health bar a blow pops over the head. The boss has his own HUD bar.
+func shows_hp_pips() -> bool:
+	return true
 
 
 func _apply_knockback(knockback_strength: float = 200.0) -> void:

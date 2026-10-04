@@ -145,3 +145,20 @@ func test_car_killing_an_enemy_logs_no_engine_error() -> String:
 	if r != "":
 		return r
 	return _T.assert_false(maid.player_detection.monitorable, "corpse stops being detectable")
+
+
+## Enemies take the DamageRules car hit (half a maid), not the player-side 1.
+func test_car_takes_half_a_maid() -> String:
+	var tree := Engine.get_main_loop() as SceneTree
+	var car := _keep(CAR.instantiate())
+	car.lane = Lanes.FRONT_LANE
+	tree.root.add_child(car)
+	var maid: Enemy = _keep(MAID.instantiate())
+	tree.root.add_child(maid)
+	maid.set_process(false)
+	maid.set_physics_process(false)
+	maid.attack_timer.stop()
+	maid.lane = Lanes.FRONT_LANE
+	car._hit(maid)
+	Globals.release_attack_slot(maid)
+	return _T.assert_eq(maid.health, maid.max_health - DamageRules.CAR_ENEMY_DAMAGE, "car damage on the maid")

@@ -11,8 +11,11 @@ var sounds: CharacterSounds
 var attack_frame: int = 0  # Which frame of attack animation triggers the attack
 var starting_health: int = 3
 var starting_damage: int = 2
+## Attacks with a projectile (Robot, Cass). Must match AttackState's projectile
+## branches (test_damage_scale pins both directions); the select card shows it.
+var ranged: bool = false
 
-func _init(_name: String, _unlock_text: String, _unlocked: bool, _description: String, _sprite_frames: SpriteFrames, _unlock_hint: String, _sounds: CharacterSounds, _attack_frame: int = 0, _starting_health: int = 2, _starting_damage: int = 1) -> void:
+func _init(_name: String, _unlock_text: String, _unlocked: bool, _description: String, _sprite_frames: SpriteFrames, _unlock_hint: String, _sounds: CharacterSounds, _attack_frame: int = 0, _starting_health: int = 2, _starting_damage: int = 1, _ranged: bool = false) -> void:
 	character_name = _name
 	unlock_text = _unlock_text
 	unlocked = _unlocked
@@ -23,6 +26,7 @@ func _init(_name: String, _unlock_text: String, _unlocked: bool, _description: S
 	attack_frame = _attack_frame
 	starting_health = _starting_health
 	starting_damage = _starting_damage
+	ranged = _ranged
 
 func get_character_name() -> String:
 	return character_name
@@ -71,3 +75,6 @@ func get_starting_health() -> int:
 	
 func get_starting_damage() -> int: 
 	return starting_damage
+
+func is_ranged() -> bool:
+	return ranged

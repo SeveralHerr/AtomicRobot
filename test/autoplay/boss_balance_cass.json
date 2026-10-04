@@ -4,5 +4,5 @@
   "seed": 1,
   "timeout": 120,
   "steps": ["brain advance 110"],
-  "expect": ["boss_hp <= 10", "errors == 0", "engine_errors == 0"]
+  "expect": ["boss_hp <= 30", "errors == 0", "engine_errors == 0"]
 }

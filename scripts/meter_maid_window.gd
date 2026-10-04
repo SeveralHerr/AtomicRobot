@@ -13,7 +13,8 @@ var is_attacking: bool = false
 var is_activated: bool = false
 
 func _ready() -> void:
-	health = 3
+	health = DamageRules.WINDOW_MAID_HEALTH
+	max_health = health
 	detection_range = 450
 	attack_range = 250
 	attack_cooldown = 2

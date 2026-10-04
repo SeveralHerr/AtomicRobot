@@ -21,8 +21,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"Cody",
 		"CODY IS NOW PLAYABLE",
 		true, 
-		"Artist at Atomic Robot Tattoo
-		+2 hp    +2 dmg",
+		"Artist at Atomic Robot Tattoo",
 		preload("res://sprites/cody_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -34,15 +33,14 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		),
 		2,  # Attack frame,
 		2, # hp
-		2 # dmg
+		4 # dmg: lightsaber, 3 blows a maid (DamageRules.MAID_HEALTH 12)
 		
 	),
 	"Ryan": CharacterConfig.new(
 		"Ryan",
 		"RYAN IS NOW PLAYABLE",
 		true,
-		"Artist at Atomic Robot Tattoo
-		+4 hp    +1 dmg", 
+		"Artist at Atomic Robot Tattoo",
 		preload("res://sprites/ryan_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -54,14 +52,13 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		),
 		3,  # Attack frame
 		4, # hp
-		1 # dmg
+		3 # dmg: 4 blows a maid; the fastest sword swing (8 frames) makes up for it
 	),
 	"Sara": CharacterConfig.new(
 		"Sara",
 		"SARA IS NOW PLAYABLE",
 		true,
-		"Artist at Atomic Robot Tattoo
-		+4 hp    +1 dmg", 
+		"Artist at Atomic Robot Tattoo",
 		preload("res://sprites/sarah_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -73,14 +70,13 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		),
 		5,  # Attack frame
 		4, # hp
-		1 # dmg
+		4 # dmg: heavy axe, slow 10-frame swing, 3 blows a maid
 	),
 	"Cass": CharacterConfig.new(
 		"Cass",
 		"Cass IS NOW PLAYABLE",
 		true,
-		"Artist at Atomic Robot Tattoo
-		+2 hp    +1 dmg", 
+		"Artist at Atomic Robot Tattoo",
 		preload("res://sprites/cass_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -90,16 +86,16 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/Voice_Female_V2_Attack_Mono_01.wav"),
 			preload("res://sounds/throw.wav")  # weapon sound
 		),
-		5,  # Attack frame
-		2, # hp
-		1 # dmg
+		3,  # Attack frame: the flip-flop leaves the hand early (was 5, half the swing)
+		3, # hp: ranged trades health, not power (was 2)
+		4, # dmg: 3 shots a maid; FlipflopBullet's knockback holds her off
+		true # ranged
 	),
 	"Caitlyn": CharacterConfig.new(
 		"Caitlyn",
 		"Caitlyn IS NOW PLAYABLE",
 		true,
-		"Artist at Atomic Robot Tattoo
-		+4 hp    +1 dmg", 
+		"Artist at Atomic Robot Tattoo",
 		preload("res://sprites/cait_sprite_frames.tres"),
 		"",
 		CharacterSounds.new(
@@ -111,7 +107,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		),
 		5,  # Attack frame
 		4, # hp
-		1 # dmg
+		4 # dmg: heavy scythe, slow 10-frame swing, 3 blows a maid
 	),
 	# Locked until the player first beats the boss, and deliberately overpowered:
 	# the reward run should feel like a victory lap. Unlock: CharacterUnlocks.
@@ -119,8 +115,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		"Robot",
 		"ROBOT IS NOW PLAYABLE",
 		false,
-		"Mascot of Atomic Robot Tattoo
-		+8 hp    +4 dmg", 
+		"Mascot of Atomic Robot Tattoo",
 		preload("res://sprites/robot_sprite_frames.tres"),
 		"Beat the boss to unlock!",
 		CharacterSounds.new(
@@ -132,7 +127,8 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		),
 		5,  # Attack frame
 		8, # hp
-		4 # dmg
+		6, # dmg: 2 blows a maid, fewest on the roster (the victory lap)
+		true # ranged
 	)
 }
 
