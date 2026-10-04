@@ -280,3 +280,33 @@ func test_at_baseline_separates_street_from_platform() -> String:
 	if r != "":
 		return r
 	return _T.assert_false(L.at_baseline(INF, -1.0), "nothing is street-level before the street is known")
+
+
+## A ground-lane body standing well below the street (on the walkway tiles' collision
+## that fills the road strip) is really on a road lane; the street itself, sub-half-step
+## drift and raised ground all stay GROUND_LANE.
+func test_lane_for_floor_rederives_road_lanes_from_foot_y() -> String:
+	var street := -28.0
+	var r: String = _T.assert_eq(L.lane_for_floor(street, street), L.GROUND_LANE, "the street")
+	if r != "":
+		return r
+	r = _T.assert_eq(L.lane_for_floor(street, street + L.LANE_SPACING * 0.4), L.GROUND_LANE, "under half a step")
+	if r != "":
+		return r
+	r = _T.assert_eq(L.lane_for_floor(street, street - 120.0), L.GROUND_LANE, "a platform above the street")
+	if r != "":
+		return r
+	# The report's maid: soles at y=37 on a -28 street is 65px down, nearest lane 3.
+	r = _T.assert_eq(L.lane_for_floor(street, 37.0), 3, "reported road-height maid")
+	if r != "":
+		return r
+	r = _T.assert_eq(L.lane_for_floor(street, street + L.LANE_SPACING), 1, "one lane down")
+	if r != "":
+		return r
+	r = _T.assert_eq(L.lane_for_floor(street, street + L.y_offset(L.FRONT_LANE) + 4.0), L.FRONT_LANE, "front lane jitter")
+	if r != "":
+		return r
+	r = _T.assert_eq(L.lane_for_floor(street, street + 500.0), L.GROUND_LANE, "deeper than the road strip is a baseline fix")
+	if r != "":
+		return r
+	return _T.assert_eq(L.lane_for_floor(INF, 37.0), L.GROUND_LANE, "no street known yet")

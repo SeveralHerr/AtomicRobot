@@ -225,6 +225,10 @@ the feature is silently absent (autoplay now reports SCRIPT-ERROR).
 When the user asks for presentation/juice, sweep balance AFTER the presentation pass:
 banner timing changed fight length enough to flip a seeded balance scenario.
 
+Before/after evidence for a fix: run the same scenario on HEAD and the working tree
+(`skills/godot-ab-worktree/SKILL.md`). Check a forced bug state on the OLD build before
+you trust it in a demo.
+
 ## Sibling-game conventions
 
 This game shares the arcade cabinet with `../atomic-pinball`. Before building any

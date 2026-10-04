@@ -30,7 +30,8 @@ Everything is validated before the run (verbs, actions, lanes, metrics, numbers)
 Steps (`"verb args"`): `wait S` · `hold ACTION S` · `tap ACTION` · `press/release ACTION`
 · `walk_to X [T]` · `lane N` (0 walkway .. 3 front; main.tscn only) · `teleport X`
 · `spawn melee|ranged [DX] [LANE]` · `god on|off` (survives scene changes) · `hp N` (raw;
-3 per orb) · `kill_all` (not counted as kills) · `brain advance|clear|monkey [S]` · `menu [S]`
+3 per orb) · `kill_all` (not counted as kills) · `sink DY` (push live non-locked enemies DY px
+off their lane floor, lane unchanged) · `brain advance|clear|monkey [S]` · `menu [S]`
 · `snap [NAME]` · `dump [NAME]` · `assert METRIC OP VALUE`.
 A step that can't do its job (`walk_to`/`lane`/`menu` timeout, `spawn` with no player)
 FAILS the run with `step failed: ...`. Remaining steps are skipped once the player dies.
@@ -59,7 +60,7 @@ report's `why` events are its decision trail — read them first when a run stal
 - A script that fails to PARSE never runs, so `errors` stays 0; autoplay.py scans stdout and
   reports `SCRIPT-ERROR`. Most common cause: a NEW `class_name` not yet in the class cache —
   run `godot --headless --path . --import` after adding one.
-- Auto-snaps are named `t<centiseconds>` so `snap_every` < 1 doesn't overwrite. GIF recipe:
+- Auto-snaps are named `f<frame>` so `snap_every` < 1 doesn't overwrite. GIF recipe:
   `snap_every 0.125` windowed, then PIL `quantize(96)` + `save(save_all=True, duration=125)`.
 - Balance: `hurt` events carry `near` (closest enemy) — count them per source to see which
   attack is doing the damage before touching numbers. Pin the result with a seeded mortal

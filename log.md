@@ -312,6 +312,13 @@ Log of skills that might have been useful for a given response, and why (short f
 - Would have helped: somewhat-useful-claude-skills:derive-the-list (OP badge/gold pips derived from roster, not hand-listed).
 - Enhancement idea (godot-autoplay-test): note that any boss-winning scenario hits persistent saves; isolate them like the runner now does.
 
+## 2026-10-03 — Robot/Cass can't clear door arenas (lane-based projectile hits + maid re-lane)
+- Skills used: artifact-design (GIF report page). Enhancement idea: tell me up front that a 6-panel CRT-noise GIF blows past 16MB, and give a size budget per frame.
+- Would have helped: godot-autoplay-test (used its CLI; it needs a "force a bad state" section and should say snaps are frame-numbered now); derive-the-list (not needed); a "godot-ab-worktree" skill that runs the same scenario on HEAD vs the working tree and prints a diff table (did this by hand).
+- MCP: none used (godot-tests MCP available; used CLI directly for --filter + mutation loop).
+
+- 2026-10-03 commit+merge: no skill needed; plain git branch -> 4 commits -> --no-ff merge.
+
 ## 2026-10-03 — Boss fight rework (worktree boss-fight-juice)
 - Skills used: godot-autoplay-test (bot runs, snaps, balance). Enhancement: document GIF recipe + sweep tool (done).
 - Would have helped: godot-boss-juice (created) — presentation checklist + fairness rules; somewhat-useful-claude-skills:godot-game-ui-juicy (motion patterns, container-scale gotcha); extract-a-testable-seam (pure `contact`/`link_fan`).

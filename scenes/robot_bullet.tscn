@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://dt4euylnjmkp7"]
+[gd_scene load_steps=4 format=3 uid="uid://dt4euylnjmkp7"]
 
 [ext_resource type="Script" uid="uid://cj2r828kyych2" path="res://scripts/robot_bullet.gd" id="1_5kcu1"]
 [ext_resource type="Texture2D" uid="uid://p3qe443vgy83" path="res://sprites/Robot.png" id="1_66wox"]
@@ -7,21 +7,9 @@
 atlas = ExtResource("1_66wox")
 region = Rect2(1280, 640, 128, 128)
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_o4hl4"]
-radius = 6.99534
-height = 22.05832
-
 [node name="Bullet" type="Node2D"]
 script = ExtResource("1_5kcu1")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-7, 0)
 texture = SubResource("AtlasTexture_5kcu1")
-
-[node name="Area2D" type="Area2D" parent="."]
-collision_layer = 516
-collision_mask = 516
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-rotation = 1.5343053
-shape = SubResource("CapsuleShape2D_o4hl4")
