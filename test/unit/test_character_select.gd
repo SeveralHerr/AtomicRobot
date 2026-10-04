@@ -443,21 +443,6 @@ func test_prompt_follows_input_device() -> String:
 	return _T.assert_true("PRESS A" in _scene.info.prompt.text, "pad -> A (got %s)" % _scene.info.prompt.text)
 
 
-func test_first_tap_previews_second_tap_picks() -> String:
-	Globals.selected_character = "Ryan"
-	await _mount()
-	var cass := _card("Cass")
-	_scene.device = "touch"
-	cass.grab_focus()  # emulated touch: hover focus lands with the press
-	cass.pressed.emit()
-	var r: String = _T.assert_false(_scene.confirmed, "first tap only previews")
-	if r != "":
-		return r
-	await _tree().create_timer(0.2).timeout
-	cass.pressed.emit()
-	return _T.assert_eq(Globals.selected_character, "Cass", "second tap picks")
-
-
 func test_pick_goes_straight_to_the_controls_splash() -> String:
 	await _mount()
 	return _T.assert_eq(_scene.next_scene(), _scene.CONTROLS_SPLASH, "the story moved into the opening cut scene")
@@ -634,3 +619,85 @@ func test_accept_grace_counts_game_time() -> String:
 	Engine.time_scale = 1.0
 	await _pad(PAD_A)
 	return _T.assert_true(_scene.confirmed, "grace measured in game time, not wall clock")
+
+
+
+## A real finger tap at `card`, as a phone sends it: the touch, plus the left-button
+## press/release the engine emulates from it, pushed straight into the viewport (the
+## headless window is 0x0, so Input.parse_input_event never reaches the GUI). Emitting
+## `pressed` directly hid a second tap that never picked.
+func _tap(card: Control, hold_frames := 6) -> void:
+	var at: Vector2 = card.get_global_transform_with_canvas() * (card.size / 2.0)
+	for pressed in [true, false]:
+		var t := InputEventScreenTouch.new()
+		t.position = at
+		t.pressed = pressed
+		_tree().root.push_input(t, true)
+		var m := InputEventMouseButton.new()
+		m.button_index = MOUSE_BUTTON_LEFT
+		m.button_mask = MOUSE_BUTTON_MASK_LEFT if pressed else 0
+		m.position = at
+		m.global_position = at
+		m.pressed = pressed
+		m.device = InputEvent.DEVICE_ID_EMULATION
+		_tree().root.push_input(m, true)
+		await _frames(hold_frames if pressed else 2)
+
+
+## Hold lengths a finger actually produces: a flick (1 frame) through a slow press.
+func test_real_taps_first_previews_second_picks() -> String:
+	for hold in [1, 6, 30]:
+		Globals.selected_character = "Ryan"
+		await _mount()
+		var cass := _card("Cass")
+		await _tap(cass, hold)
+		var r: String = _T.assert_true(cass.has_focus(), "first tap focuses Cass (hold %d)" % hold)
+		if r != "":
+			return r
+		r = _T.assert_false(_scene.confirmed, "first tap only previews (hold %d)" % hold)
+		if r != "":
+			return r
+		await _tap(cass, hold)
+		r = _T.assert_eq(Globals.selected_character, "Cass", "second tap picks (hold %d)" % hold)
+		if r != "":
+			return r
+		_scene.free()
+	return ""
+
+
+func test_tap_on_another_card_moves_preview_not_pick() -> String:
+	Globals.selected_character = "Ryan"
+	await _mount()
+	await _tap(_card("Cass"))
+	await _tap(_card("Ryan"))
+	var r: String = _T.assert_false(_scene.confirmed, "tapping a different fighter only previews it")
+	if r != "":
+		return r
+	return _T.assert_true(_card("Ryan").has_focus(), "preview moved to Ryan")
+
+
+func test_tap_on_the_big_fighter_picks_the_preview() -> String:
+	Globals.selected_character = "Ryan"
+	await _mount()
+	await _tap(_card("Cass"))
+	await _tap(_scene.info.prompt)
+	return _T.assert_eq(Globals.selected_character, "Cass", "TAP AGAIN on the prompt picks")
+
+
+## Desktop mouse: hovering already previews, so the first click picks.
+func test_mouse_click_on_hovered_card_picks() -> String:
+	Globals.selected_character = "Ryan"
+	await _mount()
+	var cass := _card("Cass")
+	cass.grab_focus()  # hover focus (mouse_entered)
+	await _frames()
+	var at: Vector2 = cass.get_global_transform_with_canvas() * (cass.size / 2.0)
+	for pressed in [true, false]:
+		var m := InputEventMouseButton.new()
+		m.button_index = MOUSE_BUTTON_LEFT
+		m.position = at
+		m.global_position = at
+		m.pressed = pressed
+		_tree().root.push_input(m, true)
+		await _frames(4)
+	return _T.assert_eq(Globals.selected_character, "Cass", "first click on hovered card picks")

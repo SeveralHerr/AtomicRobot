@@ -55,6 +55,9 @@ var accept_grace := 0.35
 var _age := 0.0
 ## Last input family seen: "pad", "keys" or "touch". Drives the prompt and two-tap.
 var device := "pad"
+## Focus owner when the current tap/click began, before the GUI moved focus to it.
+## On touch only a tap on this (already previewed) fighter picks.
+var _armed: Control
 ## Swappable so tests can press EXIT GAME without ending the test run.
 var quit_game: Callable = func() -> void: QuitGame.quit(get_tree())
 
@@ -181,12 +184,25 @@ func _input(event: InputEvent) -> void:
 	if d != device:
 		device = d
 		info.set_device(d)
+	if _begins_tap(event):
+		_armed = get_viewport().gui_get_focus_owner()
 
 
-## A tap that both focuses and presses a card only previews it; the next tap picks.
-## Pad/keys focus first anyway, so they pick on the first press.
+## A finger down, or a real mouse button down. The left-button press the engine
+## emulates from that same finger is skipped: by then the GUI may already have moved
+## focus to the card under it, which would arm the very card being previewed.
+static func _begins_tap(event: InputEvent) -> bool:
+	if event is InputEventScreenTouch:
+		return event.pressed
+	return event is InputEventMouseButton and event.pressed 		and event.device != InputEvent.DEVICE_ID_EMULATION
+
+
+## A tap on a fighter that wasn't already up only previews it; the next tap picks.
+## Decided at press time, not by counting frames to the release: Button fires
+## `pressed` on release, so a normal ~0.1s tap outlived any frame window and picked
+## on the first tap. Pad/keys focus first anyway, so they pick on the first press.
 func _on_card_pressed(card: Button) -> void:
-	if device == "touch" and card.just_focused():
+	if device == "touch" and card != _armed:
 		return
 	confirm(card)
 
@@ -206,6 +222,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		back_to_title()
+	elif event is InputEventScreenTouch and event.pressed and focused in cards:
+		# "TAP AGAIN TO FIGHT!": a tap off the strip (the big fighter, the prompt)
+		# picks the previewed fighter too. Cards and buttons consume their own taps.
+		get_viewport().set_input_as_handled()
+		confirm(focused)
 
 
 func back_to_title() -> void:
