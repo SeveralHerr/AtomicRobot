@@ -93,6 +93,9 @@ func slam_title(text: String, sub: String = "", hold: float = 1.0, tint: Color =
 	var gen := _gen
 	_set_stripe(0.0)
 	_set_burst(0.0)
+	# An overtaken slam never reaches its clear_title(): drop its subtitle tag here,
+	# or it hangs on under a title that has none ("HERE THEY COME!" under WAVE CLEAR!).
+	_sub_tag.modulate.a = 0.0
 	_title.text = text
 	_title.reset_size()
 	var centre := Vector2(size.x * 0.5, size.y * stripe_y)

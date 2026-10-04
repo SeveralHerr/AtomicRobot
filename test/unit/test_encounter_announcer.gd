@@ -225,3 +225,27 @@ func test_announcer_clear_ducks_the_powerup_timers_then_restores_them() -> Strin
 	if r != "":
 		return r
 	return _T.assert_float_eq(after, 1.0, 0.01, "timers back once the burst is gone")
+
+
+func _wait_real(seconds: float) -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	var end := Time.get_ticks_msec() + int(seconds * 1000.0)
+	while Time.get_ticks_msec() < end:
+		await tree.process_frame
+
+
+## Footage (2026-10-04 run, 2:20): a quick WAVE CLEAR! overtook the WAVE 1/3 stripe
+## mid-hold, and the stripe's "HERE THEY COME!" tag hung on under the new burst.
+func test_announcer_overtaking_slam_drops_the_old_subtitle() -> String:
+	var rig := _rig()
+	rig[0].wave_started.emit(1, 3)
+	await _wait_real(0.45)  # stripe landed, sub tag slid in, still holding
+	var tag_up: bool = rig[1].banner._sub_tag.modulate.a > 0.5
+	rig[0].wave_cleared.emit(1, 3)
+	await _wait_real(0.4)  # the burst has landed; it has no subtitle of its own
+	var stale: float = rig[1].banner._sub_tag.modulate.a
+	rig[0].free()
+	var r: String = _T.assert_true(tag_up, "precondition: the wave tag was showing")
+	if r != "":
+		return r
+	return _T.assert_eq(stale, 0.0, "the overtaken slam's subtitle is gone")
