@@ -9,6 +9,7 @@ var _T
 
 const CAR := preload("res://scenes/car.tscn")
 const STREETLIGHT := preload("res://scenes/streetlight.tscn")
+const STREETLIGHT_GD := preload("res://scripts/streetlight.gd")
 const MAID := preload("res://scenes/meter_maid.tscn")
 
 
@@ -197,13 +198,57 @@ func test_car_rolls_a_speed_when_launched_with_zero() -> String:
 	return _T.assert_true(car.speed >= 150 and car.speed <= 450, "speed rolled in 150..450, got %d" % car.speed)
 
 
-func test_streetlight_picks_road_lanes_only() -> String:
+## Review round 3 (approved): an intersection car comes down the player's own lane;
+## on the sidewalk, the nearest road lane (cars never drive the sidewalk).
+func test_streetlight_car_takes_the_players_lane() -> String:
+	for lane in range(Lanes.GROUND_LANE, Lanes.FRONT_LANE + 1):
+		var want := maxi(lane, Lanes.GROUND_LANE + 1)
+		var r: String = _T.assert_eq(STREETLIGHT_GD.car_lane_for(lane), want, "player lane %d" % lane)
+		if r != "":
+			return r
+	return ""
+
+
+## Review round 3 (approved): intersection cars hit with no warning. Now the car drives
+## in from off screen (engine heard, no on-screen gate) under the same edge sign as
+## ambient traffic, on the player's lane.
+func test_streetlight_car_is_telegraphed_on_the_players_lane() -> String:
+	var tree := Engine.get_main_loop() as SceneTree
 	var light := _keep(STREETLIGHT.instantiate())
-	var seen := {}
-	for i in 200:
-		seen[light._pick_car_lane()] = true
-	return _T.assert_eq(seen.keys().size() == 3 and not seen.has(Lanes.GROUND_LANE), true,
-		"lanes 1..3 only, saw %s" % [seen.keys()])
+	tree.root.add_child(light)
+	var p := _player(2)
+	p.global_position = light.global_position
+	light.player = p
+	light.can_change_state = false  # _process must not turn green and launch a second car
+	var car: Car = light._launch_car()
+	light._process(0.016)
+	var r: String = _T.assert_eq(car.lane, 2, "car on the player's lane")
+	if r != "":
+		return r
+	r = _T.assert_eq(car.get_node_or_null("VisibleOnScreenEnabler2D"), null, "drives in from off screen")
+	if r != "":
+		return r
+	r = _T.assert_true(light.warning.sign.visible, "edge sign up while the car is off screen")
+	if r != "":
+		return r
+	# Mid-screen (the runner's viewport may hold another test's camera).
+	car.global_position.x = CarWarning.view_x(light.get_viewport(), p)
+	light._process(0.016)
+	r = _T.assert_false(light.warning.sign.visible, "the car on screen is its own warning")
+	if r != "":
+		return r
+	# Green over: the light parks its car (hidden, start off) off screen for the red
+	# phase. A parked car is no threat: no sign, even though it sits off screen.
+	car.global_position.x = CarWarning.view_x(light.get_viewport(), p) + 1000.0
+	car.start = false
+	light._process(0.016)
+	r = _T.assert_false(light.warning.sign.visible, "parked car: no sign")
+	if r != "":
+		return r
+	# The light frees its car after the red phase: tracking a freed car must not error.
+	car.free()
+	light._process(0.016)
+	return _T.assert_false(light.warning.sign.visible, "freed car: sign down, no error")
 
 
 func test_streetlight_car_rides_the_player_stand_line() -> String:

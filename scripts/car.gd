@@ -7,6 +7,8 @@ const CAR_RED = preload("res://images/new/Car_Red.png")
 const GROUP := "cars"
 const SPEED_MIN := 150
 const SPEED_MAX := 450
+## Half the car art's length (opaque 107px of Car_*.png).
+const HALF_LEN := 56.0
 
 ## Times any car has struck a player this process (autoplay reports car hits).
 static var player_hits := 0
