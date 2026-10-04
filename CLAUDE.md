@@ -277,6 +277,9 @@ Fan-out agents run the WHOLE gate (`run_tests.gd` + `python tools/autoplay.py` w
 sandbox), never one scenario: the splash passed `full_run` but broke 14 scenarios that leave the
 title on frame 1 (`await get_tree()` after the node left the tree). Bot metrics (`powerups`,
 `car_hits`) collide in `report.gd`/`autoplay_sweep.py` on merge — keep both columns.
+Player bug reports: reproduce AT the spot shown (level_pan + snaps over time) before calling it
+fixed. "Maid talking over a tree" got a plausible wrong cause (heart z); the real bug was a ledge
+maid patrolling into a canopy, only visible across several snaps.
 
 ## Canary
 
