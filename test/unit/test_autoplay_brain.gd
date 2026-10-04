@@ -132,6 +132,33 @@ func test_low_hp_heads_for_heart() -> String:
 	return _T.assert_eq(i["lane"], 0, "does not switch lanes while the heart is far")
 
 
+## The Cody soft-lock: a heart up on the crate stack the bot can't climb to held it
+## in "heal" for 700+ s. Chasing one heart that long means it is out of reach.
+func test_gives_up_on_a_heart_it_cannot_reach() -> String:
+	var mem := Brain.new_mem("advance")
+	var s := _snap(_p({"hp": 3}), {"hearts": [{"x": -300.0, "y": -270.0}]})
+	var frames := int((Brain.HEAL_GIVE_UP_S + 0.5) / DT)
+	var why := ""
+	for f in frames:
+		why = Brain.decide(s, mem)["why"]
+	return _T.assert_false(why.begins_with("heal"), "stops chasing after HEAL_GIVE_UP_S (why=%s)" % why)
+
+
+func test_giving_up_on_one_heart_keeps_the_others() -> String:
+	var mem := Brain.new_mem("advance")
+	mem["skip_hearts"] = [-300.0]
+	var s := _snap(_p({"hp": 3}), {"hearts": [{"x": -300.0, "y": 0.0}, {"x": 500.0, "y": 0.0}]})
+	return _T.assert_eq(Brain.decide(s, mem)["x"], 1, "heads for the heart it has not given up on")
+
+
+func test_scene_change_forgets_skipped_hearts() -> String:
+	var mem := Brain.new_mem("advance")
+	Brain.decide(_snap(_p(), {"scene_id": 1}), mem)
+	mem["skip_hearts"] = [-300.0]
+	Brain.decide(_snap(_p(), {"scene_id": 2}), mem)
+	return _T.assert_true(mem["skip_hearts"].is_empty(), "a street heart x means nothing in the boss room")
+
+
 func test_heart_straight_below_a_ledge_walks_off() -> String:
 	var s := _snap(_p({"hp": 3, "y": -250.0, "facing": -1}), {"hearts": [{"x": 2.0, "y": -40.0}]})
 	var i := Brain.decide(s, Brain.new_mem("advance"))
