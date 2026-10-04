@@ -129,6 +129,23 @@ func test_interact_before_the_prompt_shows_still_claims() -> String:
 	return _T.assert_eq(p.health, 2 * Player.HITS_PER_ORB, "early press claimed")
 
 
+## The prompt holds back while SECRET! is on stage, then shows.
+func test_prompt_waits_for_the_secret_word() -> String:
+	var p := _player()
+	p.global_position = Vector2(400, 0)
+	var c := _crack()
+	for i in 5:
+		c.receive_hit()
+	p.global_position = Vector2.ZERO  # walks in while SECRET! is up
+	for i in 3:
+		await _tree().physics_frame
+	var r: String = _T.assert_false(c.interact_label.visible, "hidden while SECRET! pops")
+	if r != "":
+		return r
+	await _prompt_delay()
+	return _T.assert_true(c.interact_label.visible, "shown after the word lands")
+
+
 func test_no_claim_from_out_of_reach() -> String:
 	var p := _player()
 	p.global_position = Vector2(400, 0)
