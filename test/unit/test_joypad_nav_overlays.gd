@@ -75,6 +75,14 @@ func _card() -> EndCard:
 	return _level.get_node(CARD) as EndCard
 
 
+## The end signal, then the wait for the card: a death plays the DeathBeat first.
+func _end_run(signal_name: String) -> void:
+	Globals.emit_signal(signal_name)
+	while _card().beat.running:
+		await _frames(1)
+	await _frames()
+
+
 func _swap_handler() -> void:
 	_card().restart_game = func() -> void: _activated = true
 
@@ -83,8 +91,7 @@ func _swap_handler() -> void:
 
 func _focus_after(signal_name: String, scene: String = BOSS_ROOM) -> String:
 	await _load(scene)
-	Globals.emit_signal(signal_name)
-	await _frames()
+	await _end_run(signal_name)
 	var button := _card().restart_button
 	var r: String = _T.assert_true(button.is_visible_in_tree(), "%s overlay is visible" % signal_name)
 	if r != "":
@@ -110,8 +117,7 @@ func test_win_restart_has_focus_when_shown() -> String:
 ## Focus may move between the overlay's own buttons, never off them.
 func _stays_put(signal_name: String) -> String:
 	await _load(BOSS_ROOM)
-	Globals.emit_signal(signal_name)
-	await _frames()
+	await _end_run(signal_name)
 	var buttons := [_card().restart_button, _card().exit_button]
 	for b in [JOY_BUTTON_DPAD_UP, JOY_BUTTON_DPAD_DOWN, JOY_BUTTON_DPAD_LEFT, JOY_BUTTON_DPAD_RIGHT]:
 		await _tap_button(b)
@@ -140,8 +146,7 @@ func test_game_over_dpad_right_reaches_exit_and_a_quits() -> String:
 		var card := _card()
 		var quits := [0]
 		card.quit_game = func() -> void: quits[0] += 1
-		Globals.emit_signal("player_death")
-		await _frames()
+		await _end_run("player_death")
 		var exit := card.exit_button
 		var r: String = _T.assert_true(exit.is_visible_in_tree(), "%s: EXIT GAME shows on Game Over" % scene)
 		if r != "":
@@ -164,12 +169,15 @@ func test_game_over_dpad_right_reaches_exit_and_a_quits() -> String:
 
 func _accept(signal_name: String, device: int) -> String:
 	await _load(BOSS_ROOM)
-	Globals.emit_signal(signal_name)
-	await _frames()
 	_swap_handler()
+	Globals.emit_signal(signal_name)
+	# Mashing A through the death beat and the card's arm delay must not restart.
+	await _tap_button(JOY_BUTTON_A, device)
+	while _card().beat.running:
+		await _tap_button(JOY_BUTTON_A, device)
 	await _tap_button(JOY_BUTTON_A, device)
 	if _activated:
-		return "pad A pressed RESTART inside the %.1fs mash guard after %s" % [EndCard.ARM_DELAY, signal_name]
+		return "pad A pressed RESTART inside the beat or the %.1fs mash guard after %s" % [EndCard.ARM_DELAY, signal_name]
 	await _tree().create_timer(EndCard.ARM_DELAY + 0.1).timeout
 	await _tap_button(JOY_BUTTON_A, device)
 	return _T.assert_true(_activated, "pad A (device %d) presses RESTART after %s" % [device, signal_name])
