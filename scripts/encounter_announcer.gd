@@ -111,6 +111,11 @@ func _slam(title: String, sub: String, y: float, k: float, hold: float, tint: Co
 	_banner().stripe_y = y
 	banner.size_k = k
 	banner.slam_title(title, sub, hold, tint, burst)
+	if burst:
+		# A clear burst lands where the last KO! is still up: the bigger moment wins.
+		var word := ComicPopup.live()
+		if word != null:
+			word.visible = false
 	HudFade.duck(get_tree(), HudFade.POWERUPS, SLAM_IN + hold)
 
 

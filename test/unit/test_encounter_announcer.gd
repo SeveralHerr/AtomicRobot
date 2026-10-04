@@ -249,3 +249,38 @@ func test_announcer_overtaking_slam_drops_the_old_subtitle() -> String:
 	if r != "":
 		return r
 	return _T.assert_eq(stale, 0.0, "the overtaken slam's subtitle is gone")
+
+
+## Footage (round 2): the squad's last KO! sat on top of the STREET CLEAR! burst.
+## The clear is the bigger moment, so it takes the live hit word off screen.
+func test_announcer_clear_burst_hides_the_live_hit_word() -> String:
+	var rig := _rig()
+	ComicPopup.reset_rate_limits()
+	var word := ComicPopup.spawn(rig[0], Vector2.ZERO, &"ko")
+	rig[0].squad_cleared.emit()
+	var hidden: bool = word != null and not word.visible
+	rig[0].free()
+	ComicPopup.reset_rate_limits()
+	return _T.assert_true(hidden, "KO! hidden under STREET CLEAR!")
+
+
+func test_announcer_wave_clear_burst_hides_the_live_hit_word() -> String:
+	var rig := _rig()
+	ComicPopup.reset_rate_limits()
+	var word := ComicPopup.spawn(rig[0], Vector2.ZERO, &"ko")
+	rig[0].wave_cleared.emit(1, 2)
+	var hidden: bool = word != null and not word.visible
+	rig[0].free()
+	ComicPopup.reset_rate_limits()
+	return _T.assert_true(hidden, "KO! hidden under WAVE CLEAR!")
+
+
+func test_announcer_wave_stripe_leaves_the_hit_word() -> String:
+	var rig := _rig()
+	ComicPopup.reset_rate_limits()
+	var word := ComicPopup.spawn(rig[0], Vector2.ZERO, &"hit")
+	rig[0].wave_started.emit(2, 2)
+	var shown: bool = word != null and word.visible
+	rig[0].free()
+	ComicPopup.reset_rate_limits()
+	return _T.assert_true(shown, "a WAVE stripe sits above the fight; hit words stay")
