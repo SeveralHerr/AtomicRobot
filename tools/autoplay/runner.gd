@@ -17,6 +17,9 @@ const MENU_TAP_S := 1.0
 const WALK_TIMEOUT_S := 20.0
 ## Steps that act on the player: with none in the scene they fail, never no-op.
 const PLAYER_VERBS := ["walk_to", "lane", "teleport", "spawn", "hp"]
+## Steps that still make sense with a dead player: they drive the GAME OVER card
+## (death beat -> initials -> RESTART) or record it.
+const AFTER_DEATH_VERBS := ["wait", "tap", "menu", "snap", "dump", "assert"]
 const WALK_ARRIVE_PX := 12.0
 ## The bot beats the boss; that must not unlock Robot in the developer's real save.
 const UNLOCKS := "user://autoplay_unlocks.cfg"
@@ -92,14 +95,22 @@ func _run() -> void:
 	for step: Dictionary in sc["steps"]:
 		if _finished:
 			return
-		# A dead player can't do anything the next steps ask: stop and report.
-		if rec.deaths > 0:
+		# A dead player can't do anything the next steps ask: stop and report —
+		# unless the step drives the end card, or a restart brought a live one back.
+		if _player_dead() and not step["verb"] in AFTER_DEATH_VERBS:
 			rec.log_event("steps_skipped", {"reason": "player died", "next": step["text"]})
 			break
 		rec.log_event("step", {"do": step["text"]})
 		await _do(step)
 	if not _finished:
 		_finish(0, "")
+
+
+func _player_dead() -> bool:
+	if rec.deaths == 0:
+		return false
+	var p := World.player(get_tree())
+	return p == null or p.is_dead
 
 
 func _do(step: Dictionary) -> void:
@@ -176,7 +187,7 @@ func _menu(text: String, seconds: float) -> void:
 	var next_tap := rec.t + MENU_TAP_S
 	while not _finished and rec.t < end:
 		var p := World.player(get_tree())
-		if p and Lanes.scene_has_lanes(World.scene_path(get_tree())):
+		if p and not p.is_dead and Lanes.scene_has_lanes(World.scene_path(get_tree())):
 			await _await_baseline(3.0)
 			return
 		if rec.t >= next_tap:

@@ -1,0 +1,7 @@
+{
+  "character": "Ryan",
+  "seed": 1,
+  "timeout": 120,
+  "steps": ["hp 1", "spawn melee 40", "wait 8", "snap card", "menu 60", "snap restarted"],
+  "expect": ["deaths == 1", "scene == main", "state != DeadState", "errors == 0", "engine_errors == 0"]
+}

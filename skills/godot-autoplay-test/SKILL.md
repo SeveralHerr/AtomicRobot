@@ -34,7 +34,9 @@ Steps (`"verb args"`): `wait S` · `hold ACTION S` · `tap ACTION` · `press/rel
 off their lane floor, lane unchanged) · `brain advance|clear|monkey [S]` · `menu [S]`
 · `snap [NAME]` · `dump [NAME]` · `assert METRIC OP VALUE`.
 A step that can't do its job (`walk_to`/`lane`/`menu` timeout, `spawn` with no player)
-FAILS the run with `step failed: ...`. Remaining steps are skipped once the player dies.
+FAILS the run with `step failed: ...`. Once the player dies, the run stops at the first step
+that needs a live player; `wait tap menu snap dump assert` still run, so `menu` can drive the
+GAME OVER card -> RESTART -> back into main (`test/autoplay/death_restart.json`).
 
 Metrics: `t frames scene x y lane hp max_hp state kills damage_taken hits_taken heals
 deaths won boss_reached enemies_near max_stuck_s stuck_spots step_failures errors
