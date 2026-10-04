@@ -55,9 +55,11 @@ func _ready() -> void:
 		logo = load(DEFAULT_LOGO_PATH)
 	_build()
 	# Let the first frames (often a loading hitch) pass before timing anything.
-	await get_tree().process_frame
-	await get_tree().process_frame
-	if not _leaving:
+	# Hold the tree: a scene change can take the splash out of it mid-wait.
+	var tree := get_tree()
+	await tree.process_frame
+	await tree.process_frame
+	if is_inside_tree() and not _leaving:
 		_play_intro()
 
 

@@ -203,3 +203,15 @@ func test_splash_ends_on_its_own_and_title_takes_over() -> String:
 	s.delay = true
 	await _pad(PAD_A)
 	return _T.assert_eq(s.advanced, 1, "title then takes a press as usual")
+
+
+## Bot scenarios change scene on the title's first frame: the splash leaves the tree
+## while its _ready still waits out the load hitch, and must not touch get_tree() after.
+func test_splash_removed_before_intro_is_quiet() -> String:
+	var splash := JamcraftSplash.new()
+	_tree().root.add_child(splash)
+	_tree().root.remove_child(splash)
+	await _frames(3)
+	var r: String = _T.assert_true(splash.get_child_count() > 0, "splash built before leaving")
+	splash.free()
+	return r
