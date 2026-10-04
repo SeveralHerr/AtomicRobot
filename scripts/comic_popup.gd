@@ -52,7 +52,7 @@ const KINDS := {
 	# Orange, not blue: blue vanished into the grey-blue brick it pops over.
 	&"smash": {
 		"words": ["CRASH!", "SMASH!", "KRSSH!"],
-		"style": &"orange", "anim": &"pop", "cooldown": 0.3, "life": 0.7, "size": 1.0,
+		"style": &"orange", "anim": &"pop", "cooldown": 0.3, "life": 0.7, "size": 0.8,
 		"exit": &"shrink",
 	},
 	&"secret": {

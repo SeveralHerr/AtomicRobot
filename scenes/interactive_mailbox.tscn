@@ -52,9 +52,9 @@ shape = SubResource("CircleShape2D_64moy")
 visible = false
 z_index = 2
 offset_left = -97.0
-offset_top = -221.0
+offset_top = -171.0
 offset_right = 927.0
-offset_bottom = 803.0
+offset_bottom = 853.0
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("5_u7wxk")
 
@@ -66,9 +66,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -160.0
-offset_top = -312.0
+offset_top = -262.0
 offset_right = 140.0
-offset_bottom = -138.0
+offset_bottom = -88.0
 grow_horizontal = 2
 text = "NEWS
 "
@@ -85,9 +85,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -72.0
-offset_top = -146.0
+offset_top = -96.0
 offset_right = 48.0
-offset_bottom = -49.0
+offset_bottom = 1.0
 grow_horizontal = 2
 text = "FDFDFDAFDFDFDFDFDF
 DFDFDFF

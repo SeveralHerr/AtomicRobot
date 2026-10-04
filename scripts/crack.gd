@@ -17,6 +17,10 @@ const OPEN_FRAME := 5
 const PROMPT := "[interact] GRAB ORB"
 const PROMPT_GOLD := Color("#FFC72C")
 const PROMPT_FONT := preload("res://styles/white_font.tres")
+## World px (x2.5 on screen): readable without swallowing the wall.
+const PROMPT_SIZE := 12
+## Seconds after the opening blow before the prompt shows (SECRET! is on stage).
+const PROMPT_DELAY := 1.3
 ## Reveal fanfare (character unlocks use it too: "you found something").
 const REVEAL_STING := preload("res://sounds/Unlock.wav")
 const CLAIM_CHIME := preload("res://sounds/coin5.ogg")
@@ -27,8 +31,10 @@ const OPEN_SHAKE := 9.0
 const OPEN_SHAKE_TIME := 0.4
 
 ## Where the comic word sits relative to the hole (world px).
-const WORD_SIDE := 22.0
+const WORD_SIDE := 30.0
 const WORD_RISE := 14.0
+## SECRET! is bigger, so it sits higher to clear the attacker's head.
+const SECRET_RISE := 30.0
 
 const GROUP := "cracks"
 
@@ -39,6 +45,11 @@ var player: Player
 var _opened := false
 var _claimed := false
 var _hole_orb: Sprite2D
+var _prompt_bob: Tween
+## The player stands in the claim circle (tracked whether or not the wall is open).
+var _in_reach := false
+## SECRET! has had its moment; the prompt may show.
+var _prompt_ready := false
 
 
 func _ready() -> void:
@@ -52,8 +63,10 @@ func _ready() -> void:
 	animated_sprite_2d.frame = 0
 
 
+## Interact claims as soon as the wall is open and the player is in reach — the
+## prompt's delay is presentation only, it never swallows an early press.
 func _process(_delta: float) -> void:
-	if interact_label.visible and Input.is_action_just_pressed("Interact"):
+	if _in_reach and Input.is_action_just_pressed("Interact"):
 		claim()
 
 
@@ -70,12 +83,18 @@ func hit_radius() -> float:
 
 func _on_area_exited(body: Node2D) -> void:
 	if body is Player:
-		interact_label.hide()
+		_in_reach = false
+		_refresh_prompt()
 
 
 func _on_area_entered(body: Node2D) -> void:
-	if body is Player and _opened and not _claimed:
-		interact_label.show()
+	if body is Player:
+		_in_reach = true
+		_refresh_prompt()
+
+
+func _refresh_prompt() -> void:
+	interact_label.visible = _opened and not _claimed and _in_reach and _prompt_ready
 
 
 ## A blow from `attacker` (the player, or the shot that hit): crack + full feel.
@@ -90,10 +109,10 @@ func take_blow(attacker: Node2D) -> void:
 	var word_at := _hole_center() + Vector2(away * WORD_SIDE, -WORD_RISE)
 	if _opened:
 		ScreenShake.apply_shake(OPEN_SHAKE, OPEN_SHAKE_TIME)
-		ComicPopup.spawn(self, word_at, &"secret")
+		ComicPopup.spawn(self, word_at - Vector2(0.0, SECRET_RISE - WORD_RISE), &"secret")
 	else:
 		ScreenShake.apply_shake(BLOW_SHAKE, BLOW_SHAKE_TIME)
-		SecretFx.brick_burst(self, _hole_center(), 8, 120.0)
+		SecretFx.brick_burst(self, _hole_center(), 12, 140.0)
 		ComicPopup.spawn(self, word_at, &"smash")
 
 
@@ -112,7 +131,8 @@ func _open() -> void:
 	_opened = true
 	if is_instance_valid(static_body_2d):
 		static_body_2d.queue_free()
-	interact_label.show()
+	# The prompt waits for SECRET! to land instead of fighting it for the same spot.
+	get_tree().create_timer(PROMPT_DELAY).timeout.connect(_offer_claim)
 	_paint_interior()
 	SecretFx.brick_burst(self, _hole_center(), 28, 240.0)
 	SecretFx.play_once(self, REVEAL_STING, -4.0)
@@ -130,12 +150,22 @@ func _open() -> void:
 		add_child(cat)
 
 
+func _offer_claim() -> void:
+	_prompt_ready = true
+	_refresh_prompt()
+	if _prompt_bob == null:
+		_prompt_bob = interact_label.create_tween().set_loops()
+		var y := interact_label.position.y
+		_prompt_bob.tween_property(interact_label, "position:y", y - 3.0, 0.4).set_trans(Tween.TRANS_SINE)
+		_prompt_bob.tween_property(interact_label, "position:y", y, 0.4).set_trans(Tween.TRANS_SINE)
+
+
 ## Takes the orb: it flies to the HP bar and heals on arrival. Pays out once.
 func claim() -> void:
 	if not _opened or _claimed:
 		return
 	_claimed = true
-	interact_label.hide()
+	_refresh_prompt()
 	Globals.secret_found.emit("wall", str(get_path()))
 	SecretFx.play_once(self, CLAIM_CHIME)
 	var from := _hole_center()
@@ -172,9 +202,9 @@ func _paint_interior() -> void:
 func _style_prompt() -> void:
 	var s := LabelSettings.new()
 	s.font = PROMPT_FONT
-	s.font_size = 20
+	s.font_size = PROMPT_SIZE
 	s.font_color = PROMPT_GOLD
-	s.outline_size = 6
+	s.outline_size = 5
 	s.outline_color = Color.BLACK
 	s.shadow_color = Color(0, 0, 0, 0.5)
 	s.shadow_offset = Vector2(1, 2)

@@ -49,7 +49,15 @@ func _settle(seconds: float = 1.2) -> void:
 	await _tree().create_timer(seconds).timeout
 
 
+## The prompt (and so the claim) waits for SECRET! to land.
+func _prompt_delay() -> void:
+	await _tree().create_timer(Crack.PROMPT_DELAY + 0.05).timeout
+
+
+## Pressed right after process_frame, so the crack's _process sees it as "just
+## pressed" this frame (a press from a timer callback lands after _process ran).
 func _press_interact() -> void:
+	await _tree().process_frame
 	Input.action_press("Interact")
 	await _tree().process_frame
 	Input.action_release("Interact")
@@ -76,17 +84,22 @@ func test_four_hits_keep_the_wall_solid() -> String:
 
 
 func test_fifth_hit_opens_the_wall() -> String:
+	_player()  # standing on the crack: in reach of the prompt
 	var c := _crack()
 	for i in 5:
 		c.receive_hit()
-	await _tree().process_frame
+	await _prompt_delay()
 	var r: String = _T.assert_eq(c.animated_sprite_2d.frame, 5, "open frame")
 	if r != "":
 		return r
 	r = _T.assert_false(is_instance_valid(c.static_body_2d), "wall collision removed")
 	if r != "":
 		return r
-	return _T.assert_true(c.interact_label.visible, "prompt shown on the open wall")
+	r = _T.assert_true(c.interact_label.visible, "prompt shown on the open wall")
+	if r != "":
+		return r
+	c.claim()
+	return _T.assert_false(c.interact_label.visible, "prompt gone once claimed")
 
 
 func test_interact_claims_one_orb() -> String:
@@ -94,6 +107,7 @@ func test_interact_claims_one_orb() -> String:
 	var c := _crack()
 	for i in 5:
 		c.receive_hit()
+	await _prompt_delay()
 	await _press_interact()
 	await _settle()
 	return _T.assert_eq(p.health, 2 * Player.HITS_PER_ORB, "one orb claimed")
@@ -101,11 +115,41 @@ func test_interact_claims_one_orb() -> String:
 
 ## Bug: hitting the open wall again re-showed the prompt, and every Interact after
 ## that paid out another orb.
+## Interact right after the opening blow still claims: the prompt waits for
+## SECRET! to land, but the claim must not (completionist route presses at +1.2 s).
+func test_interact_before_the_prompt_shows_still_claims() -> String:
+	var p := _player()
+	var c := _crack()
+	await _tree().physics_frame
+	await _tree().physics_frame  # body_entered: the player is in reach
+	for i in 5:
+		c.receive_hit()
+	await _press_interact()
+	await _settle()
+	return _T.assert_eq(p.health, 2 * Player.HITS_PER_ORB, "early press claimed")
+
+
+func test_no_claim_from_out_of_reach() -> String:
+	var p := _player()
+	p.global_position = Vector2(400, 0)
+	var c := _crack()
+	for i in 5:
+		c.receive_hit()
+	await _prompt_delay()
+	await _press_interact()
+	await _settle()
+	var r: String = _T.assert_eq(p.health, Player.HITS_PER_ORB, "too far away to grab it")
+	if r != "":
+		return r
+	return _T.assert_false(c.interact_label.visible, "no prompt for a far player")
+
+
 func test_hitting_a_claimed_wall_pays_out_no_more() -> String:
 	var p := _player()
 	var c := _crack()
 	for i in 5:
 		c.receive_hit()
+	await _prompt_delay()
 	await _press_interact()
 	await _settle()
 	c.receive_hit()

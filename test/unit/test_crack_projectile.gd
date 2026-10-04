@@ -67,10 +67,7 @@ func test_five_shots_open_the_wall() -> String:
 	var c := _crack()
 	for i in 5:
 		await _shoot(FLIPFLOP)
-	var r: String = _T.assert_true(c.is_open(), "open after five shots")
-	if r != "":
-		return r
-	return _T.assert_true(c.interact_label.visible, "claim prompt shown")
+	return _T.assert_true(c.is_open(), "open after five shots")
 
 
 func test_shot_flies_through_an_open_hole() -> String:

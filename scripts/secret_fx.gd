@@ -10,10 +10,15 @@ const BRICK_COLORS: Array[Color] = [Color("#a28b7e"), Color("#8f786c"), Color("#
 ## Seconds from the hole to the HP bar.
 const FLIGHT := 0.75
 ## Orb size in world px while it sits in the hole, and in screen px on the HUD.
-const HOLE_ORB_PX := 14.0
+const HOLE_ORB_PX := 18.0
 const HUD_ORB_PX := 40.0
 ## HUD orbs are 40 px TextureRects packed with -2 separation.
 const HUD_ORB_STEP := 38.0
+## Mid-flight the orb swells by this much (sin bump), so it reads crossing the screen.
+const FLIGHT_POP := 1.2
+const TRAIL_GOLD := Color(1.0, 0.78, 0.17, 0.8)
+const TRAIL_WIDTH := 20.0
+const TRAIL_POINTS := 28
 const ORB_TEXTURE := preload("res://images/Logo+Web.png")
 ## Hole interior: dark plaster at the rim, a warm glow in the middle where the orb sits.
 const INTERIOR_SHADER := preload("res://scripts/crack_interior.gdshader")
@@ -85,6 +90,15 @@ static func fly_orb(owner: Node2D, world_pos: Vector2, on_arrive: Callable) -> C
 	var layer := CanvasLayer.new()
 	layer.layer = 3  # over the HUD (2), under the CRT overlay
 	owner.add_child(layer)
+	var trail := Line2D.new()
+	trail.width = TRAIL_WIDTH
+	trail.width_curve = Curve.new()
+	trail.width_curve.add_point(Vector2(0, 0))
+	trail.width_curve.add_point(Vector2(1, 1))
+	trail.default_color = TRAIL_GOLD
+	trail.joint_mode = Line2D.LINE_JOINT_ROUND
+	trail.end_cap_mode = Line2D.LINE_CAP_ROUND
+	layer.add_child(trail)
 	var orb := Sprite2D.new()
 	orb.texture = small_orb()
 	layer.add_child(orb)
@@ -102,7 +116,10 @@ static func fly_orb(owner: Node2D, world_pos: Vector2, on_arrive: Callable) -> C
 	t.tween_method(func(k: float) -> void:
 		orb.position = start.lerp(lift, k).lerp(lift.lerp(end, k), k)
 		orb.rotation = k * TAU
-		orb.scale = Vector2.ONE * lerpf(from_scale * (1.0 + 0.8 * sin(k * PI)), to_scale, k),
+		orb.scale = Vector2.ONE * lerpf(from_scale, to_scale, k) * (1.0 + FLIGHT_POP * sin(k * PI))
+		trail.add_point(orb.position)
+		while trail.get_point_count() > TRAIL_POINTS:
+			trail.remove_point(0),
 		0.0, 1.0, FLIGHT).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	t.tween_callback(on_arrive)
 	t.tween_callback(layer.queue_free)
