@@ -503,3 +503,11 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: none via tool; repo skills godot-micro-cutscene (updated: hold-to-skip, settle rule, story captions), godot-autoplay-test. Would have helped: a "probe positions" helper (wrote 4 throwaway SceneTree probes — player from group, Player gets reparented so get_node("Player") is null).
 - MCP: none used (CLI).
 - Follow-up: opening's melee maids were authored 15-53px in the air (atomic_robot_area.tscn) -> authored at street level (y -28) right behind the red car (user: "like they're issuing a ticket"); enemies count as landed once their street baseline is captured (they rarely read is_on_floor()). New test: nothing in the opening's first shot falls (failed 53px on the old data). 883 unit, 18/18 autoplay, 12/12 sandbox. Merged to main via branch `cutscenes` (not pushed).
+
+## 2026-10-04 — Static power-ups + roof heart (branch lj-pickups)
+- PowerupPickup `placed` mode (no lifetime/blink, keeps parent, PowerupGlow halo + golden-angle twinkles, no global RNG). Placed in atomic_robot_building_group.tscn: Rage on the window building's upper ledge pier (590,-376), Overclock above the tall scaffold (1183,-112), RoofHeart over the AR Tattoo roof scaffold (-210,-306, glow so it doesn't read as a HUD orb).
+- Autoplay: `powerups` metric, `teleport X [Y]`, snap step waits for its frame (same-frame teleport leaked into the picture), brain skips pickups beyond MAX_DY (ledge rewards could pin it). completionist routes collect all three; new placed_pickups.json.
+- Balance (8 runs each): completionist 4.50 -> 6.25 power-ups/run, buff uptime 14.9% -> 20.2% (max 30%); bot full_run 4.5 -> 5.0 (no placed). Drop rate unchanged — far from the >50% "always buffed" failure; offsetting 2 optional rewards would need ~0.04 base chance (pity-driven).
+- 10 validation rounds (one 1688x780). 901 unit, 19/19 autoplay, lane audit clean, 16/16 mutants killed.
+- Skills used: none via tool; repo skills godot-autoplay-test (enhanced: powerups metric, teleport Y), godot-ab-worktree. New skill: skills/godot-level-pickups. Would have helped: somewhat-useful-claude-skills:godot-2d-placement-audit (numeric placement asserts), derive-the-list (placed pickup list from the scene).
+- MCP: none used (CLI equivalents). No new MCP server (YAGNI: godot-tests already wraps autoplay).
