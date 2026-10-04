@@ -158,3 +158,13 @@ func test_tallest_card_fits_inside_the_crt_safe_area() -> String:
 		if rect.size.y > 720.0 or rect.size.x > 1200.0:
 			return "card %s (listing=%s) is bigger than the 1200x720 CRT-safe area" % [rect.size, listing]
 	return ""
+
+
+## Mutation survivor: an under-par run whose gap needs an impossible time gets the
+## combo tip, not "FINISH 3:54 FASTER" on a 5:00 run.
+func test_tip_skips_an_unrealistic_saving_under_par() -> String:
+	var run := _run(6000)  # 3,500 short of B -> 234 s
+	run["secrets"] = {"wall": 2, "news": 5}
+	run["no_damage_bonus"] = ScoreRules.PERFECT_BONUS
+	run["seconds"] = 300.0  # would need 1:06
+	return _T.assert_eq(L.tip_text(run), L.COMBO_TIP, "no 1-minute promise")

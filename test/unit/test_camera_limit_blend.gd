@@ -202,3 +202,16 @@ func test_finished_blend_lands_exactly_and_frees_itself() -> String:
 	if r != "":
 		return r
 	return _T.assert_true(b.is_queued_for_deletion(), "frees itself")
+
+
+## Mutation survivor: a hitch frame (a quarter second of delta) must not cover half
+## the pan in one frame.
+func test_a_hitch_frame_advances_the_blend_by_one_step_only() -> String:
+	_make()
+	_cam.limit_left = -5000
+	_cam.limit_right = 5000
+	var b: CameraLimitBlend = BLEND.blend(_cam, -100, 100, 0.55)
+	b.step(0.5)
+	# The view starts 256 left of the player (at x 0) and ends at -100: one capped
+	# step is ~1% of that ease, a raw half-second would be ~98%.
+	return _T.assert_true(_cam.limit_left <= -240, "one long frame moved the view to %d" % _cam.limit_left)
