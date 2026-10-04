@@ -67,8 +67,10 @@ report's `why` events are its decision trail — read them first when a run stal
   scenario both ways (`boss_balance_ryan` must win, `boss_balance_cass` must reach half).
 - `--fixed-fps 60`: deterministic and faster than real time. Same seed = same frames. If
   a rerun diverges, something reads the wall clock or calls `randomize()`.
-- Main street x≈2700-2950: the door-encounter barrier and a crate stack whose collider
-  also walls off the road lanes. `walk_to` can't pass it; `teleport` past or use `brain`.
+- Main street x≈2811-2906: a crate stack on the walkway (Ground layer only). Road lanes
+  pass in front of it; lane 0 is solid both sides and `lane 0` is refused while
+  overlapping it (`Lanes.walkway_blocked`). A walkway prop on the Wall layer (64)
+  walls off EVERY lane — invisible on the road. `crate_lanes.json` pins this.
 - `god on` tests the ROUTE (soft locks, progression); a run without it tests difficulty.
 - `run_tests.gd --filter` matches test METHOD names, not files (`--filter autoplay` = 0 tests).
 - A `--script` SceneTree driver can't reference autoloads/class_names; this autoload can.

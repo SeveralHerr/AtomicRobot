@@ -4,6 +4,8 @@ Dependency-free (no `mcp` package): speaks newline-delimited JSON-RPC 2.0 on std
 Tools:
   run_unit_tests(filter?)   -> "Total: ..." line plus every FAIL/BROKEN/SCRIPT ERROR line
   run_sandbox_selftests()   -> the sandbox runner's per-scenario table
+  run_autoplay(filter?)     -> bot-playthrough summaries (test/autoplay/*.json name substrings)
+  audit_lane_walls()        -> Wall-layer colliders that block the road lanes (invisible walls)
 
 Godot path: $GODOT, else the path documented in CLAUDE.md.
 """
@@ -33,6 +35,18 @@ TOOLS = [
         "description": "Boot every test/scenes sandbox for ~5s of real physics and report pass/fail.",
         "inputSchema": {"type": "object", "properties": {}},
     },
+    {
+        "name": "run_autoplay",
+        "description": "Run autoplay bot scenarios headless (test/autoplay/*.json). Optional filter = "
+                       "scenario-name substring, e.g. full_run. Returns each run's summary.",
+        "inputSchema": {"type": "object", "properties": {"filter": {"type": "string"}}},
+    },
+    {
+        "name": "audit_lane_walls",
+        "description": "List always-on Wall-layer colliders in main.tscn that reach the road lanes "
+                       "(invisible walls). Barriers/boundaries are reported as expected.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
 ]
 
 
@@ -56,6 +70,26 @@ def run_sandbox_selftests() -> str:
     return "\n".join((out.stdout + out.stderr).splitlines()[-15:])
 
 
+def _py(script: str, *args: str) -> str:
+    out = subprocess.run([sys.executable, os.path.join(ROOT, "tools", script), *args],
+                         cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+                         errors="replace", timeout=1800)
+    return out.stdout + out.stderr
+
+
+def run_autoplay(filter_: str = "") -> str:
+    if not FILTER_RE.match(filter_):
+        return "filter must be letters, digits or _ only"
+    out = _py("autoplay.py", *([filter_] if filter_ else []))
+    keep = [l for l in out.splitlines()
+            if re.match(r"(AUTOPLAY|\s+(reason|scenes|end|combat|stuck|errors|FAIL)|\[|all |\d+/)", l)]
+    return "\n".join(keep) or out[-2000:]
+
+
+def audit_lane_walls() -> str:
+    return _py("lane_wall_audit.py")[-3000:]
+
+
 def handle(msg: dict):
     method = msg.get("method")
     if method == "initialize":
@@ -71,6 +105,10 @@ def handle(msg: dict):
             text = run_unit_tests(str(args.get("filter", "")))
         elif p.get("name") == "run_sandbox_selftests":
             text = run_sandbox_selftests()
+        elif p.get("name") == "run_autoplay":
+            text = run_autoplay(str(args.get("filter", "")))
+        elif p.get("name") == "audit_lane_walls":
+            text = audit_lane_walls()
         else:
             return {"content": [{"type": "text", "text": "unknown tool"}], "isError": True}
         return {"content": [{"type": "text", "text": text}]}

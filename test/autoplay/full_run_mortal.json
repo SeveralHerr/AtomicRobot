@@ -4,5 +4,5 @@
   "seed": 1,
   "timeout": 900,
   "steps": ["menu 40", "brain advance 840", "dump end"],
-  "expect": ["errors == 0", "kills >= 10"]
+  "expect": ["errors == 0", "kills >= 10", "max_stuck_s < 60"]
 }

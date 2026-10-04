@@ -1,5 +1,5 @@
 {
   "timeout": 30,
-  "steps": ["god on", "teleport 2880", "kill_all", "hp 3", "lane 0", "walk_to 2944 5", "wait 0.5"],
+  "steps": ["god on", "teleport 3000", "kill_all", "hp 3", "lane 0", "walk_to 2944 5", "wait 0.5"],
   "expect": ["heals >= 1", "hp == 6", "errors == 0"]
 }

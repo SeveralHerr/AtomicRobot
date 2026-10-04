@@ -1,0 +1,9 @@
+{
+  "timeout": 60,
+  "steps": ["god on", "teleport 2740", "kill_all", "lane 2", "walk_to 3000 8", "snap road_past_crates",
+            "lane 3", "walk_to 2740 8", "lane 1", "walk_to 2858 8", "tap ui_up", "wait 0.5",
+            "assert lane == 1", "snap blocked_step_up", "walk_to 2980 8", "lane 0", "assert lane == 0",
+            "hold ui_left 2", "assert x > 2900", "snap walkway_blocked_right",
+            "lane 1", "walk_to 2760 8", "lane 0", "hold ui_right 2", "assert x < 2815", "snap walkway_blocked_left"],
+  "expect": ["errors == 0", "step_failures == 0"]
+}
