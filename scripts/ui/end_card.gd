@@ -22,6 +22,9 @@ const CHARACTER_SELECT := "res://scenes/character_select.tscn"
 ## mashing it as they die would otherwise restart by accident.
 const ARM_DELAY := 0.6
 const CARD_TILT := -1.5
+## Above anything else in the level's UI layer: tree order alone loses to a z_index,
+## and the HUD orbs (hp_1.tscn, z 2) drew over the card's top edge.
+const CARD_Z := 10
 const DIM_SHADER := preload("res://shaders/end_card_dim.gdshader")
 ## Pinball's cursor-pop: the card grows in from this scale with an overshoot.
 const POP_FROM := 0.85
@@ -53,6 +56,7 @@ var _pop: Tween
 func _init() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	z_index = CARD_Z
 	visible = false
 	_build()
 	beat = DeathBeat.new()

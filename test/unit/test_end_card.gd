@@ -321,6 +321,33 @@ func test_card_draws_over_the_boss_hud() -> String:
 	return ""
 
 
+## Tree order is not enough: a z_index wins over it. The HUD orbs (hp_1.tscn,
+## z_index 2) drew over the card's top edge once the card grew tall enough to reach
+## them. Derived: every CanvasItem in the UI layer, not just the ones known today.
+func test_card_z_beats_every_ui_item() -> String:
+	var card: EndCard = await _level(BOSS_ROOM)
+	Globals.boss_death.emit()
+	await _frames()
+	for node in card.get_parent().find_children("*", "CanvasItem", true, false):
+		if node == card or card.is_ancestor_of(node):
+			continue
+		var item := node as CanvasItem
+		if item.visible and _abs_z(item) > card.z_index:
+			return "%s (z %d) draws over the card (z %d)" % [card.get_parent().get_path_to(item), _abs_z(item), card.z_index]
+	return ""
+
+
+func _abs_z(item: CanvasItem) -> int:
+	var z := 0
+	var n: Node = item
+	while n is CanvasItem:
+		z += (n as CanvasItem).z_index
+		if not (n as CanvasItem).z_as_relative:
+			break
+		n = n.get_parent()
+	return z
+
+
 ## Something joining the UI layer after the card is up (the boss intro's letterbox
 ## bars, a phase flash during the death beat) must not draw over it. CI's slow
 ## frames let the intro land mid-test and buried the card under its bars.
