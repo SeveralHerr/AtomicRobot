@@ -560,3 +560,15 @@ Log of skills that might have been useful for a given response, and why (short f
 - Used: skills/godot-micro-cutscene (validation recipe), godot-input-test (polled input, mutants) - idea: input-test should warn that headless GUI clicks don't reach Controls; use `_input`.
 - Would have helped: godot-modal-reader (written now) - pause/arm/CRT/autoplay rules for readable pop-ups.
 - Would have helped: a "copy approval" skill - any player-facing text change goes to the user first.
+## 2026-10-04 — Car over same-lane player; select "tap again" (branch review3-fixes)
+- Car z was mid-band = player's z standing on the lane line -> tie -> tree order drew player over car. New `Lanes.vehicle_z` = top of lane band (+14 < stride 20). Before/after windowed autoplay, same seed.
+- Select: Button `pressed` fires on release; viewport focuses on press, so the 2-frame `just_focused()` window expired on a normal tap -> first tap picked / tapping another card picked. Now arm = focus owner when the tap BEGAN (`_input`), plus a tap off the strip (prompt/big fighter) picks the preview.
+- Old test faked taps with `pressed.emit()`; new `_tap` pushes ScreenTouch + emulated click via `root.push_input(ev, true)` (headless window 0x0 drops parse_input_event GUI touches).
+- Skills: repo godot-input-test (fixed its bad "emit pressed" advice), godot-ab-worktree pattern (stash variant). Would have helped: somewhat-useful-claude-skills:enumerate-the-pairs (z vs every depth), extract-a-testable-seam. MCP: none used (CLI); no new MCP (YAGNI — autoplay covers it).
+- Follow-up: secret wall prompt ("[interact] GRAB ORB", gold 12px, bobbing, code-built style + level override "[e]") now matches the newspaper stand: shared `styles/interact_prompt.tres`, plain "[interact]", static. `test_interact_prompt.gd` derives every InteractLabel from scenes/*.tscn (defs + overrides + live); 4/4 mutants killed.
+
+## 2026-10-04 — itch store page refresh + first devlog draft
+- Used: itch-store-page (screens replaced, description simplified w/ shop address + IG, gallery set to sidebar), itch-devlog (draft 1691562).
+- Enhancement idea (itch-store-page): split the "poll until ids appear" loop into short evaluates — one 45s loop froze CDP though the upload landed.
+- Enhancement idea (itch-devlog): note the "first devlog ever" case — no last-post date, so pick a 2-week window.
+- Would have helped: a `store-shots` skill — run completionist bot with `snap_every`, contact sheet, pick 6.

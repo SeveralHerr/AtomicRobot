@@ -248,6 +248,8 @@ before the glide back): they caught 3 bad numbers screenshots didn't.
 
 "Make X consistent" (effects/feel across a family): fix at the shared scene/script, derive the
 family from the levels in a test, never patch one instance (`skills/godot-pickup-fx/SKILL.md`).
+Scan level .tscn instance OVERRIDES too: a level restyled the wall's prompt (`text = "[e]"`,
+own LabelSettings) where the prop scene looked fine (`test_interact_prompt.gd`).
 
 Placed pickups: judge them at the player's STANDING height — zoom 2.5 puts anything ~95px
 above the floor in the HUD band (`skills/godot-level-pickups/SKILL.md`).
@@ -278,6 +280,10 @@ mortal runs hit (heal-seeking) — gate both with `max_stuck_s`.
 
 Read `skills/godot-input-test/SKILL.md` before testing pad/key/touch UI. Mutation-check
 new guards with a `(file, original, mutant, filter)` script; add a test per survivor.
+A touch test that emits `button.pressed` proved nothing: "tap again" was broken on a
+green suite. Drive real taps (`_tap` in test_character_select.gd) at several hold lengths.
+Draw order: an equal z_index silently loses to tree order — assert strict `>` against
+every in-lane depth (`test_vehicle_z_tops_its_lane...`), never one sample z.
 The `godot-tests` MCP server (`.mcp.json`) runs the unit/sandbox suites with a short summary.
 Screenshot "put it here" → world x: `python tools/level_pan.py` (MCP `level_pan`), see
 `skills/godot-level-map/SKILL.md`. Put the coords in every fan-out prompt.

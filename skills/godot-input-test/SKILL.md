@@ -29,8 +29,13 @@ Runner: `godot --headless --path . --script res://tools/run_tests.gd -- --filter
 - Raw `InputEventScreenTouch` is ALSO delivered as an emulated left click (Godot default
   `emulate_mouse_from_touch`), so a touch branch's mutant survives: call
   `Input.set_emulate_mouse_from_touch(false)` around the touch test (test_title_splash.gd).
-- Touch: emit `button.pressed` directly; assert sizes against a shared constant
-  (`ComicStyle.TOUCH`), not magic numbers.
+- Touch on GUI: NEVER fake it with `button.pressed.emit()` — that hid a select screen
+  whose "tap again" never worked (Button fires `pressed` on RELEASE, ~6 frames after the
+  press moved focus). Headless window is 0x0, so `Input.parse_input_event` touches never
+  hit the GUI either: `root.push_input(ev, true)` a ScreenTouch AND the emulated
+  MouseButton (device `InputEvent.DEVICE_ID_EMULATION`) at the control's
+  `get_global_transform_with_canvas() * size/2`, hold 1/6/30 frames
+  (`_tap` in test_character_select.gd). Assert sizes vs `ComicStyle.TOUCH`.
 - Autoload state (ScoreSystem): swap its `save_path` in `setup()`, restore + `reload()` in
   `teardown()`, never write to the player's real `user://` file.
 - A level loaded with `root.add_child()` is NOT `current_scene`; set autoload fields
