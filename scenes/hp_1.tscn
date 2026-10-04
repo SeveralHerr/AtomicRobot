@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://btaphps6ps5mq"]
 
-[ext_resource type="Texture2D" uid="uid://bwdce22i5axih" path="res://images/Logo+Web.png" id="1_jexr2"]
+[ext_resource type="Texture2D" uid="uid://cpmx38d8kqq1w" path="res://images/Logo+Web.png" id="1_jexr2"]
 
 [node name="HP1" type="TextureRect" unique_id=875586996]
 z_index = 2

@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://dsbjs54db5oe8" path="res://scripts/line_of_sight.gd" id="2_txw4m"]
 [ext_resource type="Shader" uid="uid://6j4tcu38byit" path="res://shaders/flash.gdshader" id="3_0nofd"]
 [ext_resource type="SpriteFrames" uid="uid://ckct5j2bt3fq7" path="res://sprites/metermaid_sprite_frames.tres" id="4_vdeqb"]
-[ext_resource type="AudioStream" uid="uid://djf6oduruqvxp" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_xef4f"]
+[ext_resource type="AudioStream" uid="uid://b55vbaakt0ib4" path="res://sounds/641689__cdakak__man_hurt_2.wav" id="5_xef4f"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5b8kh"]
 radius = 130.0

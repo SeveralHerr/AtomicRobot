@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://dgfrky70ry3v" path="res://scripts/mobile_ui.gd" id="1_rvv1d"]
 [ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="2_snoiw"]
-[ext_resource type="Texture2D" uid="uid://dqq46oxnoeohx" path="res://images/arrow_n.png" id="3_nee3u"]
+[ext_resource type="Texture2D" uid="uid://do55skr27qvfd" path="res://images/arrow_n.png" id="3_nee3u"]
 [ext_resource type="StyleBox" uid="uid://vb5n0pdp6vf" path="res://sprites/mobile_button_normal.tres" id="4_m1a23"]
-[ext_resource type="Texture2D" uid="uid://cd5kg8ii4dvyd" path="res://images/mobile_button.png" id="5_pwq8n"]
-[ext_resource type="Texture2D" uid="uid://sb5lh21xpued" path="res://images/tool_sword_b.png" id="6_qsdwx"]
-[ext_resource type="Texture2D" uid="uid://hpogdiga4x5d" path="res://images/check_square_grey.png" id="7_pause"]
+[ext_resource type="Texture2D" uid="uid://b2y7hrpauia37" path="res://images/mobile_button.png" id="5_pwq8n"]
+[ext_resource type="Texture2D" uid="uid://b3yvdhkilwb4o" path="res://images/tool_sword_b.png" id="6_qsdwx"]
+[ext_resource type="Texture2D" uid="uid://tr5mt6lm8paj" path="res://images/check_square_grey.png" id="7_pause"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_43wfq"]
 texture = ExtResource("5_pwq8n")

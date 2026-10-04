@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://mv75v56773qo"]
 
 [ext_resource type="Script" uid="uid://b4dpl0l1gdtam" path="res://scripts/coin_bullet.gd" id="1_oe7oc"]
-[ext_resource type="Texture2D" uid="uid://b816q08k35v4x" path="res://sprites/CityCouncil.png" id="2_oe7oc"]
-[ext_resource type="AudioStream" uid="uid://c87obpnhnbtmu" path="res://sounds/coin.wav" id="3_umdmf"]
+[ext_resource type="Texture2D" uid="uid://fa0mae2jvuat" path="res://sprites/CityCouncil.png" id="2_oe7oc"]
+[ext_resource type="AudioStream" uid="uid://txxmsbx723pd" path="res://sounds/coin.wav" id="3_umdmf"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_w4kev"]
 

@@ -1,6 +1,7 @@
 \# Godot 4+ specific ignores
 .godot/
-*.import
+# *.import files are committed: they carry each asset's uid:// (Godot 4 docs).
+# Ignoring them made every machine/CI mint new UIDs and left scenes with stale refs.
 .import/
 .godot/imported/
 
@@ -10,3 +11,6 @@ __pycache__/
 
 # Autoplay bot reports and screenshots (tools/autoplay.py)
 autoplay_out/
+
+# Export output: Godot imports the icons it finds there; those .import files are noise.
+/bin/*.import

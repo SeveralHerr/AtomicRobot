@@ -1,8 +1,8 @@
 [gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scripts/building_door_encounter.gd" id="1_bdenc"]
-[ext_resource type="Texture2D" uid="uid://g2i0ldrygj4w" path="res://sprites/crack.png" id="2_crack"]
-[ext_resource type="AudioStream" uid="uid://dkv30378osgse" path="res://sounds/711657__discofield__stone-crash.wav" id="3_slam"]
+[ext_resource type="Texture2D" uid="uid://cq2lxw1ffcp33" path="res://sprites/crack.png" id="2_crack"]
+[ext_resource type="AudioStream" uid="uid://bchxd4dbwsr28" path="res://sounds/711657__discofield__stone-crash.wav" id="3_slam"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
 size = Vector2(220, 300)

@@ -1,6 +1,6 @@
 [gd_resource type="FontVariation" format=3 uid="uid://c0y2iyybvk45p"]
 
-[ext_resource type="FontFile" uid="uid://cov1msx6j0qwv" path="res://styles/Bangers-Regular.ttf" id="1_p8816"]
+[ext_resource type="FontFile" uid="uid://tlobedot6hie" path="res://styles/Bangers-Regular.ttf" id="1_p8816"]
 
 [resource]
 base_font = ExtResource("1_p8816")

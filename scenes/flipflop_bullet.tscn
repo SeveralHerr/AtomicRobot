@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://b2gx172dqadbi"]
 
 [ext_resource type="Script" uid="uid://bxkeqplw7x36o" path="res://scripts/flipflop_bullet.gd" id="1_y6p2t"]
-[ext_resource type="Texture2D" uid="uid://ctuy6el35jekl" path="res://sprites/Cass.png" id="2_y6p2t"]
+[ext_resource type="Texture2D" uid="uid://c38a4lb5o4bf2" path="res://sprites/Cass.png" id="2_y6p2t"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ehk0o"]
 atlas = ExtResource("2_y6p2t")

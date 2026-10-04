@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dqf1ot3uhuul7"]
 
-[ext_resource type="Texture2D" uid="uid://cnmjpe5q0ajdo" path="res://images/chatbubble.png" id="1_ydwr7"]
+[ext_resource type="Texture2D" uid="uid://c6qj2s14gh231" path="res://images/chatbubble.png" id="1_ydwr7"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="2_f8oay"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3w7au"]

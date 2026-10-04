@@ -3,8 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://celoqs2lympxv" path="res://images/background_small.png" id="1_bg"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="3_whitefont"]
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="4_fontvar"]
-[ext_resource type="Texture2D" uid="uid://drlbejg4ojdha" path="res://images/check_square_grey_checkmark.png" id="5_checkmark"]
-[ext_resource type="Texture2D" uid="uid://hpogdiga4x5d" path="res://images/check_square_grey.png" id="6_uncheck"]
+[ext_resource type="Texture2D" uid="uid://bh61iiq15jejg" path="res://images/check_square_grey_checkmark.png" id="5_checkmark"]
+[ext_resource type="Texture2D" uid="uid://tr5mt6lm8paj" path="res://images/check_square_grey.png" id="6_uncheck"]
 [ext_resource type="Script" path="res://scripts/autoload/pause_menu.gd" id="7_script"]
 [ext_resource type="Script" path="res://scripts/ui/remap_panel.gd" id="8_remap"]
 
