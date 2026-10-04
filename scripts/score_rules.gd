@@ -17,11 +17,14 @@ extends RefCounted
 const COMBO_WINDOW := 2.5
 
 ## Combo count at which each multiplier tier starts; the multiplier is the tier's
-## index + 1, so this caps at 8x. Front-loaded (3, 6, 10) so the meter feels alive
-## in a normal three-enemy scrap, then stretched out so 8x is a genuine achievement.
-const MULTIPLIER_STEPS: Array[int] = [0, 3, 6, 10, 15, 21, 28, 36]
+## index + 1, so this caps at 8x. Front-loaded so the meter feels alive in a normal
+## three-enemy scrap, then stretched out so 8x is a genuine achievement.
+## Doubled (with POINTS_PER_HIT halved) when maids went from 2 blows to 4 on the
+## DamageRules scale: a kill chain pays what it did, tier for tier, kill for kill
+## (test_score_rules: test_kill_chain_pays_as_before_the_rescale).
+const MULTIPLIER_STEPS: Array[int] = [0, 6, 12, 20, 30, 42, 56, 72]
 
-const POINTS_PER_HIT := 10
+const POINTS_PER_HIT := 5
 const POINTS_PER_KILL := 100
 
 
