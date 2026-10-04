@@ -49,6 +49,8 @@ persist = true
 [node name="BuildingDoorEncounter" type="Node2D" parent="." unique_id=965566927 instance=ExtResource("9_e27br")]
 position = Vector2(389, -5)
 script = ExtResource("10_sypnp")
+mouth_style = 0
+wall_color = Color(0.427, 0.341, 0.306, 1)
 enemy_count = 3
 waves = 1
 

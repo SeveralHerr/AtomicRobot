@@ -653,6 +653,8 @@ max_polyphony = 2
 [node name="BuildingDoorEncounter" type="Node2D" parent="." unique_id=1484057500 instance=ExtResource("30_o7nd8")]
 position = Vector2(1780, 0)
 script = ExtResource("31_2gjml")
+mouth_style = 0
+wall_color = Color(0.408, 0.408, 0.408, 1)
 enemy_count = 5
 waves = 2
 
