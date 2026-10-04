@@ -18,6 +18,9 @@ game over / win ──> character_select.tscn        restart ──> startscreen
 
 - `project.godot:18` main scene = `scenes/startscreen.tscn`
 - `scripts/startscreen.gd:12` → character select
+- First title of each boot plays the Jamcraft logo over it (`scripts/ui/jamcraft_splash.gd`,
+  ~1.9 s, any key/click/pad button/tap skips and is swallowed; `startscreen.gd`'s static
+  `splash_played`; tests mounting the title set it true). Layer 99, under `CRTOverlay`.
 - `scripts/character_slot.gd:34-39` sets `Globals.selected_character`, → controls splash → `main.tscn`
 - `scripts/final_boss_enter.gd` — Area2D on `SceneItemsBackground/BuildingGroup4/Enter` in main.tscn → boss room
 - `scripts/ui/end_card.gd` — the one end-of-run screen (`UI/EndCard` in both levels): RESTART → character select
