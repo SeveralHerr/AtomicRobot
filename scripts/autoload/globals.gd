@@ -264,6 +264,25 @@ func reset() -> void:
 	meters.clear()
 	meter_maids_killed = 0
 	_active_events = 0
+	carried_health = -1
+
+
+## Raw hit points the player walked through the boss door with; -1 = nothing carried.
+## boss_room.tscn has its own Player, whose _init takes this once (take_carried_health)
+## so the street's hearts survive the door but a later restart starts fresh.
+var carried_health: int = -1
+
+
+func carry_health(hp: int) -> void:
+	carried_health = hp
+
+
+## The carried health, or `fallback` when nothing (or nothing alive) was carried.
+## Clears the carry: only the very next Player gets it.
+func take_carried_health(fallback: int) -> int:
+	var hp := carried_health
+	carried_health = -1
+	return hp if hp > 0 else fallback
 
 
 ## `event` is listened to by EnemyManager (pauses ambient waves), Player (slows on

@@ -180,3 +180,124 @@ func test_restart_mid_entry_cancels_the_wait() -> String:
 	if r != "":
 		return r
 	return _T.assert_eq(ScoreSystem.last_run.size(), 0, "and the stale result")
+
+
+# --- The run: street score carries through the boss door ---------------------
+
+const STREET := "res://scenes/main.tscn"
+
+
+## Street -> (the swap's empty frame) -> boss room, alive: one run.
+func _walk_through_door(street_points: int) -> void:
+	ScoreSystem.enter_scene(STREET)
+	ScoreSystem.score = street_points
+	ScoreSystem.stage_seconds = 100.0
+	ScoreSystem.damage_taken = 2
+	ScoreSystem.enter_scene("", false)
+	ScoreSystem.enter_scene(STAGE)
+
+
+func test_run_street_score_carries_into_boss() -> String:
+	_walk_through_door(7000)
+	var r: String = _T.assert_eq(ScoreSystem.score, 7000, "street score kept")
+	if r != "":
+		return r
+	r = _T.assert_eq(ScoreSystem.stage_seconds, 100.0, "run clock kept")
+	if r != "":
+		return r
+	r = _T.assert_eq(ScoreSystem.damage_taken, 2, "damage kept")
+	if r != "":
+		return r
+	ScoreSystem.score += 600
+	var res: Dictionary = ScoreSystem.finish_stage()
+	r = _T.assert_eq(int(res["street_score"]), 7000, "street subtotal")
+	if r != "":
+		return r
+	return _T.assert_eq(int(res["boss_score"]), 600, "boss subtotal")
+
+
+func test_run_death_on_street_starts_fresh() -> String:
+	ScoreSystem.enter_scene(STREET)
+	ScoreSystem.score = 7000
+	Globals.player_death.emit()
+	ScoreSystem.enter_scene("", false)
+	ScoreSystem.enter_scene(STAGE)
+	return _T.assert_eq(ScoreSystem.score, 0, "a dead run does not carry")
+
+
+func test_run_menu_between_drops_the_carry() -> String:
+	ScoreSystem.enter_scene(STREET)
+	ScoreSystem.score = 7000
+	ScoreSystem.enter_scene("res://scenes/startscreen.tscn")
+	ScoreSystem.enter_scene(STAGE)
+	return _T.assert_eq(ScoreSystem.score, 0, "quitting to the title ends the run")
+
+
+func test_run_boss_only_stage_is_fresh() -> String:
+	ScoreSystem.enter_scene(STAGE)
+	var r: String = _T.assert_eq(ScoreSystem.street_score, 0, "no street part")
+	if r != "":
+		return r
+	return _T.assert_eq(ScoreSystem.score, 0, "starts at zero")
+
+
+func test_run_death_in_boss_room_records_run_total() -> String:
+	_walk_through_door(7000)
+	ScoreSystem.score += 300
+	Globals.player_death.emit()
+	return _T.assert_eq(int(ScoreSystem.last_run["total"]), 7300, "list entry is the whole run")
+
+
+func test_run_secrets_counted_once_and_paid() -> String:
+	ScoreSystem.enter_scene(STREET)
+	Globals.secret_found.emit("wall", "A")
+	Globals.secret_found.emit("wall", "A")
+	Globals.secret_found.emit("news", "B")
+	ScoreSystem.enter_scene("", false)
+	ScoreSystem.enter_scene(STAGE)
+	var res: Dictionary = ScoreSystem.finish_stage()
+	var r: String = _T.assert_eq(res["secrets"], {"wall": 1, "news": 1}, "unique per run")
+	if r != "":
+		return r
+	r = _T.assert_eq(int(res["secret_bonus"]), ScoreRules.secret_bonus(2), "paid per secret")
+	if r != "":
+		return r
+	return _T.assert_eq(res["secret_totals"], SecretTally.totals_in(ScoreRules.SCORED_SCENES), "totals from the level")
+
+
+func test_run_secrets_reset_on_a_new_run() -> String:
+	ScoreSystem.enter_scene(STREET)
+	Globals.secret_found.emit("news", "B")
+	ScoreSystem.enter_scene("res://scenes/character_select.tscn")
+	ScoreSystem.enter_scene(STREET)
+	return _T.assert_eq(ScoreSystem.secrets.found_total(), 0, "fresh run, no secrets")
+
+
+func test_run_secret_after_the_run_ended_is_ignored() -> String:
+	ScoreSystem.enter_scene(STAGE)
+	Globals.player_death.emit()
+	Globals.secret_found.emit("news", "B")
+	return _T.assert_eq(ScoreSystem.secrets.found_total(), 0, "not running, not counted")
+
+
+func test_run_unlock_is_reported() -> String:
+	# tools/run_tests.gd points Globals at a scratch unlock save with Robot locked.
+	ScoreSystem.enter_scene(STAGE)
+	Globals.boss_death.emit()
+	var unlocks: Array = ScoreSystem.last_run.get("unlocks", [])
+	ScoreSystem.enter_scene(STAGE)
+	Globals.boss_death.emit()
+	var again: Array = ScoreSystem.last_run.get("unlocks", [])
+	var r: String = _T.assert_eq(unlocks, ["Robot"], "first clear unlocks Robot")
+	if r != "":
+		return r
+	return _T.assert_eq(again, [], "already unlocked: nothing new")
+
+
+## Mutation survivor: a run that ends with a fighter still locked reports no unlock.
+func test_run_still_locked_is_not_an_unlock() -> String:
+	# tools/run_tests.gd points Globals at a scratch unlock save with Robot locked.
+	ScoreSystem.enter_scene(STAGE)
+	ScoreSystem.finish_stage()  # cleared without the boss_death unlock
+	var unlocks: Array = ScoreSystem.last_run.get("unlocks", [])
+	return _T.assert_eq(unlocks, [], "Robot still locked")

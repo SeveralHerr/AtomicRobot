@@ -90,6 +90,14 @@ func _ready() -> void:
 		log_event("powerup", {"id": id, "x": _last_snap.get("player", {}).get("x", 0.0)}))
 	Globals.unlocked.connect(func(what: String, _description: String) -> void:
 		log_event("unlock", {"what": what}))
+	Globals.secret_found.connect(func(kind: String, id: String) -> void:
+		log_event("secret", {"kind": kind, "id": id}))
+	ScoreSystem.stage_finished.connect(func(result: Dictionary) -> void:
+		var keep := {}
+		for k in ["total", "rank", "street_score", "boss_score", "time_bonus", "no_damage_bonus",
+				"secret_bonus", "secrets", "secret_totals", "seconds", "damage_taken", "health_remaining"]:
+			keep[k] = result.get(k)
+		log_event("run", keep))
 
 
 func _exit_tree() -> void:

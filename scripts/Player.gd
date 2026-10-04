@@ -171,8 +171,8 @@ func is_near_ground() -> bool:
 
 func _init() -> void:
 	var current_character = Globals.get_current_character()
-	# Character configs are authored in orbs; health is carried in hit points.
-	health = current_character.get_starting_health() * HITS_PER_ORB
+	# Configs are in orbs, health in hit points; the boss-room Player takes the street's.
+	health = mini(Globals.take_carried_health(current_character.get_starting_health() * HITS_PER_ORB), max_health())
 	damage = current_character.get_starting_damage()
 
 func _ready() -> void:

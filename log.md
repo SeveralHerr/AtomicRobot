@@ -396,3 +396,8 @@ Log of skills that might have been useful for a given response, and why (short f
 - Wished for: a reusable "capture HUD states" SceneTree script and a generic `(file, original, mutant,
   filter)` mutation runner checked into tools/ (rewrote both in scratch).
 - Enhancement idea (godot-boss-juice): say up front which HUD rows each callout lands on.
+## 2026-10-04 sr-run (boss HP carry, run score, secrets tally, unlock stamp)
+- Done: street HP carries through the boss door; run score (street+boss) with STREET/BOSS/BONUS card; time bonus run-wide (420 s par, 15/s); ranks S18000/A13000/B9500/C6000 pinned to measured runs; SecretTally derives 2 walls/5 news from the level files; NEW FIGHTER stamp; card z above HUD orbs; autoplay no longer writes the real scores.cfg.
+- Skills used: godot-headful-screenshot (enhancement: window_set_size works inside --script captures — added), godot-autoplay-test, derive-the-list idea (secret totals both directions).
+- Would have helped: a SceneState-walk helper skill (instance nodes repeat their root's script — double counts); a "shared user:// across worktrees" warning (parallel agents race on settings.cfg/scores.cfg).
+- MCP: none used (godot-tests MCP not needed; CLI direct).

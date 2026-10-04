@@ -51,11 +51,13 @@ static func kill_points(combo: int) -> int:
 
 # --- End-of-stage bonuses ----------------------------------------------------
 
-## Target clear time for a stage, in seconds. Beat it and every second saved pays.
-## Tuned against the street level (res://scenes/main.tscn) walked at a normal pace
-## while actually fighting; retune here if the level's length changes.
-const PAR_SECONDS := 240.0
-const POINTS_PER_SECOND_SAVED := 25
+## Target time for the whole run (street + boss), in seconds. Beat it and every second
+## saved pays. Tuned (2026-10-03) so the bonus is the same order as the fight score:
+## the seed-1 bot clears the completionist route in ~180 s (fight ~7,800, time bonus
+## ~3,600); a human taking 5-6 minutes still banks something. When the time bonus was
+## per-stage (boss only, 240 s par, 25/s) it paid ~8x the boss fight.
+const PAR_SECONDS := 420.0
+const POINTS_PER_SECOND_SAVED := 15
 
 ## Flat award for finishing a stage without being hit once.
 const PERFECT_BONUS := 3000
@@ -79,16 +81,27 @@ static func no_damage_bonus(damage_taken: int, health_remaining: int) -> int:
 	return maxi(0, health_remaining) * POINTS_PER_HEALTH_KEPT
 
 
+## Flat award per secret (cracked wall, newspaper stand) claimed during the run.
+const POINTS_PER_SECRET := 250
+
+
+static func secret_bonus(secrets: int) -> int:
+	return maxi(0, secrets) * POINTS_PER_SECRET
+
+
 # --- Rank --------------------------------------------------------------------
 
 ## Rank letters paired with the total score each one needs, best first. rank_for()
 ## walks this in order and takes the first one the score clears, so D must sit at 0
 ## to guarantee every run gets a letter.
+## Tuned against full runs (test_score_rules.gd pins the reference runs): a clean
+## mortal completionist run (~182 s, 4 orbs left, most secrets) is A; a flawless fast
+## run with every secret is S; a slow, battered run with a secret or two is C.
 const RANK_THRESHOLDS: Array = [
-	["S", 20000],
-	["A", 14000],
-	["B", 9000],
-	["C", 5000],
+	["S", 18000],
+	["A", 13000],
+	["B", 9500],
+	["C", 6000],
 	["D", 0],
 ]
 
@@ -112,10 +125,10 @@ static func points_to_next_rank(total: int) -> int:
 
 # --- Which scenes are scored -------------------------------------------------
 
-const SCORED_SCENES: Array[String] = [
-	"res://scenes/main.tscn",
-	"res://scenes/boss_room.tscn",
-]
+const STREET_SCENE := "res://scenes/main.tscn"
+const BOSS_SCENE := "res://scenes/boss_room.tscn"
+## The run, in order: the street, then the boss room.
+const SCORED_SCENES: Array[String] = [STREET_SCENE, BOSS_SCENE]
 ## The enemy-behaviour sandboxes opt in as a directory (same convention as
 ## Lanes.LANE_SCENE_PREFIX) so combo/score can be asserted from a test scene.
 const SCORED_SCENE_PREFIX := "res://test/scenes/"
@@ -125,16 +138,32 @@ static func is_scored_scene(scene_path: String) -> bool:
 	return scene_path in SCORED_SCENES or scene_path.begins_with(SCORED_SCENE_PREFIX)
 
 
-## The full end-of-stage breakdown. Pure, so the rank card and the unit tests agree
-## on the arithmetic by construction.
-static func summarise(fight_score: int, seconds: float, damage_taken: int, health_remaining: int, par: float = PAR_SECONDS) -> Dictionary:
+## True when leaving `from` alive for `to` continues the same run: the street's score,
+## clock, damage and secrets carry through the boss door instead of starting over.
+static func continues_run(from: String, to: String) -> bool:
+	return from == STREET_SCENE and to == BOSS_SCENE
+
+
+## The full end-of-run breakdown. Pure, so the rank card and the unit tests agree
+## on the arithmetic by construction. `fight_score` is the whole run's; `street_score`
+## is the part of it banked before the boss door (0 for a boss-only stage).
+static func summarise(fight_score: int, seconds: float, damage_taken: int, health_remaining: int,
+		par: float = PAR_SECONDS, secrets: int = 0, street_score: int = 0) -> Dictionary:
 	var time := time_bonus(seconds, par)
 	var perfect := no_damage_bonus(damage_taken, health_remaining)
-	var total := fight_score + time + perfect
+	var secret := secret_bonus(secrets)
+	var bonus := time + perfect + secret
+	var total := fight_score + bonus
+	var street := clampi(street_score, 0, maxi(fight_score, 0))
 	return {
 		"fight_score": fight_score,
+		"street_score": street,
+		"boss_score": fight_score - street,
 		"time_bonus": time,
 		"no_damage_bonus": perfect,
+		"secret_bonus": secret,
+		"secrets_found": maxi(0, secrets),
+		"bonus": bonus,
 		"total": total,
 		"rank": rank_for(total),
 		"seconds": seconds,

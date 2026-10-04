@@ -23,6 +23,8 @@ const AFTER_DEATH_VERBS := ["wait", "tap", "menu", "snap", "dump", "assert"]
 const WALK_ARRIVE_PX := 12.0
 ## The bot beats the boss; that must not unlock Robot in the developer's real save.
 const UNLOCKS := "user://autoplay_unlocks.cfg"
+## ...nor put bot bests and initials on the player's real high-score table.
+const SCORES := "user://autoplay_scores.cfg"
 
 var sc: Dictionary = {}
 var pad: Pad
@@ -60,6 +62,9 @@ func setup(source: String, out_dir: String) -> void:
 	seed(sc["seed"])
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(UNLOCKS))
 	Globals.use_unlock_save(UNLOCKS)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(SCORES))
+	ScoreSystem.save_path = SCORES
+	ScoreSystem.reload()
 	Globals.selected_character = sc["character"]
 	_run.call_deferred()
 

@@ -144,18 +144,32 @@ Multiplier tiers start at combo 0, 3, 6, 10, 15, 21, 28, 36 → 1× to 8×. Fron
 so the meter feels alive in a normal three-enemy scrap, then stretched so 8× is a
 genuine achievement.
 
-### End of stage
+### The run: street, boss, bonus
+
+A run is the street then the boss room. Walking out of the street **alive** (the boss
+door) carries the score, clock, damage count and secrets into the boss stage
+(`ScoreRules.continues_run`); the street's part is banked as `street_score` for the
+card. A death, a menu in between, or a boss-only debug start begins a fresh run. The
+player's health carries through the same door (`Globals.carried_health`, taken once by
+the boss room's own Player).
 
 ```
-total = fight_score + time_bonus + no_damage_bonus
+total = street + boss + bonus       bonus = time_bonus + no_damage_bonus + secret_bonus
 ```
 
-- **Time** — 25 pts per second under a 240s par. Never negative; being slow costs you
-  the bonus, it doesn't subtract from what you earned fighting.
-- **No damage** — flat 3000 for a flawless run, otherwise 250 per health pip left. A
+- **Time** — 15 pts per second under a 420s **run** par (street + boss). Never
+  negative. Tuned so the bonus is the same order as the fight score (it used to be per
+  stage: boss-only, 240s par, 25/s, so it paid ~8x the boss fight).
+- **No damage** — flat 3000 for a flawless run, otherwise 250 per health orb left. A
   flawless run beats *any* damaged run outright, whatever health was kept (pinned by
   a test).
-- **Rank** — S 20000 / A 14000 / B 9000 / C 5000 / D 0.
+- **Secrets** — 250 per unique secret (`Globals.secret_found`: cracked-wall orb "wall",
+  newspaper stand "news"). `SecretTally` counts ids once per run and derives the card's
+  totals from the level files (every node running `crack.gd` / `interactive_mailbox.gd`
+  in the run's scenes).
+- **Rank** — S 18000 / A 13000 / B 9500 / C 6000 / D 0. Pinned in
+  `test_score_rules.gd` against measured seed-1 runs: clean mortal completionist ≈ A,
+  flawless with every secret = S, slow and battered = C.
 
 Bests persist per scene to `user://scores.cfg`.
 
@@ -174,8 +188,8 @@ comparison sees no change, which left the clock running from the previous attemp
 the HUD parented to the freed scene. (Caught at runtime by `/verify`, not by lint or
 the unit tests — `hud_present: false` with a `stage_seconds` larger than the session.)
 
-A player death ends the run with **no** rank card — you don't get graded on a stage
-you didn't finish.
+A player death ends the run with **no** rank card — you don't get graded on a run
+you didn't finish. The list entry is still the whole run's score so far.
 
 ### End card and high-score list
 
@@ -278,7 +292,8 @@ reports the uniforms actually written to the sprite material for exactly that re
 | How chunky the pixel effect is | `pixel_size` / `dither` per def |
 | Combo pacing | `ScoreRules.MULTIPLIER_STEPS`, `COMBO_WINDOW` |
 | Rank difficulty | `ScoreRules.RANK_THRESHOLDS` |
-| Par time | `ScoreRules.PAR_SECONDS` |
+| Par time (whole run) | `ScoreRules.PAR_SECONDS` |
+| Secret award | `ScoreRules.POINTS_PER_SECRET` |
 
 ---
 
