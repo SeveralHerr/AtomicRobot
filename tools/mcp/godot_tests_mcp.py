@@ -7,6 +7,7 @@ Tools:
   run_autoplay(filter?)     -> bot-playthrough summaries (test/autoplay/*.json name substrings)
   audit_lane_walls()        -> Wall-layer colliders that block the road lanes (invisible walls)
   record_autoplay(filter)   -> one scenario recorded to autoplay_out/<filter>.mp4 (Movie Maker)
+  contact_sheet(run, t_from, t_to) -> one JPEG of a windowed run's snaps between two game times
 
 Godot path: $GODOT, else the path documented in CLAUDE.md.
 """
@@ -48,6 +49,14 @@ TOOLS = [
                        "autoplay_out/<filter>.mp4 with sound, windowed. Real-time-ish: ~3 min for a full run.",
         "inputSchema": {"type": "object", "properties": {"filter": {"type": "string"}},
                         "required": ["filter"]},
+    },
+    {
+        "name": "contact_sheet",
+        "description": "Tile a windowed autoplay run's snaps (autoplay_out/<run>_f*.png) between "
+                       "t_from and t_to game seconds into one labelled JPEG; returns its path to Read.",
+        "inputSchema": {"type": "object", "properties": {
+            "run": {"type": "string"}, "t_from": {"type": "number"}, "t_to": {"type": "number"}},
+            "required": ["run", "t_from", "t_to"]},
     },
     {
         "name": "audit_lane_walls",
@@ -103,6 +112,19 @@ def record_autoplay(filter_: str) -> str:
     return "\n".join(keep) or out[-2000:]
 
 
+def contact_sheet(run: str, t_from, t_to) -> str:
+    # The run name becomes a glob and a file name: same allow-list as the filters.
+    if not run or not FILTER_RE.match(run):
+        return "run must be 1-80 letters, digits or _"
+    try:
+        lo, hi = float(t_from), float(t_to)
+    except (TypeError, ValueError):
+        return "t_from / t_to must be numbers"
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import contact_sheet as cs
+    return cs.build(run, lo, hi)
+
+
 def audit_lane_walls() -> str:
     return _py("lane_wall_audit.py")[-3000:]
 
@@ -126,6 +148,8 @@ def handle(msg: dict):
             text = run_autoplay(str(args.get("filter", "")))
         elif p.get("name") == "record_autoplay":
             text = record_autoplay(str(args.get("filter", "")))
+        elif p.get("name") == "contact_sheet":
+            text = contact_sheet(str(args.get("run", "")), args.get("t_from"), args.get("t_to"))
         elif p.get("name") == "audit_lane_walls":
             text = audit_lane_walls()
         else:

@@ -39,6 +39,8 @@ var fail_reason := ""
 ## `god on` outlives the Player instance: boss_room.tscn has its own Player.
 var god := false
 var _finished := false
+## Last frame's MicroCutscene.playing, to log each cut scene's start and end.
+var _was_watching := false
 var _source := ""
 
 
@@ -82,7 +84,11 @@ func _physics_process(_delta: float) -> void:
 	if god:
 		_with_player(func(p: Player) -> void: p.god_mode = true)
 	var snap := world.snapshot(get_tree(), rec.t, 1.0 / Engine.physics_ticks_per_second)
-	if brain_on:
+	if _watching() != _was_watching:
+		_was_watching = _watching()
+		rec.watching = _was_watching
+		rec.log_event("cutscene", {"playing": _was_watching})
+	if brain_on and not _watching():
 		if is_finite(brain_stop_x):
 			snap["goal_x"] = brain_stop_x
 		var intent := Brain.decide(snap, brain_mem)
@@ -111,10 +117,18 @@ func _run() -> void:
 		if _player_dead() and not step["verb"] in AFTER_DEATH_VERBS:
 			rec.log_event("steps_skipped", {"reason": "player died", "next": step["text"]})
 			break
+		while _watching() and not _finished:
+			await get_tree().physics_frame
 		rec.log_event("step", {"do": step["text"]})
 		await _do(step)
 	if not _finished:
 		_finish(0, "")
+
+
+## A cut scene has the camera. Watch it like a player would: any new press skips it,
+## so the brain and walk_to hold their keys and wait.
+func _watching() -> bool:
+	return MicroCutscene.playing
 
 
 func _player_dead() -> bool:
@@ -197,7 +211,7 @@ func _brain(goal: String, seconds: float, stop_x: float = INF) -> void:
 	rec.log_event("brain_end", {"goal": goal, "done": brain_mem["done"], "won": rec.won})
 
 
-## Taps ui_accept (Enter) through the title, character select, story and controls
+## Taps ui_accept (Enter) through the title, character select and controls
 ## screens until a player is in a lane-enabled level.
 func _menu(text: String, seconds: float) -> void:
 	var end := rec.t + seconds
@@ -223,6 +237,10 @@ func _walk_to(text: String, x: float, seconds: float) -> void:
 		p = World.player(get_tree())
 		if p == null:
 			break
+		if _watching():
+			end += 1.0 / Engine.physics_ticks_per_second
+			await get_tree().physics_frame
+			continue
 		var dx := x - p.global_position.x
 		if absf(dx) <= WALK_ARRIVE_PX:
 			break

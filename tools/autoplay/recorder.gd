@@ -71,6 +71,14 @@ var step_failures: Array = []
 ## Direction the current step is trying to move the player (+1 right, -1 left, 0 =
 ## not a movement step). Set by the runner for `brain advance` and `walk_to`.
 var progress_dir: int = 0
+## A cut scene has the camera (set by the runner): the player is frozen on purpose.
+var watching := false:
+	set(on):
+		if on and not watching:
+			cutscenes += 1
+		watching = on
+## Street cut scenes that started this run.
+var cutscenes := 0
 
 var _player_id: int = 0
 var _last_hp: int = 0
@@ -244,7 +252,7 @@ func _track_kills(tree: SceneTree) -> void:
 ## scripted walk_to steps that never arrive both count.
 func _track_stuck(snap: Dictionary) -> void:
 	var p: Dictionary = snap.get("player", {})
-	if progress_dir == 0 or p.is_empty() or p.get("dead", false):
+	if progress_dir == 0 or watching or p.is_empty() or p.get("dead", false):
 		return
 	# Standing still to fight (a crowd, the boss) or at the goal is not stuck.
 	if last_why.begins_with("fight") or last_why == "at goal" or str(p.get("state", "")) in ["AttackState", "KnockbackState"]:
@@ -301,7 +309,7 @@ func metrics(tree: SceneTree) -> Dictionary:
 		"enemies_near": _last_snap.get("enemies", []).size(),
 		"max_stuck_s": snappedf(max_stuck_s, 0.1), "stuck_spots": stuck_spots.size(),
 		"secret_walls": secret_walls.size(), "secret_news": secret_news.size(),
-		"headlines": headlines.size(),
+		"headlines": headlines.size(), "cutscenes": cutscenes,
 		"step_failures": step_failures.size(),
 		"errors": errors.script_errors, "engine_errors": errors.engine_errors,
 		"warnings": errors.warnings,

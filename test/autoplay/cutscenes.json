@@ -1,0 +1,10 @@
+{
+ "name": "cutscenes",
+ "boot": true,
+ "character": "Ryan",
+ "seed": 1,
+ "timeout": 200,
+ "steps": ["menu 40", "god on", "teleport 5800", "brain advance 90 6600", "wait 2.5",
+   "teleport 8080", "kill_all", "walk_to 8250 20", "wait 3.5"],
+ "expect": ["cutscenes == 3", "errors == 0", "step_failures == 0", "max_stuck_s < 10"]
+}
