@@ -167,10 +167,7 @@ func _input(event: InputEvent) -> void:
 	state_machine.handle_input(event)
 	
 func is_near_ground() -> bool:
-	if position.y >= -200:
-		return true
-	return false
-var h
+	return position.y >= -200
 
 func _init() -> void:
 	var current_character = Globals.get_current_character()
