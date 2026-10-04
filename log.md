@@ -389,3 +389,12 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: godot-autoplay-test (enhancement: say up front that the brain never presses Interact — now documented), artifact-capabilities. New: godot-speedrun-review.
 - Would have helped: godot-speedrun-review (now exists); somewhat-useful-claude-skills:godot-2d-placement-audit (HUD overlap numerically); mockup-on-screenshot (proposal visuals on cards).
 - MCP: godot-tests (extended with record_autoplay). AGENTS.md referenced by CLAUDE.md does not exist.
+
+## 2026-10-04 — Secret walls for every character, juicy reveal, news shuffle (sr-secrets)
+- Robot/Cass shots chip cracks (LaneProjectile.find_crack); Crack.take_blow = one feel for melee + shots.
+- Reveal: brick chunks, gold SECRET!, Unlock sting, painted hole + bobbing orb; claim flies orb to HP bar (heal on arrival) + chime; Globals.secret_found wall/news once per id.
+- Bugs found: hitting a claimed wall re-armed the orb (infinite orbs); completionist never read stand 5028 (road lane).
+- News: shared shuffle bag -> 5 stands, 5 headlines (seeded). Paper card moved below score/CRT edge.
+- 598/598 unit, 9/9 sandbox, 15/15 autoplay; 13/13 guard mutants killed (1 survivor -> new test).
+- Skills used: godot-hit-feel, godot-headful-screenshot, godot-autoplay-test, godot-speedrun-review, juicy-screen-review (enhancement: ship the round/sheet scripts in the skill instead of rewriting them). Would have helped: somewhat-useful-claude-skills:extract-a-testable-seam (prompt-delay mutant), a "python edits on Windows" note (cp1252 + CRLF mangled files: use PYTHONUTF8=1 and newline='').
+- MCP: none used.
