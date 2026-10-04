@@ -122,6 +122,8 @@ texture = ExtResource("16_nns31")
 [node name="BuildingDoorEncounter" type="Node2D" parent="." unique_id=542259118 instance=ExtResource("17_ybv5f")]
 position = Vector2(297, 0)
 script = ExtResource("18_0kulo")
+enemy_count = 4
+waves = 2
 
 [node name="Meter" type="Node2D" parent="." unique_id=181482052 instance=ExtResource("19_50dvv")]
 z_index = 1
