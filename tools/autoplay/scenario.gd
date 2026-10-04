@@ -44,7 +44,7 @@ const VERBS := {
 	"hp": ["int"],
 	"kill_all": [],
 	"sink": ["num"],
-	"brain": ["goal", "num?"],
+	"brain": ["goal", "num?", "num?"],
 	"menu": ["num?"],
 	"snap": ["name?"],
 	"dump": ["name?"],

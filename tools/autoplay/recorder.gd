@@ -86,6 +86,10 @@ func _ready() -> void:
 	Globals.boss_death.connect(func() -> void:
 		won = true
 		log_event("win", {}))
+	PowerupSystem.powerup_started.connect(func(id: String, _duration: float) -> void:
+		log_event("powerup", {"id": id, "x": _last_snap.get("player", {}).get("x", 0.0)}))
+	Globals.unlocked.connect(func(what: String, _description: String) -> void:
+		log_event("unlock", {"what": what}))
 
 
 func _exit_tree() -> void:

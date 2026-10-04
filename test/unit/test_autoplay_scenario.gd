@@ -121,6 +121,19 @@ func test_brain_goal_is_validated() -> String:
 	return _T.assert_false(good.has("error"), "advance with seconds accepted")
 
 
+## `brain advance S X`: fight forward but stop at x=X (route scripting between eggs).
+func test_brain_accepts_a_numeric_stop_x() -> String:
+	var good: Dictionary = Scenario.parse_step("brain advance 30 400.5")
+	var bad: Dictionary = Scenario.parse_step("brain advance 30 far")
+	var e: String = _T.assert_false(good.has("error"), "stop x accepted")
+	if e != "":
+		return e
+	e = _T.assert_true(bad.has("error"), "non-numeric stop x rejected")
+	if e != "":
+		return e
+	return _T.assert_eq(good["args"][2], "400.5", "stop x kept as the third arg")
+
+
 func test_evaluate_compares_numbers_numerically() -> String:
 	var m := {"kills": 3, "scene": "main", "t": 2.5}
 	var cases := [

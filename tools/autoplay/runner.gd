@@ -30,6 +30,8 @@ var rec: Recorder
 var world := World.new()
 var brain_mem: Dictionary = {}
 var brain_on := false
+## `brain advance S X`: the brain treats X as the goal and the step ends there.
+var brain_stop_x := INF
 var asserts: Array = []
 var fail_reason := ""
 ## `god on` outlives the Player instance: boss_room.tscn has its own Player.
@@ -74,6 +76,8 @@ func _physics_process(_delta: float) -> void:
 		_with_player(func(p: Player) -> void: p.god_mode = true)
 	var snap := world.snapshot(get_tree(), rec.t, 1.0 / Engine.physics_ticks_per_second)
 	if brain_on:
+		if is_finite(brain_stop_x):
+			snap["goal_x"] = brain_stop_x
 		var intent := Brain.decide(snap, brain_mem)
 		rec.note_why(intent["why"])
 		pad.apply(intent)
@@ -153,15 +157,17 @@ func _do(step: Dictionary) -> void:
 				if e is Enemy and not e.is_dead and not e.lane_locked:
 					e.global_position.y += float(a[0])
 			await _wait_frames(2)
-		"brain": await _brain(a[0], float(a[1]) if a.size() > 1 else sc["timeout"])
+		"brain": await _brain(a[0], float(a[1]) if a.size() > 1 else sc["timeout"],
+				float(a[2]) if a.size() > 2 else INF)
 		"menu": await _menu(step["text"], float(a[0]) if a.size() > 0 else 30.0)
 		"snap": rec.snap(a[0] if a.size() > 0 else "t%04d" % int(rec.t))
 		"dump": rec.dump(a[0] if a.size() > 0 else "dump")
 		"assert": _check(step["check"])
 
 
-func _brain(goal: String, seconds: float) -> void:
+func _brain(goal: String, seconds: float, stop_x: float = INF) -> void:
 	brain_mem = Brain.new_mem(goal, sc["seed"])
+	brain_stop_x = stop_x
 	brain_on = true
 	# Levels and the boss room both progress rightward.
 	rec.set_progress_dir(1 if goal == "advance" else 0)
@@ -170,8 +176,12 @@ func _brain(goal: String, seconds: float) -> void:
 	while not _finished and rec.t < end:
 		if brain_mem["done"] or rec.won or rec.deaths > deaths:
 			break
+		# Arrived with nothing left to fight on the way ("at goal" outranks only advance).
+		if is_finite(stop_x) and rec.last_why == "at goal":
+			break
 		await get_tree().physics_frame
 	brain_on = false
+	brain_stop_x = INF
 	pad.release_all()
 	rec.set_progress_dir(0)
 	# The brain's last reason must not outlive it: a stale "fight" would hide

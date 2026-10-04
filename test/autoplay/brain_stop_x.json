@@ -1,0 +1,7 @@
+{
+  "character": "Ryan",
+  "seed": 1,
+  "timeout": 120,
+  "steps": ["god on", "brain advance 60 2700", "assert x > 2670", "assert x < 2730", "assert t < 50"],
+  "expect": ["errors == 0", "max_stuck_s < 10"]
+}
