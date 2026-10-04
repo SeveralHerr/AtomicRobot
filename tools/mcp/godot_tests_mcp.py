@@ -6,6 +6,7 @@ Tools:
   run_sandbox_selftests()   -> the sandbox runner's per-scenario table
   run_autoplay(filter?)     -> bot-playthrough summaries (test/autoplay/*.json name substrings)
   audit_lane_walls()        -> Wall-layer colliders that block the road lanes (invisible walls)
+  record_autoplay(filter)   -> one scenario recorded to autoplay_out/<filter>.mp4 (Movie Maker)
 
 Godot path: $GODOT, else the path documented in CLAUDE.md.
 """
@@ -40,6 +41,13 @@ TOOLS = [
         "description": "Run autoplay bot scenarios headless (test/autoplay/*.json). Optional filter = "
                        "scenario-name substring, e.g. full_run. Returns each run's summary.",
         "inputSchema": {"type": "object", "properties": {"filter": {"type": "string"}}},
+    },
+    {
+        "name": "record_autoplay",
+        "description": "Record ONE autoplay scenario (name substring, e.g. completionist) to "
+                       "autoplay_out/<filter>.mp4 with sound, windowed. Real-time-ish: ~3 min for a full run.",
+        "inputSchema": {"type": "object", "properties": {"filter": {"type": "string"}},
+                        "required": ["filter"]},
     },
     {
         "name": "audit_lane_walls",
@@ -86,6 +94,15 @@ def run_autoplay(filter_: str = "") -> str:
     return "\n".join(keep) or out[-2000:]
 
 
+def record_autoplay(filter_: str) -> str:
+    # Same allow-list as the other filters: the name also becomes the output file name.
+    if not filter_ or not FILTER_RE.match(filter_):
+        return "filter must be 1-80 letters, digits or _"
+    out = _py("autoplay.py", filter_, "--record", os.path.join(ROOT, "autoplay_out", filter_ + ".mp4"))
+    keep = [l for l in out.splitlines() if re.match(r"(AUTOPLAY|\s+(reason|combat|errors)|video:|\[|--record)", l)]
+    return "\n".join(keep) or out[-2000:]
+
+
 def audit_lane_walls() -> str:
     return _py("lane_wall_audit.py")[-3000:]
 
@@ -107,6 +124,8 @@ def handle(msg: dict):
             text = run_sandbox_selftests()
         elif p.get("name") == "run_autoplay":
             text = run_autoplay(str(args.get("filter", "")))
+        elif p.get("name") == "record_autoplay":
+            text = record_autoplay(str(args.get("filter", "")))
         elif p.get("name") == "audit_lane_walls":
             text = audit_lane_walls()
         else:

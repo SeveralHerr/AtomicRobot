@@ -10,6 +10,7 @@ prints a short summary and writes autoplay_out/<name>.json with the event log.
     python tools/autoplay.py full_run --window    # windowed: screenshots work
     python tools/autoplay.py smoke --events hurt,stuck,death   # print those events
     python tools/autoplay.py smoke -v             # full Godot output
+    python tools/autoplay.py completionist --record run.mp4   # video (Movie Maker + ffmpeg)
 
 Exit code: 0 all passed, 1 a scenario failed, 2 a scenario was invalid (BROKEN).
 Headless runs use --fixed-fps 60: deterministic game time, faster than real time.
@@ -20,6 +21,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -51,10 +53,40 @@ def targets(filters: list[str]) -> list[Path]:
     return out
 
 
-def run_one(godot: str, source: str, window: bool, verbose: bool, resolution: str = "") -> tuple[str, str, str]:
+def ffmpeg_exe() -> str | None:
+    """ffmpeg on PATH, else the one bundled with `pip install imageio-ffmpeg`."""
+    found = shutil.which("ffmpeg")
+    if found:
+        return found
+    try:
+        import imageio_ffmpeg
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except ImportError:
+        return None
+
+
+def encode_mp4(avi: Path, mp4: Path) -> str:
+    """Movie Maker writes MJPEG AVI (~9 MB/s); browsers need H.264. Returns an error or ""."""
+    ff = ffmpeg_exe()
+    if ff is None:
+        return f"no ffmpeg (pip install imageio-ffmpeg); raw video kept at {avi}"
+    proc = subprocess.run([ff, "-y", "-v", "error", "-i", str(avi), "-c:v", "libx264", "-crf", "20",
+                           "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-c:a", "aac", "-b:a", "160k",
+                           str(mp4)], capture_output=True, text=True)
+    if proc.returncode != 0:
+        return f"ffmpeg failed: {proc.stderr.strip()[-300:]}; raw video kept at {avi}"
+    avi.unlink()
+    return ""
+
+
+def run_one(godot: str, source: str, window: bool, verbose: bool, resolution: str = "",
+            record: Path | None = None) -> tuple[str, str, str]:
     """Returns (status, report name, output to print)."""
     cmd = [godot, "--path", str(REPO), "--mute", "--fixed-fps", "60"]
-    if not window:
+    if record:
+        # Movie Maker: windowed, with sound, every frame rendered (slower than headless).
+        cmd = [godot, "--path", str(REPO), "--write-movie", str(record.with_suffix(".avi")), "--fixed-fps", "60"]
+    elif not window:
         cmd.insert(1, "--headless")
     if resolution:
         cmd += ["--resolution", resolution]
@@ -77,9 +109,13 @@ def run_one(godot: str, source: str, window: bool, verbose: bool, resolution: st
         status = "SCRIPT-ERROR"
     n = NAME_RE.search(out)
     name = n.group(1) if n else "?"
+    if record:
+        err = encode_mp4(record.with_suffix(".avi"), record)
+        out += "\nvideo: " + (err or str(record))
     if verbose:
         return status, name, out
-    keep = [ln for ln in out.splitlines() if SUMMARY_RE.match(ln) or "scenario error" in ln]
+    keep = [ln for ln in out.splitlines()
+            if SUMMARY_RE.match(ln) or "scenario error" in ln or ln.startswith(("video:", "Done recording"))]
     if status in ("ERROR", "NO-RESULT", "SCRIPT-ERROR"):
         keep += [ln for ln in out.splitlines() if "ERROR" in ln][:15]
     return status, name, "\n".join(keep)
@@ -103,6 +139,7 @@ def main() -> int:
     ap.add_argument("--events", help="comma list of event kinds to print after each run, "
                                      "e.g. hurt,stuck,death,step_failed,why")
     ap.add_argument("--resolution", default="", help="windowed size WxH, e.g. 1688x780 (landscape phone)")
+    ap.add_argument("--record", help="record ONE scenario to this .mp4 (windowed Movie Maker, with audio)")
     ap.add_argument("-v", "--verbose", action="store_true", help="print full Godot output")
     args = ap.parse_args()
 
@@ -119,10 +156,14 @@ def main() -> int:
         print(f"no scenarios matched {args.filters} in {SCENARIO_DIR}")
         return 2
 
+    record = Path(args.record).resolve() if args.record else None
+    if record and (len(sources) != 1 or record.suffix.lower() != ".mp4"):
+        print("--record needs exactly one scenario and an .mp4 path")
+        return 2
     failures, broken = [], False
     for src in sources:
         started = time.time()
-        status, name, out = run_one(godot, src, args.window, args.verbose, args.resolution)
+        status, name, out = run_one(godot, src, args.window, args.verbose, args.resolution, record)
         print(out)
         if args.events:
             print_events(name, args.events.split(","))
