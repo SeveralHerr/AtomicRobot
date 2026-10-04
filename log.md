@@ -509,3 +509,10 @@ Log of skills that might have been useful for a given response, and why (short f
 - 10 new tests (test_title_splash.gd), 13/13 mutants killed (touch mutant survived until emulate_mouse_from_touch was turned off in the test). 893 unit, full_run + full_run_mortal PASS.
 - Validation: --write-movie desktop round, 1688x780 window_set_size round, skip-at-0.35s round; no fixes needed.
 - Skills used: jamcraft-splash (enhancement: warn that `next_scene` calls change_scene directly and layer 100 may collide with a post-process overlay; `--write-movie` ignores `--resolution`). Would have helped: none extra. MCP: none.
+## 2026-10-04 — Static power-ups + roof heart (branch lj-pickups)
+- PowerupPickup `placed` mode (no lifetime/blink, keeps parent, PowerupGlow halo + golden-angle twinkles, no global RNG). Placed in atomic_robot_building_group.tscn: Rage on the window building's upper ledge pier (590,-376), Overclock above the tall scaffold (1183,-112), RoofHeart over the AR Tattoo roof scaffold (-210,-306, glow so it doesn't read as a HUD orb).
+- Autoplay: `powerups` metric, `teleport X [Y]`, snap step waits for its frame (same-frame teleport leaked into the picture), brain skips pickups beyond MAX_DY (ledge rewards could pin it). completionist routes collect all three; new placed_pickups.json.
+- Balance (8 runs each): completionist 4.50 -> 6.25 power-ups/run, buff uptime 14.9% -> 20.2% (max 30%); bot full_run 4.5 -> 5.0 (no placed). Drop rate unchanged — far from the >50% "always buffed" failure; offsetting 2 optional rewards would need ~0.04 base chance (pity-driven).
+- 10 validation rounds (one 1688x780). 901 unit, 19/19 autoplay, lane audit clean, 16/16 mutants killed.
+- Skills used: none via tool; repo skills godot-autoplay-test (enhanced: powerups metric, teleport Y), godot-ab-worktree. New skill: skills/godot-level-pickups. Would have helped: somewhat-useful-claude-skills:godot-2d-placement-audit (numeric placement asserts), derive-the-list (placed pickup list from the scene).
+- MCP: none used (CLI equivalents). No new MCP server (YAGNI: godot-tests already wraps autoplay).

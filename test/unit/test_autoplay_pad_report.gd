@@ -68,7 +68,7 @@ func test_sanitize_replaces_inf_and_nan_nested() -> String:
 
 func test_summary_is_short_and_ends_with_result() -> String:
 	var m := {"t": 1.0, "frames": 60, "scene": "main", "x": 0, "lane": 1, "hp": 3, "max_hp": 30,
-		"state": "IdleState", "kills": 0, "hits_taken": 0, "damage_taken": 0, "heals": 0,
+		"state": "IdleState", "kills": 0, "hits_taken": 0, "damage_taken": 0, "heals": 0, "powerups": 0,
 		"deaths": 0, "won": 0, "score": 0, "max_stuck_s": 0.0, "errors": 0, "engine_errors": 0, "warnings": 0}
 	var r := {"name": "x", "result": "PASS", "reason": "", "metrics": m, "scenes": ["main"],
 		"stuck_spots": [], "errors": [], "asserts": [{"pass": true, "text": "kills >= 0", "actual": 0}], "snaps": []}

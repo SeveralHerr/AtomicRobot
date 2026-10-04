@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=4 uid="uid://d4hesyanxo8l"]
+[gd_scene load_steps=40 format=4 uid="uid://d4hesyanxo8l"]
 
 [ext_resource type="Texture2D" uid="uid://biqvjni2xn7rp" path="res://images/new/Background_Bushes.png" id="1_j1q5a"]
 [ext_resource type="Texture2D" uid="uid://jo0qmhfs7b8r" path="res://images/new/Background_bush2.png" id="2_bb4wt"]
@@ -23,6 +23,8 @@
 [ext_resource type="Texture2D" uid="uid://djcyx273wjxf0" path="res://images/car2.png" id="19_8w0sk"]
 [ext_resource type="PackedScene" uid="uid://dg72alaxq1lp7" path="res://scenes/scaffolding1.tscn" id="22_aip1n"]
 [ext_resource type="PackedScene" uid="uid://hvltuyesp547" path="res://scenes/scaffolding2.tscn" id="23_1cvds"]
+[ext_resource type="PackedScene" path="res://scenes/powerup_pickup.tscn" id="24_pwrup"]
+[ext_resource type="Script" uid="uid://dw1yy1u6vr2ck" path="res://scripts/powerup_glow.gd" id="25_glow"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_r056b"]
 atlas = ExtResource("3_j0y8s")
@@ -354,5 +356,23 @@ position = Vector2(1356, 48)
 
 [node name="Scaffolding2" parent="." instance=ExtResource("22_aip1n")]
 position = Vector2(1441, 48)
+
+[node name="RoofHeart" parent="." instance=ExtResource("15_bb4wt")]
+position = Vector2(48, -209)
+
+[node name="Glow" type="Node2D" parent="RoofHeart"]
+scale = Vector2(1.8, 1.8)
+script = ExtResource("25_glow")
+color = Color(1, 0.3, 0.35, 1)
+
+[node name="LedgePowerup" parent="." instance=ExtResource("24_pwrup")]
+position = Vector2(848, -279)
+powerup_id = "rage"
+placed = true
+
+[node name="ScaffoldPowerup" parent="." instance=ExtResource("24_pwrup")]
+position = Vector2(1441, -15)
+powerup_id = "overclock"
+placed = true
 
 [editable path="Crack"]

@@ -246,6 +246,9 @@ timing against door waves and their STREET CLEAR! payoff (`skills/godot-micro-cu
 Let table tests check framing/readability rules (shot above the road, title readable
 before the glide back): they caught 3 bad numbers screenshots didn't.
 
+Placed pickups: judge them at the player's STANDING height — zoom 2.5 puts anything ~95px
+above the floor in the HUD band (`skills/godot-level-pickups/SKILL.md`).
+
 Before/after evidence for a fix: run the same scenario on HEAD and the working tree
 (`skills/godot-ab-worktree/SKILL.md`). Check a forced bug state on the OLD build before
 you trust it in a demo.

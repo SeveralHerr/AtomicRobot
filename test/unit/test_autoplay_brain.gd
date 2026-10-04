@@ -299,3 +299,17 @@ func test_idle_watchdog_wanders() -> String:
 	for f in int((Brain.IDLE_MAX_S + 0.1) / DT):
 		moved = moved or Brain.decide(s, mem)["x"] != 0
 	return _T.assert_true(moved, "idle watchdog makes the bot move")
+
+
+func test_goes_for_a_pickup_at_street_height() -> String:
+	var pk := {"x": 100.0, "y": 2.0, "lane": 1}
+	var i := Brain.decide(_snap(_p(), {"pickups": [pk]}), Brain.new_mem("advance"))
+	return _T.assert_eq(i["why"], "pickup", "a reachable pickup is collected")
+
+
+## Level-placed pickups sit on ledges and scaffolds. Chasing one from the street had
+## no give-up: the bot would hop under it until the step timed out.
+func test_ignores_a_pickup_up_on_a_ledge() -> String:
+	var pk := {"x": 100.0, "y": -150.0, "lane": 0}
+	var i := Brain.decide(_snap(_p({"lane": 0}), {"pickups": [pk]}), Brain.new_mem("advance"))
+	return _T.assert_true(not String(i["why"]).begins_with("pickup"), "out-of-reach pickup ignored (why=%s)" % i["why"])
