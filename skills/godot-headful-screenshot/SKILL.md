@@ -43,3 +43,11 @@ The CRT overlay autoload is in the shot - judge legibility through it, it is wha
   state you are judging (fade alpha, `Engine.time_scale`) beside each SNAP line instead of trusting t.
 - `InputEventAction` does not satisfy `any_button.gd` (keys/joy only): send `InputEventKey` ENTER.
 - `print_stack()`/`get_stack()` print nothing without a debugger; trace with plain `print`.
+
+## Phone-size rounds (verified 2026-10-03)
+- `--resolution 1688x780` on a throwaway `--script` SceneTree capture does NOT change the
+  captured image. Use the bot instead: `python tools/autoplay.py my.json --window --resolution 1688x780`
+  with `snap_every` — snaps come out at the aspect-fit viewport size (1248x780 for 1688x780),
+  which is what a landscape phone actually shows.
+- Pin layout clearances numerically too (e.g. `BossBanner.burst_radii` vs the HUD combo slot
+  in `test_encounter_announcer.gd`) — a screenshot only proves the frame you caught.
