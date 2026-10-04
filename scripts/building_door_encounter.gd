@@ -7,7 +7,7 @@ class_name BuildingDoorEncounter
 ## the lanes, and — if `lock_arena` — barriers plus camera limits hold the player
 ## there until the street is clear. The squad comes out in 1–3 `waves`: each one
 ## rumbles the door and bursts it again once the previous wave is down, with a
-## comic "WAVE 2/3" callout (EncounterAnnouncer), then "STREET CLEAR!" at the end.
+## comic "WAVE 2/3" callout (EncounterAnnouncer), then a "BUSTED!" payoff when the last wave is down.
 ##
 ## `DoorMouth/Crack` (sprites/crack.png) doubles as the visual: a hairline crack
 ## sits at the base of the wall as a permanent tell for where an encounter lives,
@@ -18,7 +18,7 @@ signal encounter_finished
 ## A wave starts its telegraph. `index` is 1-based, of `total`.
 signal wave_started(index: int, total: int)
 ## The last wave went down (not emitted for a watchdog or death release).
-signal street_cleared
+signal squad_cleared
 
 ## Whole squad across all waves.
 @export var enemy_count: int = 4
@@ -154,7 +154,7 @@ func _process(_delta: float) -> void:
 	if _wave < _plan.size() - 1:
 		_next_wave()
 	else:
-		street_cleared.emit()
+		squad_cleared.emit()
 		_end()
 
 
@@ -230,6 +230,7 @@ func _telegraph(first: bool) -> void:
 		_arm_tween.tween_property(crack, "frame", _CRACK_WIDEST_FRAME, arm_seconds)
 	else:
 		wait = rearm_seconds
+		dust.restart()  # grit shaken loose from the hole: the rumble reads in a still
 		var beat: float = rearm_seconds / 6.0
 		_arm_tween.set_loops(3)
 		_arm_tween.tween_property(crack, "scale", Vector2(1.25, 1.15), beat)
@@ -349,5 +350,5 @@ func _end() -> void:
 		_pushed_event = false
 	encounter_finished.emit()
 	if one_shot:
-		# Outlive the STREET CLEAR! callout, which lives under this node.
+		# Outlive the BUSTED! callout, which lives under this node.
 		get_tree().create_timer(2.0).timeout.connect(queue_free)

@@ -27,7 +27,7 @@ func test_announcer_last_wave_is_called_out() -> String:
 ## A stand-in encounter with just the three signals the announcer listens to.
 class FakeEncounter extends Node:
 	signal wave_started(index: int, total: int)
-	signal street_cleared
+	signal squad_cleared
 	signal encounter_finished
 
 
@@ -52,8 +52,8 @@ func test_announcer_forced_end_cuts_the_banner() -> String:
 
 func test_announcer_clear_survives_the_release() -> String:
 	var rig := _rig()
-	rig[0].street_cleared.emit()
+	rig[0].squad_cleared.emit()
 	rig[0].encounter_finished.emit()
 	var shown: bool = rig[1].visible and rig[1].banner != null
 	rig[0].free()
-	return _T.assert_true(shown, "STREET CLEAR! stays up after the lock drops")
+	return _T.assert_true(shown, "the BUSTED! payoff stays up after the lock drops")

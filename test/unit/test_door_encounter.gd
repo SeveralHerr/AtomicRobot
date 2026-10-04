@@ -234,7 +234,7 @@ func test_wave_sizes_clamp_wave_count() -> String:
 func _wave_signals() -> Array:
 	var log: Array = []
 	_enc.wave_started.connect(func(i, n): log.append("wave %d/%d" % [i, n]))
-	_enc.street_cleared.connect(func(): log.append("clear"))
+	_enc.squad_cleared.connect(func(): log.append("clear"))
 	return log
 
 
@@ -310,7 +310,7 @@ func test_door_death_between_waves_spawns_nothing_more() -> String:
 	r = _T.assert_false(_barriers_on(), "barriers down")
 	if r != "":
 		return r
-	return _T.assert_false(log.has("clear"), "no STREET CLEAR payoff for a death")
+	return _T.assert_false(log.has("clear"), "no BUSTED! payoff for a death")
 
 
 func test_door_watchdog_release_is_not_a_clear() -> String:
@@ -321,3 +321,50 @@ func test_door_watchdog_release_is_not_a_clear() -> String:
 	_enc._on_watchdog()
 	await _tree().physics_frame
 	return _T.assert_false(log.has("clear"), "a forced release is not a payoff")
+
+
+# --- Level authoring: the real street's encounters --------------------------------
+
+const MAIN_SCENE := preload("res://scenes/main.tscn")
+
+
+## [x, waves, sizes] for every door encounter in main.tscn, in level order.
+func _street_encounters() -> Array:
+	var main := MAIN_SCENE.instantiate()
+	var found: Array = []
+	var stack: Array = [[main, 0.0]]
+	while not stack.is_empty():
+		var item: Array = stack.pop_back()
+		var n: Node = item[0]
+		var x: float = item[1] + (n.position.x if n is Node2D else 0.0)
+		if n.get_script() == E:
+			found.append([x, n.waves, E.wave_sizes(n.enemy_count, n.waves)])
+		for c in n.get_children():
+			stack.append([c, x])
+	main.free()
+	found.sort_custom(func(a, b): return a[0] < b[0])
+	return found
+
+
+func test_street_waves_ramp_from_one_to_three() -> String:
+	var encs := _street_encounters()
+	if encs.size() < 3:
+		return "expected the street's door encounters, found %d" % encs.size()
+	var r: String = _T.assert_eq(encs[0][1], 1, "first encounter is a single wave")
+	if r != "":
+		return r
+	r = _T.assert_eq(encs[-1][1], 3, "last encounter is three waves")
+	if r != "":
+		return r
+	for i in range(1, encs.size()):
+		if encs[i][1] < encs[i - 1][1]:
+			return "waves drop from %d to %d at x=%d" % [encs[i - 1][1], encs[i][1], encs[i][0]]
+	return ""
+
+
+func test_street_waves_never_send_a_lone_maid() -> String:
+	for e in _street_encounters():
+		for size in e[2]:
+			if size < 2:
+				return "encounter at x=%d has a 1-maid wave %s" % [e[0], e[2]]
+	return ""

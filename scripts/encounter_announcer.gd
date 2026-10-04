@@ -2,8 +2,10 @@ extends CanvasLayer
 class_name EncounterAnnouncer
 
 ## Comic-book callouts for a BuildingDoorEncounter: "WAVE 2/3" slams onto a stripe
-## as each wave of a multi-wave squad rumbles at the door, and "STREET CLEAR!"
-## bursts out when the last wave goes down. Reuses the boss fight's BossBanner (one
+## as each wave of a multi-wave squad rumbles at the door, and "BUSTED!" bursts
+## out when the last wave goes down. Not "STREET CLEAR!": ambient maids that
+## walked in before the lock can still be swinging (seen in validation), and the
+## payoff must not lie — the squad is what's beaten. Reuses the boss fight's BossBanner (one
 ## text system, not two) and follows atomic-pinball's callout rules: one message at
 ## a time (a new slam overtakes the old), short holds (well under its 2.5s cap).
 ##
@@ -13,6 +15,13 @@ class_name EncounterAnnouncer
 const LAYER := 3
 const WAVE_HOLD := 0.55
 const CLEAR_HOLD := 0.9
+const CLEAR_TITLE := "BUSTED!"
+const CLEAR_SUB := "GO! GO! GO!"
+## Stripe centre as a fraction of screen height, and callout scale: together they
+## keep even the BUSTED! starburst between the HUD rows and the heads of
+## maids on the walkway lane (the boss room's 0.42 at full size buries both).
+const STRIPE_Y := 0.36
+const SIZE_K := 0.8
 const CLEAR_STING := preload("res://sounds/power_up.wav")
 
 var banner: BossBanner
@@ -25,10 +34,10 @@ func _init() -> void:
 	layer = LAYER
 
 
-## Hook up to `enc`'s wave_started / street_cleared / encounter_finished.
+## Hook up to `enc`'s wave_started / squad_cleared / encounter_finished.
 func watch(enc: Node) -> void:
 	enc.wave_started.connect(_on_wave_started)
-	enc.street_cleared.connect(_on_street_cleared)
+	enc.squad_cleared.connect(_on_squad_cleared)
 	enc.encounter_finished.connect(_on_finished)
 
 
@@ -50,13 +59,14 @@ func _on_wave_started(index: int, total: int) -> void:
 	var title := wave_title(index, total)
 	if title == "":
 		return
-	var tint := ComicStyle.RED if index >= total else ComicStyle.ORANGE
+	# Yellow title on blue reads; on orange it washed out. Red marks the last wave.
+	var tint := ComicStyle.RED if index >= total else ComicStyle.BLUE
 	_banner().slam_title(title, wave_subtitle(index, total), WAVE_HOLD, tint)
 
 
-func _on_street_cleared() -> void:
+func _on_squad_cleared() -> void:
 	_cleared = true
-	_banner().slam_title("STREET CLEAR!", "GO! GO! GO!", CLEAR_HOLD, ComicStyle.BLUE, true)
+	_banner().slam_title(CLEAR_TITLE, CLEAR_SUB, CLEAR_HOLD, ComicStyle.BLUE, true)
 	if _sting == null:
 		_sting = AudioStreamPlayer.new()
 		_sting.stream = CLEAR_STING
@@ -83,6 +93,8 @@ func _banner() -> BossBanner:
 		# frame the banner is added (wave 1 slams that same frame), and slam_title
 		# centres on `size`. Top-left anchors so setting size is legal.
 		banner.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		banner.stripe_y = STRIPE_Y
+		banner.size_k = SIZE_K
 	banner.size = banner.get_viewport_rect().size
 	return banner
 
