@@ -332,6 +332,48 @@ func test_door_death_during_the_telegraph_never_bursts() -> String:
 	return _T.assert_true(_enc.crack.frame < _enc._CRACK_BURST_FRAME, "the door never blows")
 
 
+## Atomic hearts the encounter has knocked loose (live, uncollected).
+func _hearts() -> int:
+	return _stage.get_children().filter(func(c): return c.scene_file_path == HEART_PATH).size()
+
+
+const HEART_PATH := "res://scenes/atomic_heart_pickup.tscn"
+
+
+func test_door_reward_heart_drops_once_on_the_clear() -> String:
+	_make(2, 2)
+	_enc.reward_heart = true
+	_enc._on_body_entered(_p)
+	await _until(func(): return _alive() == 1 and not _enc._spawning)
+	_kill_live()
+	await _until(func(): return _alive() == 1 and not _enc._spawning)
+	var r: String = _T.assert_eq(_hearts(), 0, "no heart for an early wave")
+	if r != "":
+		return r
+	_kill_live()
+	await _until(func(): return _finished > 0)
+	return _T.assert_eq(_hearts(), 1, "one heart when the last wave goes down")
+
+
+func test_door_without_reward_drops_no_heart() -> String:
+	_make(2, 1)
+	_enc._on_body_entered(_p)
+	await _until(func(): return _alive() == 2 and not _enc._spawning)
+	_kill_live()
+	await _until(func(): return _finished > 0)
+	return _T.assert_eq(_hearts(), 0, "reward is opt-in per encounter")
+
+
+func test_door_watchdog_release_drops_no_heart() -> String:
+	_make(2, 1)
+	_enc.reward_heart = true
+	_enc._on_body_entered(_p)
+	await _until(func(): return _alive() == 2 and not _enc._spawning)
+	_enc._on_watchdog()
+	await _tree().physics_frame
+	return _T.assert_eq(_hearts(), 0, "a forced release earns nothing")
+
+
 func test_door_watchdog_release_is_not_a_clear() -> String:
 	_make(2, 1)
 	var log := _wave_signals()
@@ -357,7 +399,7 @@ func _street_encounters() -> Array:
 		var n: Node = item[0]
 		var x: float = item[1] + (n.position.x if n is Node2D else 0.0)
 		if n.get_script() == E:
-			found.append([x, n.waves, E.wave_sizes(n.enemy_count, n.waves)])
+			found.append([x, n.waves, E.wave_sizes(n.enemy_count, n.waves), n.get("reward_heart") == true])
 		for c in n.get_children():
 			stack.append([c, x])
 	main.free()
@@ -387,3 +429,19 @@ func test_street_waves_never_send_a_lone_maid() -> String:
 			if size < 2:
 				return "encounter at x=%d has a 1-maid wave %s" % [e[0], e[2]]
 	return ""
+
+
+## The difficulty curve's last street beat: the fight right before the boss door is
+## the street's biggest squad, and clearing it is the one encounter that pays out a
+## heart — the refuel that lets a player who arrives low still face the boss.
+func test_street_finale_is_the_biggest_squad_and_rewards_a_heart() -> String:
+	var encs := _street_encounters()
+	var last: Array = encs[-1]
+	var last_total: int = last[2].reduce(func(a, b): return a + b, 0)
+	for i in encs.size() - 1:
+		var total: int = encs[i][2].reduce(func(a, b): return a + b, 0)
+		if total >= last_total:
+			return "encounter at x=%d (%d maids) matches the finale (%d)" % [encs[i][0], total, last_total]
+		if encs[i][3]:
+			return "encounter at x=%d rewards a heart; only the finale should" % encs[i][0]
+	return _T.assert_true(last[3], "the finale knocks a heart loose")
