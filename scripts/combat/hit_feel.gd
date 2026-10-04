@@ -15,8 +15,8 @@ const HIT_SHAKE_TIME := 0.15
 const KILL_SHAKE := 6.0
 const KILL_SHAKE_TIME := 0.25
 ## Sparks sit on the target's attacker-facing side, about chest height.
-const CONTACT_INSET := 14.0
-const CONTACT_RISE := 12.0
+const CONTACT_INSET := 10.0
+const CONTACT_RISE := 4.0
 
 
 ## Where on `target` (world) a blow from `attacker` (world) connects.

@@ -83,11 +83,19 @@ static func apply_hit_pause(node: Node, duration := 0.05) -> void:
 	_hit_pause_running = false
 
 
-static func hit_effect(target: Node2D, hit_position: Vector2) -> void:
-	var instance = HIT_FX.instantiate()
-	target.add_child(instance)
+## Hit sparks at `hit_position`. A sibling drawn just above `target`, not its child:
+## the burst stays where the blow landed while the target is knocked back or
+## mirrored, and it isn't swallowed by the target's own white hit flash.
+static func hit_effect(target: Node2D, hit_position: Vector2) -> Node2D:
+	var instance: Node2D = HIT_FX.instantiate()
+	var parent := target.get_parent()
+	if parent == null:
+		parent = target
+	parent.add_child(instance)
+	instance.z_index = target.z_index + 1
 	instance.global_position = hit_position
 	instance.start()
+	return instance
 
 static func shake_two_node2d(node1: Node2D, node2: Node2D, strength1: float = 10.0, duration1: float = 0.3, strength2: float = 10.0, duration2: float = 0.3, frequency: float = 0.02) -> void:
 	var original_pos1 = node1.position

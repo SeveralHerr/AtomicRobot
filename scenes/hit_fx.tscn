@@ -50,11 +50,11 @@ animations = [{
 }],
 "loop": false,
 "name": &"default",
-"speed": 12.0
+"speed": 20.0
 }]
 
 [node name="HitFx" type="AnimatedSprite2D"]
+modulate = Color(1, 0.93, 0.45, 1)
+scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_6w88u")
-frame = 4
-frame_progress = 1.0
 script = ExtResource("2_03tr3")
