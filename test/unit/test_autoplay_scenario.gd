@@ -171,3 +171,14 @@ func test_inline_json_source_parses() -> String:
 func test_missing_file_is_an_error() -> String:
 	var r: Dictionary = Scenario.load_source("res://does/not/exist.json")
 	return _T.assert_false(r["ok"], "missing file reported")
+
+
+## The mortal 100% route is the god-mode route without `god on`: a step added to one
+## (e.g. the sidewalk step before the last news stand) must reach the other.
+func test_mortal_completionist_route_matches_the_god_route() -> String:
+	var god: Dictionary = Scenario.load_source("res://test/autoplay/completionist_run.json")["data"]
+	var mortal: Dictionary = Scenario.load_source("res://test/autoplay/completionist_mortal.json")["data"]
+	var want: Array = god["steps"].map(func(s: Dictionary) -> String: return s["text"]).filter(
+			func(t: String) -> bool: return t != "god on")
+	var got: Array = mortal["steps"].map(func(s: Dictionary) -> String: return s["text"])
+	return _T.assert_eq(got, want, "mortal steps == god steps minus 'god on'")
