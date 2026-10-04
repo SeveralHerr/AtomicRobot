@@ -1,0 +1,160 @@
+extends RefCounted
+
+# The rank ladder on the end card (scripts/ui/rank_ladder.gd). Player report: "my
+# best full clear got ~7k but still rank C. What do I need for a better rank?" The
+# card now shows every rank's threshold, how far the next one is, and the one
+# thing in this run that would have got there.
+
+var _T
+
+const L := preload("res://scripts/ui/rank_ladder.gd")
+
+
+## A C-rank clear: 8,700 total, 5:30, hit 6 times, 3 of 7 secrets.
+func _run(total: int = 8700) -> Dictionary:
+	return {"won": true, "total": total, "rank": ScoreRules.rank_for(total), "seconds": 330.0,
+		"perfect": false, "no_damage_bonus": 1000, "secrets": {"wall": 1, "news": 2},
+		"secret_totals": {"wall": 2, "news": 5}}
+
+
+func test_threshold_text_is_short() -> String:
+	var r: String = _T.assert_eq(L.short_points(9500), "9.5K", "9.5K")
+	if r != "":
+		return r
+	r = _T.assert_eq(L.short_points(18000), "18K", "18K")
+	if r != "":
+		return r
+	return _T.assert_eq(L.short_points(0), "0", "0")
+
+
+## Derived from the rules table both ways: one chip per rank, worst to best.
+func test_ladder_has_every_rank_in_order() -> String:
+	var want: Array = []
+	for entry in ScoreRules.RANK_THRESHOLDS:
+		want.push_front(String(entry[0]))
+	return _T.assert_eq(L.ladder_letters(), want, "D..S from RANK_THRESHOLDS")
+
+
+func test_next_line_names_the_next_rank_and_the_gap() -> String:
+	return _T.assert_eq(L.next_text(8700), "+800 FOR B (9,500)", "gap to B")
+
+
+func test_top_rank_says_so() -> String:
+	return _T.assert_eq(L.next_text(25000), "TOP RANK!", "nothing above S")
+
+
+func test_tip_prefers_secrets_when_they_cover_the_gap() -> String:
+	# 800 short, 4 secrets unfound at 250 each: 4 cover it.
+	return _T.assert_eq(L.tip_text(_run()), "FIND 4 MORE SECRETS", "secrets first")
+
+
+func test_tip_then_no_hits() -> String:
+	var run := _run()
+	run["secrets"] = {"wall": 2, "news": 5}  # all found
+	# hit 6 times: a flawless clear pays 3,000 instead of 1,000 - covers the 800
+	return _T.assert_eq(L.tip_text(run), "CLEAR IT WITHOUT A HIT", "flawless next")
+
+
+func test_tip_falls_back_to_time() -> String:
+	var run := _run()
+	run["secrets"] = {"wall": 2, "news": 5}  # all found
+	run["no_damage_bonus"] = ScoreRules.PERFECT_BONUS
+	run["perfect"] = true
+	# 800 / 15 per second -> 54 s faster
+	return _T.assert_eq(L.tip_text(run), "FINISH 0:54 FASTER", "time next")
+
+
+func test_tip_time_over_par_names_the_target() -> String:
+	var run := _run(6100)  # 3,400 short of B: more than a flawless clear pays
+	run["secrets"] = {"wall": 2, "news": 5}
+	run["seconds"] = 430.0  # over par: time only pays under 7:00
+	# 3400 / 15 = 227 s under par -> 3:13
+	return _T.assert_eq(L.tip_text(run), "FINISH UNDER 3:13", "time below par")
+
+
+func test_tip_skips_an_unrealistic_time() -> String:
+	var run := _run(13000)  # 5,000 short of S
+	run["secrets"] = {"wall": 2, "news": 5}
+	run["seconds"] = 430.0  # would need 1:26, faster than FASTEST_SECONDS
+	return _T.assert_eq(L.tip_text(run), "CHAIN COMBOS: KILLS PAY UP TO x8", "no 2-minute promise")
+
+
+func test_tip_combo_when_nothing_else_covers_it() -> String:
+	var run := _run(100)
+	run["secrets"] = {"wall": 2, "news": 5}
+	run["seconds"] = 900.0
+	return _T.assert_eq(L.tip_text(run), "CHAIN COMBOS: KILLS PAY UP TO x8", "fallback")
+
+
+func test_no_tip_at_the_top() -> String:
+	return _T.assert_eq(L.tip_text(_run(30000)), "", "S needs no tip")
+
+
+func test_line_joins_gap_and_tip_on_a_clear() -> String:
+	return _T.assert_eq(L.line_text(_run(), true), "+800 FOR B (9,500) · FIND 4 MORE SECRETS", "one line")
+
+
+func test_line_on_a_death_has_no_tip() -> String:
+	return _T.assert_eq(L.line_text({"total": 1500, "rank": ""}, false), "CLEAR THE BOSS TO GET RANKED", "death")
+
+
+func test_death_says_how_to_get_ranked() -> String:
+	return _T.assert_eq(L.next_text(1500, false), "CLEAR THE BOSS TO GET RANKED", "no rank on a death")
+
+
+## Built for real: the chip for the run's rank is the lit one.
+func test_ladder_lights_the_runs_rank() -> String:
+	var ladder: RankLadder = L.new()
+	ladder.show_run(_run(), true)
+	var lit: Array = []
+	for letter in ladder.chips:
+		if ladder.chips[letter].get_meta("lit"):
+			lit.append(letter)
+	ladder.free()
+	return _T.assert_eq(lit, ["C"], "C lit")
+
+
+## The tallest card (unlock stamp, full breakdown, ladder, tip, badge) laid out for
+## real must fit the CRT-safe area (the bezel eats ~40 px of every edge), in both
+## right-column states: entering initials, then the list with the buttons.
+func _card_bounds(listing: bool) -> Rect2:
+	var tree := Engine.get_main_loop() as SceneTree
+	var vp := SubViewport.new()
+	vp.size = Vector2i(1280, 800)
+	tree.root.add_child(vp)
+	var ui := Control.new()
+	ui.set_anchors_preset(Control.PRESET_FULL_RECT)
+	vp.add_child(ui)
+	var card := EndCard.new()
+	ui.add_child(card)
+	var run := _run()
+	run.merge({"fight_score": 5600, "street_score": 3900, "boss_score": 1700, "bonus": 3100,
+		"time_bonus": 1350, "secret_bonus": 750, "unlocks": ["Robot"], "slot": 0})
+	card.summary.show_run(run, true)
+	var rows: Array = []
+	for i in HighScoreTable.SIZE:
+		rows.append(HighScoreTable.make_entry("AAA", 100000 - i))
+	card.entry.visible = not listing
+	card.table.visible = listing
+	if listing:
+		card.table.show_entries(rows, 0)
+	card._buttons.visible = listing
+	card.show()
+	for i in 3:
+		await tree.process_frame
+	# The tilted card's bounds, from its rotated corners.
+	var inner: Control = card._card
+	var xf := inner.get_global_transform()
+	var rect := Rect2(xf * Vector2.ZERO, Vector2.ZERO)
+	for c in [Vector2(inner.size.x, 0), inner.size, Vector2(0, inner.size.y)]:
+		rect = rect.expand(xf * c)
+	vp.free()
+	return rect
+
+
+func test_tallest_card_fits_inside_the_crt_safe_area() -> String:
+	for listing in [false, true]:
+		var rect: Rect2 = await _card_bounds(listing)
+		if rect.size.y > 720.0 or rect.size.x > 1200.0:
+			return "card %s (listing=%s) is bigger than the 1200x720 CRT-safe area" % [rect.size, listing]
+	return ""

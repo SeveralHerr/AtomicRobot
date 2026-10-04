@@ -113,8 +113,8 @@ func _build() -> void:
 	var card_box := ComicStyle.box(ComicStyle.PAPER, 5, 10, 9)
 	card_box.content_margin_left = 30
 	card_box.content_margin_right = 30
-	card_box.content_margin_top = 14
-	card_box.content_margin_bottom = 18
+	card_box.content_margin_top = 8
+	card_box.content_margin_bottom = 12
 	card.add_theme_stylebox_override("panel", card_box)
 	center.add_child(tilted(card, CARD_TILT))
 
