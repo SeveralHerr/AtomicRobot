@@ -40,6 +40,8 @@ func setup() -> void:
 
 
 func teardown() -> void:
+	if _tree().paused:
+		PauseMenu.toggle_pause()
 	var vp := _tree().root
 	var f := vp.gui_get_focus_owner()
 	if f:
@@ -128,6 +130,36 @@ func _stays_put(signal_name: String) -> String:
 		if not _tree().root.gui_get_focus_owner() in buttons:
 			return "stick %s moved focus off the overlay to %s" % [a, _tree().root.gui_get_focus_owner()]
 	return ""
+
+
+## Cabinet report: Start/Esc (pause) on the card, then resume, left focus on nothing -
+## the pause menu took it and hid - so the stick never reached RESTART / EXIT GAME.
+func _stick_after_pause(signal_name: String) -> String:
+	await _load(BOSS_ROOM)
+	var quits := [0]
+	_card().quit_game = func() -> void: quits[0] += 1
+	await _end_run(signal_name)
+	for i in 2:
+		await _tap_button(JOY_BUTTON_START)
+		await _frames()
+	if _tree().paused:
+		return "Start twice left the game paused"
+	await _tap_axis(JOY_AXIS_LEFT_X, 1.0)
+	var r: String = _T.assert_true(_card().exit_button.has_focus(),
+		"stick right reaches EXIT GAME after a pause on the %s card (owner: %s)" % [signal_name, _tree().root.gui_get_focus_owner()])
+	if r != "":
+		return r
+	await _tree().create_timer(EndCard.ARM_DELAY + 0.1).timeout
+	await _tap_button(JOY_BUTTON_A)
+	return _T.assert_eq(quits[0], 1, "A on EXIT GAME quits after a pause")
+
+
+func test_game_over_stick_works_after_pause() -> String:
+	return await _stick_after_pause("player_death")
+
+
+func test_win_stick_works_after_pause() -> String:
+	return await _stick_after_pause("boss_death")
 
 
 func test_game_over_dpad_and_stick_keep_focus_on_overlay() -> String:

@@ -605,3 +605,8 @@ Log of skills that might have been useful for a given response, and why (short f
 - pi-game-deploy (used): deploy + debug loop. Enhancement: warn that Godot games need cabinet keys in input defaults; reuse existing port name; pkill -f self-kill trap (added to Gotchas).
 - derive-the-list: Picade test loops InputRemap.ACTIONS, not a hand list.
 - Missing skill: none needed beyond the above gotchas.
+- Follow-up: proof artifact https://claude.ai/artifact/BHTQSz5YKRyh485tMW5rH4 (before 788dc71 vs after 6e6a783, ledge + street GIFs). Used godot-ab-worktree (enhancement: say door waves must be cleared before recording, banners cover the subject). Ledge at x 2230-2430, y -83.
+
+## 2026-10-04 — end card not joystick friendly (stuck after pause)
+- Bug: Start/Esc pause on game-over/win card -> pause slider took focus, hid on resume -> focus none, stick dead. Fix: `EndCard._process` re-grabs RESTART when focus is off its buttons. Tests `test_*_stick_works_after_pause`.
+- Used: none from list. Would have helped: godot-input-test (notes pause/resume focus theft now). MCP: godot-tests covers gate.

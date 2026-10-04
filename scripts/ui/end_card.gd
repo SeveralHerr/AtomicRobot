@@ -78,6 +78,17 @@ func _ready() -> void:
 	get_parent().child_entered_tree.connect(_on_sibling_added)
 
 
+## Pad/stick players have no pointer: if focus ever leaves the buttons (the pause menu
+## took it then hid, a click on the card), the stick moves nothing. Take it back. Only
+## runs unpaused, so an open pause menu keeps its focus.
+func _process(_delta: float) -> void:
+	if not _buttons.is_visible_in_tree():
+		return
+	var focus := get_viewport().gui_get_focus_owner()
+	if focus != restart_button and focus != exit_button:
+		restart_button.grab_focus()
+
+
 ## Leaving (restart, exit, scene change): the tube goes back to its normal look.
 func _exit_tree() -> void:
 	CRTOverlay.reset_focus()

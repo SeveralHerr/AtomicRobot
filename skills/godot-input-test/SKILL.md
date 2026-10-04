@@ -42,6 +42,11 @@ Runner: `godot --headless --path . --script res://tools/run_tests.gd -- --filter
   whose global rect covers the tap spot (`test_nothing_swallows_taps_over_the_prompt`).
   Prove the real bug in a WINDOWED SceneTree script: `Input.parse_input_event` +
   `--resolution 1280x800`, connect root `gui_input` to see who ate it.
+- Focus-driven screens: also test "focus got stolen, then came back". Pause (Start/Esc)
+  grabs focus for its slider and drops it on resume, leaving a pad player stuck (no
+  pointer). Tap Start twice, then the stick, then A (`_stick_after_pause` in
+  test_joypad_nav_overlays.gd). Fix pattern: the screen re-grabs its default button in
+  `_process` when focus is off its buttons (runs only unpaused).
 - Autoload state (ScoreSystem): swap its `save_path` in `setup()`, restore + `reload()` in
   `teardown()`, never write to the player's real `user://` file.
 - A level loaded with `root.add_child()` is NOT `current_scene`; set autoload fields
