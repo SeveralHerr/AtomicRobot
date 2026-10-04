@@ -46,3 +46,20 @@ func test_combo_line_hides_with_no_combo() -> String:
 	ScoreSystem.register_player_damaged()
 	await _tree().process_frame
 	return _T.assert_false(_hud.combo_label.visible, "a broken combo leaves no line")
+
+
+## "1 HIT!" is not a combo: the line waits for the second hit, but the first one
+## still scores (and still starts the combo window it would extend).
+func test_single_hit_shows_no_combo_line() -> String:
+	await _hits(1)
+	var r: String = _T.assert_false(_hud.combo_label.visible, "one hit: no combo line")
+	if r != "":
+		return r
+	r = _T.assert_eq(_hud.combo_label.text, "", "nor a stale \"1 HIT\" waiting to fade in")
+	if r != "":
+		return r
+	r = _T.assert_gt(ScoreSystem.score, 0, "the first hit still scores")
+	if r != "":
+		return r
+	await _hits(1)
+	return _T.assert_true(_hud.combo_label.visible, "the second hit brings the line in")
