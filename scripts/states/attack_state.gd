@@ -90,6 +90,8 @@ func _on_frame_changed(player: Player) -> void:
 		trigger_attack(player)
 	if chain.should_chain(sprite.frame, _hit_frame()):
 		chain.advance()
+		if not _airborne:
+			player.velocity.x = player.last_dir * AttackChain.LUNGE
 		_swing(player)
 
 

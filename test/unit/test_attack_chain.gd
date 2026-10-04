@@ -231,3 +231,15 @@ func test_chained_swings_rise_in_pitch() -> String:
 	if r != "":
 		return r
 	return _T.assert_gt(pitches[2], pitches[1], "finisher highest: %s" % [pitches])
+
+
+func test_chained_swing_steps_forward() -> String:
+	await _r.spawn("Ryan")
+	var e := _r.maid(GAP)
+	var x0 := _r.p.global_position.x
+	_r.tap("Attack")
+	await _r.step(2)
+	_r.tap("Attack")
+	await _r.until(func(): return _hits(e) == 2, 60)
+	await _r.step(10)
+	return _T.assert_gt(_r.p.global_position.x - x0, 4.0, "the second swing lunges toward the facing side")

@@ -19,6 +19,9 @@ const RECOVERY_FRAMES := 2
 const MAX_STEPS := 3
 ## Ground drift while swinging, as a fraction of walk speed (input-steered, no turning).
 const DRIFT := 0.3
+## Forward step (px/s, bleeds off by Player.FRICTION: ~9px) on each chained swing, so
+## a string reads as pressing forward rather than one swing on repeat.
+const LUNGE := 120.0
 
 ## 0-based position in the current string.
 var step := 0
