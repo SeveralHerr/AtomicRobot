@@ -14,11 +14,6 @@ class_name Crack
 
 const CAT_SCENE := preload("res://scenes/cat.tscn")
 const OPEN_FRAME := 5
-const PROMPT := "[interact] GRAB ORB"
-const PROMPT_GOLD := Color("#FFC72C")
-const PROMPT_FONT := preload("res://styles/white_font.tres")
-## World px (x2.5 on screen): readable without swallowing the wall.
-const PROMPT_SIZE := 12
 ## Seconds after the opening blow before the prompt shows (SECRET! is on stage).
 const PROMPT_DELAY := 1.3
 ## Reveal fanfare (character unlocks use it too: "you found something").
@@ -45,7 +40,6 @@ var player: Player
 var _opened := false
 var _claimed := false
 var _hole_orb: Sprite2D
-var _prompt_bob: Tween
 ## The player stands in the claim circle (tracked whether or not the wall is open).
 var _in_reach := false
 ## SECRET! has had its moment; the prompt may show.
@@ -59,7 +53,6 @@ func _ready() -> void:
 	player = get_tree().get_first_node_in_group("player")
 	hide()
 	interact_label.hide()
-	_style_prompt()
 	animated_sprite_2d.frame = 0
 
 
@@ -153,11 +146,6 @@ func _open() -> void:
 func _offer_claim() -> void:
 	_prompt_ready = true
 	_refresh_prompt()
-	if _prompt_bob == null:
-		_prompt_bob = interact_label.create_tween().set_loops()
-		var y := interact_label.position.y
-		_prompt_bob.tween_property(interact_label, "position:y", y - 3.0, 0.4).set_trans(Tween.TRANS_SINE)
-		_prompt_bob.tween_property(interact_label, "position:y", y, 0.4).set_trans(Tween.TRANS_SINE)
 
 
 ## Takes the orb: it flies to the HP bar and heals on arrival. Pays out once.
@@ -204,16 +192,3 @@ func _paint_interior() -> void:
 	rim.show_behind_parent = true
 	rim.offset = animated_sprite_2d.offset
 	animated_sprite_2d.add_child(rim)
-
-
-func _style_prompt() -> void:
-	var s := LabelSettings.new()
-	s.font = PROMPT_FONT
-	s.font_size = PROMPT_SIZE
-	s.font_color = PROMPT_GOLD
-	s.outline_size = 5
-	s.outline_color = Color.BLACK
-	s.shadow_color = Color(0, 0, 0, 0.5)
-	s.shadow_offset = Vector2(1, 2)
-	interact_label.label_settings = s
-	interact_label.text = PROMPT

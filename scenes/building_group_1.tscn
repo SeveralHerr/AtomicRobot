@@ -27,7 +27,6 @@
 [ext_resource type="PackedScene" path="res://scenes/crack.tscn" id="25_i4rhq"]
 [ext_resource type="Script" path="res://scripts/crack.gd" id="26_ny6yn"]
 [ext_resource type="Texture2D" path="res://sprites/crack.png" id="27_l1ird"]
-[ext_resource type="FontVariation" path="res://styles/white_font.tres" id="28_ublmf"]
 [ext_resource type="AudioStream" path="res://sounds/711657__discofield__stone-crash.wav" id="29_f84d2"]
 [ext_resource type="PackedScene" path="res://scenes/building_door_encounter.tscn" id="30_o7nd8"]
 [ext_resource type="Script" path="res://scripts/building_door_encounter.gd" id="31_2gjml"]
@@ -112,13 +111,6 @@ animations = [{
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5gd2i"]
 radius = 44.0454
-
-[sub_resource type="LabelSettings" id="LabelSettings_xg7p5"]
-line_spacing = -5.0
-font = ExtResource("28_ublmf")
-font_size = 20
-outline_color = Color(0, 0, 0, 1)
-shadow_color = Color(0, 0, 0, 0.392157)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5gd2i"]
 size = Vector2(26, 75)
@@ -633,8 +625,6 @@ offset_right = 199.0
 offset_bottom = -25.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "[e]"
-label_settings = SubResource("LabelSettings_xg7p5")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
