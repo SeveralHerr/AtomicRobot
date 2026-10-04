@@ -91,6 +91,8 @@ func _make(count: int, wave_count: int = 1) -> void:
 	_enc.arm_seconds = 0.02
 	_enc.spawn_interval = 0.01
 	_enc.walk_out_seconds = 0.02
+	if "burst_beat_seconds" in _enc:
+		_enc.burst_beat_seconds = 0.02
 	if "wave_gap_seconds" in _enc:
 		_enc.wave_gap_seconds = 0.02
 		_enc.rearm_seconds = 0.02
@@ -343,7 +345,7 @@ func test_door_death_during_the_telegraph_never_bursts() -> String:
 	var r: String = _T.assert_eq(_enc._spawn_index, 0, "nobody steps out for a dead player")
 	if r != "":
 		return r
-	return _T.assert_true(_enc.crack.frame < _enc._CRACK_BURST_FRAME, "the door never blows")
+	return _T.assert_false(_enc.mouth.is_open(), "the door never blows")
 
 
 ## Atomic hearts the encounter has knocked loose (live, uncollected).
@@ -378,9 +380,9 @@ func test_door_reward_heart_drops_once_on_the_clear() -> String:
 ## (z 1), a black-outlined atom on a black hole. It must land out on the walkway.
 func test_door_reward_heart_lands_clear_of_the_hole() -> String:
 	_make(1, 1)
-	var crack_half: float = _enc.crack.sprite_frames.get_frame_texture("default", 0).get_width() * 0.5 		* absf(_enc.crack.scale.x) if _enc.crack.sprite_frames.has_animation("default") else 24.0
-	return _T.assert_true(absf(E.HEART_LAND.x - _enc.door_mouth.position.x) >= crack_half + 16.0,
-		"heart lands %.0f px from the hole (crack half-width %.0f)" % [E.HEART_LAND.x, crack_half])
+	var half: float = WallMouth.HALF_WIDTH
+	return _T.assert_true(absf(E.HEART_LAND.x) >= half + 16.0,
+		"heart lands %.0f px from the hole (breach half-width %.0f)" % [E.HEART_LAND.x, half])
 
 
 func test_door_without_reward_drops_no_heart() -> String:
@@ -473,3 +475,21 @@ func test_street_finale_is_the_biggest_squad_and_rewards_a_heart() -> String:
 		if encs[i][3]:
 			return "encounter at x=%d rewards a heart; only the finale should" % encs[i][0]
 	return _T.assert_true(last[3], "the finale knocks a heart loose")
+
+
+## Round-6 footage: the first maid spawned on the burst frame and covered the
+## breach, and everyone popped in at full brightness in front of the wall.
+func test_door_squad_steps_out_of_the_shadow_after_the_burst() -> String:
+	_make(1, 1)
+	_enc.burst_beat_seconds = 0.2
+	_enc.walk_out_seconds = 0.6
+	_enc._on_body_entered(_p)
+	await _until(func(): return _enc.mouth.is_open())
+	var r: String = _T.assert_eq(_enc._spawn_index, 0, "nobody out on the burst frame")
+	if r != "":
+		return r
+	await _until(func(): return _alive() == 1)
+	await _tree().process_frame
+	await _tree().process_frame
+	var e = _enc._spawned[0]
+	return _T.assert_true(e.modulate.r < 0.6, "first out is still in the mouth's shadow (%s)" % e.modulate)

@@ -36,6 +36,7 @@ var _saved_character: String
 
 
 func setup() -> void:
+	StubStart.splash_played = true  # the boot logo would swallow these presses
 	_saved_character = Globals.selected_character
 
 

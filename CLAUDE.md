@@ -246,6 +246,12 @@ timing against door waves and their STREET CLEAR! payoff (`skills/godot-micro-cu
 Let table tests check framing/readability rules (shot above the road, title readable
 before the glide back): they caught 3 bad numbers screenshots didn't.
 
+"Make X consistent" (effects/feel across a family): fix at the shared scene/script, derive the
+family from the levels in a test, never patch one instance (`skills/godot-pickup-fx/SKILL.md`).
+
+Placed pickups: judge them at the player's STANDING height — zoom 2.5 puts anything ~95px
+above the floor in the HUD band (`skills/godot-level-pickups/SKILL.md`).
+
 Before/after evidence for a fix: run the same scenario on HEAD and the working tree
 (`skills/godot-ab-worktree/SKILL.md`). Check a forced bug state on the OLD build before
 you trust it in a demo.
@@ -273,6 +279,15 @@ mortal runs hit (heal-seeking) — gate both with `max_stuck_s`.
 Read `skills/godot-input-test/SKILL.md` before testing pad/key/touch UI. Mutation-check
 new guards with a `(file, original, mutant, filter)` script; add a test per survivor.
 The `godot-tests` MCP server (`.mcp.json`) runs the unit/sandbox suites with a short summary.
+Screenshot "put it here" → world x: `python tools/level_pan.py` (MCP `level_pan`), see
+`skills/godot-level-map/SKILL.md`. Put the coords in every fan-out prompt.
+Fan-out agents run the WHOLE gate (`run_tests.gd` + `python tools/autoplay.py` with no filter +
+sandbox), never one scenario: the splash passed `full_run` but broke 14 scenarios that leave the
+title on frame 1 (`await get_tree()` after the node left the tree). Bot metrics (`powerups`,
+`car_hits`) collide in `report.gd`/`autoplay_sweep.py` on merge — keep both columns.
+Player bug reports: reproduce AT the spot shown (level_pan + snaps over time) before calling it
+fixed. "Maid talking over a tree" got a plausible wrong cause (heart z); the real bug was a ledge
+maid patrolling into a canopy, only visible across several snaps.
 
 ## Canary
 

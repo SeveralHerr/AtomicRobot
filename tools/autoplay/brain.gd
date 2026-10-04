@@ -166,8 +166,12 @@ static func _heal(p: Dictionary, snap: Dictionary, mem: Dictionary) -> Dictionar
 	return _go_to(p, heart, Lanes.GROUND_LANE, "heal")
 
 
+## Only pickups within reach height, like enemies: level-placed ones sit up on ledges
+## and scaffolds, and chasing those from the street never gives up.
 static func _pickup(p: Dictionary, snap: Dictionary) -> Dictionary:
-	var pk := _nearest_x(p, snap.get("pickups", []), PICKUP_RANGE)
+	var reachable: Array = snap.get("pickups", []).filter(func(pk: Dictionary) -> bool:
+		return absf(pk["y"] - p["y"]) <= MAX_DY + _lane_dy(p, pk))
+	var pk := _nearest_x(p, reachable, PICKUP_RANGE)
 	if pk.is_empty():
 		return {}
 	return _go_to(p, pk, int(pk.get("lane", p["lane"])), "pickup")

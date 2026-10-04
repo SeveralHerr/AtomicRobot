@@ -26,6 +26,9 @@ Runner: `godot --headless --path . --script res://tools/run_tests.gd -- --filter
   mute direction polling after a typed letter (set the flag in `_input`, which runs
   before `_process` in the same frame).
 - Key events need `keycode`, `physical_keycode` AND `unicode` set to behave like typing.
+- Raw `InputEventScreenTouch` is ALSO delivered as an emulated left click (Godot default
+  `emulate_mouse_from_touch`), so a touch branch's mutant survives: call
+  `Input.set_emulate_mouse_from_touch(false)` around the touch test (test_title_splash.gd).
 - Touch: emit `button.pressed` directly; assert sizes against a shared constant
   (`ComicStyle.TOUCH`), not magic numbers.
 - Autoload state (ScoreSystem): swap its `save_path` in `setup()`, restore + `reload()` in

@@ -504,6 +504,51 @@ Log of skills that might have been useful for a given response, and why (short f
 - MCP: none used (CLI).
 - Follow-up: opening's melee maids were authored 15-53px in the air (atomic_robot_area.tscn) -> authored at street level (y -28) right behind the red car (user: "like they're issuing a ticket"); enemies count as landed once their street baseline is captured (they rarely read is_on_floor()). New test: nothing in the opening's first shot falls (failed 53px on the old data). 883 unit, 18/18 autoplay, 12/12 sandbox. Merged to main via branch `cutscenes` (not pushed).
 
+## 2026-10-04 — Jamcraft boot splash (branch lj-splash)
+- `somewhat-useful-claude-skills:jamcraft-splash` pattern B (overlay on the title, like atomic-pinball's §11 splash): once per boot, any key/click/pad/tap skips and is swallowed, title anti-skip timer restarts at the reveal. Dropped the skill's `next_scene` mode (bypasses Transition; test_transition caught it); layer 99 under CRTOverlay (skill default 100 = CRT's layer).
+- 10 new tests (test_title_splash.gd), 13/13 mutants killed (touch mutant survived until emulate_mouse_from_touch was turned off in the test). 893 unit, full_run + full_run_mortal PASS.
+- Validation: --write-movie desktop round, 1688x780 window_set_size round, skip-at-0.35s round; no fixes needed.
+- Skills used: jamcraft-splash (enhancement: warn that `next_scene` calls change_scene directly and layer 100 may collide with a post-process overlay; `--write-movie` ignores `--resolution`). Would have helped: none extra. MCP: none.
+## 2026-10-04 — Static power-ups + roof heart (branch lj-pickups)
+- PowerupPickup `placed` mode (no lifetime/blink, keeps parent, PowerupGlow halo + golden-angle twinkles, no global RNG). Placed in atomic_robot_building_group.tscn: Rage on the window building's upper ledge pier (590,-376), Overclock above the tall scaffold (1183,-112), RoofHeart over the AR Tattoo roof scaffold (-210,-306, glow so it doesn't read as a HUD orb).
+- Autoplay: `powerups` metric, `teleport X [Y]`, snap step waits for its frame (same-frame teleport leaked into the picture), brain skips pickups beyond MAX_DY (ledge rewards could pin it). completionist routes collect all three; new placed_pickups.json.
+- Balance (8 runs each): completionist 4.50 -> 6.25 power-ups/run, buff uptime 14.9% -> 20.2% (max 30%); bot full_run 4.5 -> 5.0 (no placed). Drop rate unchanged — far from the >50% "always buffed" failure; offsetting 2 optional rewards would need ~0.04 base chance (pity-driven).
+- 10 validation rounds (one 1688x780). 901 unit, 19/19 autoplay, lane audit clean, 16/16 mutants killed.
+- Skills used: none via tool; repo skills godot-autoplay-test (enhanced: powerups metric, teleport Y), godot-ab-worktree. New skill: skills/godot-level-pickups. Would have helped: somewhat-useful-claude-skills:godot-2d-placement-audit (numeric placement asserts), derive-the-list (placed pickup list from the scene).
+- MCP: none used (CLI equivalents). No new MCP server (YAGNI: godot-tests already wraps autoplay).
+## 2026-10-04 — Door cracks: wall breaches, bush bursts (branch lj-cracks)
+- Every door mouth picks `mouth_style` per placement: 3 brick breaches (tinted rim + rubble, dust, chunk blast), 4 hedge mouths (shrub rustles, eyes peek, tears into halves over a dark hollow, leaf blast). 4721 moved off the window onto the brick pier at 0.75 scale. Secret walls get a chipped brick rim.
+- Juice: shake ramps through the telegraph, 0.05s hitstop on burst, 0.18s beat before the first enemy, squad steps out of the mouth's shadow; arm_seconds 0.35 -> 0.6.
+- 10 validation rounds (+1688x780), before/after crops + 2 GIFs. 896 unit, 12 sandbox, door_waves/secrets_cass/full_run/full_run_mortal pass, 24/24 mutants killed (3 survivors fixed with tests).
+- Skills used: none via tool; repo skills godot-headful-screenshot, godot-hit-feel, godot-ab-worktree (enhancement: headful-screenshot should say "reimport after changing a PNG" — stale art cost a round). New skill: skills/godot-door-mouth.
+- Would have helped: kenney-asset-kit (2D palette/measure for authoring into a set), derive-the-list (placement->style table derived from the scene), a "sample wall colour at x" probe.
+- MCP: none used (CLI).
+## 2026-10-04 — Ambient traffic (branch lj-cars)
+- `Managers/AmbientTraffic`: one car per 15-30 s of open play, random road lane/direction/speed, 1.5 s edge-sign + off-screen engine telegraph, never two cars, paused in cut scenes / door-encounter locks, freed off screen, kept inside the end buildings. Car refactor: `launch()`, `road_y()`, direction, `rng`.
+- Found: one extra global RNG draw alone flipped seeded full_run_mortal -> own RNG + `fixed_seed`. Touch buttons hid the world-space sign -> CanvasLayer 3.
+- 905 unit, 2/2 mortal autoplay, 24-seed sweep, lane audit clean, 38/38 mutants killed (after 7 survivors -> new tests).
+- Skills used: none via tool. Would have helped: somewhat-useful-claude-skills:extract-a-testable-seam (static rule funcs), derive-the-list (street bounds from the wall shapes), playthrough-video-review (natural-route video). New repo skill: skills/godot-rare-spawner. Enhancement idea for godot-autoplay-test: document `autoplay_sweep.py --base` for balance-noise checks.
+- MCP: none used (CLI equivalents).
+## 2026-10-04 — Orchestrator: level juice fan-out (branch level-juice)
+- 5 worktree agents (pickups, cracks, bubble, cars, splash) merged into `level-juice`; conflicts only log.md + autoplay report/sweep metric columns (kept both).
+- Post-merge bug: splash `await get_tree().process_frame` after leaving the tree -> 14/19 autoplay FAIL; fixed (hold tree ref + is_inside_tree) with a red-first test.
+- "Meter maid talking over a tree" was the heart atom drawn behind a tree (z), not a speech bubble.
+- Skills used: jamcraft-splash (via agent; enhancement: guard awaits for a node freed by a scene change on frame 1), godot-feedback-fanout (enhancement: say "agents run the whole autoplay suite"). New: tools/level_pan.py + MCP `level_pan` + skills/godot-level-map (screenshot -> world x). Would have helped: godot-level-map (now exists), derive-the-list.
+- MCP: godot-tests (extended with level_pan).
+- Follow-up (user screenshot images/image.png): ledge platform maid walked into Tree9's canopy (x 2287) — the real "maid over a tree" bug; the heart z fix was a second, separate issue. PlatformPatrolState turns at foliage (trees group); 4 tests incl. real-physics maid, 4/4 mutants killed. 954 unit, 19/19 autoplay, 12/12 sandbox.
+- Lesson: an agent "explained" a player report with the first plausible match (heart z); ask for/locate the exact spot before closing a bug report.
+## 2026-10-04 — Playthrough review round 3 (main cd9521b)
+- Catalogue agent → route covers all reachable items; gaps: wall A unreachable, no cutscene/unlock/placed-pickup asserts, 7/9 heals (door 7775 heart never taken).
+- Recorded completionist_mortal: take 1 died at 1:04 (scripted walk_to can't fight a late maid), take 2 won A 15,122, 4:21. Sweep 5 fighters × 4 seeds: 20/20 wins, Cody 7–14 hits vs 14–23, Sara == Caitlyn.
+- Artifact https://claude.ai/artifact/ExkNpGwY4VsaokPtqvLfyr: 13 open cards (9 new, 4 carried), 2 shipped, R3/R2 video tabs, db `decisions`.
+- Skills used: playthrough-video-review (enhancement: say "retry a died recording once before rerouting" and give the bitrate-from-length formula), artifact-capabilities, artifact-design. Repo skill godot-speedrun-review updated (bitrate formula, recorded-death gotcha, sweep command, server-side video copy).
+- Would have helped: somewhat-useful-claude-skills:derive-the-list (route asserts from the catalogue), scope-vs-claim (completionist "100%" claim vs asserts).
+- MCP: none used (CLI equivalents of godot-tests). No new MCP server (YAGNI: record_autoplay/contact_sheet exist).
+
+## 2026-10-04 — pickup FX consistency
+- Useful skills: none listed fit directly; `derive-the-list` (heart list from levels — applied by hand), `godot-level-pickups` (pickup placement context).
+- Wished-for skill: `godot-pickup-fx` (written) — one glow/burst rule for every collectible.
+- Gate: 958 unit, 19 autoplay, 12 sandbox, lane audit clean.
 ## 2026-10-04 - Modal newspaper (CRT readability)
 - Used: artifact-capabilities (approval page with db picks) - idea: show a copy-approval template.
 - Used: skills/godot-micro-cutscene (validation recipe), godot-input-test (polled input, mutants) - idea: input-test should warn that headless GUI clicks don't reach Controls; use `_input`.

@@ -70,6 +70,8 @@ texture = ExtResource("3_at3ej")
 [node name="BuildingDoorEncounter" type="Node2D" parent="." unique_id=1182008041 instance=ExtResource("4_j7oam")]
 position = Vector2(5900, 0)
 script = ExtResource("5_5amyh")
+mouth_style = 1
+foliage_shade = 0.73
 melee_ratio = 1.0
 enemy_count = 8
 waves = 3

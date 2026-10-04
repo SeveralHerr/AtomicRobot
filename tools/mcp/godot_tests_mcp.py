@@ -8,6 +8,7 @@ Tools:
   audit_lane_walls()        -> Wall-layer colliders that block the road lanes (invisible walls)
   record_autoplay(filter)   -> one scenario recorded to autoplay_out/<filter>.mp4 (Movie Maker)
   contact_sheet(run, t_from, t_to) -> one JPEG of a windowed run's snaps between two game times
+  level_pan(x_from?, x_to?, step?) -> one JPEG, a labelled snap per world x (map a screenshot to x)
 
 Godot path: $GODOT, else the path documented in CLAUDE.md.
 """
@@ -57,6 +58,14 @@ TOOLS = [
         "inputSchema": {"type": "object", "properties": {
             "run": {"type": "string"}, "t_from": {"type": "number"}, "t_to": {"type": "number"}},
             "required": ["run", "t_from", "t_to"]},
+    },
+    {
+        "name": "level_pan",
+        "description": "Teleport the bot along the street and tile one snap per world x into a "
+                       "labelled JPEG (find where a player's screenshot was taken). Defaults "
+                       "-1400..7800 step 450; returns the sheet path to Read.",
+        "inputSchema": {"type": "object", "properties": {
+            "x_from": {"type": "integer"}, "x_to": {"type": "integer"}, "step": {"type": "integer"}}},
     },
     {
         "name": "audit_lane_walls",
@@ -125,6 +134,19 @@ def contact_sheet(run: str, t_from, t_to) -> str:
     return cs.build(run, lo, hi)
 
 
+def level_pan(x_from=-1400, x_to=7800, step=450) -> str:
+    try:
+        lo, hi, st = int(x_from), int(x_to), int(step)
+    except (TypeError, ValueError):
+        return "x_from / x_to / step must be integers"
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import level_pan as lp
+    try:
+        return lp.build(lo, hi, st)
+    except ValueError as e:
+        return str(e)
+
+
 def audit_lane_walls() -> str:
     return _py("lane_wall_audit.py")[-3000:]
 
@@ -150,6 +172,8 @@ def handle(msg: dict):
             text = record_autoplay(str(args.get("filter", "")))
         elif p.get("name") == "contact_sheet":
             text = contact_sheet(str(args.get("run", "")), args.get("t_from"), args.get("t_to"))
+        elif p.get("name") == "level_pan":
+            text = level_pan(args.get("x_from", -1400), args.get("x_to", 7800), args.get("step", 450))
         elif p.get("name") == "audit_lane_walls":
             text = audit_lane_walls()
         else:

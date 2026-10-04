@@ -56,7 +56,12 @@ var frames: int = 0
 var kills := 0
 var damage_taken := 0
 var hits_taken := 0
+## Hits taken (hp lost) on a frame a car struck the player.
+var car_hits := 0
+var _car_seen := Car.player_hits
 var heals := 0
+## Power-ups collected (PowerupSystem.powerup_started), drops and placed alike.
+var powerups := 0
 var deaths := 0
 var won := false
 var max_stuck_s := 0.0
@@ -102,6 +107,7 @@ func _ready() -> void:
 		won = true
 		log_event("win", {}))
 	PowerupSystem.powerup_started.connect(func(id: String, _duration: float) -> void:
+		powerups += 1
 		log_event("powerup", {"id": id, "x": _last_snap.get("player", {}).get("x", 0.0)}))
 	Globals.unlocked.connect(func(what: String, _description: String) -> void:
 		log_event("unlock", {"what": what}))
@@ -180,11 +186,14 @@ func _track_player(tree: SceneTree) -> void:
 		_player_id = p.get_instance_id()
 		_last_hp = p.health
 		return
+	var by_car := Car.player_hits > _car_seen
+	_car_seen = Car.player_hits
 	if p.health < _last_hp:
 		hits_taken += 1
+		car_hits += 1 if by_car else 0
 		damage_taken += _last_hp - p.health
 		log_event("hurt", {"hp": p.health, "x": roundi(p.global_position.x), "lane": p.current_lane,
-			"why": last_why, "near": _nearest_enemy_label(p.global_position)})
+			"why": last_why, "near": "car" if by_car else _nearest_enemy_label(p.global_position)})
 	elif p.health > _last_hp:
 		heals += 1
 		log_event("heal", {"hp": p.health, "x": roundi(p.global_position.x)})
@@ -303,13 +312,14 @@ func metrics(tree: SceneTree) -> Dictionary:
 		"scene": _scene.get_file().get_basename(),
 		"x": roundi(p.get("x", 0.0)), "y": roundi(p.get("y", 0.0)), "lane": p.get("lane", -1),
 		"hp": p.get("hp", 0), "max_hp": p.get("max_hp", 0), "state": p.get("state", ""),
-		"kills": kills, "damage_taken": damage_taken, "hits_taken": hits_taken, "heals": heals,
+		"kills": kills, "damage_taken": damage_taken, "hits_taken": hits_taken, "heals": heals, "powerups": powerups,
 		"deaths": deaths, "won": 1 if won else 0,
 		"boss_reached": 1 if "boss_room" in scenes else 0,
 		"enemies_near": _last_snap.get("enemies", []).size(),
 		"max_stuck_s": snappedf(max_stuck_s, 0.1), "stuck_spots": stuck_spots.size(),
 		"secret_walls": secret_walls.size(), "secret_news": secret_news.size(),
 		"headlines": headlines.size(), "cutscenes": cutscenes,
+		"car_hits": car_hits,
 		"step_failures": step_failures.size(),
 		"errors": errors.script_errors, "engine_errors": errors.engine_errors,
 		"warnings": errors.warnings,

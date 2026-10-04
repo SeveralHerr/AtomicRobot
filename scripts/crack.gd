@@ -197,6 +197,13 @@ func _paint_interior() -> void:
 			r.size.x / size.x, r.size.y / size.y))
 	mat.set_shader_parameter("open", 1.0)
 	animated_sprite_2d.material = mat
+	# A broken-brick rim behind the hole, so it reads as smashed masonry, not a decal.
+	var rim := Sprite2D.new()
+	rim.name = "Rim"
+	rim.texture = SecretFx.rim_texture(tex)
+	rim.show_behind_parent = true
+	rim.offset = animated_sprite_2d.offset
+	animated_sprite_2d.add_child(rim)
 
 
 func _style_prompt() -> void:

@@ -389,6 +389,7 @@ func test_hud_hides_when_the_run_ends() -> String:
 # --- Title-screen attract loop -------------------------------------------------
 
 func _title() -> Node:
+	load("res://scripts/startscreen.gd").splash_played = true  # no logo over the attract loop
 	var s := _add((load("res://scenes/startscreen.tscn") as PackedScene).instantiate())
 	await _frames()
 	return s

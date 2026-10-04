@@ -39,14 +39,10 @@ func change_to_green():
 	red_light.visible = false
 	green_light.visible = true
 
-	var car = CAR.instantiate()
+	var car: Car = CAR.instantiate()
 	add_child(car)
 	var car_lane: int = _pick_car_lane()
-	car.lane = car_lane
-	car.global_position = Vector2(player.position.x + car_position.x, _car_road_y(car_lane))
-	car.z_index = Lanes.z_for(car_lane)
-	car.speed = 0
-	car.start = true
+	car.launch(car_lane, Vector2(player.position.x + car_position.x, Car.road_y(player, car_lane)))
 	
 	# Wait for green duration
 	await get_tree().create_timer(green_duration).timeout
@@ -58,8 +54,6 @@ func change_to_green():
 	car.start = false
 	car.area_2d.monitorable = false
 	car.area_2d.monitoring = false
-
-	car.global_position = Vector2(player.position.x + car_position.x, _car_road_y(car_lane))
 	current_state = LightState.RED
 	
 	# Wait for red duration before allowing state change again
@@ -70,21 +64,6 @@ func change_to_green():
 ## Cars use the road lanes only — never the sidewalk (GROUND_LANE).
 func _pick_car_lane() -> int:
 	return randi_range(Lanes.GROUND_LANE + 1, Lanes.FRONT_LANE)
-
-## Absolute world Y to place a car at for `lane`. Note this must be an absolute lane
-## Y, not y_offset(): y_offset() is a RELATIVE offset from the walkway baseline, and
-## using it as an absolute Y put cars ~21px below the lane they were meant to drive in.
-##
-## Cars ride the PLAYER's standing line rather than the walkway floor line — car.tscn
-## has no footprint shape of its own (its only CollisionShape2D is an Area2D hitbox),
-## so its art was positioned against whatever the lane math handed it, which was the
-## player's origin. lane_stand_y() reproduces that height exactly.
-func _car_road_y(lane: int) -> float:
-	if player == null:
-		return 0.0
-	if player.lane_floor_y == INF:
-		return player.global_position.y + Lanes.y_offset(lane)
-	return player.lane_stand_y(lane)
 
 func _on_detection_area_body_entered(body):
 	if body is Player:
