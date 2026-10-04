@@ -18,7 +18,9 @@ static func drop_powerup(enemy: Node2D, id: String) -> Node2D:
 	# Set before add_child so the pickup's _ready() already has its final identity.
 	pickup.powerup_id = id
 	pickup.lane = enemy.lane
-	parent.add_child(pickup)
+	# Deferred: kills land inside a hit's physics callback, and adding an Area2D
+	# there errors ("Can't change this state while flushing queries").
+	parent.add_child.call_deferred(pickup)
 	# Hover above the LANE'S FLOOR LINE, not above the enemy's origin. Origins sit
 	# different distances above their soles (a maid's is 27px up, the player's
 	# 19.75px), so an origin-relative drop would float at a visibly different height
