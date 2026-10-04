@@ -17,24 +17,6 @@ func _run(total: int = 8700) -> Dictionary:
 		"secret_totals": {"wall": 2, "news": 5}}
 
 
-func test_threshold_text_is_short() -> String:
-	var r: String = _T.assert_eq(L.short_points(9500), "9.5K", "9.5K")
-	if r != "":
-		return r
-	r = _T.assert_eq(L.short_points(18000), "18K", "18K")
-	if r != "":
-		return r
-	return _T.assert_eq(L.short_points(0), "0", "0")
-
-
-## Derived from the rules table both ways: one chip per rank, worst to best.
-func test_ladder_has_every_rank_in_order() -> String:
-	var want: Array = []
-	for entry in ScoreRules.RANK_THRESHOLDS:
-		want.push_front(String(entry[0]))
-	return _T.assert_eq(L.ladder_letters(), want, "D..S from RANK_THRESHOLDS")
-
-
 func test_next_line_names_the_next_rank_and_the_gap() -> String:
 	return _T.assert_eq(L.next_text(8700), "+800 FOR B (9,500)", "gap to B")
 
@@ -102,16 +84,15 @@ func test_death_says_how_to_get_ranked() -> String:
 	return _T.assert_eq(L.next_text(1500, false), "CLEAR THE BOSS TO GET RANKED", "no rank on a death")
 
 
-## Built for real: the chip for the run's rank is the lit one.
-func test_ladder_lights_the_runs_rank() -> String:
+## Built for real: the card line is the gap plus the tip, no chip row.
+func test_ladder_shows_one_line() -> String:
 	var ladder: RankLadder = L.new()
 	ladder.show_run(_run(), true)
-	var lit: Array = []
-	for letter in ladder.chips:
-		if ladder.chips[letter].get_meta("lit"):
-			lit.append(letter)
+	var r: String = _T.assert_eq(ladder.get_child_count(), 1, "only the hint line")
+	if r == "":
+		r = _T.assert_eq(ladder.next_label.text, L.line_text(_run(), true), "line text")
 	ladder.free()
-	return _T.assert_eq(lit, ["C"], "C lit")
+	return r
 
 
 ## The tallest card (unlock stamp, full breakdown, ladder, tip, badge) laid out for

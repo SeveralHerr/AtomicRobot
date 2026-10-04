@@ -31,7 +31,7 @@ var breakdown: GridContainer
 var unlock_holder: Control
 var unlock_label: Label
 var badge_holder: Control
-## Every rank's threshold, the gap to the next and a tip (scripts/ui/rank_ladder.gd).
+## The gap to the next rank and a tip (scripts/ui/rank_ladder.gd).
 var ladder: RankLadder
 var badge_label: Label
 
