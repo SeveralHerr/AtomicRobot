@@ -133,7 +133,7 @@ animations = [{
 }]
 
 [node name="Cat" type="Node2D"]
-z_index = 1
+z_index = 2
 script = ExtResource("1_cat")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -141,3 +141,7 @@ scale = Vector2(0.6, 0.6)
 sprite_frames = SubResource("SpriteFrames_cat")
 animation = &"idle"
 offset = Vector2(0, -33)
+
+[node name="PetLabel" type="Label" parent="."]
+visible = false
+z_index = 2
