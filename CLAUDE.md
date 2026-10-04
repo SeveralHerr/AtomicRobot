@@ -235,6 +235,10 @@ footage review recipe in `skills/godot-speedrun-review/SKILL.md`. Re-extract a s
 at full size before reporting it — adjacent contact-sheet tiles fake "doubled" art. Never
 point `--autoplay-out` at the scenario's own folder: the report overwrites a same-named scenario.
 
+Shorts/vertical clips: one recorded take, cut many (`skills/godot-youtube-shorts`); review
+against Shorts UI zones and at half size — thumbnails hid a clipped HUD for 2 rounds. Marketing footage must look human-played
+(hits taken, whiffs) — main's god mode + plain bot read as a "perfect run"; never "we/our shop" copy.
+
 Autoplay writes scores/unlocks to scratch saves (`user://autoplay_*.cfg`); a run that
 touched the real `user://scores.cfg` polluted the player's high-score table — keep tools off it.
 Parallel worktrees share `user://`, so a test touching user files can flake under fan-out.

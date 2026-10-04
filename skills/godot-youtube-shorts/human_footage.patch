@@ -1,0 +1,233 @@
+diff --git a/scripts/Player.gd b/scripts/Player.gd
+index 13aaad7..be93dc9 100644
+--- a/scripts/Player.gd
++++ b/scripts/Player.gd
+@@ -100,7 +100,7 @@ var _up_prev: bool = false
+ var _down_prev: bool = false
+ func take_damage(amount: int) -> void:
+ 	if god_mode:
+-		return
++		amount = mini(amount, health - 1)
+ 	health -= amount
+ 	print(health)
+ 
+@@ -446,9 +446,6 @@ func receive_hit(source_position: Vector2, damage: int, knockback_strength: floa
+ 	if is_dead:
+ 		return
+ 
+-	if god_mode:
+-		return
+-
+ 	# Don't allow multiple hits during knockback
+ 	if state_machine.current_state is KnockbackState:
+ 		return
+diff --git a/tools/autoplay/brain.gd b/tools/autoplay/brain.gd
+index 4f8accd..9ec4412 100644
+--- a/tools/autoplay/brain.gd
++++ b/tools/autoplay/brain.gd
+@@ -1,5 +1,7 @@
+ extends RefCounted
+ 
++const HumanStyle := preload("res://tools/autoplay/human_style.gd")
++
+ ## Autoplay decision maker. Pure: decide(snapshot, mem) -> intent, no scene tree,
+ ## so every rule is unit tested (test/unit/test_autoplay_brain.gd).
+ ##
+@@ -119,6 +121,12 @@ static func decide(snap: Dictionary, mem: Dictionary) -> Dictionary:
+ 		intent = _advance(p, snap.get("goal_x", INF), mem["road_blocked"])
+ 	if intent.is_empty():
+ 		intent = idle("nothing to do")
++	if not mem.has("h_phase"):
++		HumanStyle.init_mem(mem)
++	if str(intent["why"]).begins_with("fight") and not target.is_empty():
++		intent = HumanStyle.fight(p, target, intent, dt, mem)
++	else:
++		intent = HumanStyle.travel(intent, dt, mem)
+ 	return _unstick(p, intent, dt, mem)
+ 
+ 
+diff --git a/tools/autoplay/human_style.gd b/tools/autoplay/human_style.gd
+new file mode 100644
+index 0000000..7ab8522
+--- /dev/null
++++ b/tools/autoplay/human_style.gd
+@@ -0,0 +1,179 @@
++extends RefCounted
++
++## "Human" play style for the autoplay brain (opt-in: `brain advance 840 human`).
++## Post-processes the plain bot's fight/advance intent so a run LOOKS played:
++## a combo, then a reposition (retreat / lane strafe / hop back / hesitate), a
++## seeded chance to jump-attack in, a flinch after taking a hit, and walking
++## stretches between runs. Pure and seeded (mem.rng only), so a seed replays the
++## same frames; unit tested in test/unit/test_autoplay_human_style.gd.
++##
++## Every phase is short and time-boxed: the style must look played, never stall.
++
++const COMBO_S := Vector2(0.5, 1.3)
++const RETREAT_S := Vector2(0.2, 0.45)
++const HESITATE_S := Vector2(0.15, 0.45)
++## A strafe ends on arrival in the new lane, or after this long.
++const STRAFE_MAX_S := 0.8
++## Whole jump, takeoff to landing (JumpState + FallState at JUMP_HOLD_FRAMES).
++const HOP_S := 0.9
++## Closing-in distance band where the jump-in is rolled (once per approach).
++const JUMP_IN_DX := Vector2(70.0, 130.0)
++const JUMP_IN_CHANCE := 0.2
++## Swing while falling once the target is this close (FallState takes Attack).
++const JUMP_ATTACK_DX := 90.0
++## Reposition after a combo, cumulative odds: retreat, strafe, hop back, else hesitate.
++const REPOSITION := [0.25, 0.6, 0.75]
++## Chance of breaking off (retreat or strafe) right after taking a hit.
++const FLINCH_CHANCE := 0.6
++const RUN_SEG_S := Vector2(2.5, 6.0)
++const WALK_SEG_S := Vector2(0.8, 2.0)
++const WALK_CHANCE := 0.3
++## Sloppy-human extras (shorts footage): swing at air while still closing in, and
++## react late to a new target.
++const WHIFF_CHANCE := 0.35
++const WHIFF_DX := Vector2(85.0, 150.0)
++const REACT_S := Vector2(0.2, 0.55)
++const REACT_CHANCE := 0.5
++
++
++static func init_mem(mem: Dictionary) -> void:
++	mem.merge({"h_phase": "", "h_t": 0.0, "h_dir": 1, "h_lane": 0, "h_jumped": false,
++		"h_rolled": false, "h_last_hp": -1, "h_seg_t": 0.0, "h_walk": false, "h_whiffed": false, "h_target": -1}, true)
++
++
++## Called on every frame the fight rung wins. `base` is the bot's own fight intent.
++static func fight(p: Dictionary, e: Dictionary, base: Dictionary, dt: float, mem: Dictionary) -> Dictionary:
++	var rng: RandomNumberGenerator = mem["rng"]
++	var dx: float = e["x"] - p["x"]
++	var side := (1 if dx > 0.0 else -1) if dx != 0.0 else int(p.get("facing", 1))
++	var hp := int(p["hp"])
++	var hurt: bool = mem["h_last_hp"] >= 0 and hp < mem["h_last_hp"]
++	mem["h_last_hp"] = hp
++	if hurt and rng.randf() < FLINCH_CHANCE:
++		_start(p, mem, side, "retreat" if rng.randf() < 0.5 or not p.get("lanes", false) else "strafe")
++	var tid := int(e.get("id", int(e["x"]) / 400))
++	if tid != mem["h_target"]:
++		mem["h_target"] = tid
++		mem["h_whiffed"] = false
++		if rng.randf() < REACT_CHANCE and mem["h_phase"] == "":
++			mem["h_phase"] = "hesitate"
++			mem["h_t"] = rng.randf_range(REACT_S.x, REACT_S.y)
++	mem["h_t"] -= dt
++	var i := _phase(p, e, dx, side, mem)
++	if not i.is_empty():
++		return i
++	if mem["h_phase"] == "combo":
++		if mem["h_t"] > 0.0:
++			return base
++		_reposition(p, mem, side)
++		i = _phase(p, e, dx, side, mem)
++		if not i.is_empty():
++			return i
++	mem["h_phase"] = ""
++	if base["attack"]:
++		mem["h_phase"] = "combo"
++		mem["h_t"] = rng.randf_range(COMBO_S.x, COMBO_S.y)
++		return base
++	var ad := absf(dx)
++	if base["why"] == "fight: close in" and not mem["h_whiffed"] and ad >= WHIFF_DX.x and ad <= WHIFF_DX.y:
++		mem["h_whiffed"] = true
++		if rng.randf() < WHIFF_CHANCE:
++			var w := _act("whiff", side)
++			w["attack"] = true
++			return w
++	if base["why"] == "fight: close in" and not mem["h_rolled"] and ad >= JUMP_IN_DX.x and ad <= JUMP_IN_DX.y \
++			and e.get("lane", 0) == p["lane"] and p.get("grounded", true):
++		mem["h_rolled"] = true
++		if rng.randf() < JUMP_IN_CHANCE:
++			_start(p, mem, side, "hop")
++			mem["h_dir"] = side
++			return _phase(p, e, dx, side, mem)
++	return base
++
++
++## The active phase's intent, or {} when none is running (or the combo is over).
++static func _phase(p: Dictionary, e: Dictionary, dx: float, side: int, mem: Dictionary) -> Dictionary:
++	if mem["h_t"] <= 0.0:
++		return {}
++	match mem["h_phase"]:
++		"retreat":
++			return _act("retreat", -side)
++		"hesitate":
++			return _act("hesitate", 0)
++		"strafe":
++			if p["lane"] == mem["h_lane"]:
++				return {}
++			var s := _act("strafe", 0)
++			s["lane"] = 0 if p.get("changing_lane", false) else signi(mem["h_lane"] - int(p["lane"]))
++			return s
++		"hop":
++			var h := _act("hop", mem["h_dir"])
++			# A jump-in stops drifting once in reach, so it lands in FRONT of the target.
++			if mem["h_dir"] == side and absf(dx) <= JUMP_ATTACK_DX * 0.6:
++				h["x"] = 0
++			if not mem["h_jumped"]:
++				mem["h_jumped"] = true
++				h["jump"] = true
++			elif str(p.get("state", "")) == "FallState" and mem["h_dir"] == side \
++					and absf(dx) <= JUMP_ATTACK_DX and e.get("lane", 0) == p["lane"]:
++				h["attack"] = true
++				h["why"] = "human: jump attack"
++			return h
++	return {}
++
++
++## After a combo: retreat, strafe a lane, hop back or hesitate (seeded).
++static func _reposition(p: Dictionary, mem: Dictionary, side: int) -> void:
++	var r: float = (mem["rng"] as RandomNumberGenerator).randf()
++	mem["h_rolled"] = false
++	if r < REPOSITION[0] or (r < REPOSITION[1] and not p.get("lanes", false)):
++		_start(p, mem, side, "retreat")
++	elif r < REPOSITION[1]:
++		_start(p, mem, side, "strafe")
++	elif r < REPOSITION[2]:
++		_start(p, mem, side, "hop")
++		mem["h_dir"] = -side
++	else:
++		_start(p, mem, side, "hesitate")
++
++
++static func _start(p: Dictionary, mem: Dictionary, side: int, phase: String) -> void:
++	var rng: RandomNumberGenerator = mem["rng"]
++	mem["h_phase"] = phase
++	mem["h_jumped"] = false
++	match phase:
++		"retreat": mem["h_t"] = rng.randf_range(RETREAT_S.x, RETREAT_S.y)
++		"hesitate": mem["h_t"] = rng.randf_range(HESITATE_S.x, HESITATE_S.y)
++		"hop": mem["h_t"] = HOP_S
++		"strafe":
++			mem["h_t"] = STRAFE_MAX_S
++			mem["h_lane"] = strafe_lane(int(p["lane"]), rng)
++	mem["h_dir"] = -side
++
++
++## A neighbouring ROAD lane (1..FRONT): the walkway is where the props are.
++static func strafe_lane(lane: int, rng: RandomNumberGenerator) -> int:
++	var options := [lane - 1, lane + 1].filter(func(l: int) -> bool:
++		return l > Lanes.GROUND_LANE and l <= Lanes.FRONT_LANE)
++	return options[rng.randi() % options.size()]
++
++
++static func _act(phase: String, x: int) -> Dictionary:
++	return {"x": x, "run": false, "jump": false, "attack": false, "crouch": false, "lane": 0,
++		"why": "human: " + phase}
++
++
++## No fight this frame: drop any phase, and alternate running with walking stretches.
++static func travel(intent: Dictionary, dt: float, mem: Dictionary) -> Dictionary:
++	mem["h_phase"] = ""
++	mem["h_rolled"] = false
++	if not intent["run"]:
++		return intent
++	var rng: RandomNumberGenerator = mem["rng"]
++	mem["h_seg_t"] -= dt
++	if mem["h_seg_t"] <= 0.0:
++		mem["h_walk"] = rng.randf() < WALK_CHANCE
++		var seg: Vector2 = WALK_SEG_S if mem["h_walk"] else RUN_SEG_S
++		mem["h_seg_t"] = rng.randf_range(seg.x, seg.y)
++	intent["run"] = not mem["h_walk"]
++	return intent

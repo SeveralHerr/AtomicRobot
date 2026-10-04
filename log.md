@@ -572,3 +572,13 @@ Log of skills that might have been useful for a given response, and why (short f
 - Enhancement idea (itch-store-page): split the "poll until ids appear" loop into short evaluates — one 45s loop froze CDP though the upload landed.
 - Enhancement idea (itch-devlog): note the "first devlog ever" case — no last-post date, so pick a 2-week window.
 - Would have helped: a `store-shots` skill — run completionist bot with `snap_every`, contact sheet, pick 6.
+
+## 2026-10-04 — YouTube Short style pilot (not committed)
+- One god-mode Cody take (worktree wt-shorts @ e49e6af) -> 6 cuts, 5 review rounds; final `autoplay_out/shorts/v6.mp4` (21.9 s, 1080x1920).
+- Would have helped: skills/godot-speedrun-review (recording recipe, used), playthrough-video-review (frame review). Enhancement idea (speedrun-review): note video time == game time so event `t` indexes footage.
+- Written now: skills/godot-youtube-shorts (build_short.py, review_short.py, example_spec.py). MCP: none used/new (YAGNI — scripts suffice).
+- Follow-up: copy rework v7 — user isn't the shop (no "we"), "hate this guy" too harsh -> feature-led lines. Skill/memory updated with the copy rule.
+## 2026-10-04 — Ship (main d197687, itch deploy green)
+- First push blocked by CI: 3 `res://Sounds/` preloads (folder is `sounds/`) — Windows-only green, 66 Linux fails. Fixed + `test_res_path_case.gd` guard.
+- Would have helped: somewhat-useful-claude-skills:itch-ci-deploy (CI-only failure triage) — idea: list "case-sensitive res:// paths" as a top symptom.
+- Follow-up 2: user: footage too "perfect run". Worktree-only patch (skills/godot-youtube-shorts/human_footage.patch): human-bot's human_style + whiffs/late reactions, god takes hits (HP floor 1). Re-recorded; v8-v10 (car hits, boss down to 1 HP comeback). Would have helped: human-bot merged to main (still unmerged, conflicts with heal logic).
