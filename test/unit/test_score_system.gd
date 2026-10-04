@@ -185,7 +185,6 @@ func test_restart_mid_entry_cancels_the_wait() -> String:
 # --- The run: street score carries through the boss door ---------------------
 
 const STREET := "res://scenes/main.tscn"
-const TEST_UNLOCKS := "user://test_score_unlocks.cfg"
 
 
 ## Street -> (the swap's empty frame) -> boss room, alive: one run.
@@ -282,15 +281,13 @@ func test_run_secret_after_the_run_ended_is_ignored() -> String:
 
 
 func test_run_unlock_is_reported() -> String:
-	Globals.use_unlock_save(TEST_UNLOCKS)
+	# tools/run_tests.gd points Globals at a scratch unlock save with Robot locked.
 	ScoreSystem.enter_scene(STAGE)
 	Globals.boss_death.emit()
 	var unlocks: Array = ScoreSystem.last_run.get("unlocks", [])
 	ScoreSystem.enter_scene(STAGE)
 	Globals.boss_death.emit()
 	var again: Array = ScoreSystem.last_run.get("unlocks", [])
-	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_UNLOCKS))
-	Globals.use_unlock_save(Globals.CharacterUnlocks.DEFAULT_PATH)
 	var r: String = _T.assert_eq(unlocks, ["Robot"], "first clear unlocks Robot")
 	if r != "":
 		return r
@@ -299,9 +296,8 @@ func test_run_unlock_is_reported() -> String:
 
 ## Mutation survivor: a run that ends with a fighter still locked reports no unlock.
 func test_run_still_locked_is_not_an_unlock() -> String:
-	Globals.use_unlock_save(TEST_UNLOCKS)
+	# tools/run_tests.gd points Globals at a scratch unlock save with Robot locked.
 	ScoreSystem.enter_scene(STAGE)
 	ScoreSystem.finish_stage()  # cleared without the boss_death unlock
 	var unlocks: Array = ScoreSystem.last_run.get("unlocks", [])
-	Globals.use_unlock_save(Globals.CharacterUnlocks.DEFAULT_PATH)
 	return _T.assert_eq(unlocks, [], "Robot still locked")

@@ -149,7 +149,8 @@ func test_card_fonts_draw_every_character() -> String:
 	var label_text := InitialsEntry.hint_text(true) + InitialsEntry.hint_text(false) \
 		+ "ENTER YOUR INITIALS HIGH SCORES RANK FINAL SCORE RESTART EXIT GAME OK" \
 		+ ComicStyle.badge_text(0) + ComicStyle.badge_text(4) + "0123456789,+:" \
-		+ RunSummary.breakdown_text({"fight_score": 1, "seconds": 61.0, "perfect": true})
+		+ RunSummary.breakdown_text({"fight_score": 1, "street_score": 1, "seconds": 61.0, "perfect": true,
+			"secret_totals": {"wall": 2, "news": 5}}) + RunSummary.breakdown_text({"fight_score": 1}) 		+ RunSummary.unlock_text({"unlocks": ["Robot", "Cody"]})
 	for pair in [[ComicStyle.DISPLAY, display_text + "GAME OVER YOU WIN!"], [ComicStyle.LABEL, label_text]]:
 		for c in String(pair[1]):
 			if c.unicode_at(0) > 32 and not pair[0].has_char(c.unicode_at(0)):
@@ -263,7 +264,7 @@ func test_clear_shows_rank_stamp_and_breakdown() -> String:
 	r = _T.assert_eq(card.summary.stamp_label.text, String(ScoreSystem.last_run["rank"]), "stamp shows the rank")
 	if r != "":
 		return r
-	r = _T.assert_true("FIGHT" in card.summary.breakdown.text, "breakdown shown")
+	r = _T.assert_true(card.summary.breakdown.visible and card.summary.breakdown.get_child_count() > 0, "breakdown shown")
 	if r != "":
 		return r
 	return _T.assert_false(player.is_physics_processing(), "player frozen on a clear")
