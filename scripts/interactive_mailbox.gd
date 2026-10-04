@@ -14,7 +14,7 @@ var newspaper_texts := [
 	# Straight quotes only: the fonts have no curly quote or em dash glyph, and the
 	# web build has no system font to fall back on, so a smart quote here renders as
 	# a blank box on the deployed mobile page.
-	"Meter Maid Union Demands Heavier Quarters: 'These Ones Don't Leave a Dent'",
+	"Meter Maid Union Wins Award for Most Tickets Written in Cursive",
 	"Local Tattoo Artist Wins Award for Most Controversial Dolphin Sleeve",
 	"Parking Meter Develops Sentience, Immediately Quits Job",
 	"Robot Parade Scheduled for Friday!"

@@ -294,7 +294,9 @@ func test_crt_tunes_in_while_reading() -> String:
 	var s := _near_stand()
 	await _press()
 	await _real_seconds(CRTOverlay.TUNE_SECONDS + 0.1)
-	var r: String = _T.assert_true(CRTOverlay.focus > 0.95, "tube focused for reading (%.2f)" % CRTOverlay.focus)
+	# Part way only: full focus wiped scanlines and fringe and read as "CRT off".
+	var f := CRTOverlay.focus
+	var r: String = _T.assert_true(f > 0.3 and f < 0.9, "tube part-focused for reading (%.2f)" % f)
 	if r != "":
 		return r
 	_arm(s)

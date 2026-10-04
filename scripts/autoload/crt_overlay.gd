@@ -107,13 +107,14 @@ func _process(_delta: float) -> void:
 	_material.set_shader_parameter("unscaled_time", Time.get_ticks_msec() / 1000.0)
 
 
-## Ease the focus to 1 (`on`) or back to 0. Unscaled: the end card can open inside a
-## hit-pause.
-func tune_in(on: bool, seconds: float = TUNE_SECONDS) -> void:
+## Ease the focus to `amount` (`on`) or back to 0. Unscaled: the end card can open
+## inside a hit-pause. A part `amount` keeps some of the tube (scanlines, a coarser
+## grid): the newspaper must still look filmed through the CRT.
+func tune_in(on: bool, seconds: float = TUNE_SECONDS, amount: float = 1.0) -> void:
 	if _tune:
 		_tune.kill()
 	_tune = create_tween().set_ignore_time_scale()
-	_tune.tween_property(self, "focus", 1.0 if on else 0.0, seconds) 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_tune.tween_property(self, "focus", amount if on else 0.0, seconds) 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
 ## Snap straight back to the normal look (scene change, card freed).

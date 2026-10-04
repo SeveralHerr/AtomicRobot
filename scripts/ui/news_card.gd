@@ -28,6 +28,9 @@ const MASTHEAD_SIZE := 70
 const HEADLINE_FONT: FontFile = ComicStyle.LABEL
 const HEADLINE_SIZE := 54
 const DIM_ALPHA := 0.62
+## How far the CRT tunes in while reading: enough for the type, not so far that the
+## tube look vanishes (full focus read as "CRT off" - user report).
+const CRT_FOCUS := 0.6
 ## The spin-in: whole turns while it grows from a dot, then a punch as it lands.
 const SPINS := 2
 const SPIN_SECONDS := 0.62
@@ -223,7 +226,7 @@ func open(text: String, picture: Texture2D = null, animate: bool = true) -> void
 	card.position = -card.size * 0.5
 	card.pivot_offset = card.size * 0.5
 	visible = true
-	CRTOverlay.tune_in(true)
+	CRTOverlay.tune_in(true, CRTOverlay.TUNE_SECONDS, CRT_FOCUS)
 	HudFade.fade(get_tree(), HudFade.CINEMATIC, 0.0, 0.2)
 	if not animate:
 		_pose(1.0, TILT, 1.0)
