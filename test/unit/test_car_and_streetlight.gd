@@ -251,12 +251,28 @@ func test_streetlight_car_is_telegraphed_on_the_players_lane() -> String:
 	return _T.assert_false(light.warning.sign.visible, "freed car: sign down, no error")
 
 
-func test_streetlight_car_rides_the_player_stand_line() -> String:
-	var light := _keep(STREETLIGHT.instantiate())
+## The car's wheels land on its lane's floor line, the line every body's soles stand
+## on. Riding the player's ORIGIN line put the tyres ~8px under the player's feet, so a
+## car in your own lane read as one lane nearer than you.
+func test_car_wheels_sit_on_every_road_lanes_floor_line() -> String:
 	var p := _player()
 	p.lane_floor_y = 100.0
-	light.player = p
-	return _T.assert_float_eq(Car.road_y(light.player, 2), p.lane_stand_y(2), 0.001, "road y = player's lane stand y")
+	for lane in range(Lanes.GROUND_LANE + 1, Lanes.LANE_COUNT):
+		var r: String = _T.assert_float_eq(Car.road_y(p, lane) + Car.WHEEL_DROP,
+			Lanes.floor_y(p.lane_floor_y, lane), 0.001, "lane %d tyres on the floor line" % lane)
+		if r != "":
+			return r
+	return ""
+
+
+## WHEEL_DROP is measured off the art, so a redrawn car can't float or sink unnoticed.
+func test_wheel_drop_matches_the_car_art() -> String:
+	var car: Car = _keep(CAR.instantiate())
+	var sprite := car.get_node("Sprite2D") as Sprite2D
+	var img := sprite.texture.get_image()
+	var used := img.get_used_rect()
+	var bottom := sprite.position.y + (used.end.y - img.get_height() / 2.0) * sprite.scale.y
+	return _T.assert_float_eq(Car.WHEEL_DROP, bottom, 0.5, "tyre bottom below the car origin")
 
 
 func test_launched_right_drives_right_mirrored() -> String:
@@ -273,4 +289,5 @@ func test_launched_right_drives_right_mirrored() -> String:
 func test_car_road_y_before_the_lanes_are_measured() -> String:
 	var p := _player()
 	p.global_position = Vector2(0, 40)
-	return _T.assert_float_eq(Car.road_y(p, 2), 40.0 + Lanes.y_offset(2), 0.001, "player y + lane offset")
+	var soles := 40.0 + p.foot_offset() + Lanes.y_offset(2)
+	return _T.assert_float_eq(Car.road_y(p, 2) + Car.WHEEL_DROP, soles, 0.001, "tyres on the player's soles + lane offset")

@@ -9,6 +9,9 @@ const SPEED_MIN := 150
 const SPEED_MAX := 450
 ## Half the car art's length (opaque 107px of Car_*.png).
 const HALF_LEN := 56.0
+## Tyre bottom below the car's origin (Sprite2D at y -4, opaque rows end 32px under
+## the 128px art's centre). road_y() lands this line on the lane's floor.
+const WHEEL_DROP := 28.0
 
 ## Times any car has struck a player this process (autoplay reports car hits).
 static var player_hits := 0
@@ -62,16 +65,16 @@ func launch(car_lane: int, pos: Vector2, dir: int = -1, with_speed: int = 0) -> 
 	start = true
 
 
-## Absolute world Y a car drives at on `lane`: the PLAYER's standing line, not the
-## walkway floor line — car.tscn has no footprint shape of its own (its only
-## CollisionShape2D is an Area2D hitbox), so its art is positioned against the
-## player's origin. Using y_offset() as an absolute Y put cars ~21px off their lane.
+## Absolute world Y a car drives at on `lane`: tyres on the lane's floor line, the
+## same line every body's soles stand on. car.tscn has no footprint shape of its own
+## (its only CollisionShape2D is an Area2D hitbox), so the art's tyre line is used.
+## Riding the player's ORIGIN line instead sat the tyres ~8px under the player's feet.
 static func road_y(player: Player, car_lane: int) -> float:
 	if player == null:
 		return 0.0
 	if player.lane_floor_y == INF:
-		return player.global_position.y + Lanes.y_offset(car_lane)
-	return player.lane_stand_y(car_lane)
+		return player.global_position.y + player.foot_offset() + Lanes.y_offset(car_lane) - WHEEL_DROP
+	return Lanes.floor_y(player.lane_floor_y, car_lane) - WHEEL_DROP
 
 
 func _physics_process(delta: float) -> void:
