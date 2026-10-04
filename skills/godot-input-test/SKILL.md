@@ -16,6 +16,8 @@ Runner: `godot --headless --path . --script res://tools/run_tests.gd -- --filter
           Input.parse_input_event(ev); Input.flush_buffered_events()
           await _frames(1)
   ```
+- `Input.action_press` from a timer/`create_timer` resume lands AFTER that frame's
+  `_process`, so `is_action_just_pressed` never sees it: `await process_frame` first.
 - **Polling code must check `is_action_just_pressed` first**, then `is_action_pressed` for
   hold-repeat — a tap pressed+released between frames never reads as pressed.
   Test it: parse press AND release before one `await _frames(2)`.

@@ -41,8 +41,9 @@ GAME OVER card -> RESTART -> back into main (`test/autoplay/death_restart.json`)
 
 Metrics: `t frames scene x y lane hp max_hp state kills damage_taken hits_taken heals
 deaths won boss_reached enemies_near max_stuck_s stuck_spots step_failures errors
-engine_errors warnings score boss_hp` (`boss_hp` = -1 until the boss spawns; how far a
-lost fight got). `scene`/`state` take `==`/`!=`; the rest are numbers.
+engine_errors warnings score boss_hp secret_walls secret_news headlines` (`boss_hp` = -1
+until the boss spawns; how far a lost fight got; `secret_*` count `Globals.secret_found`
+once per id, `headlines` = distinct newspaper headlines read; `secret` events name them). `scene`/`state` take `==`/`!=`; the rest are numbers.
 `max_stuck_s` = longest time, during `brain advance` or `walk_to`, without a new best
 position in the travel direction (fighting doesn't count). `errors` = script errors and
 `push_error`; `engine_errors` = C++-side (e.g. missing animation).

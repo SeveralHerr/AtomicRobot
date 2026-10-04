@@ -10,6 +10,10 @@ mortal "human" take, copy it without `god on` and try seeds 1-4 headless first
 (~6 s wall each); pick one that wins and grabs both `rage` and `overclock`
 (`--events powerup,heal,death`). Secrets the brain can't see are scripted steps:
 - `tap Interact` at newspaper stands x -779, 306, 1494, 3218, 5028 (brain never presses E).
+  `brain advance` ends on a ROAD lane: `lane 0` + `walk_to X` before the tap, or the stand's
+  23 px circle misses you (5028 was silently skipped until `secret_news == 5` was pinned).
+- Any character opens wall B (Robot/Cass shots chip it); `test/autoplay/secrets_cass.json`
+  is the fast check (~1 s). Windowed runs drop more taps (wall-clock hitstop): 9 taps.
 - Hidden heart x -1410 (walk left first); street heart 2944 is behind the crate stack:
   approach on a ROAD lane, `lane 0` at 2944. Roof heart 3208: from x 2700 lane 0, hold
   right + 6 jumps (bins are steps).

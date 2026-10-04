@@ -401,3 +401,11 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: godot-headful-screenshot (enhancement: window_set_size works inside --script captures — added), godot-autoplay-test, derive-the-list idea (secret totals both directions).
 - Would have helped: a SceneState-walk helper skill (instance nodes repeat their root's script — double counts); a "shared user:// across worktrees" warning (parallel agents race on settings.cfg/scores.cfg).
 - MCP: none used (godot-tests MCP not needed; CLI direct).
+## 2026-10-04 — Secret walls for every character, juicy reveal, news shuffle (sr-secrets)
+- Robot/Cass shots chip cracks (LaneProjectile.find_crack); Crack.take_blow = one feel for melee + shots.
+- Reveal: brick chunks, gold SECRET!, Unlock sting, painted hole + bobbing orb; claim flies orb to HP bar (heal on arrival) + chime; Globals.secret_found wall/news once per id.
+- Bugs found: hitting a claimed wall re-armed the orb (infinite orbs); completionist never read stand 5028 (road lane).
+- News: shared shuffle bag -> 5 stands, 5 headlines (seeded). Paper card moved below score/CRT edge.
+- 598/598 unit, 9/9 sandbox, 15/15 autoplay; 13/13 guard mutants killed (1 survivor -> new test).
+- Skills used: godot-hit-feel, godot-headful-screenshot, godot-autoplay-test, godot-speedrun-review, juicy-screen-review (enhancement: ship the round/sheet scripts in the skill instead of rewriting them). Would have helped: somewhat-useful-claude-skills:extract-a-testable-seam (prompt-delay mutant), a "python edits on Windows" note (cp1252 + CRLF mangled files: use PYTHONUTF8=1 and newline='').
+- MCP: none used.

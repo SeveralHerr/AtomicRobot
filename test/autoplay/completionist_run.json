@@ -115,6 +115,8 @@
   "hold ui_right 0.6",
   "wait 1.0",
   "brain advance 120 5028",
+  "lane 0",
+  "walk_to 5028 4",
   "tap Interact",
   "wait 0.8",
   "brain advance 600",
@@ -124,6 +126,9 @@
  ],
  "expect": [
   "won == 1",
+  "secret_walls == 1",
+  "secret_news == 5",
+  "headlines == 5",
   "heals >= 6",
   "errors == 0",
   "max_stuck_s < 30",
