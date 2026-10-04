@@ -323,3 +323,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: godot-autoplay-test (bot runs, snaps, balance). Enhancement: document GIF recipe + sweep tool (done).
 - Would have helped: godot-boss-juice (created) — presentation checklist + fairness rules; somewhat-useful-claude-skills:godot-game-ui-juicy (motion patterns, container-scale gotcha); extract-a-testable-seam (pure `contact`/`link_fan`).
 - MCP: none used (godot-tests MCP available; ran suites via shell for full output).
+
+## 2026-10-03 — Door encounters in 1–3 waves (worktree juice-waves)
+- Skills used: godot-boss-juice (banner reuse; added a street-callout section), godot-headful-screenshot (round.sh + sheet.py), godot-ab-worktree (old-vs-new late-level sweep), godot-autoplay-test.
+- Would have helped: a balance-sweep skill that A/Bs a teleport-start mortal scenario across seeds and prints a table (wrote sweep.py by hand); derive-the-list (encounter list derived from main.tscn in the ramp test, not hand-listed).
+- Enhancement idea (godot-headful-screenshot): note that `--resolution` doesn't change the root texture size, so the phone round needs a window grab to judge aspect.
+- MCP: none used (ran suites via shell for --filter + mutation loop).
