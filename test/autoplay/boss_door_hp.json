@@ -1,0 +1,7 @@
+{
+  "character": "Ryan",
+  "seed": 1,
+  "timeout": 120,
+  "steps": ["god on", "hp 5", "teleport 8300", "walk_to 8700 15", "wait 2", "dump end"],
+  "expect": ["scene == boss_room", "hp == 5", "errors == 0", "engine_errors == 0"]
+}
