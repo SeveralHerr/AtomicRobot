@@ -49,8 +49,11 @@ static func shake_node2d(node: Node2D, strength: float = 10.0, duration: float =
 ## - On release, time is only restored if it is still ours (still 0).
 ## - Off in headless runs (unit tests, the autoplay bot): a wall-clock freeze would
 ##   make --fixed-fps runs non-deterministic. Tests lift that via allow_headless_hit_pause.
-## - Movie Maker (--write-movie) gets a near-freeze: on its fixed clock time_scale 0
-##   makes the unscaled delta NaN, the release timer never fires and the recording hangs.
+## - A fixed clock (Movie Maker's --write-movie, and --fixed-fps: every windowed
+##   autoplay run) gets a near-freeze. There time_scale 0 makes the frame delta NaN:
+##   Movie Maker's release timer never fired, and any awake RigidBody2D (leaves a gust
+##   just kicked, coins in flight) integrated NaN for good, logging a "Vector2 cannot
+##   be normalized" warning per body per frame (171k in one windowed run).
 const HIT_PAUSE_SCALE := 0.0
 const MOVIE_HIT_PAUSE_SCALE := 0.01
 static var allow_headless_hit_pause := false
@@ -60,8 +63,13 @@ static var _hit_pause_until_usec := 0
 static var _hit_pause_running := false
 
 
-static func hit_pause_scale(movie: bool = OS.has_feature("movie")) -> float:
-	return MOVIE_HIT_PAUSE_SCALE if movie else HIT_PAUSE_SCALE
+## Set by launchers that pass --fixed-fps (the autoplay runner): Godot strips engine
+## flags from OS.get_cmdline_args(), so the game cannot see that one for itself.
+static var fixed_clock := false
+
+
+static func hit_pause_scale(on_fixed_clock: bool = OS.has_feature("movie") or fixed_clock) -> float:
+	return MOVIE_HIT_PAUSE_SCALE if on_fixed_clock else HIT_PAUSE_SCALE
 
 
 static func apply_hit_pause(node: Node, duration := 0.05) -> void:
