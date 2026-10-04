@@ -5,8 +5,6 @@
 [ext_resource type="Script" uid="uid://chic8djxflbae" path="res://scripts/sway.gd" id="3_sway"]
 [ext_resource type="LabelSettings" uid="uid://dagx3yqrlt5ea" path="res://styles/story_white_label.tres" id="4_header"]
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="5_body"]
-[ext_resource type="PackedScene" uid="uid://cd687fbnvb516" path="res://scenes/fade_overlay.tscn" id="6_fade"]
-
 [sub_resource type="LabelSettings" id="LabelSettings_body"]
 line_spacing = 6.0
 font = ExtResource("5_body")
@@ -148,12 +146,3 @@ horizontal_alignment = 1
 [node name="Timer" type="Timer" parent="."]
 autostart = true
 
-[node name="FadeOverlay" parent="." instance=ExtResource("6_fade")]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)

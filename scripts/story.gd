@@ -22,8 +22,6 @@ func _ready() -> void:
 	continue_label.show()
 	continue_label.modulate.a = 0
 	
-	# Wait for initial fade in to complete before starting story
-	#await fade_overlay.fade_finished
 	show_next_label()
 
 func _input(event: InputEvent) -> void:
@@ -52,7 +50,7 @@ func transition_to_game() -> void:
 	await current_tween.finished
 
 	# Change scene
-	get_tree().change_scene_to_packed(CONTROLS_SPLASH)
+	Transition.change_scene_to_packed(CONTROLS_SPLASH)
 
 func show_next_label() -> void:
 	if current_label_index < labels.size():

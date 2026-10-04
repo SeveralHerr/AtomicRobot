@@ -43,7 +43,8 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	# Input state sees a press even when _input swallowed it, so the remap panel
 	# (open or listening) must veto pause here or binding Start would close the menu.
-	if Input.is_action_just_pressed("pause") and not _remap_panel.visible:
+	# A scene fade pauses the tree too; toggling here would unpause it mid-fade.
+	if Input.is_action_just_pressed("pause") and not _remap_panel.visible and not Transition.busy:
 		toggle_pause()
 
 

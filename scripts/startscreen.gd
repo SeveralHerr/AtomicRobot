@@ -45,7 +45,7 @@ func _input(event: InputEvent) -> void:
 		_advance()
 
 func _advance() -> void:
-	get_tree().change_scene_to_packed(CHARACTER_SELECT)
+	Transition.change_scene_to_packed(CHARACTER_SELECT)
 
 func _delay() -> void:
 	delay = true

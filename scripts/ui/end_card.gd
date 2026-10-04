@@ -35,7 +35,7 @@ var quit_game: Callable = func() -> void: QuitGame.quit(get_tree())
 ## Swappable so tests can press RESTART without changing scene.
 var restart_game: Callable = func() -> void:
 	Globals.reset()
-	get_tree().change_scene_to_file(CHARACTER_SELECT)
+	Transition.change_scene_to_file(CHARACTER_SELECT)
 
 var _title: Label
 var _rank_row: Control
