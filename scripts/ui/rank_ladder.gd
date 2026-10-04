@@ -1,8 +1,8 @@
 class_name RankLadder
 extends VBoxContainer
 
-## The end card's rank hint (under the stamp and score in RunSummary): two lines saying
-## how far the next rank is and the one thing in THIS run that would have got there.
+## The end card's rank hint (under the stamp and score in RunSummary): one line saying
+## the one thing in THIS run that would have reached the next rank, or how far it is.
 ##
 ## Player report: "my best full clear got ~7k points but still rank C. What do I need
 ## for a better rank?" Gaps are derived from ScoreRules.RANK_THRESHOLDS. A chip row of
@@ -14,8 +14,8 @@ const FASTEST_SECONDS := 150.0
 const LINE_SIZE := 30
 const COMBO_TIP := "CHAIN COMBOS: KILLS PAY UP TO x8"
 
-## One line: the gap to the next rank, then the tip ("+800 FOR B (8,000) · FIND 4
-## MORE SECRETS"). One line, not two: the card's tallest state must fit the CRT.
+## One line ("FIND 4 MORE SECRETS FOR B", else "+800 FOR B (8,000)"). Gap over tip on
+## two lines was cut in review round 3 as noise, like the chip row before it.
 var next_label: Label
 
 
@@ -82,10 +82,13 @@ func show_run(run: Dictionary, won: bool) -> void:
 	next_label.text = line_text(run, won)
 
 
-## The hint for `run`: next_text, then the tip on its own line on a ranked clear.
+## The hint for `run`: a concrete tip and the rank it buys; next_text when only the
+## generic combo tip is left (or at the top, or on a death).
 static func line_text(run: Dictionary, won: bool) -> String:
+	var total := int(run.get("total", 0))
 	var ranked := won and String(run.get("rank", "")) != ""
-	var text := next_text(int(run.get("total", 0)), ranked)
 	var tip := tip_text(run) if ranked else ""
-	return text if tip == "" else text + "\n" + tip
+	if tip == "" or tip == COMBO_TIP:
+		return next_text(total, ranked)
+	return "%s FOR %s" % [tip, ScoreRules.rank_for(total + ScoreRules.points_to_next_rank(total))]
 
