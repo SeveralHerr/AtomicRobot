@@ -503,3 +503,11 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: none via tool; repo skills godot-micro-cutscene (updated: hold-to-skip, settle rule, story captions), godot-autoplay-test. Would have helped: a "probe positions" helper (wrote 4 throwaway SceneTree probes — player from group, Player gets reparented so get_node("Player") is null).
 - MCP: none used (CLI).
 - Follow-up: opening's melee maids were authored 15-53px in the air (atomic_robot_area.tscn) -> authored at street level (y -28) right behind the red car (user: "like they're issuing a ticket"); enemies count as landed once their street baseline is captured (they rarely read is_on_floor()). New test: nothing in the opening's first shot falls (failed 53px on the old data). 883 unit, 18/18 autoplay, 12/12 sandbox. Merged to main via branch `cutscenes` (not pushed).
+
+## 2026-10-04 — Door cracks: wall breaches, bush bursts (branch lj-cracks)
+- Every door mouth picks `mouth_style` per placement: 3 brick breaches (tinted rim + rubble, dust, chunk blast), 4 hedge mouths (shrub rustles, eyes peek, tears into halves over a dark hollow, leaf blast). 4721 moved off the window onto the brick pier at 0.75 scale. Secret walls get a chipped brick rim.
+- Juice: shake ramps through the telegraph, 0.05s hitstop on burst, 0.18s beat before the first enemy, squad steps out of the mouth's shadow; arm_seconds 0.35 -> 0.6.
+- 10 validation rounds (+1688x780), before/after crops + 2 GIFs. 896 unit, 12 sandbox, door_waves/secrets_cass/full_run/full_run_mortal pass, 24/24 mutants killed (3 survivors fixed with tests).
+- Skills used: none via tool; repo skills godot-headful-screenshot, godot-hit-feel, godot-ab-worktree (enhancement: headful-screenshot should say "reimport after changing a PNG" — stale art cost a round). New skill: skills/godot-door-mouth.
+- Would have helped: kenney-asset-kit (2D palette/measure for authoring into a set), derive-the-list (placement->style table derived from the scene), a "sample wall colour at x" probe.
+- MCP: none used (CLI).

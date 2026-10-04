@@ -129,7 +129,7 @@ enemy_count = 5
 waves = 2
 
 [node name="DoorMouth" parent="BuildingDoorEncounter" index="0"]
-position = Vector2(88, -24)
+position = Vector2(86, -24)
 
 [node name="Meter" type="Node2D" parent="." unique_id=181482052 instance=ExtResource("19_50dvv")]
 z_index = 1

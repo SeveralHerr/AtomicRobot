@@ -135,7 +135,7 @@ func burst() -> void:
 	trickle.emitting = true
 	# Untracked: the settle outlives stop(), it is not part of the build-up.
 	var settle := create_tween()
-	settle.tween_interval(1.2)
+	settle.tween_interval(0.6)  # longer and the grit hung in the hole like stars
 	settle.tween_callback(func() -> void: trickle.emitting = false)
 
 
