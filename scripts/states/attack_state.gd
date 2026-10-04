@@ -39,7 +39,7 @@ func trigger_attack(player: Player)-> void:
 	for body in bodies:
 		# Shake, sparks and hitstop come from player.land_hit (HitFeel).
 		if body is Enemy and body.lane == player.current_lane:
-			player.land_hit(body)
+			player.land_hit(body, chain.is_finisher())
 
 	for area in player.area_2d.get_overlapping_areas():
 		var parent = area.get_parent()
