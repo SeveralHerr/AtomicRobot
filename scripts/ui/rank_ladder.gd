@@ -14,7 +14,7 @@ const FASTEST_SECONDS := 150.0
 const LINE_SIZE := 25
 const COMBO_TIP := "CHAIN COMBOS: KILLS PAY UP TO x8"
 
-## One line: the gap to the next rank, then the tip ("+800 FOR B (9,500) · FIND 4
+## One line: the gap to the next rank, then the tip ("+800 FOR B (8,000) · FIND 4
 ## MORE SECRETS"). One line, not two: the card's tallest state must fit the CRT.
 var next_label: Label
 
@@ -33,7 +33,7 @@ static func threshold_of(letter: String) -> int:
 	return 0
 
 
-## "+800 FOR B (9,500)", "TOP RANK!", or on a death how to get ranked at all.
+## "+800 FOR B (8,000)", "TOP RANK!", or on a death how to get ranked at all.
 static func next_text(total: int, won: bool = true) -> String:
 	if not won:
 		return "CLEAR THE BOSS TO GET RANKED"

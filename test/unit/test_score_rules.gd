@@ -267,14 +267,14 @@ func test_run_continues_only_through_the_boss_door() -> String:
 
 
 
-# --- Balance pins: reference runs (autoplay seed 1, Ryan, 2026-10-03) -----------
+# --- Balance pins: reference runs (autoplay seed 1/4, Ryan, re-measured 2026-10-04) -
 # Measured with `python tools/autoplay.py` (the "run:" line). Retune the constants,
 # not these runs, unless the level itself changed.
 
-## Completionist route, mortal: street 7,070 + boss 770, 182.5 s, 20 hits, 4 orbs
-## left, and 6 of the 7 secrets the route visits.
+## completionist_mortal: street 9,525 + boss 590, 188.1 s, 18 hits, 4 orbs left, and
+## 6 of the 7 secrets the route visits. Total 16,093.
 func _clean_run() -> Dictionary:
-	return S.summarise(7840, 182.5, 20, 4, S.PAR_SECONDS, 6, 7070)
+	return S.summarise(10115, 188.1, 18, 4, S.PAR_SECONDS, 6, 9525)
 
 
 func test_balance_bonus_is_the_same_order_as_the_fight() -> String:
@@ -292,11 +292,25 @@ func test_balance_clean_full_run_ranks_a() -> String:
 	return _T.assert_eq(String(_clean_run()["rank"]), "A", "clean mortal completionist run")
 
 
-## The god-mode bot's completionist run (no hits, 175.7 s, fight 10,180) with every
-## secret: as good as a run gets.
+## completionist_run (god mode: no hits, 179.8 s, fight 12,995) with its 6 secrets:
+## as good as a run gets. Total 21,097.
 func test_balance_flawless_run_ranks_s() -> String:
-	var res: Dictionary = S.summarise(10180, 175.7, 0, 10, S.PAR_SECONDS, 7, 7390)
+	var res: Dictionary = S.summarise(12995, 179.8, 0, 10, S.PAR_SECONDS, 6, 10840)
 	return _T.assert_eq(String(res["rank"]), "S", "flawless, fast, every secret")
+
+
+## full_run_mortal (seed 4): fast (145.4 s) but no secrets, 19 hits, 1 orb left.
+## Total 14,259: a solid clear is B; A wants the secrets or a cleaner fight.
+func test_balance_fast_mortal_clear_ranks_b() -> String:
+	var res: Dictionary = S.summarise(9890, 145.4, 19, 1, S.PAR_SECONDS, 0, 9295)
+	return _T.assert_eq(String(res["rank"]), "B", "fast mortal clear, no secrets")
+
+
+## The player's report: a casual best clear of ~7k was C with no idea why. A slower
+## human clear (4:30, a thinner 6.5k fight, 2 orbs, 2 secrets) must make B.
+func test_balance_decent_human_clear_ranks_b() -> String:
+	var res: Dictionary = S.summarise(6500, 270.0, 12, 2, S.PAR_SECONDS, 2, 6000)
+	return _T.assert_eq(String(res["rank"]), "B", "decent full clear")
 
 
 ## A sloppy run: slow (5.5 min), battered to one orb, one secret, a thinner fight.
@@ -308,7 +322,7 @@ func test_balance_sloppy_run_ranks_c() -> String:
 ## Mutation survivor: S must need the secrets too. The same flawless run with none
 ## of them stays A.
 func test_balance_flawless_run_without_secrets_is_a() -> String:
-	var res: Dictionary = S.summarise(10180, 175.7, 0, 10, S.PAR_SECONDS, 0, 7390)
+	var res: Dictionary = S.summarise(12995, 179.8, 0, 10, S.PAR_SECONDS, 0, 10840)
 	return _T.assert_eq(String(res["rank"]), "A", "S needs the secrets as well")
 
 
