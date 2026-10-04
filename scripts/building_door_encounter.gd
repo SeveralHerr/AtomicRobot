@@ -190,7 +190,6 @@ func _run() -> void:
 func _next_wave() -> void:
 	# _spawning holds off _process's completion check through the breather.
 	_spawning = true
-	_watchdog.start(watchdog_seconds)
 	await get_tree().create_timer(wave_gap_seconds).timeout
 	if _live():
 		_play_wave(_wave + 1)

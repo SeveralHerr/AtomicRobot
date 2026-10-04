@@ -310,7 +310,23 @@ func test_door_death_between_waves_spawns_nothing_more() -> String:
 	r = _T.assert_false(_barriers_on(), "barriers down")
 	if r != "":
 		return r
+	r = _T.assert_false(log.has("wave 2/2"), "no WAVE 2/2 callout after the player died")
+	if r != "":
+		return r
 	return _T.assert_false(log.has("clear"), "no BUSTED! payoff for a death")
+
+
+func test_door_death_during_the_telegraph_never_bursts() -> String:
+	_make(2, 1)
+	_enc.arm_seconds = 0.3
+	_enc._on_body_entered(_p)
+	await _tree().create_timer(0.1).timeout
+	_enc._on_player_death()
+	await _tree().create_timer(0.4).timeout
+	var r: String = _T.assert_eq(_enc._spawn_index, 0, "nobody steps out for a dead player")
+	if r != "":
+		return r
+	return _T.assert_true(_enc.crack.frame < _enc._CRACK_BURST_FRAME, "the door never blows")
 
 
 func test_door_watchdog_release_is_not_a_clear() -> String:
