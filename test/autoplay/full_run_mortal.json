@@ -1,8 +1,8 @@
 {
   "boot": true,
   "character": "Ryan",
-  "seed": 1,
+  "seed": 3,
   "timeout": 900,
   "steps": ["menu 40", "brain advance 840", "dump end"],
-  "expect": ["errors == 0", "kills >= 10", "max_stuck_s < 60"]
+  "expect": ["won == 1", "errors == 0", "kills >= 10", "max_stuck_s < 60"]
 }
