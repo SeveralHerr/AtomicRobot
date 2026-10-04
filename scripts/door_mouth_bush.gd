@@ -135,18 +135,19 @@ func telegraph(first: bool, seconds: float) -> void:
 	super(first, seconds)
 	_twitch.stop()
 	shed.emitting = true
+	_drop_leaves(5)  # the first shove knocks a handful loose at once
 	var targets: Array = [clump] if first else [left_half, right_half]
 	for s in targets:
 		_thrash(s, seconds, s.rotation)
 	# The eyes peek out once the shaking has had a moment to land.
 	var peek := _track(create_tween())
-	peek.tween_interval(seconds * 0.35)
+	peek.tween_interval(seconds * 0.25)
 	peek.tween_callback(func() -> void: eyes.visible = true)
-	for i in 2:
-		peek.tween_interval(seconds * 0.18)
-		peek.tween_callback(func() -> void: eyes.scale = Vector2(1.0, 0.0))
-		peek.tween_interval(0.05)
-		peek.tween_callback(func() -> void: eyes.scale = Vector2.ONE)
+	# One blink, late: they have seen you.
+	peek.tween_interval(seconds * 0.5)
+	peek.tween_callback(func() -> void: eyes.scale = Vector2(1.0, 0.0))
+	peek.tween_interval(0.05)
+	peek.tween_callback(func() -> void: eyes.scale = Vector2.ONE)
 	var rustles := _track(create_tween())
 	for i in 3:
 		rustles.tween_callback(SecretFx.play_once.bind(self, RUSTLE, -10.0 + i * 3.0, randf_range(0.9, 1.2)))

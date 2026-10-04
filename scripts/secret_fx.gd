@@ -99,7 +99,8 @@ static func rim_texture(frame: Texture2D, colors: Array[Color] = BRICK_COLORS, s
 			chunk.seed = seed * 7919 + (x / 2) * 131 + (y / 2) * 17
 			if d >= 2 and chunk.randf() < 0.45 + 0.2 * (d - 2):
 				continue
-			var c: Color = colors[2] if d == 1 else (colors[3] if d == 2 and chunk.randf() < 0.3 else colors[0])
+			# d1: the dark broken face; d2: chunk tops catching the light; d3: brick.
+			var c: Color = colors[2] if d == 1 else (colors[3] if d == 2 and chunk.randf() < 0.6 else colors[0])
 			out.set_pixel(x, y, c)
 	return ImageTexture.create_from_image(out)
 

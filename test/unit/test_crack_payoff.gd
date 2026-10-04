@@ -119,16 +119,20 @@ func test_opening_frames_the_hole_with_a_brick_rim() -> String:
 	r = _T.assert_true(rim.show_behind_parent, "drawn behind the hole")
 	if r != "":
 		return r
-	# Some rim pixels are brick, some chipped away: never a solid outline.
+	# Chipped, never a solid outline: the outer rings have gaps.
 	var img := rim.texture.get_image()
-	var solid := 0
-	var ring := 0
+	var src := hole.get_image()
+	var outer := 0
+	var filled := 0
 	for y in img.get_height():
 		for x in img.get_width():
-			if img.get_pixel(x, y).a > 0.5:
-				solid += 1
-	ring = img.get_width() * img.get_height()
-	return _T.assert_true(solid > 20 and solid < ring / 2, "a chipped rim (%d px)" % solid)
+			var d := SecretFx._hole_distance(src, x - SecretFx.RIM_PX, y - SecretFx.RIM_PX)
+			if d >= 2 and d <= SecretFx.RIM_PX:
+				outer += 1
+				if img.get_pixel(x, y).a > 0.5:
+					filled += 1
+	return _T.assert_true(filled > 0 and filled < outer * 0.8,
+		"outer rim chipped (%d of %d px filled)" % [filled, outer])
 
 
 func test_claim_reports_one_wall_secret() -> String:

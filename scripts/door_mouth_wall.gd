@@ -87,7 +87,7 @@ func telegraph(first: bool, seconds: float) -> void:
 	if first and crack != null:
 		trickle.position = crack.position - position + Vector2(0.0, -6.0)
 		_track(create_tween()).tween_property(crack, "frame", CRACK_WIDEST_FRAME, seconds)
-		_jitter(crack, _crack_home, 0.5, seconds, 3.0)
+		_jitter(crack, _crack_home, 1.0, seconds, 2.5)
 	else:
 		trickle.position = Vector2(0.0, -HEIGHT + 4.0)
 		_jitter(breach, Vector2.ZERO, 0.6, seconds, 2.5)

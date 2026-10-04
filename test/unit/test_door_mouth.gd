@@ -85,8 +85,15 @@ func test_wall_stop_mid_telegraph_settles_the_crack() -> String:
 	var enc = _make(DoorMouthFx.Style.WALL)
 	var m: WallMouth = enc.mouth
 	var home: Vector2 = enc.crack.position
-	m.telegraph(true, 0.3)
-	await _wait(0.05)
+	m.telegraph(true, 0.6)
+	var moved := false
+	for i in 30:
+		await _tree().process_frame
+		if enc.crack.position != home:
+			moved = true
+			break
+	if not moved:
+		return "the crack never twitched during the rumble"
 	m.stop()
 	await _wait(0.05)
 	var r: String = _T.assert_eq(enc.crack.position, home, "jitter undone")
@@ -100,7 +107,10 @@ func test_wall_stop_mid_telegraph_settles_the_crack() -> String:
 func test_bush_hides_the_crack_in_the_foliage() -> String:
 	var enc = _make(DoorMouthFx.Style.BUSH)
 	var m: BushMouth = enc.mouth
-	var r: String = _T.assert_false(enc.crack.visible, "no wall crack painted on a hedge")
+	var r: String = _T.assert_true(enc.mouth is BushMouth, "a BUSH placement builds a shrub mouth")
+	if r != "":
+		return r
+	r = _T.assert_false(enc.crack.visible, "no wall crack painted on a hedge")
 	if r != "":
 		return r
 	return _T.assert_true(m.clump.visible and not m.hollow.visible, "a whole shrub until it bursts")
