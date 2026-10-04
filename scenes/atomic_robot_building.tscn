@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://e6jpmakf8sa0"]
+[gd_scene load_steps=13 format=3 uid="uid://e6jpmakf8sa0"]
 
 [ext_resource type="Texture2D" uid="uid://dax3brqylomy8" path="res://images/new/Shop.png" id="1_7jqx2"]
 [ext_resource type="PackedScene" uid="uid://bn6uk4y67s804" path="res://scenes/lamp.tscn" id="2_5left"]
@@ -6,6 +6,13 @@
 [ext_resource type="PackedScene" uid="uid://dwd6lyrgrnp0h" path="res://scenes/wood_ledge.tscn" id="4_lv8oj"]
 [ext_resource type="Texture2D" uid="uid://2bgc082ojri5" path="res://images/new/chimney.png" id="5_cjlxv"]
 [ext_resource type="Texture2D" uid="uid://cr26kkqhl6qlm" path="res://images/new/vent.png" id="6_3b0um"]
+
+[ext_resource type="Script" path="res://scripts/morse_sign.gd" id="7_morse"]
+[ext_resource type="Texture2D" path="res://images/new/shop_sign_tube.png" id="8_tube"]
+[ext_resource type="Texture2D" path="res://images/new/shop_sign_halo.png" id="9_halo"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_halo"]
+blend_mode = 1
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6vx1g"]
 size = Vector2(758, 5)
@@ -18,6 +25,20 @@ metadata/_edit_horizontal_guides_ = [59.0]
 
 [node name="Building" type="Sprite2D" parent="."]
 texture = ExtResource("1_7jqx2")
+
+[node name="SignNeon" type="Node2D" parent="."]
+position = Vector2(-202.5, -91.5)
+script = ExtResource("7_morse")
+
+[node name="Tube" type="Sprite2D" parent="SignNeon"]
+texture = ExtResource("8_tube")
+centered = false
+
+[node name="Halo" type="Sprite2D" parent="SignNeon"]
+material = SubResource("CanvasItemMaterial_halo")
+position = Vector2(-6, -6)
+texture = ExtResource("9_halo")
+centered = false
 
 [node name="Lamp" parent="." instance=ExtResource("2_5left")]
 position = Vector2(-316, 27)
