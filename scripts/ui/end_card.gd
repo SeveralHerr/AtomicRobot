@@ -31,7 +31,7 @@ const POP_FROM := 0.85
 const POP_SECONDS := 0.3
 ## The rank stamp landing: the card jolts and thuds under it.
 const STAMP_SHAKE := 9.0
-const STAMP_SOUND: AudioStream = preload("res://Sounds/hit3.ogg")
+const STAMP_SOUND: AudioStream = preload("res://sounds/hit3.ogg")
 const Juice := preload("res://scripts/ui/select/juice.gd")
 ## The HP orbs, portrait and score column fade out under the card: one less thing to
 ## read past.

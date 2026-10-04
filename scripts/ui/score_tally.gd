@@ -13,7 +13,7 @@ const SECONDS := 0.9
 const TICKS := 12
 const PITCH_FROM := 0.9
 const PITCH_TO := 1.6
-const TICK_SOUND: AudioStream = preload("res://Sounds/coin.wav")
+const TICK_SOUND: AudioStream = preload("res://sounds/coin.wav")
 
 var label: Label
 var total: int = 0

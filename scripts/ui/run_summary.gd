@@ -24,7 +24,7 @@ const ROW_SIZE := 34
 ## Breakdown rows fade in this far apart while the score rolls.
 const ROW_STAGGER := 0.12
 const TALLY_DELAY := 0.15
-const BADGE_SOUND: AudioStream = preload("res://Sounds/power_up.wav")
+const BADGE_SOUND: AudioStream = preload("res://sounds/power_up.wav")
 
 ## The rank stamp has just landed (the card shakes and thuds on it).
 signal stamped
