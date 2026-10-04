@@ -20,6 +20,23 @@ var newspaper_texts := [
 	"Robot Parade Scheduled for Friday!"
 ]
 
+## One shuffle bag shared by every stand: a run past all five stands reads all five
+## headlines before any repeats. Global RNG, so a seeded autoplay run replays.
+static var _headline_bag: Array = []
+
+var _reported := false
+
+
+static func reset_headline_bag() -> void:
+	_headline_bag.clear()
+
+
+static func next_headline(texts: Array) -> String:
+	if _headline_bag.is_empty():
+		_headline_bag = texts.duplicate()
+		_headline_bag.shuffle()
+	return _headline_bag.pop_back()
+
 func _ready() -> void:
 	area_2d.body_entered.connect(_on_body_entered)
 	area_2d.body_exited.connect(_on_body_exited)
@@ -45,12 +62,18 @@ func _process(_delta: float) -> void:
 func _show_notification() -> void:
 	can_interact = false
 	interact_label.hide()
-	var random_text = newspaper_texts[randi() % newspaper_texts.size()]
-	notification_label.text = random_text
+	notification_label.text = next_headline(newspaper_texts)
+	if not _reported:
+		_reported = true
+		Globals.secret_found.emit("news", str(get_path()))
 	reveal_fade(0.4)
-	await get_tree().create_timer(notification_duration).timeout
-	fade_out(0.4)
-	await get_tree().create_timer(cooldown_time).timeout
+	# Timer callbacks, not awaits: a freed stand (scene change) drops the connection
+	# instead of resuming a coroutine on a dead instance.
+	get_tree().create_timer(notification_duration).timeout.connect(fade_out.bind(0.4))
+	get_tree().create_timer(notification_duration + cooldown_time).timeout.connect(_rearm)
+
+
+func _rearm() -> void:
 	can_interact = true
 	
 func fade_out(duration: float = 1.0) -> void:
