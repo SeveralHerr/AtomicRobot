@@ -20,6 +20,14 @@ Code: `scripts/combat/hit_feel.gd` (numbers), `scripts/autoload/screenshake.gd`,
 - Sparks: sibling above the target (`z_index + 1`), tinted (white vanishes into the
   white hit flash), start on the full-burst frame (hitstop freezes frame 0).
 
+- Comic words (`HitWords` -> `ComicPopup`): one word per string. Rank hit < finisher
+  < KO: bigger replaces (old one hidden at once: the hitstop freezes a retire shrink),
+  equal re-punches the live card, smaller leaves it. Combat words pop in from >= 0.5
+  scale (the freeze holds frame 0). Pass the finisher flag from AttackChain.
+- A time_scale of 0 on a fixed clock (Movie Maker, `--fixed-fps` = every autoplay
+  run) NaNs awake RigidBody2Ds; Godot hides `--fixed-fps` from get_cmdline_args, so
+  the runner sets `Utils.fixed_clock` and hitstop becomes a 0.01 near-freeze.
+
 ## Tests
 `test_screenshake.gd` (fresh instance, injected camera, `step()` by hand),
 `test_hit_pause.gd` (`allow_headless_hit_pause`, poll wall clock per frame — timer

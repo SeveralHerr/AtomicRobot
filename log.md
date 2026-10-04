@@ -449,3 +449,11 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: godot-hit-feel, godot-input-test, godot-ab-worktree, godot-headful-screenshot. Enhancement: input-test skill should note Area2D does not report StaticBody2D stubs (use CharacterBody2D), and that `--filter` substrings make mutation runs miss tests whose names lack the word.
 - Would have helped: a checked-in `tools/mutate.py` (third agent to rewrite it) and a checked-in `tools/capture_timeline.gd` + `gif.py` for before/after GIFs.
 - MCP: none used (CLI direct).
+## 2026-10-04 pf-polish (comic hit words in fast strings, windowed-run warnings)
+- Hit words: HitWords rank rule (hit < finisher < KO): re-punch the live card, finisher replaces, kill slams KO! (was no word); replaced card hidden at once (hitstop froze its retire shrink); words lean 10px away from the attacker, rise by size; pips at feet stay clear (pinned by a test). 4 capture rounds + 1688x780 round.
+- Warnings root cause: hitstop sets time_scale 0; on a fixed clock (`--fixed-fps`, every autoplay --window run) that NaNs awake RigidBody2Ds (gust-kicked leaves, coins) -> one "Vector2 cannot be normalized" warning per body per frame. Pre-dates branch (main: 1298 in smoke_fight --window). Godot strips --fixed-fps from get_cmdline_args -> runner sets Utils.fixed_clock -> 0.01 near-freeze. smoke_fight --window 2350 -> 0. Recorder now groups warnings by site.
+- Suites: unit 836/836, sandbox 12/12, autoplay 16/17 (boss_balance_ryan hits_taken 6 < 8 also fails on base eff72c5 — balance agent's floor).
+- Mutation: 13 mutants, 12 killed first pass, survivor (finisher flag from AttackState) got a real-scene test. Added tools/mutate.py (fourth agent asking for it).
+- Skills used: godot-hit-feel (enhanced: word ranks, fixed-clock hitstop), godot-headful-screenshot, godot-ab-worktree. Enhancement: headful-screenshot should warn Python on Windows writes cp1252 by default -> invalid UTF-8 .gd (whole suite broke).
+- Would have helped: enumerate-the-pairs (used its idea for the rank matrix); a checked-in capture_timeline.gd + gif.py (rewrote again).
+- MCP: none used (CLI direct).

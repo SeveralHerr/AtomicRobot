@@ -25,8 +25,11 @@ class ErrorLog extends Logger:
 			rationale: String, _editor_notify: bool, error_type: int,
 			_script_backtrace: Array[ScriptBacktrace]) -> void:
 		mutex.lock()
+		var key := "%s:%d %s" % [file.get_file(), line, rationale if rationale != "" else code]
 		if error_type == ERROR_TYPE_WARNING:
+			# Grouped by site too: a bare count (171k once) said nothing about where.
 			warnings += 1
+			key = "WARNING " + key
 		else:
 			# push_error() arrives as ERROR_TYPE_ERROR but is reported at a .gd
 			# site; engine errors (even ones a script call triggered) are at .cpp.
@@ -34,8 +37,7 @@ class ErrorLog extends Logger:
 				script_errors += 1
 			else:
 				engine_errors += 1
-			var key := "%s:%d %s" % [file.get_file(), line, rationale if rationale != "" else code]
-			entries[key] = entries.get(key, 0) + 1
+		entries[key] = entries.get(key, 0) + 1
 		mutex.unlock()
 
 
@@ -333,3 +335,4 @@ func top_errors(limit: int = 15) -> Array:
 	errors.mutex.unlock()
 	rows.sort_custom(func(a, b): return a["count"] > b["count"])
 	return rows.slice(0, limit)
+
