@@ -46,6 +46,10 @@ region = Rect2(1152, 256, 128, 128)
 atlas = ExtResource("1_ksom4")
 region = Rect2(1280, 256, 128, 128)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_dash0"]
+atlas = ExtResource("1_ksom4")
+region = Rect2(0, 768, 128, 128)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_ksom4"]
 atlas = ExtResource("1_ksom4")
 region = Rect2(0, 896, 128, 128)
@@ -118,10 +122,6 @@ region = Rect2(768, 512, 128, 128)
 atlas = ExtResource("1_ksom4")
 region = Rect2(896, 512, 128, 128)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_dash0"]
-atlas = ExtResource("1_ksom4")
-region = Rect2(0, 768, 128, 128)
-
 [resource]
 animations = [{
 "frames": [{
@@ -161,6 +161,14 @@ animations = [{
 "loop": 0,
 "name": &"attack",
 "speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dash0")
+}],
+"loop": 1,
+"name": &"dash",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -230,12 +238,4 @@ animations = [{
 "loop": 1,
 "name": &"walk",
 "speed": 10.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_dash0")
-}],
-"loop": 1,
-"name": &"dash",
-"speed": 5.0
 }]

@@ -151,4 +151,8 @@ melee_ratio = 1.0
 position = Vector2(4205, -3)
 melee_ratio = 1.0
 
+[node name="BuildingDoorEncounter3" parent="." unique_id=1686535141 instance=ExtResource("12_g6llg")]
+position = Vector2(3617, 0)
+melee_ratio = 1.0
+
 [editable path="Tree14"]
