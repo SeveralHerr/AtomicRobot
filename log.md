@@ -340,3 +340,10 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: godot-headful-screenshot (batched real-flow rounds), godot-autoplay-test (full_run/mortal), juicy-screen-review (round shape), godot-boss-juice (time-scale rules). Enhancement (headful-screenshot): print state beside each snap — load hitches shift timestamps (added).
 - Would have helped: godot-time-scale-beat (created: beat/fade ownership rules + mutant-killing tests); somewhat-useful-claude-skills:derive-the-list (used its idea for the direct-scene-change grep test); extract-a-testable-seam (Transition.fade_through(swap)).
 - MCP: none used (godot-tests MCP available; CLI needed for --filter mutation loop).
+
+## 2026-10-03 — Juice sprint (items 1–6 + door waves), 3 parallel agents -> branch juice-sprint
+- Fan-out: juice-feel / juice-death / juice-waves worktrees, disjoint file ownership; only conflict was log.md appends. Combined: 528/528 unit, 9/9 sandbox, 10/10 autoplay.
+- Skills used: none directly by orchestrator; agents used godot-boss-juice, godot-headful-screenshot, juicy-screen-review, godot-autoplay-test. New: godot-hit-feel, godot-time-scale-beat.
+- Would have helped: a "parallel-agent integration" skill (per-agent scratchpad subdir up front — feel agent clobbered death agent's shots/base); somewhat-useful-claude-skills:godot-game-ui-juicy (banner motion).
+- Enhancement (godot-headful-screenshot): `--resolution` doesn't change capture size in --script runs; document the real phone-size recipe.
+- MCP: none used.
