@@ -7,7 +7,8 @@ class_name PowerupPickup
 ## - DROPPED: spawned by Utils.drop_powerup() from Enemy.die(). Blinks, then despawns
 ##   after PowerupRules.PICKUP_LIFETIME.
 ## - PLACED (`placed = true`): authored into a level as a reward for reaching a spot
-##   (a platform top, a scaffold). Permanent, glows, and stays under its level node.
+##   (a platform top, a scaffold). Permanent and stays under its level node.
+## Both glow (PowerupGlow), like every heart.
 ##   Platforms and scaffolds are ground-lane floors, so a placed pickup is GROUND_LANE.
 ##
 ## Lane-aware: only a player standing on the SAME lane can collect it, matching the
@@ -31,11 +32,12 @@ const BLINK_HZ := 4.0
 ## Set by Utils.drop_powerup() between instantiate() and add_child(), so _ready()
 ## already sees the final values; exported so a placed pickup picks its buff in the editor.
 @export_enum("rage", "overclock") var powerup_id: String = PowerupRules.RAGE
-## Level-placed reward: no lifetime, no blink, no reparenting, plus a glow.
+## Level-placed reward: no lifetime, no blink, no reparenting.
 @export var placed: bool = false
 var lane: int = Lanes.GROUND_LANE
 
 var _collected: bool = false
+var _glow: PowerupGlow
 var _life: float = PowerupRules.PICKUP_LIFETIME
 
 
@@ -44,10 +46,9 @@ func _ready() -> void:
 	add_to_group("powerup_pickups")
 	# No new art: the buff reads purely as a colour on the shared pickup sprite.
 	sprite.modulate = PowerupRules.color(powerup_id)
-	if placed:
-		# Authored where it belongs; z 1 like the ground-lane bodies reaching for it.
-		add_child(PowerupGlow.new(PowerupRules.color(powerup_id)))
-	else:
+	_glow = PowerupGlow.new(PowerupRules.color(powerup_id))
+	add_child(_glow)
+	if not placed:
 		# Deferred: reparenting inside _ready trips "parent node is busy setting up children".
 		Lanes.join_sort_layer.call_deferred(self)
 	_start_idle_motion()
@@ -80,6 +81,7 @@ func _tick_lifetime(delta: float) -> void:
 		# dropped" can never be confused at a glance.
 		var urgency: float = 1.0 + (PowerupRules.PICKUP_BLINK_LEAD - _life)
 		sprite.visible = fmod(_life * BLINK_HZ * urgency, 1.0) > 0.35
+		_glow.visible = sprite.visible
 
 
 ## Polled against the live overlap set rather than latched on body_entered.
@@ -104,9 +106,6 @@ func _collect(player: Player) -> void:
 	if player.pickup_audio != null:
 		player.pickup_audio.play()
 	ScreenShake.apply_shake(4, 0.2)
-	sprite.visible = true
-	var burst := create_tween().set_parallel()
-	burst.tween_property(sprite, "scale", sprite.scale * 2.5, 0.18)
-	burst.tween_property(sprite, "modulate:a", 0.0, 0.18)
-	await burst.finished
+	_glow.visible = true
+	await PowerupGlow.collect_burst(self, sprite).finished
 	queue_free()

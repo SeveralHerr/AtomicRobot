@@ -2,7 +2,7 @@ extends Node2D
 
 ## The scene root is z 2, over trees (z 1) and crates: hearts sit at trunk feet, and
 ## under the leaves the white-outlined atom read as a speech bubble lost in the tree.
-## (test_heart_draw_order.gd)
+## (test_heart_draw_order.gd). Its Glow child + collect burst match PowerupPickup.
 
 @onready var player_detection: Area2D = $Area2D
 @onready var sprite: Sprite2D = $Sprite2D
@@ -31,10 +31,6 @@ func collect_heart(player: Player) -> void:
 	# Heal the player
 	player.add_heart(heal_amount)
 	
-	# Visual feedback - could add particles or tween here
-	if sprite:
-		sprite.modulate = Color.TRANSPARENT
-	
-	# Wait a moment for sound then remove
-	await get_tree().create_timer(0.1).timeout
+	ScreenShake.apply_shake(4, 0.2)
+	await PowerupGlow.collect_burst(self, sprite).finished
 	queue_free()

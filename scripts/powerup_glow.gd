@@ -1,11 +1,10 @@
 class_name PowerupGlow
 extends Node2D
 
-## Halo + twinkles behind a level-PLACED pickup (PowerupPickup adds one itself; the
-## roof heart has one authored as a child), so a reward perched on a ledge reads as
-## "go get that" rather than as a stray decal — or, for the heart, as a HUD orb.
-## Drawn additively in the buff colour; dropped pickups don't get one (they already
-## announce themselves by appearing mid-fight).
+## Halo + twinkles behind every collectible (PowerupPickup adds one itself; the heart
+## scene has one authored as a child), so a pickup reads as "go get that" rather than
+## as a stray decal — or, for a heart, as a HUD orb. Drawn additively in the buff
+## colour. collect_burst() is the matching shared "got it" pop.
 ##
 ## No randf(): the global RNG feeds the drop rolls, and seeded autoplay runs must
 ## replay identically. Twinkles walk the golden angle instead.
@@ -21,6 +20,8 @@ const TWINKLE_LIFE := 0.45
 const TWINKLE_SIZE := 5.0
 const TWINKLE_RADIUS := 14.0
 const GOLDEN_ANGLE := 2.39996
+const BURST_SCALE := 2.5
+const BURST_TIME := 0.18
 
 @export var color: Color = Color.WHITE
 var _t: float = 0.0
@@ -37,6 +38,15 @@ func _ready() -> void:
 	material = mat
 	# Behind the pickup sprite (same z, earlier sibling draws first).
 	get_parent().move_child.call_deferred(self, 0)
+
+
+## Shared collect pop: the sprite swells while the whole pickup (sprite + glow) fades.
+static func collect_burst(pickup: Node2D, sprite: Node2D) -> Tween:
+	sprite.visible = true
+	var burst := pickup.create_tween().set_parallel()
+	burst.tween_property(sprite, "scale", sprite.scale * BURST_SCALE, BURST_TIME)
+	burst.tween_property(pickup, "modulate:a", 0.0, BURST_TIME)
+	return burst
 
 
 func _process(delta: float) -> void:

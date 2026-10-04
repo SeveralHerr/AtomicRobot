@@ -94,11 +94,6 @@ func test_placed_pickup_has_a_glow() -> String:
 	return _T.assert_true(p.get_node_or_null("Glow") != null, "placed pickups get a glow halo")
 
 
-func test_dropped_pickup_has_no_glow() -> String:
-	var p := _spawn(false)
-	return _T.assert_true(p.get_node_or_null("Glow") == null, "drops stay plain")
-
-
 func test_placed_pickup_is_on_the_ground_lane() -> String:
 	# Platforms and scaffolds are ground-lane floors (Player._update_lane_floor).
 	var p := _spawn(true)
