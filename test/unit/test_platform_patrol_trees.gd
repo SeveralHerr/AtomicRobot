@@ -7,6 +7,7 @@ extends RefCounted
 var _T
 
 const TREE := preload("res://scenes/tree.tscn")
+const LAMP := preload("res://scenes/lamp.tscn")
 
 
 func _tree_at(x: float, y: float) -> Sprite2D:
@@ -44,9 +45,32 @@ func test_street_level_walker_ignores_canopy_above() -> String:
 
 func test_every_level_tree_is_in_the_trees_group() -> String:
 	var t := _tree_at(0, 0)
-	var ok := t.is_in_group(PlatformPatrolState.TREES_GROUP)
+	var ok := t.is_in_group(PlatformPatrolState.BLOCKERS_GROUP)
 	t.free()
 	return _T.assert_true(ok, "tree.gd joins the group the patrol reads")
+
+
+## Player report 2 (images/image.png): the BuildingGroup1 ledge (x 2198-2907, y -58)
+## runs through Lamp2 (x 2572), so the ledge maid walked over the lamp head too.
+func test_every_level_lamp_blocks_the_patrol() -> String:
+	var lamp: Sprite2D = LAMP.instantiate()
+	(Engine.get_main_loop() as SceneTree).root.add_child(lamp)
+	var ok := lamp.is_in_group(PlatformPatrolState.BLOCKERS_GROUP)
+	lamp.free()
+	return _T.assert_true(ok, "lamp.tscn joins the group the patrol reads")
+
+
+## The real lamp at its real spot: a maid on the real ledge height walking into it turns.
+func test_ledge_maid_turns_at_lamp2() -> String:
+	var lamp: Sprite2D = LAMP.instantiate()
+	lamp.position = Vector2(2572, -70)
+	(Engine.get_main_loop() as SceneTree).root.add_child(lamp)
+	var rect := PlatformPatrolState.foliage_rect(lamp)
+	lamp.free()
+	var ledge_top := -58.0 - 5.25
+	var feet := Vector2(rect.end.x + PlatformPatrolState.FOLIAGE_LOOKAHEAD - 1.0, ledge_top)
+	return _T.assert_true(PlatformPatrolState.foliage_ahead(feet, -1, [rect]),
+		"ledge maid heading into the lamp turns (lamp rect %s)" % rect)
 
 
 ## A maid already standing in leaves (spawned there) walks on out instead of

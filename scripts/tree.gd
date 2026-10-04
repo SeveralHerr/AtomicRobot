@@ -4,8 +4,8 @@ extends Sprite2D
 var timer: Timer
 
 func _ready() -> void:
-	# Platform maids turn back at foliage (PlatformPatrolState.TREES_GROUP).
-	add_to_group(&"trees")
+	# Platform maids turn back at foliage.
+	add_to_group(PlatformPatrolState.BLOCKERS_GROUP)
 	# Set up timer
 	timer = Timer.new()
 	add_child(timer)

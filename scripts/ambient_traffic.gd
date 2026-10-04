@@ -21,24 +21,11 @@ const INTERVAL_MIN := 15.0
 const INTERVAL_MAX := 30.0
 ## Seconds between the warning going up and the car's nose reaching the screen.
 const LEAD_S := 1.5
-## Half the car art's length (opaque 107px of Car_*.png).
-const CAR_HALF_LEN := 56.0
 ## Free a car this far past the exit edge...
 const EXIT_MARGIN := 160.0
 ## ...or this far off either edge (the player outran it). Must exceed the farthest
-## spawn (SPEED_MAX * LEAD_S + CAR_HALF_LEN) or a car is freed as it spawns.
+## spawn (SPEED_MAX * LEAD_S + Car.HALF_LEN) or a car is freed as it spawns.
 const FAR_MARGIN := 960.0
-## Half the visible world width when there is no camera (1280 px at zoom 2.5).
-const HALF_VIEW_FALLBACK := 256.0
-## Warning sign inset from the screen edge (world px). The CRT overlay eats ~40
-## screen px (16 world px at zoom 2.5) of every edge; at 30 the sign's outer
-## corner sat right on that mask.
-const EDGE_INSET := 44.0
-## The sign's canvas layer: above the HUD and the touch buttons (UI, layer 2) — on
-## a phone the jump/attack cluster and the joystick sit right over the road edges
-## and hid a world-space sign — below the pause menu (99) and CRT overlay (100).
-## It follows the camera, so the sign is still placed in world units.
-const WARNING_LAYER := 3
 
 ## Street span a car may drive in: the inner faces of the LeftBoundary /
 ## RightBoundary end buildings (their wall shapes). Past them a car drew over
@@ -55,7 +42,9 @@ static var fixed_seed := -1
 
 ## Seconds of open play left before the next car.
 var countdown := INTERVAL_MAX
-var warning: TrafficWarning
+## The edge sign (CarWarning.Sign) of the car on the way.
+var warning: CarWarning.Sign
+var _signs: CarWarning
 var _car: Car
 var _rng := RandomNumberGenerator.new()
 
@@ -70,7 +59,7 @@ static func may_spawn(cutscene: bool, fight: bool, player_ready: bool, road_busy
 
 ## World x a car driving `dir` starts at: off the entry edge by LEAD_S of travel.
 static func spawn_x(view_x: float, half_view: float, dir: int, speed: int) -> float:
-	return view_x - dir * (half_view + speed * LEAD_S + CAR_HALF_LEN)
+	return view_x - dir * (half_view + speed * LEAD_S + Car.HALF_LEN)
 
 
 ## `preferred`, or the other way if that pass would start or end off the street;
@@ -90,25 +79,15 @@ static func should_despawn(car_x: float, dir: int, view_x: float, half_view: flo
 	return ahead > half_view + EXIT_MARGIN or absf(car_x - view_x) > half_view + FAR_MARGIN
 
 
-## Up until the car's nose reaches the sign (EDGE_INSET in from the edge): the car
-## takes over from the sign instead of leaving a beat where only a sliver shows.
-static func warning_visible(car_x: float, dir: int, view_x: float, half_view: float) -> bool:
-	return (car_x + dir * CAR_HALF_LEN - view_x) * dir < -(half_view - EDGE_INSET)
-
-
 func _ready() -> void:
 	if fixed_seed >= 0:
 		_rng.seed = fixed_seed
 	else:
 		_rng.randomize()
 	countdown = next_interval(_rng)
-	var layer := CanvasLayer.new()
-	layer.layer = WARNING_LAYER
-	layer.follow_viewport_enabled = true
-	add_child(layer)
-	warning = TrafficWarning.new()
-	warning.visible = false
-	layer.add_child(warning)
+	_signs = CarWarning.new()
+	add_child(_signs)
+	warning = _signs.sign
 
 
 func _physics_process(delta: float) -> void:
@@ -142,20 +121,11 @@ func _spawn(p: Player) -> void:
 
 ## Free the car once it has left, and keep its warning on the entry edge.
 func _track_car() -> void:
-	if not is_instance_valid(_car) or _car.is_queued_for_deletion():
-		warning.visible = false
-		return
 	var view_x := _view_x(_player())
 	var half := _half_view()
-	var x := _car.global_position.x
-	if should_despawn(x, _car.direction, view_x, half):
+	if is_instance_valid(_car) and not _car.is_queued_for_deletion() 			and should_despawn(_car.global_position.x, _car.direction, view_x, half):
 		_car.queue_free()
-		warning.visible = false
-		return
-	warning.visible = warning_visible(x, _car.direction, view_x, half)
-	if warning.visible:
-		warning.direction = _car.direction
-		warning.global_position = Vector2(view_x - _car.direction * (half - EDGE_INSET), _car.global_position.y)
+	_signs.track(_car, view_x, half)
 
 
 func _road_busy() -> bool:
@@ -172,49 +142,8 @@ func _player() -> Player:
 
 
 func _view_x(p: Player) -> float:
-	var cam := get_viewport().get_camera_2d()
-	if cam:
-		return cam.get_screen_center_position().x
-	return p.global_position.x if p else 0.0
+	return CarWarning.view_x(get_viewport(), p)
 
 
 func _half_view() -> float:
-	var cam := get_viewport().get_camera_2d()
-	if cam and cam.zoom.x > 0.0:
-		return get_viewport_rect().size.x / (2.0 * cam.zoom.x)
-	return HALF_VIEW_FALLBACK
-
-
-## Road-sign "!" at the screen edge with a chevron for the way the car is heading.
-class TrafficWarning extends Node2D:
-	const FILL := Color("ffd23f")
-	const INK := Color("1a1a1a")
-	var direction := -1:
-		set(d):
-			direction = d
-			queue_redraw()
-	var _t := 0.0
-
-	func _process(delta: float) -> void:
-		_t += delta
-		# Pulse (size + brightness) to catch the corner of the eye; never faded out,
-		# so every frame of it reads.
-		var k := absf(sin(_t * TAU * 2.5))
-		scale = Vector2.ONE * (1.0 + 0.15 * k)
-		modulate.a = 0.8 + 0.2 * k
-
-	func _draw() -> void:
-		var tri := PackedVector2Array([Vector2(0, -15), Vector2(13, 8), Vector2(-13, 8)])
-		# Drop shadow + heavy ink so it separates from yellow street furniture.
-		var shadow := PackedVector2Array()
-		for v in tri:
-			shadow.append(v + Vector2(2, 2))
-		draw_colored_polygon(shadow, Color(0, 0, 0, 0.45))
-		draw_colored_polygon(tri, FILL)
-		draw_polyline(PackedVector2Array([tri[0], tri[1], tri[2], tri[0]]), INK, 3.0, true)
-		draw_rect(Rect2(-1.5, -8, 3, 9), INK)
-		draw_rect(Rect2(-1.5, 3, 3, 3), INK)
-		# Chevron under the sign, pointing the way the car will cross the screen.
-		var d := float(direction)
-		var tip := Vector2(6 * d, 16)
-		draw_polyline(PackedVector2Array([tip + Vector2(-6 * d, -5), tip, tip + Vector2(-6 * d, 5)]), FILL, 3.0, true)
+	return CarWarning.half_view(get_viewport())

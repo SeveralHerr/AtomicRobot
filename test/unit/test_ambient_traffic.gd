@@ -94,12 +94,12 @@ func test_may_spawn_only_when_everything_is_clear() -> String:
 func test_spawn_point_gives_the_full_warning_lead() -> String:
 	# Driving left, the car starts off the RIGHT edge, LEAD_S of travel away from it.
 	var x: float = TRAFFIC.spawn_x(1000.0, 256.0, -1, 300)
-	var res: String = _T.assert_float_eq(x, 1256.0 + 300 * TRAFFIC.LEAD_S + TRAFFIC.CAR_HALF_LEN, 0.01,
+	var res: String = _T.assert_float_eq(x, 1256.0 + 300 * TRAFFIC.LEAD_S + Car.HALF_LEN, 0.01,
 		"left-driver starts off the right edge")
 	if res != "":
 		return res
 	x = TRAFFIC.spawn_x(1000.0, 256.0, 1, 200)
-	return _T.assert_float_eq(x, 744.0 - 200 * TRAFFIC.LEAD_S - TRAFFIC.CAR_HALF_LEN, 0.01,
+	return _T.assert_float_eq(x, 744.0 - 200 * TRAFFIC.LEAD_S - Car.HALF_LEN, 0.01,
 		"right-driver starts off the left edge")
 
 
@@ -151,17 +151,17 @@ func test_a_fresh_car_is_never_despawned() -> String:
 
 
 func test_warning_shows_only_while_the_car_is_off_screen_approaching() -> String:
-	var res: String = _T.assert_true(TRAFFIC.warning_visible(1400.0, -1, 1000.0, 256.0), "approaching from the right")
+	var res: String = _T.assert_true(CarWarning.visible_for(1400.0, -1, 1000.0, 256.0), "approaching from the right")
 	if res != "":
 		return res
-	res = _T.assert_true(TRAFFIC.warning_visible(1256.0 + TRAFFIC.CAR_HALF_LEN - TRAFFIC.EDGE_INSET + 1.0, -1, 1000.0, 256.0),
+	res = _T.assert_true(CarWarning.visible_for(1256.0 + Car.HALF_LEN - CarWarning.EDGE_INSET + 1.0, -1, 1000.0, 256.0),
 		"nose on screen but short of the sign: still up")
 	if res != "":
 		return res
-	res = _T.assert_false(TRAFFIC.warning_visible(1200.0, -1, 1000.0, 256.0), "car past the sign: the car is its own warning")
+	res = _T.assert_false(CarWarning.visible_for(1200.0, -1, 1000.0, 256.0), "car past the sign: the car is its own warning")
 	if res != "":
 		return res
-	return _T.assert_false(TRAFFIC.warning_visible(600.0, -1, 1000.0, 256.0), "leaving: no warning")
+	return _T.assert_false(CarWarning.visible_for(600.0, -1, 1000.0, 256.0), "leaving: no warning")
 
 
 # --- the node ------------------------------------------------------------------
@@ -215,7 +215,7 @@ func test_car_is_freed_after_it_leaves_the_screen() -> String:
 	t._physics_process(0.016)
 	var car: Car = _cars(t)[0]
 	car.global_position.x = t.player.global_position.x \
-		+ car.direction * (TRAFFIC.HALF_VIEW_FALLBACK + TRAFFIC.EXIT_MARGIN + 50.0)
+		+ car.direction * (CarWarning.HALF_VIEW_FALLBACK + TRAFFIC.EXIT_MARGIN + 50.0)
 	t._physics_process(0.016)
 	var res: String = _T.assert_true(car.is_queued_for_deletion(), "off-screen car is freed")
 	if res != "":

@@ -72,8 +72,22 @@ func test_no_tip_at_the_top() -> String:
 	return _T.assert_eq(L.tip_text(_run(30000)), "", "S needs no tip")
 
 
-func test_line_joins_gap_and_tip_on_a_clear() -> String:
-	return _T.assert_eq(L.line_text(_run(), true), "+800 FOR B (8,000)\nFIND 4 MORE SECRETS", "gap over tip")
+## Review round 3: two hint lines under the score were noise again. One line: the
+## concrete thing to do and the rank it buys...
+func test_line_is_the_tip_and_its_rank_on_one_line() -> String:
+	return _T.assert_eq(L.line_text(_run(), true), "FIND 4 MORE SECRETS FOR B", "one actionable line")
+
+
+## ...or, when only the generic combo tip is left, just the gap.
+func test_line_is_the_gap_when_only_the_combo_tip_is_left() -> String:
+	var run := _run(15000)
+	run["secrets"] = {"wall": 2, "news": 5}
+	run["seconds"] = 430.0
+	return _T.assert_eq(L.line_text(run, true), "+5,000 FOR S (20,000)", "gap, no combo tip")
+
+
+func test_line_at_the_top_rank() -> String:
+	return _T.assert_eq(L.line_text(_run(30000), true), "TOP RANK!", "top rank")
 
 
 func test_line_on_a_death_has_no_tip() -> String:

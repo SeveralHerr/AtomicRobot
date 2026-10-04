@@ -30,7 +30,11 @@ mortal "human" take, copy it without `god on` and try seeds 1-4 headless first
   "cannot be normalized" — that is the same class of bug.
 - Hitstop is wall-clock: a recorded run is NOT frame-identical to the headless run.
   Check the recorded report (`won`, hp at end) before using the footage.
-- Artifact publish cap 15 MB: two-pass `-b:v 520k`, 1024x640, 30 fps ≈ 14.8 MB for 3:15.
+- Artifact publish cap 15 MB: two-pass, 1024x640, 30 fps. Pick `-b:v` from length:
+  `(15 MB*8 / seconds) - 40k audio` minus ~10% (3:15 → 520k; 4:21 → 400k ≈ 14.6 MB).
+- A recorded MORTAL take can die where headless never does: scripted `walk_to` doesn't
+  fight, and a maid that spawns after `brain clear` chain-hits the walk (round 3 died at
+  1:04, retake won). Retry once before changing the route; check the recorded report.
 
 ## 3. Review
 - `fps=1/2` frames → PIL 4x4 sheets with a timecode label per tile. Read every sheet.
@@ -57,7 +61,13 @@ mortal "human" take, copy it without `god on` and try seeds 1-4 headless first
   into the base, resolves `log.md` (keep both entries), reruns all suites per merge.
 - Balance pass LAST, off the merged base: presentation timing changes fight length.
 
+- Round 3 again faked a "doubled sign" (AtomicRobot TattoRobot) across adjacent tiles:
+  a 5 fps strip of that second settles it in one image.
+- Fighter sweep: `python tools/autoplay_sweep.py --base test/autoplay/completionist_mortal.json
+  --chars Cody,Ryan,Cass,Caitlyn,Sara --seeds 1,2,3,4` (~3 min) — the balance card's table.
+
 ## 4. Artifact
 Video + poster as published `files`, `downloads` capability for the MP4 button,
 `db` collection `decisions/<id>` = {status: approved|later|rejected, note}. Read the
-user's picks back with ArtifactData `list decisions`.
+user's picks back with ArtifactData `list decisions`. Copy an older round's video into a new
+page server-side with `files: {"r2.mp4": {artifact: <old url>, path: "after.mp4"}}`.

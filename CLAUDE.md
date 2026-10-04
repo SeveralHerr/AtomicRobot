@@ -288,6 +288,10 @@ title on frame 1 (`await get_tree()` after the node left the tree). Bot metrics 
 Player bug reports: reproduce AT the spot shown (level_pan + snaps over time) before calling it
 fixed. "Maid talking over a tree" got a plausible wrong cause (heart z); the real bug was a ledge
 maid patrolling into a canopy, only visible across several snaps.
+Same class twice: a ledge maid then walked through a lamp (x 2572). Ledge patrols turn at
+`patrol_blockers` (trees, lamps) — derive "what a ledge runs through" from the level dump, not
+from the one prop the report names. Sessions share this checkout: another one fast-forwarded a
+branch into ours mid-task. Check `git reflog -3` before committing; prefer a worktree.
 
 ## Canary
 
