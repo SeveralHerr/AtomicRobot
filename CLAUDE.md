@@ -273,6 +273,10 @@ new guards with a `(file, original, mutant, filter)` script; add a test per surv
 The `godot-tests` MCP server (`.mcp.json`) runs the unit/sandbox suites with a short summary.
 Screenshot "put it here" → world x: `python tools/level_pan.py` (MCP `level_pan`), see
 `skills/godot-level-map/SKILL.md`. Put the coords in every fan-out prompt.
+Fan-out agents run the WHOLE gate (`run_tests.gd` + `python tools/autoplay.py` with no filter +
+sandbox), never one scenario: the splash passed `full_run` but broke 14 scenarios that leave the
+title on frame 1 (`await get_tree()` after the node left the tree). Bot metrics (`powerups`,
+`car_hits`) collide in `report.gd`/`autoplay_sweep.py` on merge — keep both columns.
 
 ## Canary
 

@@ -529,3 +529,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - 905 unit, 2/2 mortal autoplay, 24-seed sweep, lane audit clean, 38/38 mutants killed (after 7 survivors -> new tests).
 - Skills used: none via tool. Would have helped: somewhat-useful-claude-skills:extract-a-testable-seam (static rule funcs), derive-the-list (street bounds from the wall shapes), playthrough-video-review (natural-route video). New repo skill: skills/godot-rare-spawner. Enhancement idea for godot-autoplay-test: document `autoplay_sweep.py --base` for balance-noise checks.
 - MCP: none used (CLI equivalents).
+## 2026-10-04 — Orchestrator: level juice fan-out (branch level-juice)
+- 5 worktree agents (pickups, cracks, bubble, cars, splash) merged into `level-juice`; conflicts only log.md + autoplay report/sweep metric columns (kept both).
+- Post-merge bug: splash `await get_tree().process_frame` after leaving the tree -> 14/19 autoplay FAIL; fixed (hold tree ref + is_inside_tree) with a red-first test.
+- "Meter maid talking over a tree" was the heart atom drawn behind a tree (z), not a speech bubble.
+- Skills used: jamcraft-splash (via agent; enhancement: guard awaits for a node freed by a scene change on frame 1), godot-feedback-fanout (enhancement: say "agents run the whole autoplay suite"). New: tools/level_pan.py + MCP `level_pan` + skills/godot-level-map (screenshot -> world x). Would have helped: godot-level-map (now exists), derive-the-list.
+- MCP: godot-tests (extended with level_pan).
