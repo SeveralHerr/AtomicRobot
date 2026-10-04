@@ -503,3 +503,10 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: none via tool; repo skills godot-micro-cutscene (updated: hold-to-skip, settle rule, story captions), godot-autoplay-test. Would have helped: a "probe positions" helper (wrote 4 throwaway SceneTree probes — player from group, Player gets reparented so get_node("Player") is null).
 - MCP: none used (CLI).
 - Follow-up: opening's melee maids were authored 15-53px in the air (atomic_robot_area.tscn) -> authored at street level (y -28) right behind the red car (user: "like they're issuing a ticket"); enemies count as landed once their street baseline is captured (they rarely read is_on_floor()). New test: nothing in the opening's first shot falls (failed 53px on the old data). 883 unit, 18/18 autoplay, 12/12 sandbox. Merged to main via branch `cutscenes` (not pushed).
+
+## 2026-10-04 — Ambient traffic (branch lj-cars)
+- `Managers/AmbientTraffic`: one car per 15-30 s of open play, random road lane/direction/speed, 1.5 s edge-sign + off-screen engine telegraph, never two cars, paused in cut scenes / door-encounter locks, freed off screen, kept inside the end buildings. Car refactor: `launch()`, `road_y()`, direction, `rng`.
+- Found: one extra global RNG draw alone flipped seeded full_run_mortal -> own RNG + `fixed_seed`. Touch buttons hid the world-space sign -> CanvasLayer 3.
+- 905 unit, 2/2 mortal autoplay, 24-seed sweep, lane audit clean, 38/38 mutants killed (after 7 survivors -> new tests).
+- Skills used: none via tool. Would have helped: somewhat-useful-claude-skills:extract-a-testable-seam (static rule funcs), derive-the-list (street bounds from the wall shapes), playthrough-video-review (natural-route video). New repo skill: skills/godot-rare-spawner. Enhancement idea for godot-autoplay-test: document `autoplay_sweep.py --base` for balance-noise checks.
+- MCP: none used (CLI equivalents).
