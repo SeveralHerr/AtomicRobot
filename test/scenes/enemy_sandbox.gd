@@ -325,7 +325,8 @@ func _build_scenario() -> void:
 				"One thrower in your lane. Step a lane during her wind-up.",
 				"Watch: the coin keeps to HER lane and sails past you.",
 			])
-			var thrower := _spawn_maid(110.0, Lanes.GROUND_LANE, false)
+			# On the player's spawn lane: they snap there on first landing.
+			var thrower := _spawn_maid(110.0, player.spawn_lane, false)
 			if thrower != null:
 				thrower.set_deferred("coins", 99)  # after MeterMaid._ready sets 2
 
@@ -336,7 +337,7 @@ func _build_scenario() -> void:
 				"The maid spawns right where you stand (as after landing on her).",
 				"Watch: she still swings instead of idling under you forever.",
 			])
-			var maid := _spawn_maid(0.0, Lanes.GROUND_LANE, melee)
+			var maid := _spawn_maid(0.0, player.spawn_lane, melee)
 			if maid != null:
 				maid.set_deferred("coins", 99)  # after MeterMaid._ready sets 2
 				# Short cooldown so a stall shows inside the sample window; the
