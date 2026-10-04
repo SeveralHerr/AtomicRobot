@@ -149,7 +149,7 @@ func test_card_fonts_draw_every_character() -> String:
 	var label_text := InitialsEntry.hint_text(true) + InitialsEntry.hint_text(false) \
 		+ "ENTER YOUR INITIALS HIGH SCORES RANK FINAL SCORE RESTART EXIT GAME OK" \
 		+ ComicStyle.badge_text(0) + ComicStyle.badge_text(4) + "0123456789,+:" \
-		+ EndCard.breakdown_text({"fight_score": 1, "seconds": 61.0, "perfect": true})
+		+ RunSummary.breakdown_text({"fight_score": 1, "seconds": 61.0, "perfect": true})
 	for pair in [[ComicStyle.DISPLAY, display_text + "GAME OVER YOU WIN!"], [ComicStyle.LABEL, label_text]]:
 		for c in String(pair[1]):
 			if c.unicode_at(0) > 32 and not pair[0].has_char(c.unicode_at(0)):
@@ -192,7 +192,7 @@ func test_death_with_high_score_shows_entry_in_the_card() -> String:
 	var r: String = _T.assert_true(card.visible, "card shows on death")
 	if r != "":
 		return r
-	r = _T.assert_eq(card._title.text, "GAME OVER", "death title")
+	r = _T.assert_eq(card.summary.title.text, "GAME OVER", "death title")
 	if r != "":
 		return r
 	r = _T.assert_true(card.entry.visible, "initials inside the card")
@@ -204,10 +204,10 @@ func test_death_with_high_score_shows_entry_in_the_card() -> String:
 	r = _T.assert_false(card._buttons.visible, "RESTART hidden while entering, like pinball")
 	if r != "":
 		return r
-	r = _T.assert_false(card._rank_row.visible, "no rank on a death")
+	r = _T.assert_false(card.summary.rank_row.visible, "no rank on a death")
 	if r != "":
 		return r
-	return _T.assert_eq(card._badge_label.text, "NEW HIGH SCORE!", "badge for 1st place")
+	return _T.assert_eq(card.summary.badge_label.text, "NEW HIGH SCORE!", "badge for 1st place")
 
 
 func test_saving_swaps_entry_for_lit_list_then_restart() -> String:
@@ -254,16 +254,16 @@ func test_clear_shows_rank_stamp_and_breakdown() -> String:
 		return r
 	Globals.boss_death.emit()
 	await _frames()
-	r = _T.assert_eq(card._title.text, "YOU WIN!", "win title")
+	r = _T.assert_eq(card.summary.title.text, "YOU WIN!", "win title")
 	if r != "":
 		return r
-	r = _T.assert_true(card._rank_row.visible, "rank stamp on a clear")
+	r = _T.assert_true(card.summary.rank_row.visible, "rank stamp on a clear")
 	if r != "":
 		return r
-	r = _T.assert_eq(card._stamp_label.text, String(ScoreSystem.last_run["rank"]), "stamp shows the rank")
+	r = _T.assert_eq(card.summary.stamp_label.text, String(ScoreSystem.last_run["rank"]), "stamp shows the rank")
 	if r != "":
 		return r
-	r = _T.assert_true("FIGHT" in card._breakdown.text, "breakdown shown")
+	r = _T.assert_true("FIGHT" in card.summary.breakdown.text, "breakdown shown")
 	if r != "":
 		return r
 	return _T.assert_false(player.is_physics_processing(), "player frozen on a clear")
@@ -281,7 +281,7 @@ func test_non_qualifier_sees_list_and_restart_at_once() -> String:
 	r = _T.assert_true(card.table.visible, "list shown")
 	if r != "":
 		return r
-	r = _T.assert_false(card._badge_holder.visible, "no badge when not placed")
+	r = _T.assert_false(card.summary.badge_holder.visible, "no badge when not placed")
 	if r != "":
 		return r
 	return _T.assert_true(card.restart_button.has_focus(), "RESTART focused")

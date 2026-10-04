@@ -194,7 +194,7 @@ func test_win_during_the_beat_is_not_overwritten() -> String:
 	while card.beat.running:
 		await _tree().process_frame
 	await _frames()
-	return _T.assert_eq(card._title.text, "YOU WIN!", "late GAME OVER must not replace YOU WIN")
+	return _T.assert_eq(card.summary.title.text, "YOU WIN!", "late GAME OVER must not replace YOU WIN")
 
 
 ## Someone else's slow-mo (the boss finale) is not the beat's to cancel on a pause.
