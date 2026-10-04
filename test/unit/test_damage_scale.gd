@@ -61,12 +61,20 @@ func test_rage_still_takes_two_blows() -> String:
 	return ""
 
 
-## The boss fight stays the length it was: 10-20 blows (old: Cody 10, Ryan 20).
-func test_boss_takes_ten_to_twenty_blows_for_everyone() -> String:
+## Blows now land ~1.6x as often as they used to: AttackChain.ANIM_SPEED (1.4x clips)
+## plus the cancel two frames after the hit (pf-combat measured melee DPS 1.75-2x).
+const SWING_RATE_GAIN := 1.6
+
+
+## The boss fight stays the length it was in seconds of swinging: 10-20 blows at the
+## old swing rate (old: Cody 10, Ryan 20), i.e. 16-32 blows at today's.
+func test_boss_takes_ten_to_twenty_old_blows_for_everyone() -> String:
 	for cfg: CharacterConfig in _fighters():
 		var n := DamageRules.hits_to_kill(BossRules.MAX_HEALTH, cfg.get_starting_damage())
-		if n < 10 or n > 20:
-			return "%s needs %d blows on the boss, want 10-20" % [cfg.get_character_name(), n]
+		var old_blows := float(n) / SWING_RATE_GAIN
+		if old_blows < 10.0 or old_blows > 20.0:
+			return "%s needs %d blows on the boss (%.1f at the old swing rate), want 10-20" % [
+				cfg.get_character_name(), n, old_blows]
 	return ""
 
 

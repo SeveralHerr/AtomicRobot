@@ -457,3 +457,13 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: godot-hit-feel (enhanced: word ranks, fixed-clock hitstop), godot-headful-screenshot, godot-ab-worktree. Enhancement: headful-screenshot should warn Python on Windows writes cp1252 by default -> invalid UTF-8 .gd (whole suite broke).
 - Would have helped: enumerate-the-pairs (used its idea for the rank matrix); a checked-in capture_timeline.gd + gif.py (rewrote again).
 - MCP: none used (CLI direct).
+## 2026-10-04 pf-balance (restore challenge after snappy combat; rank re-pin)
+- Street: EnemyTuning melee 150->220, ranged 100->150 px/s, cooldowns 1.0->0.6 / 4.0->2.5, WINDUP_SPEED 1.0->1.4; +1 maid at the 5 mid-street doors.
+- Boss: MAX_HEALTH 60->96, BossRules.WINDUP_SPEED 1.3 (new; was hardcoded 1.0), throws 2.0/1.7/1.5 -> 1.6/1.35/1.2. Boss HP alone barely moved the bot's hits (fight time is mostly intro/stagger); wind-up speed did.
+- Pins restated in old-swing time (blows/1.6 in 10-20; throw gap >= 2.0|1.5 / AttackChain.ANIM_SPEED), not loosened.
+- Route sweep (6 chars x 4 seeds, non-boot base): pre-combat 20/24, 13.4 hits (5.5 street / 7.9 boss); post-merge 24/24, 6.7; final 24/24, 13.1 (5.5 / 7.6).
+- Ranks S20000/A15000/B8000/C5000 from measured runs (21.1k S, 16.1k A, 14.3k B, ~9.8k human B, 7.9k C).
+- 838/838 unit, 12/12 sandbox, 17/17 autoplay.
+- Skills used: godot-autoplay-test (sweep). Enhancement: ship a parallel `autoplay_sweep.py --jobs N` + mean-row summary (wrote sweep_all.sh/summ.py in scratch); note Sara and Caitlyn sweep rows are identical (check whether one is locked or same stats).
+- Would have helped: godot-ab-worktree (old-build baseline sweep — used a detached worktree by hand); a boss-only sweep preset matching boss_balance_* steps (sweep default `advance 140` != scenario `advance 110`, gave different hit counts).
+- MCP: none used (CLI direct).

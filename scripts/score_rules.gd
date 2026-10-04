@@ -97,14 +97,18 @@ static func secret_bonus(secrets: int) -> int:
 ## Rank letters paired with the total score each one needs, best first. rank_for()
 ## walks this in order and takes the first one the score clears, so D must sit at 0
 ## to guarantee every run gets a letter.
-## Tuned against full runs (test_score_rules.gd pins the reference runs): a clean
-## mortal completionist run (~182 s, 4 orbs left, most secrets) is A; a flawless fast
-## run with every secret is S; a slow, battered run with a secret or two is C.
+## Tuned against measured full runs (test_score_rules.gd pins them; re-pinned in
+## pf-balance after 4-blow maids, faster swings and +5 street maids): a flawless
+## completionist run with its secrets (21.1k) is S, the same without secrets A; the
+## mortal completionist bot (188 s, 18 hits, 6 secrets: 16.1k) is A; a fast mortal
+## full clear with no secrets (14.3k) is B, as is any decent human clear (~8-12k);
+## a slow, battered run with a secret (7.9k) is C, 800 short of B — the player's
+## "best full clear ~7k, still C" now sits one secret-and-a-bit below B.
 const RANK_THRESHOLDS: Array = [
-	["S", 18000],
-	["A", 13000],
-	["B", 9500],
-	["C", 6000],
+	["S", 20000],
+	["A", 15000],
+	["B", 8000],
+	["C", 5000],
 	["D", 0],
 ]
 

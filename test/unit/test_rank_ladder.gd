@@ -10,15 +10,15 @@ var _T
 const L := preload("res://scripts/ui/rank_ladder.gd")
 
 
-## A C-rank clear: 8,700 total, 5:30, hit 6 times, 3 of 7 secrets.
-func _run(total: int = 8700) -> Dictionary:
+## A C-rank clear: 7,200 total (the player's ~7k), 5:30, hit 6 times, 3 of 7 secrets.
+func _run(total: int = 7200) -> Dictionary:
 	return {"won": true, "total": total, "rank": ScoreRules.rank_for(total), "seconds": 330.0,
 		"perfect": false, "no_damage_bonus": 1000, "secrets": {"wall": 1, "news": 2},
 		"secret_totals": {"wall": 2, "news": 5}}
 
 
 func test_next_line_names_the_next_rank_and_the_gap() -> String:
-	return _T.assert_eq(L.next_text(8700), "+800 FOR B (9,500)", "gap to B")
+	return _T.assert_eq(L.next_text(7200), "+800 FOR B (8,000)", "gap to B")
 
 
 func test_top_rank_says_so() -> String:
@@ -47,7 +47,7 @@ func test_tip_falls_back_to_time() -> String:
 
 
 func test_tip_time_over_par_names_the_target() -> String:
-	var run := _run(6100)  # 3,400 short of B: more than a flawless clear pays
+	var run := _run(1600)  # 3,400 short of C: more than a flawless clear pays
 	run["secrets"] = {"wall": 2, "news": 5}
 	run["seconds"] = 430.0  # over par: time only pays under 7:00
 	# 3400 / 15 = 227 s under par -> 3:13
@@ -55,7 +55,7 @@ func test_tip_time_over_par_names_the_target() -> String:
 
 
 func test_tip_skips_an_unrealistic_time() -> String:
-	var run := _run(13000)  # 5,000 short of S
+	var run := _run(15000)  # 5,000 short of S
 	run["secrets"] = {"wall": 2, "news": 5}
 	run["seconds"] = 430.0  # would need 1:26, faster than FASTEST_SECONDS
 	return _T.assert_eq(L.tip_text(run), "CHAIN COMBOS: KILLS PAY UP TO x8", "no 2-minute promise")
@@ -73,7 +73,7 @@ func test_no_tip_at_the_top() -> String:
 
 
 func test_line_joins_gap_and_tip_on_a_clear() -> String:
-	return _T.assert_eq(L.line_text(_run(), true), "+800 FOR B (9,500) · FIND 4 MORE SECRETS", "one line")
+	return _T.assert_eq(L.line_text(_run(), true), "+800 FOR B (8,000) · FIND 4 MORE SECRETS", "one line")
 
 
 func test_line_on_a_death_has_no_tip() -> String:
@@ -144,7 +144,7 @@ func test_tallest_card_fits_inside_the_crt_safe_area() -> String:
 ## Mutation survivor: an under-par run whose gap needs an impossible time gets the
 ## combo tip, not "FINISH 3:54 FASTER" on a 5:00 run.
 func test_tip_skips_an_unrealistic_saving_under_par() -> String:
-	var run := _run(6000)  # 3,500 short of B -> 234 s
+	var run := _run(1500)  # 3,500 short of C -> 234 s
 	run["secrets"] = {"wall": 2, "news": 5}
 	run["no_damage_bonus"] = ScoreRules.PERFECT_BONUS
 	run["seconds"] = 300.0  # would need 1:06

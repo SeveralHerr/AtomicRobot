@@ -168,15 +168,17 @@ total = street + boss + bonus       bonus = time_bonus + no_damage_bonus + secre
   newspaper stand "news"). `SecretTally` counts ids once per run and derives the card's
   totals from the level files (every node running `crack.gd` / `interactive_mailbox.gd`
   in the run's scenes).
-- **Rank ladder on the card** (`scripts/ui/rank_ladder.gd`): a chip per rank with its
-  threshold (derived from `RANK_THRESHOLDS`, the run's rank lit), then one line:
-  "+800 FOR B (9,500) · FIND 4 MORE SECRETS". The tip is the cheapest single change
+- **Rank ladder on the card** (`scripts/ui/rank_ladder.gd`): one line, the gap to the
+  next rank (from `RANK_THRESHOLDS`) plus a tip: "+800 FOR B (8,000) · FIND 4 MORE SECRETS". The tip is the cheapest single change
   that covers the gap, in order: unfound secrets, a flawless clear, a faster clear
   (never promising under 2:30), else "CHAIN COMBOS". A death card says "CLEAR THE BOSS
   TO GET RANKED" and, after the boss door, shows the STREET / BOSS split.
-- **Rank** — S 18000 / A 13000 / B 9500 / C 6000 / D 0. Pinned in
-  `test_score_rules.gd` against measured seed-1 runs: clean mortal completionist ≈ A,
-  flawless with every secret = S, slow and battered = C.
+- **Rank** — S 20000 / A 15000 / B 8000 / C 5000 / D 0 (re-pinned 2026-10-04, pf-balance,
+  after 4-blow maids, faster swings and +5 street maids). Pinned in `test_score_rules.gd`
+  against measured runs: god completionist with secrets 21.1k = S (A without them);
+  `completionist_mortal` 16.1k = A; `full_run_mortal` 14.3k (fast, no secrets) = B; a
+  decent human clear (~4:30, 2 secrets, ~9.8k) = B; slow and battered (7.9k) = C. A
+  player's "~7k best clear" is C, 800 short of B — one secret and a faster finish.
 
 Bests persist per scene to `user://scores.cfg`.
 

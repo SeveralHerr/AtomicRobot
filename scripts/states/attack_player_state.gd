@@ -28,7 +28,7 @@ var re_arm_delay: float = 0.0
 ## Maids flash through the wind-up (EnemyTelegraph) so a throw reads in time to
 ## step a lane. The boss has his own tells and turns this off.
 var wind_up_tell: bool = true
-## Attack-clip playback multiplier (EnemyTuning.WINDUP_SPEED; the boss keeps 1.0).
+## Attack-clip playback multiplier (EnemyTuning.WINDUP_SPEED; the boss uses BossRules.WINDUP_SPEED).
 var wind_up_speed: float = EnemyTuning.WINDUP_SPEED
 
 var attack_finished: bool = false

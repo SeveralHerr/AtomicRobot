@@ -146,19 +146,19 @@ texture = ExtResource("17_6gmga")
 [node name="BuildingDoorEncounter" parent="." unique_id=800528825 instance=ExtResource("12_g6llg")]
 position = Vector2(5074, 2)
 melee_ratio = 1.0
-enemy_count = 6
+enemy_count = 7
 waves = 3
 
 [node name="BuildingDoorEncounter2" parent="." unique_id=1144081704 instance=ExtResource("12_g6llg")]
 position = Vector2(4205, -3)
 melee_ratio = 1.0
-enemy_count = 5
+enemy_count = 6
 waves = 2
 
 [node name="BuildingDoorEncounter3" parent="." unique_id=1686535141 instance=ExtResource("12_g6llg")]
 position = Vector2(3617, 0)
 melee_ratio = 1.0
-enemy_count = 4
+enemy_count = 5
 waves = 2
 
 [editable path="Tree14"]
