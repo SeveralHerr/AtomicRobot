@@ -98,10 +98,13 @@ so the enemies that reference `flash.gdshader` directly are unaffected.
 
 Rolled in `Enemy.die()` → `PowerupSystem.roll_drop()` → `Utils.drop_powerup()`.
 
-- 22% base chance per kill.
-- **Pity floor at 8 kills.** A pure 22% roll has a ~14% chance of an 8-kill drought,
-  which reads in play as "power-ups are broken" rather than "unlucky". The counter
-  lives on the autoload (a property of the run) and resets on player death.
+- 10% base chance per kill (`BASE_DROP_CHANCE`).
+- **Pity floor at 16 kills** (`PITY_KILLS`). A pure 10% roll runs 16 kills dry ~19% of
+  the time, which reads in play as "power-ups are broken" rather than "unlucky". The
+  counter lives on the autoload (a property of the run) and resets on player death.
+- Together: a drop every ~8 kills on average. The earlier 22% / 8 pairing averaged one
+  every ~3.9, faster than an 8 s buff expires, so the buffed state was the default.
+  `scripts/powerup_rules.gd` is the source of truth; keep these numbers in step.
 - The roll happens in `die()`, before the body's 1.5s death fade, so the pickup lands
   while the fight that earned it is still going.
 
