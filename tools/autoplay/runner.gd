@@ -135,6 +135,13 @@ func _do(step: Dictionary) -> void:
 				if e is Enemy and not e.is_dead:
 					rec.ignore_kill(e)
 					e.die()
+		"sink":
+			# Reproduces the door-arena report: maids keeping their lane but standing
+			# DY px off its floor (lane 0 at road height), out of a straight shot's line.
+			for e in get_tree().get_nodes_in_group("enemies"):
+				if e is Enemy and not e.is_dead and not e.lane_locked:
+					e.global_position.y += float(a[0])
+			await _wait_frames(2)
 		"brain": await _brain(a[0], float(a[1]) if a.size() > 1 else sc["timeout"])
 		"menu": await _menu(step["text"], float(a[0]) if a.size() > 0 else 30.0)
 		"snap": rec.snap(a[0] if a.size() > 0 else "t%04d" % int(rec.t))
