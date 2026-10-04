@@ -173,7 +173,10 @@ func _process(_delta: float) -> void:
 		_end()
 
 
-func _is_alive(enemy: Node2D) -> bool:
+## Untyped on purpose: a freed enemy (one the kill box swallowed) can't convert to
+## Node2D, so a typed parameter errored inside filter() before the validity check
+## ran — the squad never emptied and the arena stayed locked.
+func _is_alive(enemy) -> bool:
 	if not is_instance_valid(enemy):
 		return false
 	return not (enemy is Enemy and enemy.is_dead)

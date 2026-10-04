@@ -165,6 +165,20 @@ func test_door_clearing_the_squad_releases_the_arena_once() -> String:
 	return _T.assert_false(_barriers_on(), "barriers drop on clear")
 
 
+## The kill box frees an enemy outright (no death state). A typed filter callback
+## errored on the freed object, the squad never emptied, and the arena stayed shut.
+func test_door_freed_squad_member_still_releases_the_arena() -> String:
+	_make(2)
+	_enc._on_body_entered(_p)
+	await _until(func(): return _alive() == 2 and not _enc._spawning)
+	for e in _enc._spawned:
+		if is_instance_valid(e):
+			Globals.release_attack_slot(e)
+			e.free()
+	var ok: bool = await _until(func(): return _finished > 0)
+	return _T.assert_true(ok, "encounter_finished once every squad member is freed")
+
+
 func test_door_player_death_mid_fight_releases() -> String:
 	_make(2)
 	_enc._on_body_entered(_p)
