@@ -42,22 +42,60 @@ static func shake_node2d(node: Node2D, strength: float = 10.0, duration: float =
 	tween.tween_property(node, "position", original_pos, frequency)
 	
 	
-static func apply_hit_pause(node: Node2D, duration := 0.1):
-	var time_passed := 0.0
-	Engine.time_scale = 0.0
-	
-	while time_passed < duration:
-		await node.get_tree().process_frame
-		time_passed += 1.0 / ProjectSettings.get_setting("physics/common/physics_ticks_per_second")
-	
-	Engine.time_scale = 1.0
+## Hitstop: freeze the game (Engine.time_scale = 0) for `duration` REAL seconds.
+## - A request during a running pause extends it; it never shortens it.
+## - Skipped if time_scale is already not 1.0 — someone else (BossJuice slow-mo, the
+##   death beat) owns time, and we must not clobber it.
+## - On release, time is only restored if it is still ours (still 0).
+## - Off in headless runs (unit tests, the autoplay bot): a wall-clock freeze would
+##   make --fixed-fps runs non-deterministic. Tests lift that via allow_headless_hit_pause.
+const HIT_PAUSE_SCALE := 0.0
+static var allow_headless_hit_pause := false
+## Last requested duration, recorded even when skipped (lets tests see the ask).
+static var last_hit_pause_request := 0.0
+static var _hit_pause_until_usec := 0
+static var _hit_pause_running := false
 
-	
-static func hit_effect(target: Node2D, hit_position: Vector2) -> void:
-	var instance = HIT_FX.instantiate()
-	target.add_child(instance)
+
+static func apply_hit_pause(node: Node, duration := 0.05) -> void:
+	last_hit_pause_request = duration
+	if node == null or not node.is_inside_tree() or duration <= 0.0:
+		return
+	if DisplayServer.get_name() == "headless" and not allow_headless_hit_pause:
+		return
+	var until := Time.get_ticks_usec() + int(duration * 1000000.0)
+	if _hit_pause_running:
+		_hit_pause_until_usec = maxi(_hit_pause_until_usec, until)
+		return
+	if Engine.time_scale != 1.0:
+		return
+	_hit_pause_running = true
+	_hit_pause_until_usec = until
+	Engine.time_scale = HIT_PAUSE_SCALE
+	var tree := node.get_tree()
+	var left := duration
+	while left > 0.0:
+		# process_always, ignore_time_scale: the timer must run while time is frozen.
+		await tree.create_timer(left, true, false, true).timeout
+		left = float(_hit_pause_until_usec - Time.get_ticks_usec()) / 1000000.0
+	if Engine.time_scale == HIT_PAUSE_SCALE:
+		Engine.time_scale = 1.0
+	_hit_pause_running = false
+
+
+## Hit sparks at `hit_position`. A sibling drawn just above `target`, not its child:
+## the burst stays where the blow landed while the target is knocked back or
+## mirrored, and it isn't swallowed by the target's own white hit flash.
+static func hit_effect(target: Node2D, hit_position: Vector2) -> Node2D:
+	var instance: Node2D = HIT_FX.instantiate()
+	var parent := target.get_parent()
+	if parent == null:
+		parent = target
+	parent.add_child(instance)
+	instance.z_index = target.z_index + 1
 	instance.global_position = hit_position
 	instance.start()
+	return instance
 
 static func shake_two_node2d(node1: Node2D, node2: Node2D, strength1: float = 10.0, duration1: float = 0.3, strength2: float = 10.0, duration2: float = 0.3, frequency: float = 0.02) -> void:
 	var original_pos1 = node1.position

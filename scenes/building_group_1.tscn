@@ -653,6 +653,8 @@ max_polyphony = 2
 [node name="BuildingDoorEncounter" type="Node2D" parent="." unique_id=1484057500 instance=ExtResource("30_o7nd8")]
 position = Vector2(1780, 0)
 script = ExtResource("31_2gjml")
+enemy_count = 4
+waves = 2
 
 [node name="Meter3" type="Node2D" parent="." unique_id=1853720684 instance=ExtResource("32_4q4ox")]
 z_index = 1

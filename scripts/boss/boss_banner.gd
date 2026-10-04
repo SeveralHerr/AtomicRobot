@@ -13,6 +13,20 @@ signal landed
 const STRIPE_H := 150.0
 ## Stripe centre as a fraction of screen height — above the fighters, below the HUD.
 const STRIPE_Y := 0.42
+
+const TITLE_PX := 112
+const SUB_PX := 48
+
+## Per-banner stripe height (fraction of screen). Street encounters raise it: the
+## boss room's fighters stand lower than a street squad on the walkway lane.
+var stripe_y: float = STRIPE_Y
+## Scales the whole callout (stripe, title, subtitle, starburst). The boss room's
+## full size is a set piece; a street callout must not bury the HUD or the squad.
+var size_k: float = 1.0:
+	set(k):
+		size_k = k
+		_title.add_theme_font_size_override("font_size", int(TITLE_PX * k))
+		_sub.add_theme_font_size_override("font_size", int(SUB_PX * k))
 const SLANT := 46.0
 const BLIP := preload("res://sounds/tap.wav")
 
@@ -36,7 +50,7 @@ func _init() -> void:
 	name = "BossBanner"
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	_title = ComicStyle.heading("", 112, ComicStyle.YELLOW)
+	_title = ComicStyle.heading("", TITLE_PX, ComicStyle.YELLOW)
 	_title.add_theme_constant_override("outline_size", 16)
 	_title.add_theme_color_override("font_shadow_color", ComicStyle.INK)
 	_title.add_theme_constant_override("shadow_offset_x", 7)
@@ -48,7 +62,7 @@ func _init() -> void:
 	_sub_tag.add_theme_stylebox_override("panel", ComicStyle.box(ComicStyle.INK, 0, 4, 4))
 	_sub_tag.modulate.a = 0.0
 	add_child(_sub_tag)
-	_sub = ComicStyle.label("", ComicStyle.LABEL, 48, ComicStyle.YELLOW)
+	_sub = ComicStyle.label("", ComicStyle.LABEL, SUB_PX, ComicStyle.YELLOW)
 	_sub_tag.add_child(_sub)
 	_bubble = PanelContainer.new()
 	_bubble.add_theme_stylebox_override("panel", ComicStyle.box(ComicStyle.CREAM, 4, 18, 5))
@@ -81,7 +95,7 @@ func slam_title(text: String, sub: String = "", hold: float = 1.0, tint: Color =
 	_set_burst(0.0)
 	_title.text = text
 	_title.reset_size()
-	var centre := Vector2(size.x * 0.5, size.y * STRIPE_Y)
+	var centre := Vector2(size.x * 0.5, size.y * stripe_y)
 	_title.position = centre - _title.size * 0.5
 	_title.pivot_offset = _title.size * 0.5
 	_title.scale = Vector2.ONE * 3.2
@@ -103,7 +117,7 @@ func slam_title(text: String, sub: String = "", hold: float = 1.0, tint: Color =
 	if sub != "":
 		_sub.text = sub
 		_sub_tag.reset_size()
-		var home := Vector2(centre.x - _sub_tag.size.x * 0.5 + 70.0, centre.y + STRIPE_H * 0.5 - 4.0)
+		var home := Vector2(centre.x - _sub_tag.size.x * 0.5 + 70.0, centre.y + STRIPE_H * size_k * 0.5 - 4.0)
 		_sub_tag.position = home + Vector2(size.x * 0.6, 0.0)
 		_sub_tag.rotation_degrees = -3.0
 		_sub_tag.modulate.a = 1.0
@@ -197,17 +211,17 @@ func _draw() -> void:
 	if _stripe > 0.0:
 		_draw_stripe()
 	if _burst > 0.0:
-		_draw_burst(Vector2(size.x * 0.5, size.y * STRIPE_Y))
+		_draw_burst(Vector2(size.x * 0.5, size.y * stripe_y))
 	if _bubble.visible:
 		_draw_tail()
 
 
 ## A slanted band that wipes in from the left and out to the right.
 func _draw_stripe() -> void:
-	var cy := size.y * STRIPE_Y
+	var cy := size.y * stripe_y
 	var x0 := (size.x + SLANT * 2.0) * clampf(_stripe - 1.0, 0.0, 1.0) - SLANT
 	var x1 := (size.x + SLANT * 2.0) * clampf(_stripe, 0.0, 1.0) - SLANT
-	var h := STRIPE_H * 0.5
+	var h := STRIPE_H * size_k * 0.5
 	var band := PackedVector2Array([Vector2(x0 + SLANT, cy - h), Vector2(x1 + SLANT, cy - h),
 		Vector2(x1 - SLANT, cy + h), Vector2(x0 - SLANT, cy + h)])
 	var shadow := PackedVector2Array()
@@ -227,11 +241,14 @@ func _draw_burst(c: Vector2) -> void:
 		var pts := PackedVector2Array()
 		var spikes := 18
 		for i in spikes * 2:
-			# Sized to the word, so a long one ("ADJOURNED!") still sits inside.
-			var reach := maxf(300.0, _title.size.x * 0.62)
-			var r: float = reach * (1.0 if i % 2 == 0 else 0.64) * _burst * layer[0]
+			# Sized to the word, so a long one ("ADJOURNED!") still sits inside —
+			# but only sideways: height is capped, or a long word grows the burst
+			# up over the HUD and down over the fighters.
+			var reach := maxf(300.0 * size_k, _title.size.x * 0.62)
+			var k: float = (1.0 if i % 2 == 0 else 0.64) * _burst * layer[0]
 			var a := TAU * i / (spikes * 2.0) + _burst_spin
-			pts.append(c + Vector2(cos(a) * r, sin(a) * r * 0.62))
+			var ry := minf(reach, 360.0 * size_k) * 0.62
+			pts.append(c + Vector2(cos(a) * reach * k, sin(a) * ry * k))
 		draw_colored_polygon(pts, layer[1])
 		draw_polyline(pts + PackedVector2Array([pts[0]]), ComicStyle.INK, 5.0)
 

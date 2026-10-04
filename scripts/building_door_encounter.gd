@@ -5,15 +5,34 @@ class_name BuildingDoorEncounter
 ##
 ## Walk into the trigger, the door bursts open, a squad pours out and fans across
 ## the lanes, and — if `lock_arena` — barriers plus camera limits hold the player
-## there until the street is clear.
+## there until the street is clear. The squad comes out in 1–3 `waves`: each one
+## rumbles the door and bursts it again once the previous wave is down, with a
+## comic "WAVE 2/3" callout (EncounterAnnouncer), then a "BUSTED!" payoff when the last wave is down.
 ##
 ## `DoorMouth/Crack` (sprites/crack.png) doubles as the visual: a hairline crack
 ## sits at the base of the wall as a permanent tell for where an encounter lives,
 ## widens through the telegraph, and blows open into a hole enemies pour out of.
 
+## Lock released — cleared, watchdog, or player death.
 signal encounter_finished
+## A wave starts its telegraph. `index` is 1-based, of `total`.
+signal wave_started(index: int, total: int)
+## The last wave went down (not emitted for a watchdog or death release).
+signal squad_cleared
 
+## Whole squad across all waves.
 @export var enemy_count: int = 4
+## How many waves the squad comes out in. The next wave waits for the current one
+## to be fully down (not "nearly"): the player never fights two waves at once, so
+## total pressure stays close to the old one-burst squad, and every callout lands
+## over an empty street where it can be read. See wave_sizes() for the split.
+@export_range(1, 3) var waves: int = 1
+## Breather between a wave's last kill and the next wave's rumble.
+@export var wave_gap_seconds: float = 0.8
+## Door rumble before every wave after the first (the first uses arm_seconds,
+## because the crack-widening telegraph already ran while the player walked up).
+## Long enough for the "WAVE n/N" banner to land before anyone steps out.
+@export var rearm_seconds: float = 0.7
 ## Fraction of the squad that spawns as melee maids. Ranged maids run FindMeterState
 ## when they run dry, which walks them into a barrier if no meter is inside the
 ## arena — so keep this high unless the encounter is placed near parking meters.
@@ -75,6 +94,10 @@ var _saved_limit_left: int = 0
 var _saved_limit_right: int = 0
 var _watchdog: Timer
 var _arm_tween: Tween
+var _plan: Array = []
+var _wave: int = 0
+var _spawn_index: int = 0
+var _announcer: EncounterAnnouncer
 
 const _CRACK_WIDEST_FRAME: int = 4
 const _CRACK_BURST_FRAME: int = 5
@@ -87,6 +110,16 @@ static func lane_for_index(index: int, pattern: Array = []) -> int:
 		var span: int = Lanes.FRONT_LANE - Lanes.BACK_LANE + 1
 		return Lanes.clamp_lane(Lanes.BACK_LANE + (index % span))
 	return Lanes.clamp_lane(int(pattern[index % pattern.size()]))
+
+
+## Splits `total` enemies into `wave_count` waves (clamped to 1–3 and to `total`),
+## remainder back-loaded so the last wave is the biggest: 5 over 2 -> [2, 3].
+static func wave_sizes(total: int, wave_count: int) -> Array:
+	var n: int = mini(clampi(wave_count, 1, 3), maxi(total, 1))
+	var sizes: Array = []
+	for i in n:
+		sizes.append(total / n + (1 if i >= n - total % n else 0))
+	return sizes
 
 
 ## How long a freshly-spawned enemy is barred from attacking: walk out, then settle.
@@ -116,7 +149,12 @@ func _process(_delta: float) -> void:
 	# blink-out before queue_free, and holding the arena lock for that long reads
 	# as the encounter having hung after the last kill. See Enemy.is_dead.
 	_spawned = _spawned.filter(_is_alive)
-	if _spawned.is_empty():
+	if not _spawned.is_empty():
+		return
+	if _wave < _plan.size() - 1:
+		_next_wave()
+	else:
+		squad_cleared.emit()
 		_end()
 
 
@@ -137,39 +175,80 @@ func _on_body_entered(body: Node2D) -> void:
 
 
 func _run() -> void:
-	# Telegraph: the crack widens and the wall rumbles before it gives.
-	ScreenShake.apply_shake(3)
-	_arm_tween = create_tween()
-	_arm_tween.tween_property(crack, "frame", _CRACK_WIDEST_FRAME, arm_seconds)
+	_plan = wave_sizes(enemy_count, waves)
+	_announcer = EncounterAnnouncer.new()
+	add_child(_announcer)
+	_announcer.watch(self)
 	Globals.push_event()
 	_pushed_event = true
 	_active = true
-	_spawning = true
 	if lock_arena:
 		_engage_lock()
-	await get_tree().create_timer(arm_seconds).timeout
-	if not is_inside_tree():
-		return
+	_play_wave(0)
 
-	# Burst — the crack blows open into a hole and enemies pour out of it.
+
+func _next_wave() -> void:
+	# _spawning holds off _process's completion check through the breather.
+	_spawning = true
+	await get_tree().create_timer(wave_gap_seconds).timeout
+	if _live():
+		_play_wave(_wave + 1)
+
+
+## Telegraph, burst, then file wave `index` out of the door. The watchdog restarts
+## per wave, so a long encounter is never cut short and a stuck one always frees.
+func _play_wave(index: int) -> void:
+	_wave = index
+	_spawning = true
+	_watchdog.start(watchdog_seconds)
+	wave_started.emit(index + 1, _plan.size())
+	await _telegraph(index == 0)
+	if not _live():
+		return
+	_burst()
+	for i in _plan[index]:
+		if not _live():
+			_spawning = false
+			return
+		_spawn_one(_spawn_index)
+		_spawn_index += 1
+		await get_tree().create_timer(spawn_interval).timeout
+	_spawning = false
+
+
+func _live() -> bool:
+	return is_inside_tree() and _active
+
+
+## First wave: the crack widens. Later waves: the blown-open hole rattles.
+func _telegraph(first: bool) -> void:
+	ScreenShake.apply_shake(3)
+	_arm_tween = create_tween()
+	var wait: float = arm_seconds
+	if first:
+		_arm_tween.tween_property(crack, "frame", _CRACK_WIDEST_FRAME, arm_seconds)
+	else:
+		wait = rearm_seconds
+		dust.restart()  # grit shaken loose from the hole: the rumble reads in a still
+		var beat: float = rearm_seconds / 6.0
+		_arm_tween.set_loops(3)
+		_arm_tween.tween_property(crack, "scale", Vector2(1.25, 1.15), beat)
+		_arm_tween.tween_property(crack, "scale", Vector2.ONE, beat)
+	await get_tree().create_timer(wait).timeout
+
+
+## The crack blows open into a hole and enemies pour out of it.
+func _burst() -> void:
 	# Kill the arm tween first: it targets frame 4 and its last step can otherwise
 	# land after this assignment and stomp the burst frame back down.
 	if _arm_tween != null and _arm_tween.is_valid():
 		_arm_tween.kill()
 	crack.frame = _CRACK_BURST_FRAME
-	dust.emitting = true
+	crack.scale = Vector2.ONE
+	dust.restart()
 	ScreenShake.apply_shake(9)
 	if door_slam.stream != null:
 		door_slam.play()
-	_watchdog.start()
-
-	for i in enemy_count:
-		if not is_inside_tree() or not _active:
-			_spawning = false
-			return
-		_spawn_one(i)
-		await get_tree().create_timer(spawn_interval).timeout
-	_spawning = false
 
 
 func _spawn_one(index: int) -> void:
@@ -270,4 +349,5 @@ func _end() -> void:
 		_pushed_event = false
 	encounter_finished.emit()
 	if one_shot:
-		queue_free()
+		# Outlive the BUSTED! callout, which lives under this node.
+		get_tree().create_timer(2.0).timeout.connect(queue_free)

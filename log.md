@@ -332,3 +332,27 @@ Log of skills that might have been useful for a given response, and why (short f
 - **mockup-on-screenshot**: would help turn the juice ideas into visual mockups next.
 - **derive-the-list**: the lane-wall audit derives suspects from the dumped level instead of a hand-made list.
 - MCP: added `run_autoplay` and `audit_lane_walls` to `godot-tests`. Merging branch `human-bot` was refused by the permission classifier because the working tree had uncommitted changes; commit first, then merge.
+
+## 2026-10-03 — Combat feel sprint 1-4 (worktree juice-feel): shake fix, hurt shake, hitstop + sparks, same-frame reactions
+- Skills used: godot-headful-screenshot (frame capture; enhancement: say autoplay snaps can't see hitstop, tag frames with time_scale), godot-autoplay-test (full_run/mortal/balance), godot-boss-juice (slow-mo ownership), juicy-screen-review (round shape).
+- Would have helped: extract-a-testable-seam (ScreenShake.step / allow_headless_hit_pause seams), godot-ab-worktree (before/after; done by hand), godot-hit-feel (created).
+- MCP: none used (godot-tests MCP available; CLI needed for --filter + mutation loop). No new MCP server (YAGNI).
+- Process: shared scratchpad collided with the death-beat agent (shot.gd/sheet.py/shots/base) — rule added to CLAUDE.md.
+
+## 2026-10-03 — Door encounters in 1–3 waves (worktree juice-waves)
+- Skills used: godot-boss-juice (banner reuse; added a street-callout section), godot-headful-screenshot (round.sh + sheet.py), godot-ab-worktree (old-vs-new late-level sweep), godot-autoplay-test.
+- Would have helped: a balance-sweep skill that A/Bs a teleport-start mortal scenario across seeds and prints a table (wrote sweep.py by hand); derive-the-list (encounter list derived from main.tscn in the ramp test, not hand-listed).
+- Enhancement idea (godot-headful-screenshot): note that `--resolution` doesn't change the root texture size, so the phone round needs a window grab to judge aspect.
+- MCP: none used (ran suites via shell for --filter + mutation loop).
+
+## 2026-10-03 — Death beat + Transition fades (worktree juice-death)
+- Skills used: godot-headful-screenshot (batched real-flow rounds), godot-autoplay-test (full_run/mortal), juicy-screen-review (round shape), godot-boss-juice (time-scale rules). Enhancement (headful-screenshot): print state beside each snap — load hitches shift timestamps (added).
+- Would have helped: godot-time-scale-beat (created: beat/fade ownership rules + mutant-killing tests); somewhat-useful-claude-skills:derive-the-list (used its idea for the direct-scene-change grep test); extract-a-testable-seam (Transition.fade_through(swap)).
+- MCP: none used (godot-tests MCP available; CLI needed for --filter mutation loop).
+
+## 2026-10-03 — Juice sprint (items 1–6 + door waves), 3 parallel agents -> branch juice-sprint
+- Fan-out: juice-feel / juice-death / juice-waves worktrees, disjoint file ownership; only conflict was log.md appends. Combined: 528/528 unit, 9/9 sandbox, 10/10 autoplay.
+- Skills used: none directly by orchestrator; agents used godot-boss-juice, godot-headful-screenshot, juicy-screen-review, godot-autoplay-test. New: godot-hit-feel, godot-time-scale-beat.
+- Would have helped: a "parallel-agent integration" skill (per-agent scratchpad subdir up front — feel agent clobbered death agent's shots/base); somewhat-useful-claude-skills:godot-game-ui-juicy (banner motion).
+- Enhancement (godot-headful-screenshot): `--resolution` doesn't change capture size in --script runs; document the real phone-size recipe.
+- MCP: none used.

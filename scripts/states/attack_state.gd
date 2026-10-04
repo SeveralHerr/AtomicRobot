@@ -37,20 +37,14 @@ func trigger_attack(player: Player)-> void:
 
 	var bodies = player.area_2d.get_overlapping_bodies()
 	for body in bodies:
+		# Shake, sparks and hitstop come from player.land_hit (HitFeel).
 		if body is Enemy and body.lane == player.current_lane:
-			ScreenShake.apply_shake(7)
-			var dir = (player.global_position - body.global_position).normalized()
 			player.land_hit(body)
-			
-			
-	var areas = player.area_2d.get_overlapping_areas()
-	for area in areas:
-		ScreenShake.apply_shake(7)
+
+	for area in player.area_2d.get_overlapping_areas():
 		var parent = area.get_parent()
-		print(parent.name)
-		if area is Enemy:
-			player.land_hit(parent)
-		elif parent is Crack: 
+		if parent is Crack:
+			ScreenShake.apply_shake(5, 0.2)
 			parent.receive_hit()
 			ComicPopup.spawn(parent, parent.global_position, &"smash")
 			

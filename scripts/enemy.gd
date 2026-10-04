@@ -36,8 +36,7 @@ var is_player_in_attack_range: bool = false
 ##
 ## Everything that asks "is this enemy still in the fight?" must read this rather than
 ## `current_state is DeadEnemyState` or `is_instance_valid()`:
-##   * the state check misses enemies whose die() is driven directly (and the ~0.2s
-##     randomised gap in receive_hit before the state actually flips), and
+##   * the state check misses enemies whose die() is driven directly, and
 ##   * an instance-validity check counts the corpse as a live enemy for the whole
 ##     death animation — which is what used to make wave events hang after the last
 ##     kill and made the living queue up around a body instead of walking over it.
@@ -482,8 +481,8 @@ func _start_lane_change(target: int, duration: float = LANE_CHANGE_DURATION) -> 
 		is_changing_lane = false)
 
 func die() -> void:
-	# Re-entrant kills (a second hit landing inside receive_hit's randomised delay,
-	# or a hazard finishing off an already-dying maid) would otherwise double-count
+	# Re-entrant kills (two blows on the same frame, or a hazard finishing off an
+	# already-dying maid) would otherwise double-count
 	# the kill, re-roll the drop table and restart the fade.
 	if is_dead:
 		return
@@ -559,18 +558,19 @@ func receive_hit(damage: int, knockback_strength: float = 200.0) -> void:
 	_apply_damage(damage)
 	_apply_knockback(knockback_strength)
 
+	# Same frame as the blow: the Hit flash, the "oof" and the death all land with the
+	# hitstop. (A random 0-0.2s delay here used to read as input lag.)
 	if health <= 0 and has_state("DeadEnemyState"):
-		var random_delay = randf_range(0, 0.2)
-		await get_tree().create_timer(random_delay).timeout
 		enemy_state_machine.change_state("DeadEnemyState")
-		
+
 
 func _play_hit_effects() -> void:
 	if animation_player.is_playing():
 		animation_player.stop()
-	var random_delay = randf_range(0, 0.2)
-	await get_tree().create_timer(random_delay).timeout
 	animation_player.play("Hit")
+	# Apply the first key now: a hitstop freezes time this very frame, and the
+	# white flash has to be on screen for the freeze, not after it.
+	animation_player.advance(0.0)
 	receive_hit_audio.play()
 
 func _apply_damage(damage: int) -> void:

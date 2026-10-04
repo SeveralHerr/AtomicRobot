@@ -13,7 +13,9 @@ extends Control
 ##
 ## Shown on Globals.player_death / boss_death. ScoreSystem connected to those signals
 ## first (autoloads connect before any level), so ScoreSystem.last_run is already
-## filled in when present() reads it.
+## filled in when present() reads it. A death plays the DeathBeat first (slow-mo, then
+## the level drains to grey under this card's own backdrop); a win shows at once - the
+## boss finale already was its beat.
 
 const CHARACTER_SELECT := "res://scenes/character_select.tscn"
 ## Seconds RESTART ignores presses after appearing. JUMP is also A, and a player
@@ -24,8 +26,15 @@ const STAMP_TILT := -12.0
 const BADGE_TILT := 2.5
 const SLAM_SECONDS := 0.52
 const STAMP_SIZE := 118.0
+const DIM_SHADER := preload("res://shaders/end_card_dim.gdshader")
+## Pinball's cursor-pop: the card grows in from this scale with an overshoot.
+const POP_FROM := 0.85
+const POP_SECONDS := 0.3
 
 var won: bool = false
+## The backdrop's grey/dim (shaders/end_card_dim.gdshader).
+var dim_material: ShaderMaterial
+var beat: DeathBeat
 var restart_button: Button
 var exit_button: Button
 var entry: InitialsEntry
@@ -35,7 +44,7 @@ var quit_game: Callable = func() -> void: QuitGame.quit(get_tree())
 ## Swappable so tests can press RESTART without changing scene.
 var restart_game: Callable = func() -> void:
 	Globals.reset()
-	get_tree().change_scene_to_file(CHARACTER_SELECT)
+	Transition.change_scene_to_file(CHARACTER_SELECT)
 
 var _title: Label
 var _rank_row: Control
@@ -46,6 +55,9 @@ var _breakdown: Label
 var _badge_holder: Control
 var _badge_label: Label
 var _buttons: HBoxContainer
+var _center: CenterContainer
+var _card: PanelContainer
+var _pop: Tween
 
 
 func _init() -> void:
@@ -53,10 +65,13 @@ func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	visible = false
 	_build()
+	beat = DeathBeat.new()
+	beat.material = dim_material
+	add_child(beat)
 
 
 func _ready() -> void:
-	Globals.player_death.connect(present.bind(false))
+	Globals.player_death.connect(_on_player_death)
 	Globals.boss_death.connect(present.bind(true))
 
 
@@ -77,15 +92,21 @@ static func tilted(inner: Control, degrees: float) -> Control:
 
 func _build() -> void:
 	var dim := ColorRect.new()
-	dim.color = ComicStyle.DIM
+	dim.name = "Dim"
+	dim_material = ShaderMaterial.new()
+	dim_material.shader = DIM_SHADER
+	dim_material.set_shader_parameter("tint", ComicStyle.DIM)
+	dim.material = dim_material
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(dim)
 	var center := CenterContainer.new()
+	_center = center
 	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(center)
 	var card := PanelContainer.new()
+	_card = card
 	card.name = "Card"
 	var card_box := ComicStyle.box(ComicStyle.PAPER, 5, 10, 9)
 	card_box.content_margin_left = 30
@@ -201,6 +222,22 @@ func _build_left() -> Control:
 
 # --- Show ----------------------------------------------------------------------
 
+## The killing blow: play the beat over the live level, then the card. A second death
+## signal mid-beat is ignored; one after the card just repaints it.
+func _on_player_death() -> void:
+	if beat.running:
+		return
+	if _center.visible and visible:
+		present(false)
+		return
+	_disable_touch_controls()
+	_center.hide()
+	_show_on_top()
+	await beat.play()
+	if is_inside_tree() and not _center.visible:
+		present(false)
+
+
 ## Show the card for the run that just ended. Safe to call twice (a second death
 ## signal) - it just repaints.
 func present(did_win: bool) -> void:
@@ -222,7 +259,13 @@ func present(did_win: bool) -> void:
 	_badge_label.text = ComicStyle.badge_text(int(run.get("slot", -1)))
 	_badge_holder.visible = _badge_label.text != ""
 	_disable_touch_controls()
-	show()
+	dim_material.set_shader_parameter("grey", 0.0 if won else 1.0)
+	dim_material.set_shader_parameter("dim", 1.0)
+	var popping := not (visible and _center.visible)
+	_center.show()
+	_show_on_top()
+	if popping:
+		_pop_card()
 	if _rank_row.visible:
 		_slam()
 	if ScoreSystem.awaiting_initials:
@@ -271,6 +314,24 @@ func _slam() -> void:
 	tw.tween_property(_stamp, "scale", Vector2.ONE * 0.92, SLAM_SECONDS * 0.6).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tw.tween_property(_stamp, "modulate:a", 1.0, SLAM_SECONDS * 0.4)
 	tw.chain().tween_property(_stamp, "scale", Vector2.ONE, SLAM_SECONDS * 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## Show above every sibling: the boss room adds its health card and banner to the same
+## UI layer after the card, and they drew over GAME OVER / the grey-out.
+func _show_on_top() -> void:
+	move_to_front()
+	show()
+
+
+## Pinball's cursor-pop: grow in from POP_FROM with an overshoot while fading up.
+func _pop_card() -> void:
+	if _pop:
+		_pop.kill()
+	_card.scale = Vector2.ONE * POP_FROM
+	_card.modulate.a = 0.0
+	_pop = create_tween().set_parallel()
+	_pop.tween_property(_card, "scale", Vector2.ONE, POP_SECONDS).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_pop.tween_property(_card, "modulate:a", 1.0, POP_SECONDS * 0.3)
 
 
 ## The level's on-screen joystick and buttons claim touches by position in their own
