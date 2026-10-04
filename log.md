@@ -422,3 +422,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - Lessons: my round-1 "STREET CLEAR mid-door" was two doors back to back (check encounter identity); agents can't merge (classifier) — orchestrator merges; fresh worktree import churns .import files.
 - Skills used: godot-speedrun-review (enhanced: fan-out + round-2 rules), godot-autoplay-test, artifact-capabilities. Would have helped: somewhat-useful-claude-skills:enumerate-the-pairs (callout-overtakes-callout matrix would have caught the stale tag).
 - MCP: godot-tests (not called directly; CLI used for --filter/stash loops).
+
+## 2026-10-04 pf-numbers (damage scale, Cass, hit pips)
+- Skills used: godot-autoplay-test (sweep), godot-ab-worktree (HEAD vs tree GIFs), godot-headful-screenshot, derive-the-list (fighter/enemy-scene tables).
+  - Enhancement: autoplay-test should say `full_run_mortal` boots via the menu, so a locked Robot silently plays as the first unlocked fighter in `autoplay_sweep.py --base` (Robot rows == Cody rows); use a non-boot base for sweeps.
+  - Enhancement: autoplay.py has no `--autoplay-out`; snaps always land in autoplay_out/.
+- Would have helped: a "balance-rescale" skill (checklist: enemy HP, boss, hazards, score tiers, select pips, scenario asserts in raw units); a GIF-from-scenario helper in tools/.
