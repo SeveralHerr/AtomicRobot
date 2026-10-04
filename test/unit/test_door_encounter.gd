@@ -352,7 +352,12 @@ func test_door_reward_heart_drops_once_on_the_clear() -> String:
 		return r
 	_kill_live()
 	await _until(func(): return _finished > 0)
-	return _T.assert_eq(_hearts(), 1, "one heart when the last wave goes down")
+	r = _T.assert_eq(_hearts(), 1, "one heart when the last wave goes down")
+	if r != "":
+		return r
+	# Spawned at runtime, so the autoplay bot (which can't rescan the level every
+	# frame) finds it through the group, as it does the boss room's phase hearts.
+	return _T.assert_eq(_tree().get_nodes_in_group("atomic_hearts").size(), 1, "the heart is in the hearts group")
 
 
 func test_door_without_reward_drops_no_heart() -> String:

@@ -7,7 +7,12 @@ extends Node2D
 var heal_amount: int = 1
 var is_collected: bool = false
 
+## Every live heart, level-placed or knocked loose at runtime (door reward, boss phases).
+const GROUP := "atomic_hearts"
+
+
 func _ready() -> void:
+	add_to_group(GROUP)
 	player_detection.body_entered.connect(_on_player_entered)
 
 
