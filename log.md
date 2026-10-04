@@ -368,3 +368,10 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: none directly (followed godot-autoplay-test recipe by hand: baseline summary diff). Would have helped: somewhat-useful-claude-skills:extract-a-testable-seam (static helpers), a "refactor-autoplay-diff" skill (capture baseline summaries, diff after; seeded runs are deterministic).
 - Note: test_end_card::test_card_draws_over_the_boss_hud failed once on baseline while autoplay ran concurrently, passed on every later run — flaky under load.
 - MCP: none used.
+
+## 2026-10-03 — Merge juice sprint to main + remaining fixes
+- Committed prior crate/lane WIP (3 commits), merged juice-sprint, fix-melee (not a bug; 8 regression tests), fix-split (enemy.gd 654->441, autoplay identical).
+- Own fixes: BUSTED! burst off combo line (BossBanner.burst_radii seam + clearance tests); autoplay keeps non-player steps after death -> death_restart.json covers card->RESTART; phone capture recipe documented; Player.gd under 500.
+- Final: 567/567 unit, 9/9 sandbox, 12/12 autoplay, lane audit clean.
+- Skills used: godot-autoplay-test (death_restart scenario), godot-headful-screenshot (enhancement: phone recipe now in it). Would have helped: somewhat-useful-claude-skills:godot-2d-placement-audit (pin HUD/banner clearance numerically sooner).
+- MCP: none used.
