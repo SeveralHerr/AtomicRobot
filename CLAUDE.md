@@ -219,6 +219,10 @@ plus a `--resolution 1688x780` (landscape phone) round; review a PIL contact she
 Drive the REAL flow (emit the real signal, e.g. `Globals.boss_death`) — calling an inner
 method directly skipped the Win overlay and hid a sequencing check.
 
+Before/after evidence for a fix: run the same scenario on HEAD and the working tree
+(`skills/godot-ab-worktree/SKILL.md`). Check a forced bug state on the OLD build before
+you trust it in a demo.
+
 ## Sibling-game conventions
 
 This game shares the arcade cabinet with `../atomic-pinball`. Before building any
