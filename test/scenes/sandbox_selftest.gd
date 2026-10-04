@@ -39,6 +39,9 @@ var _player_hits: int = 0
 var _last_player_health: int = -1
 ## Lane steps the COIN_LANE_DODGE scenario made in answer to a wind-up.
 var _dodges: int = 0
+## Lowest a dodged coin flew (px above its lane floor) as it passed the player.
+## A coin aimed at the player's NEW lane dives to the floor and skids past.
+var _min_pass_height: float = INF
 ## Swings that began with the player grounded right on top of the maid.
 var _point_blank_swings: int = 0
 
@@ -87,6 +90,7 @@ func _sample(delta: float) -> void:
 		_player_hits += 1
 	_last_player_health = player.health
 	_pin_player_on_maid(player)
+	_sample_coin_flight(player)
 	for node in get_tree().get_nodes_in_group("enemies"):
 		if not is_instance_valid(node) or node is not Enemy:
 			continue
@@ -149,6 +153,18 @@ func _pin_player_on_maid(player: Player) -> void:
 			return
 
 
+func _sample_coin_flight(player: Player) -> void:
+	if sandbox.scenario != EnemySandbox.Scenario.COIN_LANE_DODGE or not is_finite(player.lane_floor_y):
+		return
+	# Coins go next to the player, which Lanes re-parents under its sort layer.
+	for c in player.get_parent().get_children():
+		var coin := c as Bullet
+		if coin == null or coin.has_landed or absf(coin.global_position.x - player.global_position.x) > 30.0:
+			continue
+		var h := Lanes.floor_y(player.lane_floor_y, coin.lane) - coin.global_position.y
+		_min_pass_height = minf(_min_pass_height, h)
+
+
 ## A swing just started. In the dodge scenario the player answers it the way a
 ## person would: one lane step, away from the wall of the road.
 func _on_wind_up(player: Player) -> void:
@@ -201,6 +217,7 @@ func _report() -> void:
 		print("  %-28s travel %6.1f  d %6.1f -> %6.1f  spent %d  facing %d/%d bad"
 			% [t.label, t.max_x - t.min_x, t.start_distance, t.last_distance,
 			   t.coins_spent, t.facing_errors, t.facing_samples])
+	print("  min coin pass height: %.1f" % _min_pass_height)
 	print("  enemies sampled: %d   projectiles thrown: %d   player hits: %d   dodges: %d"
 		% [_tracks.size(), _coins_thrown, _player_hits, _dodges])
 	if _failures.is_empty():
@@ -256,6 +273,9 @@ func _scenario_checks() -> void:
 			if _player_hits > 0:
 				_fail("player was hit %d time(s) after stepping out of the thrower's lane"
 					% _player_hits)
+			# Flying down HER lane at chest height, not diving at the player's lane.
+			if _min_pass_height < 12.0:
+				_fail("coin passed the player only %.1fpx above its lane floor" % _min_pass_height)
 
 		EnemySandbox.Scenario.POINT_BLANK_RANGED, EnemySandbox.Scenario.POINT_BLANK_MELEE:
 			# Standing on a maid put her sight ray's origin inside the player's box,
