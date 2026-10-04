@@ -26,6 +26,9 @@ const HEAL_HP := 6
 ## away from a crowd toward a heart is how the bot died at the door encounter.
 const CLOSE_THREAT := 140.0
 const HEART_RANGE := 900.0
+## Chasing one heart this long means it is out of reach (up on the crate stack):
+## skip it for the rest of the scene instead of soft-locking the run on it.
+const HEAL_GIVE_UP_S := 15.0
 const PICKUP_RANGE := 320.0
 ## Seconds of no progress before each unstick move.
 const STUCK_JUMP_S := 0.6
@@ -63,13 +66,13 @@ static func new_mem(goal: String, seed_value: int = 1) -> Dictionary:
 		"goal": goal, "rng": rng, "anchor_x": INF, "stuck_s": 0.0,
 		"lane_tried": false, "backoff_s": 0.0, "quiet_s": 0.0, "done": false,
 		"monkey_left": 0.0, "monkey": idle(""), "idle_s": 0.0, "backoff_dir": 1, "jump_next": false,
-		"road_blocked": [], "scene_id": 0, "lane_req": 0, "lane_req_s": 0.0, "lane_req_from": 0,
+		"road_blocked": [], "skip_hearts": [], "heal_x": INF, "heal_s": 0.0, "scene_id": 0, "lane_req": 0, "lane_req_s": 0.0, "lane_req_from": 0,
 	}
 
 
 ## Positions are per scene: a street block x means nothing in the boss room.
 const _SCENE_STATE := {"anchor_x": INF, "stuck_s": 0.0, "lane_tried": false, "backoff_s": 0.0,
-	"jump_next": false, "idle_s": 0.0, "lane_req": 0, "lane_req_s": 0.0}
+	"jump_next": false, "idle_s": 0.0, "lane_req": 0, "lane_req_s": 0.0, "heal_x": INF, "heal_s": 0.0}
 
 
 static func _enter_scene(snap: Dictionary, mem: Dictionary) -> void:
@@ -79,6 +82,7 @@ static func _enter_scene(snap: Dictionary, mem: Dictionary) -> void:
 	mem["scene_id"] = id
 	mem.merge(_SCENE_STATE, true)
 	mem["road_blocked"] = []
+	mem["skip_hearts"] = []
 
 
 static func idle(why: String) -> Dictionary:
@@ -106,7 +110,7 @@ static func decide(snap: Dictionary, mem: Dictionary) -> Dictionary:
 	if not target.is_empty() and absf(target["x"] - p["x"]) <= CLOSE_THREAT:
 		intent = _fight(p, target)
 	if intent.is_empty():
-		intent = _heal(p, snap)
+		intent = _heal(p, snap, mem)
 	if intent.is_empty():
 		intent = _pickup(p, snap)
 	if intent.is_empty() and not target.is_empty():
@@ -143,11 +147,20 @@ static func _lane_dy(p: Dictionary, e: Dictionary) -> float:
 	return absf(float(e.get("lane", 0) - p.get("lane", 0))) * Lanes.LANE_SPACING
 
 
-static func _heal(p: Dictionary, snap: Dictionary) -> Dictionary:
+static func _heal(p: Dictionary, snap: Dictionary, mem: Dictionary) -> Dictionary:
 	if int(p["hp"]) > HEAL_HP:
 		return {}
-	var heart := _nearest_x(p, snap.get("hearts", []), HEART_RANGE)
+	var skip: Array = mem["skip_hearts"]
+	var hearts: Array = snap.get("hearts", []).filter(func(h: Dictionary) -> bool: return not skip.has(h["x"]))
+	var heart := _nearest_x(p, hearts, HEART_RANGE)
 	if heart.is_empty():
+		return {}
+	if heart["x"] != mem["heal_x"]:
+		mem["heal_x"] = heart["x"]
+		mem["heal_s"] = 0.0
+	mem["heal_s"] += float(snap.get("dt", 0.0))
+	if mem["heal_s"] >= HEAL_GIVE_UP_S:
+		skip.append(heart["x"])
 		return {}
 	# Hearts sit on the walkway: collect from the ground lane.
 	return _go_to(p, heart, Lanes.GROUND_LANE, "heal")

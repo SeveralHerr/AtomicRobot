@@ -34,6 +34,17 @@ func test_phases_ramp_up() -> String:
 	return ""
 
 
+## Balance pin (sr-balance): health now carries from the street, so the boss must be
+## beatable from a mid-HP arrival. Throws were 1.7/1.35/1.2 s apart and the bot took
+## ~16 hits a fight from him; the floor below keeps a beat to hit back between throws.
+func test_throw_cadence_leaves_room_to_hit_back() -> String:
+	var r: String = _T.assert_true(BossRules.params(0)["throw_delay"] >= 2.0, "opener: 2 s+ between throws")
+	for i in BossRules.PHASES.size():
+		if r == "":
+			r = _T.assert_true(BossRules.params(i)["throw_delay"] >= 1.5, "phase %d: 1.5 s+ between throws" % i)
+	return r
+
+
 func test_each_later_phase_adds_an_attack() -> String:
 	var p1 := BossRules.params(1)
 	var p2 := BossRules.params(2)

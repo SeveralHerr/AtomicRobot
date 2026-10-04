@@ -83,6 +83,40 @@ func test_phase_skip_on_big_hit_lands_in_right_phase() -> String:
 	return _T.assert_eq(_boss.phase, 2, "a huge hit jumps to the last phase")
 
 
+## Round-1 video: the first briefcase left his hand ~0.5 s after FIGHT!, while the
+## white FIGHT! flash still covered his wind-up — an unreadable opening hit.
+func test_first_throw_waits_out_the_opening_grace() -> String:
+	_boss.begin_fight()
+	var st = _boss.enemy_state_machine.current_state
+	var r: String = _T.assert_true(st is BossAttackPlayerState, "fight opens in the throw state")
+	if r == "":
+		r = _T.assert_true(st.attack_finished, "no swing on the first frame")
+	if r == "":
+		r = _T.assert_true(_boss.animated_sprite_2d.animation != "attack", "no wind-up under the flash")
+	if r == "":
+		r = _T.assert_true(is_equal_approx(st.re_arm_delay - st._hold, BossRules.OPENING_GRACE),
+			"first swing re-arms after OPENING_GRACE (%.2f left)" % (st.re_arm_delay - st._hold))
+	if r == "":
+		r = _T.assert_true(BossRules.OPENING_GRACE >= 0.8, "a beat to read FIGHT! and move")
+	return r
+
+
+## Round-2 video: throws counted toward dash_every all fight long, so phase 3 opened
+## with an instant charge, its tell buried under the phase banner and speech bubble.
+func test_new_phase_restarts_the_dash_count() -> String:
+	_boss.begin_fight()
+	var st = _boss.enemy_state_machine.current_state
+	st._throws_since_dash = 5
+	_boss.phase = 2
+	st._sync_phase()
+	var r: String = _T.assert_eq(st._throws_since_dash, 0, "phase 3 throws dash_every times before charging")
+	if r == "":
+		st._throws_since_dash = 2
+		st._sync_phase()
+		r = _T.assert_eq(st._throws_since_dash, 2, "same phase: the count carries")
+	return r
+
+
 func test_dash_contact_box() -> String:
 	var cases := [
 		[0.0, 0.0, 10.0, 0.0, true, "standing beside him"],

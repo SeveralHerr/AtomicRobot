@@ -55,12 +55,16 @@ func _ready():
 
 func _exit_tree() -> void:
 	BossJuice.reset_time()
+	PowerupSystem.hold(false)
 	# Leaving mid-intro must not hand the next level a held-hidden HUD.
 	HudFade.release(get_tree(), HudFade.CINEMATIC)
 	Globals.boss_fight.emit(false)
 
 
+## A frozen player's buffs are frozen too: a Rage earned on the street must not
+## burn down through the intro cinematic.
 func _set_player_frozen(frozen: bool) -> void:
+	PowerupSystem.hold(frozen)
 	player.set_process(not frozen)
 	player.set_physics_process(not frozen)
 	player.set_process_input(not frozen)

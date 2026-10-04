@@ -78,6 +78,13 @@ the brain never presses it; cracks need ~0.6 s between `tap Attack` (taps mid-sw
 - Balance: `hurt` events carry `near` (closest enemy) — count them per source to see which
   attack is doing the damage before touching numbers. Pin the result with a seeded mortal
   scenario both ways (`boss_balance_ryan` must win, `boss_balance_cass` must reach half).
+  Whole-route table: `autoplay_sweep.py --base test/autoplay/full_run_mortal.json --seeds 1,2,3,4`
+  adds street_hits / boss_hits / door_hp. `near` is only the NEAREST enemy: ceiling drops
+  and fans next to the boss all read `city_council_boss`. One mortal route run is ~6 s wall.
+- `--record` (windowed Movie Maker) does NOT replay the headless run: same seed, different
+  route timing (boss at 260 s vs 165 s once). Read its own report for times before cutting frames.
+- The bot sees hearts through the `atomic_hearts` group (runtime drops included); it skips
+  a heart after `HEAL_GIVE_UP_S` of chasing — mortal runs used to soft-lock on the crate heart.
 - `--fixed-fps 60`: deterministic and faster than real time. Same seed = same frames. If
   a rerun diverges, something reads the wall clock or calls `randomize()`.
 - Main street x≈2811-2906: a crate stack on the walkway (Ground layer only). Road lanes

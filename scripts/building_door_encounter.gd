@@ -75,6 +75,15 @@ signal squad_cleared
 @export_range(0.05, 1.0) var walk_out_speed_scale: float = 0.4
 ## Optional explicit lane order, e.g. [0, 2, 1, 3]. Empty = round-robin all lanes.
 @export var lane_pattern: Array[int] = []
+## Knock an atomic heart loose when the LAST wave goes down (not on a watchdog or
+## death release). Set on the street's finale only: the refuel before the boss door,
+## earned by clearing the street's biggest fight — health now carries into the boss.
+@export var reward_heart: bool = false
+
+const HEART := preload("res://scenes/atomic_heart_pickup.tscn")
+## Where the heart lands, relative to the encounter: out on the walkway beside the
+## hole, on the boss-door side — not on the crack, which draws over it (z 1).
+const HEART_LAND := Vector2(48.0, -26.0)
 
 @onready var door_mouth: Marker2D = $DoorMouth
 @onready var crack: AnimatedSprite2D = $DoorMouth/Crack
@@ -159,6 +168,8 @@ func _process(_delta: float) -> void:
 		_next_wave()
 	else:
 		squad_cleared.emit()
+		if reward_heart:
+			_drop_heart()
 		_end()
 
 
@@ -295,6 +306,16 @@ func _walk_out(enemy: Enemy, target_lane: int) -> void:
 	await get_tree().create_timer(walk_out_seconds).timeout
 	if is_instance_valid(enemy):
 		enemy.move_speed = normal_speed
+
+
+## The payoff heart pops out of the hole and bounces down onto the walkway. A
+## sibling, not a child: a one_shot encounter frees itself before anyone walks over.
+func _drop_heart() -> void:
+	var heart: Node2D = HEART.instantiate()
+	get_parent().add_child(heart)
+	heart.position = position + door_mouth.position + Vector2(0.0, -30.0)
+	var tw := heart.create_tween()
+	tw.tween_property(heart, "position", position + HEART_LAND, 0.6).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 
 
 func _engage_lock() -> void:

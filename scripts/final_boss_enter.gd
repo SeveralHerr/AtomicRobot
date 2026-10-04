@@ -12,6 +12,7 @@ func _on_area_entered(body: Node2D) -> void:
 	if body is Player:
 		# The boss room has its own Player; hand it this one's health.
 		Globals.carry_health((body as Player).health)
+		PowerupSystem.carry_through_door()
 		# Deferred: this runs inside a physics callback, and the fade pauses the tree.
 		call_deferred("change_scene")
 

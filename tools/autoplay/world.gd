@@ -3,9 +3,9 @@ extends RefCounted
 ## Perception: reads the live scene tree into the plain snapshot brain.gd decides on.
 ## Kept separate from the brain so the brain stays pure and unit testable. Scene
 ## walks (hearts, boss door) are cached per scene instance: a full-tree search every
-## physics frame is the one cost here that scales with level size.
+## physics frame is the one cost here that scales with level size. Hearts come from
+## their group instead: the door reward and boss phase hearts spawn after the walk.
 
-const HEART_SCRIPT := "res://scripts/atomic_heart_pickup.gd"
 const BOSS_ENTER_SCRIPT := "res://scripts/final_boss_enter.gd"
 ## Only enemies this close (px, horizontal) are reported; the rest are off screen.
 const SEE_RANGE := 1400.0
@@ -20,7 +20,6 @@ static func scene_path(tree: SceneTree) -> String:
 
 
 var _scene_id: int = 0
-var _hearts: Array[Node] = []
 var _doors: Array[Node] = []
 
 
@@ -42,8 +41,8 @@ func snapshot(tree: SceneTree, t: float, dt: float) -> Dictionary:
 	var scene := tree.current_scene
 	if scene:
 		_refresh_cache(scene)
-		for n in _hearts:
-			if is_instance_valid(n) and not n.get("is_collected"):
+		for n in tree.get_nodes_in_group("atomic_hearts"):
+			if n is Node2D and not n.get("is_collected"):
 				snap["hearts"].append({"x": n.global_position.x, "y": n.global_position.y})
 		snap["goal_x"] = goal_x(scene, _doors)
 	return snap
@@ -53,7 +52,6 @@ func _refresh_cache(scene: Node) -> void:
 	if scene.get_instance_id() == _scene_id:
 		return
 	_scene_id = scene.get_instance_id()
-	_hearts = find_by_script(scene, HEART_SCRIPT)
 	_doors = find_by_script(scene, BOSS_ENTER_SCRIPT)
 
 
