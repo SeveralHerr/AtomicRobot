@@ -414,3 +414,11 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: godot-autoplay-test (enhancement: say `--record` diverges from headless — added), godot-speedrun-review (frame sheets).
 - Would have helped: a checked-in route-balance table (now `autoplay_sweep.py --base`); a frame-sheet script (rewrote PIL contact sheets in scratch again).
 - MCP: none used. Merge of speedrun-fixes was blocked by the permission classifier — left for the user.
+
+## 2026-10-04 — Round 2: 16 approved review items, fan-out + re-record
+- Base (orchestrator): .import files tracked + 100 stale UIDs fixed, drop-rate doc, Globals.secret_found contract.
+- Agents (worktrees): engerr (car kill -> deferred monitorable), hud (WAVE CLEAR!, HudFade ducking, 2+ combo, cinematic HUD), run (HP/score carry, run score card, time bonus, secret tally, Robot stamp), secrets (projectile cracks, wall payoff, news shuffle bag, infinite-orb exploit fixed), balance (boss pacing, last door 8 maids + heart, power-ups through boss door).
+- Orchestrator: merged all, completionist_mortal drift test, round-2 footage found + fixed stale banner subtitle (overtaken slam). Final 679/679 unit, 9/9 sandbox, 17/17 autoplay, 0 engine errors, 0 UID warnings. Artifact v2: before/after video, 17 shipped cards, 9 to decide.
+- Lessons: my round-1 "STREET CLEAR mid-door" was two doors back to back (check encounter identity); agents can't merge (classifier) — orchestrator merges; fresh worktree import churns .import files.
+- Skills used: godot-speedrun-review (enhanced: fan-out + round-2 rules), godot-autoplay-test, artifact-capabilities. Would have helped: somewhat-useful-claude-skills:enumerate-the-pairs (callout-overtakes-callout matrix would have caught the stale tag).
+- MCP: godot-tests (not called directly; CLI used for --filter/stash loops).

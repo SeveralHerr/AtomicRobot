@@ -235,6 +235,10 @@ footage review recipe in `skills/godot-speedrun-review/SKILL.md`. Re-extract a s
 at full size before reporting it — adjacent contact-sheet tiles fake "doubled" art. Never
 point `--autoplay-out` at the scenario's own folder: the report overwrites a same-named scenario.
 
+Autoplay writes scores/unlocks to scratch saves (`user://autoplay_*.cfg`); a run that
+touched the real `user://scores.cfg` polluted the player's high-score table — keep tools off it.
+Parallel worktrees share `user://`, so a test touching user files can flake under fan-out.
+
 Before/after evidence for a fix: run the same scenario on HEAD and the working tree
 (`skills/godot-ab-worktree/SKILL.md`). Check a forced bug state on the OLD build before
 you trust it in a demo.

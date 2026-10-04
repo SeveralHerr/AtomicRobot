@@ -39,6 +39,23 @@ mortal "human" take, copy it without `god on` and try seeds 1-4 headless first
 - Cross-check the report: `hurt` events by `near` (who hurts you), heal/powerup times,
   hp entering each scene, score before/after a scene change.
 - One card per finding: timecode, what was seen, proposal, effort/impact.
+- Before claiming "X fires at the wrong time", check WHICH encounter you're looking at:
+  two doors back to back looked like one door's "STREET CLEAR! then WAVE 2/2" (wrong call
+  in round 1). Correlate with the report's events or door x positions first.
+- Round 2 = re-record the SAME route after fixes and review again at 1 fps around every
+  callout: the round-2 pass caught a stale subtitle left by an overtaken banner slam that
+  no round-1 frame could show.
+- Identical bot runs for two characters (same frames, same score) mean identical stats —
+  a design finding, not a bot bug.
+
+## Fan-out (multi-agent rounds)
+- Base branch first: commit prior work, do repo-wide chores (UIDs, docs) and any shared
+  signal CONTRACT before creating worktrees, so agents never edit the same lines.
+- Worktrees at `C:/Users/gotmi/wt-<name>` (OneDrive paths are too long). Each runs
+  `--import` first; a fresh 4.7 import rewrites committed `.import` files — never stage them.
+- Agents may be blocked from `git merge` (classifier). The orchestrator merges each branch
+  into the base, resolves `log.md` (keep both entries), reruns all suites per merge.
+- Balance pass LAST, off the merged base: presentation timing changes fight length.
 
 ## 4. Artifact
 Video + poster as published `files`, `downloads` capability for the MP4 button,
