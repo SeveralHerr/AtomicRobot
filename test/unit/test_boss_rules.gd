@@ -36,12 +36,18 @@ func test_phases_ramp_up() -> String:
 
 ## Balance pin (sr-balance): health now carries from the street, so the boss must be
 ## beatable from a mid-HP arrival. Throws were 1.7/1.35/1.2 s apart and the bot took
-## ~16 hits a fight from him; the floor below keeps a beat to hit back between throws.
+## ~16 hits a fight from him; the floor keeps a beat to hit back between throws:
+## 2.0 s (opener) / 1.5 s of swinging at the old clip speed. Swings now play
+## AttackChain.ANIM_SPEED faster, so the same beat is that much shorter in seconds.
 func test_throw_cadence_leaves_room_to_hit_back() -> String:
-	var r: String = _T.assert_true(BossRules.params(0)["throw_delay"] >= 2.0, "opener: 2 s+ between throws")
+	var opener := 2.0 / AttackChain.ANIM_SPEED
+	var later := 1.5 / AttackChain.ANIM_SPEED
+	var r: String = _T.assert_true(BossRules.params(0)["throw_delay"] >= opener,
+		"opener: %.2f s+ between throws" % opener)
 	for i in BossRules.PHASES.size():
 		if r == "":
-			r = _T.assert_true(BossRules.params(i)["throw_delay"] >= 1.5, "phase %d: 1.5 s+ between throws" % i)
+			r = _T.assert_true(BossRules.params(i)["throw_delay"] >= later,
+				"phase %d: %.2f s+ between throws" % [i, later])
 	return r
 
 

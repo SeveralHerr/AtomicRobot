@@ -13,9 +13,12 @@ class_name BossRules
 ## only the first can hit someone on the ground — the fan punishes jumping.
 ##   2 OVERTIME     faster, wider fans, more drops, and a charge across the room
 
-## On the DamageRules scale. Fighters hit for 3-4: 20 blows for Ryan, 15 for Cody
-## (was 20 HP vs 1-2 damage: 20 and 10). test_damage_scale pins 10-20 for everyone.
-const MAX_HEALTH := 60
+## On the DamageRules scale. Fighters hit for 3-4: 32 blows for Ryan, 24 for Cody,
+## 16 for Robot. Raised from 60 (pf-balance) when swings got ~1.6x faster
+## (AttackChain: 1.4x clips + cancel after the hit frame): at 60 the fight shrank from
+## ~26 s to ~14 s and the bot took 6 hits instead of 11. test_damage_scale pins the
+## blow count in old-swing time (10-20 old blows).
+const MAX_HEALTH := 96
 
 ## Health fraction at or below which phase N (index) begins. Phase 0 is the opener.
 const PHASE_STARTS: Array[float] = [1.0, 0.66, 0.33]
@@ -33,27 +36,34 @@ const OPENING_GRACE := 1.0
 const DROP_WARN := 0.9
 const DROP_MIN_GAP := 110.0
 
+## Playback speed of his throw clip (shake tell -> release). 1.0 = authored; 1.3 since
+## pf-balance: with faster player swings the fight got shorter and his throws read as
+## slow — the bot took 6 hits a fight instead of ~8-11. The shake still leads the throw.
+const WINDUP_SPEED := 1.3
+
 ## throw_delay is the fight's main difficulty knob: seconds he idles between throws.
-## Raised from 1.7/1.35/1.2 (now 2.0/1.7/1.5, plus OPENING_GRACE) once health carried in from the street — the bot took ~16
-## hits a fight and arrived with ~5. Pinned by test_throw_cadence_leaves_room_to_hit_back
-## and the seeded boss_balance_* / *_mortal autoplay scenarios.
+## History: 1.7/1.35/1.2 -> 2.0/1.7/1.5 (sr-balance, health began carrying in from the
+## street) -> 1.6/1.35/1.2 (pf-balance: swings are 1.4x faster, so the same gap still
+## fits as many blows as 2.0/1.7/1.5 did — test_throw_cadence_leaves_room_to_hit_back
+## pins the gap in old-swing time). Also pinned by the seeded boss_balance_* /
+## *_mortal autoplay scenarios.
 const PHASES: Array[Dictionary] = [
 	{
 		"title": "FINAL BOSS", "sub": "THE CITY COUNCILMAN",
 		"line": "We are charging for\nparking on SUNDAYS!",
-		"throw_delay": 2.0, "burst": 1, "spread_deg": 0.0,
+		"throw_delay": 1.6, "burst": 1, "spread_deg": 0.0,
 		"drop_every": 0.0, "drop_count": 0, "maids": 0, "dash_every": 0,
 	},
 	{
 		"title": "BUDGET CUTS!", "sub": "PHASE 2",
 		"line": "Meter maids,\nto the chamber!",
-		"throw_delay": 1.7, "burst": 3, "spread_deg": 14.0,
+		"throw_delay": 1.35, "burst": 3, "spread_deg": 14.0,
 		"drop_every": 4.5, "drop_count": 3, "maids": 2, "dash_every": 0,
 	},
 	{
 		"title": "OVERTIME!", "sub": "FINAL PHASE",
 		"line": "This meeting is\nNOT adjourned!",
-		"throw_delay": 1.5, "burst": 3, "spread_deg": 18.0,
+		"throw_delay": 1.2, "burst": 3, "spread_deg": 18.0,
 		"drop_every": 4.0, "drop_count": 3, "maids": 0, "dash_every": 3,
 	},
 ]
