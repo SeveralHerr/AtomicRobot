@@ -246,6 +246,9 @@ timing against door waves and their STREET CLEAR! payoff (`skills/godot-micro-cu
 Let table tests check framing/readability rules (shot above the road, title readable
 before the glide back): they caught 3 bad numbers screenshots didn't.
 
+"Make X consistent" (effects/feel across a family): fix at the shared scene/script, derive the
+family from the levels in a test, never patch one instance (`skills/godot-pickup-fx/SKILL.md`).
+
 Placed pickups: judge them at the player's STANDING height — zoom 2.5 puts anything ~95px
 above the floor in the HUD band (`skills/godot-level-pickups/SKILL.md`).
 
