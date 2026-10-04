@@ -48,6 +48,11 @@ static func summary(r: Dictionary, path: String) -> String:
 	lines.append("  combat: kills=%d hits_taken=%d damage=%d heals=%d deaths=%d won=%d score=%s%s" % [
 		m["kills"], m["hits_taken"], m["damage_taken"], m["heals"], m["deaths"], m["won"], m["score"],
 		"" if m.get("boss_hp", -1) < 0 else " boss_hp=%d" % m["boss_hp"]])
+	for e: Dictionary in r.get("events", []):
+		if e.get("ev") == "run":
+			lines.append("  run: total=%s rank=%s street=%s boss=%s time=%s(+%s) health=+%s secrets=%s/%s(+%s)" % [
+				e["total"], e["rank"], e["street_score"], e["boss_score"], snappedf(float(e["seconds"]), 0.1),
+				e["time_bonus"], e["no_damage_bonus"], e["secrets"], e["secret_totals"], e["secret_bonus"]])
 	lines.append("  stuck: max=%ss spots=%s" % [m["max_stuck_s"], _spots(r["stuck_spots"])])
 	lines.append("  errors: script=%d engine=%d warnings=%d" % [m["errors"], m["engine_errors"], m["warnings"]])
 	for e: Dictionary in r["errors"].slice(0, 3):
