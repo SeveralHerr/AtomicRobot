@@ -76,4 +76,58 @@ func test_boss_intro_brings_the_hud_back_for_the_fight() -> String:
 		r = _T.assert_float_eq(pieces[what].modulate.a, 1.0, 0.01, "%s back for the fight" % what)
 		if r != "":
 			return r
+	var late: CanvasLayer = SCORE_UI.instantiate()
+	_room.add_child(late)
+	r = _T.assert_float_eq(late.hud.modulate.a, 1.0, 0.01, "a piece joining mid-fight is not held hidden")
+	if r != "":
+		return r
 	return _T.assert_float_eq(_room.bar.modulate.a, 1.0, 0.01, "boss HP card never faded")
+
+
+## The score column is injected by ScoreSystem a frame or more after the level
+## loads, and the boss room plays its intro the moment the player spawns in the
+## trigger: a HUD piece that joins mid-cinematic must come in faded too.
+func test_boss_intro_fades_a_hud_piece_that_joins_late() -> String:
+	_walk_in()
+	await _real(0.8)
+	var late: CanvasLayer = SCORE_UI.instantiate()
+	_room.add_child(late)
+	await _tree().process_frame
+	return _T.assert_true(late.hud.modulate.a < 0.05,
+		"late score column under the letterbox (a=%.2f)" % late.hud.modulate.a)
+
+
+## Leaving mid-intro (quit to title) must not leave the next level's HUD hidden.
+func test_leaving_mid_intro_releases_the_hud() -> String:
+	_walk_in()
+	await _real(0.8)
+	_room.free()
+	_room = BOSS_ROOM.instantiate()  # teardown frees this one
+	var next := Control.new()
+	next.add_to_group(HudFade.CINEMATIC)
+	_tree().root.add_child(next)
+	var a := next.modulate.a
+	next.free()
+	return _T.assert_float_eq(a, 1.0, 0.01, "a fresh HUD piece starts visible")
+
+
+## The orbs draw above the bars (z_index 2), so they may only be back once the top
+## bar has slid out past the CRT bezel (~40px), not while it is still leaving.
+func test_boss_intro_orbs_never_show_over_the_top_bar() -> String:
+	_walk_in()
+	var orbs: CanvasItem = _room.ui.get_node("HealthContainer")
+	var waited := 0.0
+	var worst := 0.0
+	while not (_room.boss != null and _room.boss.fighting and _bars().is_empty()) and waited < INTRO_TIMEOUT:
+		for bar in _bars():
+			if bar.position.y < 0.0 and bar.position.y + bar.size.y > 40.0:
+				worst = maxf(worst, orbs.modulate.a)
+		await _tree().process_frame
+		waited += _tree().root.get_process_delta_time()
+	return _T.assert_true(worst < 0.05, "orbs showed over the top bar (a=%.2f)" % worst)
+
+
+## Letterbox bars on the room's UI layer: black, full-width ColorRects.
+func _bars() -> Array:
+	return _room.ui.get_children().filter(func(n: Node) -> bool:
+		return n is ColorRect and n.color == Color.BLACK and n.position.y <= 0.0)

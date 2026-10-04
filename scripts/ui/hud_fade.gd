@@ -11,14 +11,46 @@ const CINEMATIC := &"hud_cinematic"
 ## Ducked while the STREET CLEAR! burst is up: it would sit right over them.
 const POWERUPS := &"hud_powerups"
 const _META := &"hud_fade_tween"
+## SceneTree meta holding a faded group's alpha for pieces that join it later.
+const _HOLD := "hud_fade_hold_"
 
 
-## Fade every CanvasItem in `group` to `alpha` over `seconds`.
-static func fade(tree: SceneTree, group: StringName, alpha: float, seconds: float = 0.3) -> void:
+## Fade every CanvasItem in `group` to `alpha` over `seconds`, after `delay`. The
+## alpha is held until release(): a piece that joins the group meanwhile (the score
+## column is injected a frame or more after its level loads) starts at it.
+static func fade(tree: SceneTree, group: StringName, alpha: float, seconds: float = 0.3, delay: float = 0.0) -> void:
+	_hold(tree, group, alpha)
 	for node in tree.get_nodes_in_group(group):
 		var tw := _restart(node)
 		if tw != null:
+			if delay > 0.0:
+				tw.tween_interval(delay)
 			tw.tween_property(node, "modulate:a", alpha, seconds)
+
+
+## Forget the held alpha for `group` (a fade back to 1.0 does this too). Call it
+## when the scene that faded the HUD goes away mid-fade.
+static func release(tree: SceneTree, group: StringName) -> void:
+	if tree.has_meta(_HOLD + group):
+		tree.remove_meta(_HOLD + group)
+
+
+static func _hold(tree: SceneTree, group: StringName, alpha: float) -> void:
+	if alpha >= 1.0:
+		release(tree, group)
+		return
+	tree.set_meta(_HOLD + group, alpha)
+	if not tree.node_added.is_connected(_on_node_added):
+		tree.node_added.connect(_on_node_added)
+
+
+static func _on_node_added(node: Node) -> void:
+	if not node is CanvasItem:
+		return
+	var tree := node.get_tree()
+	for group in node.get_groups():
+		if tree.has_meta(_HOLD + group):
+			node.modulate.a = tree.get_meta(_HOLD + group)
 
 
 ## Fade `group` out, hold `hold` seconds, fade it back. Each tween lives on its HUD
@@ -37,9 +69,11 @@ static func duck(tree: SceneTree, group: StringName, hold: float, out_s: float =
 static func _restart(node: Node) -> Tween:
 	if not node is CanvasItem:
 		return null
-	var old: Variant = node.get_meta(_META, null)
-	if old is Tween and old.is_valid():
-		old.kill()
+	# has_meta first: get_meta's null default counts as "no default" and errors.
+	if node.has_meta(_META):
+		var old: Variant = node.get_meta(_META)
+		if old is Tween and old.is_valid():
+			old.kill()
 	var tw := node.create_tween().set_ignore_time_scale(true)
 	node.set_meta(_META, tw)
 	return tw
