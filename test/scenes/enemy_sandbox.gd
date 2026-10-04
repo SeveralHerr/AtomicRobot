@@ -25,6 +25,9 @@ enum Scenario {
 	SPAWN_EVENT,
 	CAR_VS_CROWD,
 	PLATFORM_PATROL,
+	COIN_LANE_DODGE,
+	POINT_BLANK_RANGED,
+	POINT_BLANK_MELEE,
 }
 
 const PLAYER_SCENE := preload("res://scenes/player.tscn")
@@ -315,6 +318,30 @@ func _build_scenario() -> void:
 			maid.persist = true
 			_spawn_maid(-260.0, Lanes.GROUND_LANE, true)
 			_spawn_maid(-330.0, 2, true)
+
+		Scenario.COIN_LANE_DODGE:
+			_title = "Coin lane dodge"
+			_notes = PackedStringArray([
+				"One thrower in your lane. Step a lane during her wind-up.",
+				"Watch: the coin keeps to HER lane and sails past you.",
+			])
+			var thrower := _spawn_maid(110.0, Lanes.GROUND_LANE, false)
+			if thrower != null:
+				thrower.coins = 99
+
+		Scenario.POINT_BLANK_RANGED, Scenario.POINT_BLANK_MELEE:
+			var melee := scenario == Scenario.POINT_BLANK_MELEE
+			_title = "Point blank (%s)" % ("melee" if melee else "ranged")
+			_notes = PackedStringArray([
+				"The maid spawns right where you stand (as after landing on her).",
+				"Watch: she still swings instead of idling under you forever.",
+			])
+			var maid := _spawn_maid(0.0, Lanes.GROUND_LANE, melee)
+			if maid != null:
+				maid.coins = 99
+				# Short cooldown so a stall shows inside the sample window; the
+				# first swing can fire mid-fall, before the player lands on her.
+				maid.attack_cooldown = 1.0
 
 	if ambient_waves and _wave_timer == null:
 		_wave_timer = Timer.new()
