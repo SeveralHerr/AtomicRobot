@@ -81,15 +81,18 @@ func _on_player_entered(body):
 
 ## Letterbox -> boss strides in -> his line in a speech bubble -> FINAL BOSS slams
 ## onto a stripe -> card slides in and fills -> FIGHT! bursts -> controls back.
+## The HUD sits out the cinematic: the HP orbs (z_index 2) drew over the top bar.
 func play_boss_intro_sequence():
 	Globals.boss_fight.emit(true)
 	var bars := BossJuice.letterbox_in(ui)
+	HudFade.fade(get_tree(), HudFade.CINEMATIC, 0.0, 0.35)
 	boss = spawn_boss()
 	await _walk_in()
 	var p := BossRules.params(0)
 	await banner.say(p["line"], boss, 0.8)
 	await banner.slam_title(p["title"], p["sub"], 1.1, PHASE_TINTS[0])
 	BossJuice.letterbox_out(bars)
+	HudFade.fade(get_tree(), HudFade.CINEMATIC, 1.0, 0.35)
 	bar.show_bar(boss.max_health)
 	await banner.slam_title("FIGHT!", "", 0.35, ComicStyle.RED, true)
 	BossJuice.flash(ui, Color(1, 1, 1, 0.5), 0.25)

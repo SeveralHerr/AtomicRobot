@@ -7,7 +7,7 @@
 layer = 1
 script = ExtResource("1_scrui")
 
-[node name="Hud" type="MarginContainer" parent="."]
+[node name="Hud" type="MarginContainer" parent="." groups=["hud_cinematic"]]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
