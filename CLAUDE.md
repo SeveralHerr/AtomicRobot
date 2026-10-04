@@ -250,6 +250,11 @@ Before/after evidence for a fix: run the same scenario on HEAD and the working t
 (`skills/godot-ab-worktree/SKILL.md`). Check a forced bug state on the OLD build before
 you trust it in a demo.
 
+Readable pop-ups (paper, notes): make them modal + CRT tune-in (`skills/godot-modal-reader`).
+Never time a UI guard on the wall clock: headless autoplay runs ~60x real time, so a
+`Time.get_ticks_msec` arm window never elapsed and 3 secret scenarios timed out. Any new or
+changed on-screen copy for the newspaper needs the user's approval (artifact with picks).
+
 ## Sibling-game conventions
 
 This game shares the arcade cabinet with `../atomic-pinball`. Before building any

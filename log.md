@@ -503,3 +503,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: none via tool; repo skills godot-micro-cutscene (updated: hold-to-skip, settle rule, story captions), godot-autoplay-test. Would have helped: a "probe positions" helper (wrote 4 throwaway SceneTree probes — player from group, Player gets reparented so get_node("Player") is null).
 - MCP: none used (CLI).
 - Follow-up: opening's melee maids were authored 15-53px in the air (atomic_robot_area.tscn) -> authored at street level (y -28) right behind the red car (user: "like they're issuing a ticket"); enemies count as landed once their street baseline is captured (they rarely read is_on_floor()). New test: nothing in the opening's first shot falls (failed 53px on the old data). 883 unit, 18/18 autoplay, 12/12 sandbox. Merged to main via branch `cutscenes` (not pushed).
+
+## 2026-10-04 - Modal newspaper (CRT readability)
+- Used: artifact-capabilities (approval page with db picks) - idea: show a copy-approval template.
+- Used: skills/godot-micro-cutscene (validation recipe), godot-input-test (polled input, mutants) - idea: input-test should warn that headless GUI clicks don't reach Controls; use `_input`.
+- Would have helped: godot-modal-reader (written now) - pause/arm/CRT/autoplay rules for readable pop-ups.
+- Would have helped: a "copy approval" skill - any player-facing text change goes to the user first.
