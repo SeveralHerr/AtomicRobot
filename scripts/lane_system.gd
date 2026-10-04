@@ -303,3 +303,23 @@ static func can_engage(attacker_lane: int, target_lane: int, attacker_lane_locke
 
 static func scene_has_lanes(scene_path: String) -> bool:
 	return scene_path in LANE_SCENES or scene_path.begins_with(LANE_SCENE_PREFIX)
+
+
+## Walkway (GROUND_LANE) solids a body can be embedded in: Ground(2). Platforms(6) are
+## one-way (the awnings overhead), so standing under or inside one is never stuck.
+const WALKWAY_SOLID_MASK := 1 << 1
+## Lift the probe off the walkway so resting on its tiles doesn't read as an overlap.
+const WALKWAY_PROBE_LIFT := 2.0
+
+## Would `body` (via its footprint `shape`) be embedded in walkway solids standing at
+## `stand_pos`? Road-lane bodies ignore Ground/Platforms, so they can walk in front
+## of a walkway prop (the crate stack); stepping back onto the walkway there would
+## re-enable that collision with the body already inside it.
+static func walkway_blocked(body: CollisionObject2D, shape: CollisionShape2D, stand_pos: Vector2) -> bool:
+	if body == null or shape == null or shape.shape == null or not body.is_inside_tree():
+		return false
+	var q := PhysicsShapeQueryParameters2D.new()
+	q.shape = shape.shape
+	q.transform = Transform2D(shape.global_rotation, stand_pos + shape.position + Vector2(0, -WALKWAY_PROBE_LIFT))
+	q.collision_mask = WALKWAY_SOLID_MASK
+	return not body.get_world_2d().direct_space_state.intersect_shape(q, 1).is_empty()

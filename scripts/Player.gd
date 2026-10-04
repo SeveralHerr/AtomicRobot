@@ -374,6 +374,8 @@ func try_change_lane(dir: int) -> bool:
 	var target := current_lane + dir
 	if not Lanes.is_valid_lane(target):
 		return false
+	if target == Lanes.GROUND_LANE and Lanes.walkway_blocked(self, collision_shape_2d_body, Vector2(global_position.x, lane_stand_y(target))):
+		return false
 	_start_lane_change(target)
 	return true
 

@@ -450,7 +450,10 @@ func _lane_chase() -> void:
 		return
 	if player.current_lane == lane:
 		return
-	_start_lane_change(lane + signi(player.current_lane - lane))
+	var target := lane + signi(player.current_lane - lane)
+	if target == Lanes.GROUND_LANE and Lanes.walkway_blocked(self, get_node_or_null("CollisionShape2D"), Vector2(global_position.x, lane_stand_y(target))):
+		return
+	_start_lane_change(target)
 
 
 ## `duration` defaults to the snappy in-combat speed; callers that want a slower,
