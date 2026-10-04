@@ -202,3 +202,57 @@ func test_scored_scene_gating() -> String:
 	if r != "":
 		return r
 	return _T.assert_false(S.is_scored_scene(""), "no scene does not score")
+
+
+# --- The run: street + boss + bonus ------------------------------------------
+
+func test_run_subtotals_add_up() -> String:
+	var res: Dictionary = S.summarise(8000, 150.0, 2, 5, S.PAR_SECONDS, 3, 6500)
+	var r: String = _T.assert_eq(int(res["street_score"]) + int(res["boss_score"]), int(res["fight_score"]),
+		"street + boss is the fight score")
+	if r != "":
+		return r
+	r = _T.assert_eq(int(res["boss_score"]), 1500, "boss is what came after the door")
+	if r != "":
+		return r
+	r = _T.assert_eq(int(res["bonus"]), int(res["time_bonus"]) + int(res["no_damage_bonus"]) + int(res["secret_bonus"]),
+		"bonus is time + health + secrets")
+	if r != "":
+		return r
+	return _T.assert_eq(int(res["total"]), int(res["fight_score"]) + int(res["bonus"]), "total is fight + bonus")
+
+
+## A boss-only stage (debug start) has no street part; a bogus street score can never
+## make the boss part negative.
+func test_run_street_score_is_clamped() -> String:
+	var r: String = _T.assert_eq(int(S.summarise(900, 50.0, 1, 2)["street_score"]), 0, "no street by default")
+	if r != "":
+		return r
+	var res: Dictionary = S.summarise(900, 50.0, 1, 2, S.PAR_SECONDS, 0, 5000)
+	return _T.assert_eq(int(res["boss_score"]), 0, "street can't exceed the fight score")
+
+
+func test_run_secrets_pay_per_secret() -> String:
+	var r: String = _T.assert_eq(S.secret_bonus(0), 0, "none found, nothing paid")
+	if r != "":
+		return r
+	r = _T.assert_eq(S.secret_bonus(3), 3 * S.POINTS_PER_SECRET, "flat per secret")
+	if r != "":
+		return r
+	r = _T.assert_eq(S.secret_bonus(-2), 0, "never negative")
+	if r != "":
+		return r
+	var with: Dictionary = S.summarise(1000, 300.0, 1, 1, S.PAR_SECONDS, 2)
+	var without: Dictionary = S.summarise(1000, 300.0, 1, 1, S.PAR_SECONDS, 0)
+	return _T.assert_eq(int(with["total"]) - int(without["total"]), 2 * S.POINTS_PER_SECRET, "secrets reach the total")
+
+
+func test_run_continues_only_through_the_boss_door() -> String:
+	var r: String = _T.assert_true(S.continues_run(S.STREET_SCENE, S.BOSS_SCENE), "street -> boss carries")
+	if r != "":
+		return r
+	for pair in [[S.BOSS_SCENE, S.BOSS_SCENE], [S.STREET_SCENE, S.STREET_SCENE], ["", S.BOSS_SCENE],
+			[S.BOSS_SCENE, S.STREET_SCENE], ["res://test/scenes/melee_cluster.tscn", S.BOSS_SCENE]]:
+		if S.continues_run(pair[0], pair[1]):
+			return "%s -> %s must start a fresh run" % pair
+	return ""

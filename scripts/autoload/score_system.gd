@@ -1,6 +1,10 @@
 extends Node
 
-## Live per-stage scoring: combo meter, stage clock, damage tally, end-of-stage rank.
+## Live run scoring: combo meter, run clock, damage tally, secrets, end-of-run rank.
+##
+## A RUN is the street then the boss room: walking out of the street alive (through
+## the boss door) carries the score, clock, damage and secrets into the boss stage
+## (ScoreRules.continues_run); every other stage start begins a fresh run.
 ##
 ## All balance numbers live in scripts/score_rules.gd — this file only tracks state
 ## and decides WHEN things happen. Autoload for the same reasons as PowerupSystem:
@@ -46,7 +50,14 @@ var awaiting_initials: bool = false
 var last_run: Dictionary = {}
 ## Pre-filled on the next entry, so a regular only confirms their initials.
 var last_initials: String = HighScoreTable.DEFAULT_INITIALS
+## The part of `score` banked on the street before the boss door; 0 on a fresh stage.
+var street_score: int = 0
+## Secrets claimed this run (Globals.secret_found).
+var secrets := SecretTally.new()
 var _pending: Dictionary = {}
+## Characters still locked when the run began: any of them unlocked by the end is
+## this run's unlock, shown on the YOU WIN card.
+var _locked_at_start: PackedStringArray = []
 
 var _combo_timer: float = 0.0
 ## Guards against a second finish for the same stage — Globals.boss_death is emitted
@@ -59,6 +70,9 @@ var _best: ConfigFile = ConfigFile.new()
 ## path comparison sees no change and would leave the clock running from the previous
 ## attempt and the HUD parented to the freed scene.
 var _scene_id: int = 0
+## The scored scene a live run just walked out of, until the next real scene decides
+## whether the run continues there.
+var _carry_from: String = ""
 ## The injected HUD. Freed along with the scene it was added to, so every use is
 ## guarded by is_instance_valid rather than by clearing this on scene change.
 var _hud: CanvasLayer = null
@@ -70,6 +84,7 @@ func _ready() -> void:
 	Globals.meter_maid_boss_death.connect(register_kill)
 	Globals.boss_death.connect(_on_boss_death)
 	Globals.player_death.connect(_on_player_death)
+	Globals.secret_found.connect(_on_secret_found)
 
 
 func _process(delta: float) -> void:
@@ -93,21 +108,40 @@ func _track_scene() -> void:
 	if id == _scene_id:
 		return
 	_scene_id = id
-	current_scene_path = scene.scene_file_path if scene != null else ""
-	var path := current_scene_path
+	enter_scene(scene.scene_file_path if scene != null else "", scene != null)
+
+
+## A new scene became current (`exists` false for the empty frame of a swap). Leaving
+## the street alive arms the carry; the swap's empty frame keeps it; the next real
+## scene either continues the run (the boss room) or drops it.
+func enter_scene(path: String, exists: bool = true) -> void:
+	if running and current_scene_path != "":
+		_carry_from = current_scene_path
+	current_scene_path = path
 	if ScoreRules.is_scored_scene(path):
-		begin_stage(path)
+		begin_stage(path, ScoreRules.continues_run(_carry_from, path))
+		_carry_from = ""
 	else:
 		running = false
+		if exists:
+			_carry_from = ""
 
 
-## Reset every counter and start the clock. Called automatically on entering a scored
-## scene; exposed for the devtools verb and for a retry that reloads the same scene.
-func begin_stage(scene_path: String = current_scene_path) -> void:
-	score = 0
+## Start the clock for a stage. A fresh run resets every counter; `continue_run` (the
+## boss room entered from the street) keeps the run's score, clock, damage and secrets
+## and banks the score so far as the street's. Called automatically on entering a
+## scored scene; exposed for the devtools verb and for a retry that reloads the scene.
+func begin_stage(scene_path: String = current_scene_path, continue_run: bool = false) -> void:
+	if continue_run:
+		street_score = score
+	else:
+		score = 0
+		stage_seconds = 0.0
+		damage_taken = 0
+		street_score = 0
+		secrets.clear()
+		_locked_at_start = _locked_characters()
 	combo = 0
-	stage_seconds = 0.0
-	damage_taken = 0
 	_combo_timer = 0.0
 	_finished = false
 	running = true
@@ -199,6 +233,28 @@ func _reset_combo() -> void:
 	combo_changed.emit(combo, multiplier())
 
 
+func _on_secret_found(kind: String, id: String) -> void:
+	if running:
+		secrets.record(kind, id)
+
+
+func _locked_characters() -> PackedStringArray:
+	var out := PackedStringArray()
+	for c in Globals.character_dict:
+		if not Globals.character_dict[c].unlocked:
+			out.append(c)
+	return out
+
+
+## Characters unlocked since the run began, in roster order.
+func run_unlocks() -> PackedStringArray:
+	var out := PackedStringArray()
+	for c in _locked_at_start:
+		if Globals.character_dict.has(c) and Globals.character_dict[c].unlocked:
+			out.append(c)
+	return out
+
+
 func _on_player_death() -> void:
 	# A death ends the run without a rank card — you do not get graded on a stage you
 	# did not finish — but a big enough score still goes on the board, arcade-style.
@@ -213,7 +269,7 @@ func _on_boss_death() -> void:
 	finish_stage()
 
 
-## Close the stage out, emit the breakdown, and persist it if it beat the record.
+## Close the run out, emit the breakdown, and persist it if it beat the record.
 ## Safe to call twice; only the first call for a stage does anything.
 func finish_stage() -> Dictionary:
 	if _finished or not running:
@@ -227,7 +283,12 @@ func finish_stage() -> Dictionary:
 	var player := get_tree().get_first_node_in_group("player") as Player
 	if player != null:
 		orbs_left = Player.orbs_for(player.health)
-	var result := ScoreRules.summarise(score, stage_seconds, damage_taken, orbs_left)
+	var result := ScoreRules.summarise(score, stage_seconds, damage_taken, orbs_left,
+		ScoreRules.PAR_SECONDS, secrets.found_total(), street_score)
+	result["secrets"] = secrets.counts()
+	# The card's "a/b": only the real run has a level to count secrets in.
+	result["secret_totals"] = SecretTally.totals_in(ScoreRules.SCORED_SCENES) 		if current_scene_path in ScoreRules.SCORED_SCENES else {}
+	result["unlocks"] = Array(run_unlocks())
 	var previous := best_for(current_scene_path)
 	var is_new_best: bool = int(result["total"]) > previous
 	result["scene"] = current_scene_path

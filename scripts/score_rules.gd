@@ -79,6 +79,14 @@ static func no_damage_bonus(damage_taken: int, health_remaining: int) -> int:
 	return maxi(0, health_remaining) * POINTS_PER_HEALTH_KEPT
 
 
+## Flat award per secret (cracked wall, newspaper stand) claimed during the run.
+const POINTS_PER_SECRET := 250
+
+
+static func secret_bonus(secrets: int) -> int:
+	return maxi(0, secrets) * POINTS_PER_SECRET
+
+
 # --- Rank --------------------------------------------------------------------
 
 ## Rank letters paired with the total score each one needs, best first. rank_for()
@@ -112,10 +120,10 @@ static func points_to_next_rank(total: int) -> int:
 
 # --- Which scenes are scored -------------------------------------------------
 
-const SCORED_SCENES: Array[String] = [
-	"res://scenes/main.tscn",
-	"res://scenes/boss_room.tscn",
-]
+const STREET_SCENE := "res://scenes/main.tscn"
+const BOSS_SCENE := "res://scenes/boss_room.tscn"
+## The run, in order: the street, then the boss room.
+const SCORED_SCENES: Array[String] = [STREET_SCENE, BOSS_SCENE]
 ## The enemy-behaviour sandboxes opt in as a directory (same convention as
 ## Lanes.LANE_SCENE_PREFIX) so combo/score can be asserted from a test scene.
 const SCORED_SCENE_PREFIX := "res://test/scenes/"
@@ -125,16 +133,32 @@ static func is_scored_scene(scene_path: String) -> bool:
 	return scene_path in SCORED_SCENES or scene_path.begins_with(SCORED_SCENE_PREFIX)
 
 
-## The full end-of-stage breakdown. Pure, so the rank card and the unit tests agree
-## on the arithmetic by construction.
-static func summarise(fight_score: int, seconds: float, damage_taken: int, health_remaining: int, par: float = PAR_SECONDS) -> Dictionary:
+## True when leaving `from` alive for `to` continues the same run: the street's score,
+## clock, damage and secrets carry through the boss door instead of starting over.
+static func continues_run(from: String, to: String) -> bool:
+	return from == STREET_SCENE and to == BOSS_SCENE
+
+
+## The full end-of-run breakdown. Pure, so the rank card and the unit tests agree
+## on the arithmetic by construction. `fight_score` is the whole run's; `street_score`
+## is the part of it banked before the boss door (0 for a boss-only stage).
+static func summarise(fight_score: int, seconds: float, damage_taken: int, health_remaining: int,
+		par: float = PAR_SECONDS, secrets: int = 0, street_score: int = 0) -> Dictionary:
 	var time := time_bonus(seconds, par)
 	var perfect := no_damage_bonus(damage_taken, health_remaining)
-	var total := fight_score + time + perfect
+	var secret := secret_bonus(secrets)
+	var bonus := time + perfect + secret
+	var total := fight_score + bonus
+	var street := clampi(street_score, 0, maxi(fight_score, 0))
 	return {
 		"fight_score": fight_score,
+		"street_score": street,
+		"boss_score": fight_score - street,
 		"time_bonus": time,
 		"no_damage_bonus": perfect,
+		"secret_bonus": secret,
+		"secrets_found": maxi(0, secrets),
+		"bonus": bonus,
 		"total": total,
 		"rank": rank_for(total),
 		"seconds": seconds,
