@@ -172,7 +172,7 @@ func _refresh_powerups(delta: float) -> void:
 	var ids := PowerupSystem.active_ids()
 	if ids.is_empty():
 		powerup_label.text = ""
-		powerup_label.modulate.a = 1.0
+		powerup_label.self_modulate.a = 1.0
 		powerup_label.scale = Vector2.ONE
 		return
 	var parts: Array[String] = []
@@ -195,10 +195,12 @@ func _refresh_powerups(delta: float) -> void:
 	# Blink out the last second and a half so a buff about to lapse is noticed without
 	# having to read the number. Driven off the countdown itself, so the blink lands on
 	# the same beat every time rather than wherever a free-running clock happens to be.
+	# On self_modulate: modulate belongs to HudFade, which ducks the stack under the
+	# STREET CLEAR! burst.
 	if soonest <= POWERUP_WARN_SECONDS:
-		powerup_label.modulate.a = 0.4 + 0.6 * absf(sin(soonest * PI * POWERUP_WARN_HZ))
+		powerup_label.self_modulate.a = 0.4 + 0.6 * absf(sin(soonest * PI * POWERUP_WARN_HZ))
 	else:
-		powerup_label.modulate.a = 1.0
+		powerup_label.self_modulate.a = 1.0
 
 
 func _on_score_changed(score: int) -> void:

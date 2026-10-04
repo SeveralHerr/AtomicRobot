@@ -28,6 +28,10 @@ const SIZE_K := 0.8
 ## so only the player's lane is below it, and the burst stops short of his head.
 const CLEAR_Y := 0.45
 const CLEAR_SIZE_K := 0.5
+## There is no room for the burst between the power-up timer stack (which runs
+## down to ~y 340 with both buffs up) and the player's head, so the timers duck out
+## while it shows: slam-in (~0.3s) + hold, fading back in as the burst shrinks away.
+const CLEAR_DUCK := 0.3 + CLEAR_HOLD
 const CLEAR_STING := preload("res://sounds/power_up.wav")
 
 var banner: BossBanner
@@ -77,6 +81,7 @@ func _on_squad_cleared() -> void:
 	_banner().stripe_y = CLEAR_Y
 	banner.size_k = CLEAR_SIZE_K
 	banner.slam_title(CLEAR_TITLE, CLEAR_SUB, CLEAR_HOLD, ComicStyle.BLUE, true)
+	HudFade.duck(get_tree(), HudFade.POWERUPS, CLEAR_DUCK)
 	if _sting == null:
 		_sting = AudioStreamPlayer.new()
 		_sting.stream = CLEAR_STING

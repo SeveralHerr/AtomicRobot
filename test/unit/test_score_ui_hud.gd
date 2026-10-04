@@ -63,3 +63,30 @@ func test_single_hit_shows_no_combo_line() -> String:
 		return r
 	await _hits(1)
 	return _T.assert_true(_hud.combo_label.visible, "the second hit brings the line in")
+
+
+## The timer stack's own per-frame blink/reset must not stomp a HudFade duck (the
+## STREET CLEAR! burst hides it): the blink runs on self_modulate, the duck on modulate.
+func test_running_powerup_timer_stays_ducked() -> String:
+	PowerupSystem.grant(PowerupRules.IDS[0])
+	# A frame first: the first one after a scene load carries the whole load as its
+	# delta, which would run the real-time duck start to finish in one step.
+	await _tree().process_frame
+	HudFade.duck(_tree(), HudFade.POWERUPS, 1.0, 0.05)
+	await _tree().create_timer(0.2, true, false, true).timeout
+	var a: float = _hud.powerup_label.modulate.a
+	var shown: bool = _hud.powerup_label.text != ""
+	PowerupSystem.clear_all()
+	var r: String = _T.assert_true(shown, "the buff is on the HUD")
+	if r != "":
+		return r
+	return _T.assert_true(a < 0.05, "and stays ducked while it ticks (a=%.2f)" % a)
+
+
+## Same with no buff up yet: one picked up under the burst must not pop in at full.
+func test_idle_timer_row_stays_ducked() -> String:
+	await _tree().process_frame
+	HudFade.duck(_tree(), HudFade.POWERUPS, 1.0, 0.05)
+	await _tree().create_timer(0.2, true, false, true).timeout
+	return _T.assert_true(_hud.powerup_label.modulate.a < 0.05,
+		"empty timer row stays ducked (a=%.2f)" % _hud.powerup_label.modulate.a)
