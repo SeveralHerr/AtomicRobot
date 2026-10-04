@@ -236,19 +236,24 @@ func _draw_stripe() -> void:
 		draw_line(Vector2(x0 + SLANT, y), Vector2(x1 + SLANT * 0.6, y), Color(1, 1, 1, 0.25), 2.0)
 
 
+## Full-size starburst radii (x, y) for a title `title_w` px wide at scale `k`.
+## Sized to the word, so a long one ("ADJOURNED!") still sits inside — but only
+## sideways: height is capped, or a long word grows the burst up over the HUD and
+## down over the fighters. Static so layout tests can check clearances.
+static func burst_radii(k: float, title_w: float) -> Vector2:
+	var reach := maxf(300.0 * k, title_w * 0.62)
+	return Vector2(reach, minf(reach, 360.0 * k) * 0.62)
+
+
 func _draw_burst(c: Vector2) -> void:
+	var r := burst_radii(size_k, _title.size.x)
 	for layer in [[1.0, ComicStyle.RED], [0.78, ComicStyle.YELLOW]]:
 		var pts := PackedVector2Array()
 		var spikes := 18
 		for i in spikes * 2:
-			# Sized to the word, so a long one ("ADJOURNED!") still sits inside —
-			# but only sideways: height is capped, or a long word grows the burst
-			# up over the HUD and down over the fighters.
-			var reach := maxf(300.0 * size_k, _title.size.x * 0.62)
 			var k: float = (1.0 if i % 2 == 0 else 0.64) * _burst * layer[0]
 			var a := TAU * i / (spikes * 2.0) + _burst_spin
-			var ry := minf(reach, 360.0 * size_k) * 0.62
-			pts.append(c + Vector2(cos(a) * reach * k, sin(a) * ry * k))
+			pts.append(c + Vector2(cos(a) * r.x * k, sin(a) * r.y * k))
 		draw_colored_polygon(pts, layer[1])
 		draw_polyline(pts + PackedVector2Array([pts[0]]), ComicStyle.INK, 5.0)
 

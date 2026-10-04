@@ -22,10 +22,12 @@ const CLEAR_SUB := "GO! GO! GO!"
 ## maids on the walkway lane (the boss room's 0.42 at full size buries both).
 const STRIPE_Y := 0.36
 const SIZE_K := 0.8
-## The payoff burst sits lower than the wave stripe: at STRIPE_Y its top spikes
-## hid the score that just went up. The squad is down by then, so only the
-## player's lane is below it, and the burst stops short of his head.
-const CLEAR_Y := 0.42
+## The payoff burst sits lower and smaller than the wave stripe: at STRIPE_Y its
+## top spikes hid the score, and at 0.42 / SIZE_K they still cut the combo line
+## ("3 HITS!") that the clearing blow had just bumped. The squad is down by then,
+## so only the player's lane is below it, and the burst stops short of his head.
+const CLEAR_Y := 0.45
+const CLEAR_SIZE_K := 0.6
 const CLEAR_STING := preload("res://sounds/power_up.wav")
 
 var banner: BossBanner
@@ -66,12 +68,14 @@ func _on_wave_started(index: int, total: int) -> void:
 	# Yellow title on blue reads; on orange it washed out. Red marks the last wave.
 	var tint := ComicStyle.RED if index >= total else ComicStyle.BLUE
 	_banner().stripe_y = STRIPE_Y
+	banner.size_k = SIZE_K
 	banner.slam_title(title, wave_subtitle(index, total), WAVE_HOLD, tint)
 
 
 func _on_squad_cleared() -> void:
 	_cleared = true
 	_banner().stripe_y = CLEAR_Y
+	banner.size_k = CLEAR_SIZE_K
 	banner.slam_title(CLEAR_TITLE, CLEAR_SUB, CLEAR_HOLD, ComicStyle.BLUE, true)
 	if _sting == null:
 		_sting = AudioStreamPlayer.new()
@@ -99,7 +103,6 @@ func _banner() -> BossBanner:
 		# frame the banner is added (wave 1 slams that same frame), and slam_title
 		# centres on `size`. Top-left anchors so setting size is legal.
 		banner.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		banner.size_k = SIZE_K
 	banner.size = banner.get_viewport_rect().size
 	return banner
 
