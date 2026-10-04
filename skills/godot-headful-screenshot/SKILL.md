@@ -49,5 +49,10 @@ The CRT overlay autoload is in the shot - judge legibility through it, it is wha
   captured image. Use the bot instead: `python tools/autoplay.py my.json --window --resolution 1688x780`
   with `snap_every` — snaps come out at the aspect-fit viewport size (1248x780 for 1688x780),
   which is what a landscape phone actually shows.
+- Or, in the `--script` capture itself, call `DisplayServer.window_set_size(Vector2i(1688, 780))`
+  before the first `await process_frame` (verified 2026-10-04): snaps come out 1248x780, so one
+  script can shoot desktop and phone rounds of states the bot cannot reach (e.g. emitted signals).
+- `get_tree().root` z-order: a `z_index` beats tree order inside a CanvasLayer, so `move_to_front()`
+  does not guarantee "on top" (hp_1.tscn orbs, z 2, drew over the end card). Check effective z.
 - Pin layout clearances numerically too (e.g. `BossBanner.burst_radii` vs the HUD combo slot
   in `test_encounter_announcer.gd`) — a screenshot only proves the frame you caught.
