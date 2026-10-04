@@ -167,6 +167,12 @@ total = street + boss + bonus       bonus = time_bonus + no_damage_bonus + secre
   newspaper stand "news"). `SecretTally` counts ids once per run and derives the card's
   totals from the level files (every node running `crack.gd` / `interactive_mailbox.gd`
   in the run's scenes).
+- **Rank ladder on the card** (`scripts/ui/rank_ladder.gd`): a chip per rank with its
+  threshold (derived from `RANK_THRESHOLDS`, the run's rank lit), then one line:
+  "+800 FOR B (9,500) · FIND 4 MORE SECRETS". The tip is the cheapest single change
+  that covers the gap, in order: unfound secrets, a flawless clear, a faster clear
+  (never promising under 2:30), else "CHAIN COMBOS". A death card says "CLEAR THE BOSS
+  TO GET RANKED" and, after the boss door, shows the STREET / BOSS split.
 - **Rank** — S 18000 / A 13000 / B 9500 / C 6000 / D 0. Pinned in
   `test_score_rules.gd` against measured seed-1 runs: clean mortal completionist ≈ A,
   flawless with every secret = S, slow and battered = C.

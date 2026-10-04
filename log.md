@@ -422,3 +422,12 @@ Log of skills that might have been useful for a given response, and why (short f
 - Lessons: my round-1 "STREET CLEAR mid-door" was two doors back to back (check encounter identity); agents can't merge (classifier) — orchestrator merges; fresh worktree import churns .import files.
 - Skills used: godot-speedrun-review (enhanced: fan-out + round-2 rules), godot-autoplay-test, artifact-capabilities. Would have helped: somewhat-useful-claude-skills:enumerate-the-pairs (callout-overtakes-callout matrix would have caught the stale tag).
 - MCP: godot-tests (not called directly; CLI used for --filter/stash loops).
+
+## 2026-10-04 pf-present (player feedback: camera lock, rank legibility, newspaper, pop-up time)
+- Camera: CameraLimitBlend eases door-fight lock/release (590 -> 28 px max per-frame screen jump, unit-tested).
+- Newspaper: screen-space comic card in the left column; holds while at the stand + ReadingTime after; Interact re-reads (no new credit).
+- Rank: ladder chips with thresholds, "+gap FOR X · tip" line; boss-room death shows STREET/BOSS split (carry already worked since 5590195; the 470 report predates it).
+- Pop-ups: ReadingTime (1.5 s + 0.06 s/char, 3-9 s) for newspaper, boss speech bubble, STREET CLEAR!, chat bubble, unlock toast; wave/phase slams + hit words left gameplay-timed.
+- 724/724 unit, 9/9 sandbox, 17/17 autoplay; 27 mutants, 3 survivors -> 2 new tests (+1 mutant re-aimed), all killed.
+- Skills used: godot-ab-worktree, godot-headful-screenshot (enhanced: camera-limit + capture-save lessons), godot-autoplay-test, godot-input-test, juicy-screen-review. Would have helped: somewhat-useful-claude-skills:godot-2d-placement-audit (card-vs-HUD rects), a checked-in gif/contact-sheet tool (rewrote gif.py/sheet.py again).
+- MCP: none used (CLI direct).
