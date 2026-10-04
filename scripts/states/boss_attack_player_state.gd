@@ -25,6 +25,8 @@ func _init(e: Enemy) -> void:
 	release_frame_hint = 4
 	telegraph_frame = 1  # wind-up shake: the tell that a throw is coming
 	re_arm_delay = BossRules.params(0)["throw_delay"]
+	wind_up_tell = false  # the boss's tells are his own (shake + phase banners)
+	wind_up_speed = 1.0
 
 
 func _boss() -> FinalBoss:

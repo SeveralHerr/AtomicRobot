@@ -13,11 +13,12 @@ var is_attacking: bool = false
 var is_activated: bool = false
 
 func _ready() -> void:
-	health = 3
+	health = DamageRules.WINDOW_MAID_HEALTH
+	max_health = health
 	detection_range = 450
 	attack_range = 250
-	attack_cooldown = 2
-	lane_locked = true  # attacks from a window; coins hit any lane
+	attack_cooldown = EnemyTuning.WINDOW_ATTACK_COOLDOWN
+	lane_locked = true  # attacks from a window; lobs onto your lane
 	super._ready()
 
 	enemy_state_machine.add_state("AttackPlayerState", AttackPlayerState.new(self))

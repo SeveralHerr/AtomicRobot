@@ -10,6 +10,7 @@ const CAR_RED = preload("res://images/new/Car_Red.png")
 ## which lane is dangerous varies from car to car.
 var lane: int = Lanes.FRONT_LANE
 var start: bool = false
+## Player-side (raw hits). Enemies take DamageRules.CAR_ENEMY_DAMAGE instead.
 var car_damage = 1
 ## A car impact should knock harder than a regular hit (baselines: player 300, enemy 200).
 var player_knockback_strength = 360
@@ -62,6 +63,6 @@ func _hit(body: Node2D) -> void:
 			return
 		hit_bodies.append(body)
 		ScreenShake.apply_shake(5, 0.25)
-		body.receive_hit(car_damage, enemy_knockback_strength)
+		body.receive_hit(DamageRules.CAR_ENEMY_DAMAGE, enemy_knockback_strength)
 	elif body is DroppedLeaf:
 		body.do_gust(8, Vector2(global_position.x - 450, 0))

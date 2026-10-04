@@ -310,3 +310,34 @@ func test_balance_sloppy_run_ranks_c() -> String:
 func test_balance_flawless_run_without_secrets_is_a() -> String:
 	var res: Dictionary = S.summarise(10180, 175.7, 0, 10, S.PAR_SECONDS, 0, 7390)
 	return _T.assert_eq(String(res["rank"]), "A", "S needs the secrets as well")
+
+
+## Maids went from 2 blows to 4 (DamageRules). A chain of kills must pay what it did:
+## the pre-rescale table (steps [0,3,6,10,15,21,28,36], 10/hit) at 2 hits a kill vs the
+## live one at 4. Within 5% — the hits inside a kill land on slightly different tiers.
+func test_kill_chain_pays_as_before_the_rescale() -> String:
+	var old_steps := [0, 3, 6, 10, 15, 21, 28, 36]
+	var old_mult := func(c: int) -> int:
+		var m := 1
+		for i in old_steps.size():
+			if c >= old_steps[i]:
+				m = i + 1
+		return m
+	for kills in [3, 10, 25]:
+		var old_total := 0
+		var combo := 0
+		for k in kills:
+			for h in 2:
+				combo += 1
+				old_total += 10 * old_mult.call(combo)
+			old_total += 100 * old_mult.call(combo)
+		var new_total := 0
+		combo = 0
+		for k in kills:
+			for h in 4:
+				combo += 1
+				new_total += S.hit_points(combo)
+			new_total += S.kill_points(combo)
+		if absf(new_total - old_total) > 0.05 * old_total:
+			return "%d kills: %d now vs %d before" % [kills, new_total, old_total]
+	return ""

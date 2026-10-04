@@ -422,3 +422,16 @@ Log of skills that might have been useful for a given response, and why (short f
 - Lessons: my round-1 "STREET CLEAR mid-door" was two doors back to back (check encounter identity); agents can't merge (classifier) — orchestrator merges; fresh worktree import churns .import files.
 - Skills used: godot-speedrun-review (enhanced: fan-out + round-2 rules), godot-autoplay-test, artifact-capabilities. Would have helped: somewhat-useful-claude-skills:enumerate-the-pairs (callout-overtakes-callout matrix would have caught the stale tag).
 - MCP: godot-tests (not called directly; CLI used for --filter/stash loops).
+
+## 2026-10-04 pf-enemyai (lane-bound coins, point-blank maids, coin reflect)
+- Root causes: coin re-aimed + re-tagged to the player's lane on the release frame (lane step was tracked); window/platform coins hit every lane; coins physically collided with a player body in the next lane. Point-blank: sight ray starts inside the player's box, a ray never reports its start shape -> maid idled forever.
+- Fixes: coin lane = thrower's lane (lane-locked: your lane at release), lane+box contact (mid-step dodges), lane shadow, rest on lane floor; LineOfSight point-in-player check; gold wind-up tell via flash.gdshader buff_* (self_modulate is ignored by that shader); EnemyTuning constants; coin reflect (group `reflectable`, `reflect(by)`).
+- Tests: 3 new sandboxes (coin_lane_dodge, point_blank_ranged/melee) fail on 015e514, pass now; 23 new unit tests; 17 mutants, 16 killed + 1 equivalent (redundant has_landed early-out).
+- Skills used: godot-ab-worktree (enhancement: ship a reusable `cap_main.gd` capture + `gif.py`), godot-headful-screenshot, godot-autoplay-test.
+- Would have helped: a "sprite shaders overwrite COLOR — modulate is dead on maids" note in ARCHITECTURE; a checked-in mutation runner (rewrote again).
+- MCP: none used (CLI direct).
+## 2026-10-04 pf-numbers (damage scale, Cass, hit pips)
+- Skills used: godot-autoplay-test (sweep), godot-ab-worktree (HEAD vs tree GIFs), godot-headful-screenshot, derive-the-list (fighter/enemy-scene tables).
+  - Enhancement: autoplay-test should say `full_run_mortal` boots via the menu, so a locked Robot silently plays as the first unlocked fighter in `autoplay_sweep.py --base` (Robot rows == Cody rows); use a non-boot base for sweeps.
+  - Enhancement: autoplay.py has no `--autoplay-out`; snaps always land in autoplay_out/.
+- Would have helped: a "balance-rescale" skill (checklist: enemy HP, boss, hazards, score tiers, select pips, scenario asserts in raw units); a GIF-from-scenario helper in tools/.

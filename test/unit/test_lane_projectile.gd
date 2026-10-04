@@ -116,3 +116,41 @@ func test_both_ranged_projectiles_are_lane_projectiles() -> String:
 		if not ok:
 			return _T.assert_true(false, "%s must extend LaneProjectile" % scene.resource_path)
 	return ""
+
+
+# --- Cass's flip-flop: fast and pushes back (player feedback: "most enemies close to
+# melee before a second hit") ---------------------------------------------------
+
+func test_flipflop_outpaces_robot_bullet() -> String:
+	var f: LaneProjectile = FLIPFLOP.instantiate()
+	var b: LaneProjectile = ROBOT_BULLET.instantiate()
+	var r: String = _T.assert_gt(f.speed, b.speed, "flip-flop speed vs bullet")
+	f.free()
+	b.free()
+	return r
+
+
+func test_flipflop_knocks_the_maid_back_along_the_throw() -> String:
+	var m := _maid(130.0, 10.0, 0)
+	var f: FlipflopBullet = FLIPFLOP.instantiate()
+	(Engine.get_main_loop() as SceneTree).root.add_child(f)
+	f.global_position = Vector2(100.0, -47.0)
+	f.dir = 1
+	f._hit(m)
+	var r: String = _T.assert_float_eq(m.knockback_velocity.x, FlipflopBullet.KNOCKBACK, 0.5,
+		"pushed straight back, full strength")
+	if r != "":
+		return r
+	return _T.assert_gt(FlipflopBullet.KNOCKBACK, 200.0, "harder than a melee blow's 200")
+
+
+func test_flipflop_does_not_shove_the_boss() -> String:
+	var boss: FinalBoss = preload("res://scenes/final_boss.tscn").instantiate()
+	(Engine.get_main_loop() as SceneTree).root.add_child(boss)
+	_maids.append(boss)
+	boss.set_physics_process(false)
+	var f: FlipflopBullet = FLIPFLOP.instantiate()
+	(Engine.get_main_loop() as SceneTree).root.add_child(f)
+	f.dir = 1
+	f._hit(boss)
+	return _T.assert_eq(boss.knockback_velocity, Vector2.ZERO, "the boss is planted")

@@ -553,6 +553,27 @@ func test_overpowered_badge_only_on_robot() -> String:
 	return _T.assert_false(_scene.info.op_badge.visible, "Sara doesn't")
 
 
+## Shooters wear the RANGED stamp, melee fighters don't — derived from the configs.
+func test_ranged_badge_follows_config() -> String:
+	var robot_was: bool = Globals.character_dict["Robot"].unlocked
+	Globals.character_dict["Robot"].unlocked = true
+	var out: String = await _ranged_badges()
+	Globals.character_dict["Robot"].unlocked = robot_was
+	return out
+
+
+func _ranged_badges() -> String:
+	for c in Globals.character_dict:
+		Globals.selected_character = c
+		await _mount()
+		var cfg: CharacterConfig = Globals.character_dict[c]
+		var r: String = _T.assert_eq(_scene.info.ranged_badge.visible, cfg.is_ranged(), "%s RANGED stamp" % c)
+		if r != "":
+			return r
+		teardown()
+	return ""
+
+
 func test_robot_pips_fit_and_glow_gold() -> String:
 	Globals.character_dict["Robot"].unlocked = true
 	Globals.selected_character = "Robot"
@@ -581,10 +602,10 @@ func test_roster_scale_reads_best_and_runner_up() -> String:
 	var Info = load("res://scripts/ui/select/info_card.gd")
 	var all: Array = Globals.character_dict.values()
 	var s: Dictionary = Info.roster_scale(all)
-	var r: String = _T.assert_eq(s.best, [8, 4], "best HP/POWER = Robot's")
+	var r: String = _T.assert_eq(s.best, [8, 6], "best HP/POWER = Robot's")
 	if r != "":
 		return r
-	return _T.assert_eq(s.usual, [4, 2], "runner-up HP/POWER = the rest's best")
+	return _T.assert_eq(s.usual, [4, 4], "runner-up HP/POWER = the rest's best")
 
 
 func test_stamp_clears_when_you_move_on() -> String:

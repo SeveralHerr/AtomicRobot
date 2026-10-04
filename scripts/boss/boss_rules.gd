@@ -13,8 +13,9 @@ class_name BossRules
 ## only the first can hit someone on the ground — the fan punishes jumping.
 ##   2 OVERTIME     faster, wider fans, more drops, and a charge across the room
 
-## In raw damage points. Characters hit for 1-2, so this is 20 hits for Ryan, 10 for Cody.
-const MAX_HEALTH := 20
+## On the DamageRules scale. Fighters hit for 3-4: 20 blows for Ryan, 15 for Cody
+## (was 20 HP vs 1-2 damage: 20 and 10). test_damage_scale pins 10-20 for everyone.
+const MAX_HEALTH := 60
 
 ## Health fraction at or below which phase N (index) begins. Phase 0 is the opener.
 const PHASE_STARTS: Array[float] = [1.0, 0.66, 0.33]
