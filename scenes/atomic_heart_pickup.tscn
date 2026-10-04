@@ -69,6 +69,7 @@ _data = {
 radius = 30.0
 
 [node name="AtomicHeartPickup" type="Node2D"]
+z_index = 2
 script = ExtResource("1_8lpob")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
