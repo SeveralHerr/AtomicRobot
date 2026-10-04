@@ -356,3 +356,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - Would have helped: a "parallel-agent integration" skill (per-agent scratchpad subdir up front — feel agent clobbered death agent's shots/base); somewhat-useful-claude-skills:godot-game-ui-juicy (banner motion).
 - Enhancement (godot-headful-screenshot): `--resolution` doesn't change capture size in --script runs; document the real phone-size recipe.
 - MCP: none used.
+
+## 2026-10-03 — Melee "hits maids behind" investigation (worktree fix-melee)
+- Not reproduced: real-scene unit tests + autoplay probe (222 hits, all dx*facing >= 14px). Added test_melee_facing.gd as regression guard (6/6 mutants killed).
+- Skills used: godot-input-test (InputEventAction for Attack; mutation loop), godot-headful-screenshot (front-hit/behind-miss sheet), godot-hit-feel, godot-ab-worktree (not needed: no game-code change). Enhancement (input-test): world-node fixture rule + probe-before-fix (added).
+- Would have helped: a "combat-geometry probe" autoplay event (hit dx/facing/lane logged per hit) instead of a temp print.
+- MCP: none used (CLI needed for --filter mutation loop).

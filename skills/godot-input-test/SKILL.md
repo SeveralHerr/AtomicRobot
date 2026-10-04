@@ -33,6 +33,12 @@ Runner: `godot --headless --path . --script res://tools/run_tests.gd -- --filter
 
 - Recording a GIF with injected input: call `Input.flush_buffered_events()` after every
   `parse_input_event`, or a release lands a frame late and a held stick overshoots.
+- **Parent fixtures under one world Node2D** freed in teardown, not straight on root:
+  hits spawn sparks/popups/shots as SIBLINGS of the target, and leftovers on root broke
+  `test_end_card`'s child-count check (order-dependent failure).
+- "Bug seen in a screenshot" in combat: before fixing, add a temporary `print` of the
+  hit geometry (dx * facing, lanes) in the hit loop and run autoplay; 0 negatives in
+  ~220 real hits proved melee-hits-behind was not real (test_melee_facing.gd).
 - **Assert the precondition** before asserting a state change ("player live before the
   clear"): `boss_room.gd` already freezes the player, so "frozen after" passed vacuously
   until a mutant survived.
