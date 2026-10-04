@@ -10,7 +10,7 @@ class_name ComicPopup
 ## a small random tilt, then a quick fade.
 ##
 ## Readability rules carried over from pinball:
-##   * ONE word on screen at a time — a new word retires the live one (0.12s fade),
+##   * ONE word on screen at a time â€” a new word retires the live one (0.12s fade),
 ##     so stacked words never overprint each other or the fighters.
 ##   * Per-kind cooldowns, so mash-hitting doesn't spam a word every swing.
 ##   * Placement is clamped inside the camera view and kept below the HUD band.
@@ -32,18 +32,34 @@ const STYLES := {
 	&"blue": [Color("#3D86D6"), Color("#8CC6FF"), Color("#FFF4DC")],
 	&"cream": [Color("#FFF4DC"), Color("#FFFFFF"), Color("#C8202A")],
 	&"gold": [Color("#FFB81C"), Color("#FFF0A0"), Color("#C8202A")],
+	&"red": [Color("#C8202A"), Color("#F2762E"), Color("#FFF4DC")],
 }
 
 ## Word pools and feel per event kind. `cooldown` is real seconds between two words
-## of that kind; `life` is how long the word stays; `size` scales the whole card.
+## of that kind; `life` is how long the word stays; `size` scales the whole card;
+## `from` is the pop-in start scale (default 0.35). Combat words start big because a
+## hitstop freezes their first frame on screen; above 1 the card slams DOWN into place.
+## hit / finisher / ko are picked per blow by HitWords (one rising word per string).
 const KINDS := {
 	&"hit": {
 		"words": ["POW!", "BAM!", "WHAP!", "SMACK!", "BONK!"],
 		"style": &"yellow", "anim": &"pop", "cooldown": 0.45, "life": 0.55, "size": 1.0,
+		"from": 0.6,
+	},
+	&"finisher": {
+		"words": ["WHAM!", "KA-POW!", "THWACK!", "KRAK!"],
+		"style": &"orange", "anim": &"pop", "cooldown": 0.0, "life": 0.65, "size": 1.25,
+		"from": 0.9,
+	},
+	&"ko": {
+		"words": ["KO!"],
+		"style": &"red", "anim": &"pop", "cooldown": 0.0, "life": 0.75, "size": 1.3,
+		"from": 1.1, "exit": &"shrink",
 	},
 	&"boss_hit": {
 		"words": ["KRAK!", "BOOM!", "WHAM!", "THWACK!"],
 		"style": &"orange", "anim": &"pop", "cooldown": 0.45, "life": 0.6, "size": 1.15,
+		"from": 0.6,
 	},
 	&"hurt": {
 		"words": ["OOF!", "OUCH!", "ACK!"],
@@ -79,18 +95,25 @@ const HUD_BAND := 0.16
 ## Fade-out at the end of life, and the faster fade used when retired by a new word.
 const FADE := 0.25
 const RETIRE_FADE := 0.12
+## A re-punched word (HitWords "bump") restarts its pop from this scale and grows
+## by BUMP_GROW per punch, up to BUMP_MAX x its kind's size.
+const BUMP_FROM := 0.75
+const BUMP_GROW := 1.1
+const BUMP_MAX := 1.25
 
 static var _last_spawn_ms: Dictionary = {}
 static var _live: WeakRef = null
 
 var word: String = ""
+var kind: StringName = &""
 var style: StringName = &"yellow"
 var anim: StringName = &"pop"
-## How the word leaves: &"fade" (alpha) or &"shrink" (scales away at full opacity —
+## How the word leaves: &"fade" (alpha) or &"shrink" (scales away at full opacity â€”
 ## for words over busy brick, where a half-faded card turns to mud).
 var exit: StringName = &"fade"
 var life: float = 0.55
 var size_mult: float = 1.0
+var pop_from: float = 0.35
 var age: float = 0.0
 var tilt: float = 0.0
 var _base_pos: Vector2 = Vector2.ZERO
@@ -109,6 +132,8 @@ static func spawn(anchor: Node, world_pos: Vector2, kind: StringName, text: Stri
 	var cfg: Dictionary = KINDS[kind]
 	var popup := ComicPopup.new()
 	popup.word = text if text != "" else pick_word(kind)
+	popup.kind = kind
+	popup.pop_from = cfg.get("from", 0.35)
 	popup.style = cfg["style"]
 	popup.anim = cfg["anim"]
 	popup.exit = cfg.get("exit", &"fade")
@@ -202,9 +227,26 @@ func _process(delta: float) -> void:
 	_apply(age)
 
 
-## Fades this word out quickly (a newer word is taking the stage).
+## Shrinks this word away quickly (a newer word is taking the stage). Shrink, not
+## fade: a half-faded card behind the new one read as a muddy double word.
 func retire() -> void:
 	life = minf(life, age + RETIRE_FADE)
+	exit = &"shrink"
+
+
+## Re-punches this word for another blow of the same weight: pops it again from
+## BUMP_FROM, a notch bigger, tilted the other way, over `world_pos` — one word that
+## rides the string instead of a new card per swing.
+func restrike(world_pos: Vector2) -> void:
+	var cfg: Dictionary = KINDS.get(kind, {})
+	var base := float(cfg.get("size", size_mult))
+	size_mult = minf(size_mult * BUMP_GROW, base * BUMP_MAX)
+	life = float(cfg.get("life", life))
+	age = 0.0
+	pop_from = BUMP_FROM
+	tilt = -tilt
+	_base_pos = clamp_to_view(world_pos)
+	_apply(0.0)
 
 
 ## Sets scale / rotation / offset / alpha for time `t`.
@@ -216,7 +258,7 @@ func _apply(t: float) -> void:
 			s = pop_scale(t, 0.2, 0.2)
 			rise = 10.0 * (1.0 - pow(1.0 - clampf(t / 0.7, 0.0, 1.0), 3.0))
 		_:
-			s = pop_scale(t)
+			s = pop_scale(t, 0.18, pop_from)
 	var out := fade_alpha(t, life, minf(FADE, life))
 	if exit == &"shrink":
 		s *= out

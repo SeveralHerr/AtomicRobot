@@ -104,3 +104,18 @@ func test_movie_maker_gets_a_near_freeze() -> String:
 	if r != "":
 		return r
 	return _T.assert_true(s <= 0.02, "still reads as a freeze on video")
+
+
+
+## --fixed-fps (every windowed autoplay run) has the same fixed clock: a true freeze
+## there NaN'd every awake RigidBody2D (leaves, coins) and logged a warning per body
+## per frame for the rest of the run. Godot hides that flag from the game, so the
+## launcher says so through Utils.fixed_clock.
+func test_fixed_clock_flag_gets_a_near_freeze() -> String:
+	U.fixed_clock = true
+	var s: float = U.hit_pause_scale()
+	U.fixed_clock = false
+	var r: String = _T.assert_true(s > 0.0, "never 0 on a fixed clock")
+	if r != "":
+		return r
+	return _T.assert_eq(U.hit_pause_scale(), U.HIT_PAUSE_SCALE, "flag off: a true freeze again")

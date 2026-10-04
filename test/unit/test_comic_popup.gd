@@ -195,6 +195,6 @@ func test_landed_hit_pops_a_word() -> String:
 	return _T.assert_true(live != null and ComicPopup.KINDS[&"hit"]["words"].has(live.word), "a landed hit says POW")
 
 
-func test_killing_blow_pops_no_word() -> String:
+func test_killing_blow_slams_ko() -> String:
 	var live := await _hit_target(true)
-	return _T.assert_true(live == null, "no comic word when the enemy dies (got %s)" % live)
+	return _T.assert_true(live != null and live.kind == &"ko", "the kill says KO (got %s)" % live)

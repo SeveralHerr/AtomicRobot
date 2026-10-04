@@ -124,8 +124,9 @@ func get_damage() -> int:
 
 ## Single funnel for "the player connected with an enemy" — melee (AttackState) and
 ## both projectile characters route through here, so the combo meter cannot drift
-## out of sync with the damage that was dealt.
-func land_hit(target: Node) -> void:
+## out of sync with the damage that was dealt. `finisher`: the last swing of a melee
+## string (AttackChain), which gets the heavier comic word.
+func land_hit(target: Node, finisher: bool = false) -> void:
 	if target == null or not is_instance_valid(target):
 		return
 	target.receive_hit(get_damage())
@@ -135,10 +136,7 @@ func land_hit(target: Node) -> void:
 	# Enemy.receive_hit flips is_dead on the hit frame, so this is the killing blow.
 	var killed := bool(target.get("is_dead"))
 	HitFeel.hit_landed(self, target, killed)
-	# No comic word on the blow that finishes an enemy off.
-	if not killed:
-		var kind := &"boss_hit" if target is FinalBoss else &"hit"
-		ComicPopup.spawn(target, (target as Node2D).global_position + Vector2(0.0, -40.0), kind)
+	HitWords.land(target, killed, finisher, global_position.x)
 
 ## Raw hit points at full health. Static so callers (debug menu, devtools) can ask
 ## without hardcoding the cap.
