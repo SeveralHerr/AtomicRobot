@@ -335,6 +335,18 @@ func _set_ground_collision(enabled: bool) -> void:
 func is_grounded() -> bool:
 	return is_on_floor() or _on_virtual_floor()
 
+## Standing where play will start: grounded, not mid lane step, and on spawn_lane.
+## A fresh player first lands on the walkway and only snaps to its road lane on the
+## next physics frame, so grounded alone can still be one frame from a 48px drop.
+func is_settled() -> bool:
+	if not is_grounded() or is_changing_lane:
+		return false
+	# Not lanes_active(): that waits on the walkway baseline, which is captured the
+	# same frame as the snap, so on the landing frame it still read "no lanes".
+	var scene := get_tree().current_scene
+	var has_lanes := Lanes.scene_has_lanes(scene.scene_file_path if scene else "")
+	return _spawn_lane_applied or spawn_lane == Lanes.GROUND_LANE or not has_lanes
+
 func _process_lane_input() -> void:
 	if is_dead:
 		return

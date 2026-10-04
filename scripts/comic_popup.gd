@@ -41,6 +41,12 @@ const STYLES := {
 ## hitstop freezes their first frame on screen; above 1 the card slams DOWN into place.
 ## hit / finisher / ko are picked per blow by HitWords (one rising word per string).
 const KINDS := {
+	# The opening cut scene: slapped on the red car as AROUND THE CLOCK! lands.
+	&"ticket": {
+		"words": ["TICKET!"],
+		"style": &"cream", "anim": &"pop", "cooldown": 0.0, "life": 1.4, "size": 1.1,
+		"from": 1.4,
+	},
 	&"hit": {
 		"words": ["POW!", "BAM!", "WHAP!", "SMACK!", "BONK!"],
 		"style": &"yellow", "anim": &"pop", "cooldown": 0.45, "life": 0.55, "size": 1.0,

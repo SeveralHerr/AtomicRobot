@@ -14,6 +14,8 @@ func _input(event: InputEvent) -> void:
 
 func _start_transition() -> void:
 	is_transitioning = true
+	# A real run starts here: the street's cut scenes play from now on.
+	StreetCutscenes.enabled = true
 	Transition.change_scene_to_packed(GAME)
 
 func _delay() -> void:

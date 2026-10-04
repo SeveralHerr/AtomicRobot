@@ -293,6 +293,10 @@ func push_event() -> void:
 	if _active_events == 1:
 		event.emit(true)
 
+## A scripted fight (door squad, event volume) is running, between waves included.
+func event_active() -> bool:
+	return _active_events > 0
+
 func pop_event() -> void:
 	_active_events = maxi(0, _active_events - 1)
 	if _active_events == 0:

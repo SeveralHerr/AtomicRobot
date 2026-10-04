@@ -10,16 +10,32 @@ Godot **4.7** (GL Compatibility), viewport 1280x800 canvas-items stretch.
 Linear scene-swap flow via `get_tree().change_scene_to_*`; no central level manager.
 
 ```
-startscreen.tscn ──any key/click──> character_select.tscn ──pick──> main.tscn (or story.tscn ──> main.tscn)
+startscreen.tscn ──any key/click──> character_select.tscn ──pick──> controls_splash.tscn ──> main.tscn
+                                                    (the story is told by main's opening cut scene)
 main.tscn ──Enter trigger (final_boss_enter.gd)──> boss_room.tscn
 game over / win ──> character_select.tscn        restart ──> startscreen.tscn
 ```
 
 - `project.godot:18` main scene = `scenes/startscreen.tscn`
 - `scripts/startscreen.gd:12` → character select
-- `scripts/character_slot.gd:34-39` sets `Globals.selected_character`, → `main.tscn` / `story.tscn`
+- `scripts/character_slot.gd:34-39` sets `Globals.selected_character`, → controls splash → `main.tscn`
 - `scripts/final_boss_enter.gd` — Area2D on `SceneItemsBackground/BuildingGroup4/Enter` in main.tscn → boss room
 - `scripts/ui/end_card.gd` — the one end-of-run screen (`UI/EndCard` in both levels): RESTART → character select
+
+### Street cut scenes (`scripts/cutscene/`)
+
+Three micro cut scenes pull the camera back to show off level art: the opening (on
+level load: tells the story over a dolly from the ticketing maids to the shop — it
+replaced the old story.tscn text screen and character select's SKIP INTRO), THE ARCH (+ statue, x 6250) and CITY COUNCIL (x 8150).
+`StreetCutscenes` (node `Managers/StreetCutscenes` in main.tscn) fires them —
+only after the controls splash set `StreetCutscenes.enabled`, once per session, and
+only once the street is quiet (`CutsceneShots.is_quiet` + `Globals.event_active()`).
+`MicroCutscene` freezes the fight (player, enemies, buffs, spawner) but not the
+city, glides its own Camera2D through the `CutsceneShots.SCENES` table under letterbox
+bars with `CaptionCard`s (one or several per scene), and hands the play camera back.
+HOLD a button 0.8 s to skip (`SkipPrompt` ring; a tap only shows it, a key already
+down at the start doesn't count); `MicroCutscene.playing` is read by the autoplay runner and `EnemyManager`.
+See `skills/godot-micro-cutscene/SKILL.md`.
 
 `final_boss.tscn` is the **boss actor** (CharacterBody2D), not a room; the room is `boss_room.tscn`.
 

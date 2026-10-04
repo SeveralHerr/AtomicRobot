@@ -32,7 +32,7 @@ script = ExtResource("6_x5ggl")
 
 [node name="MeterMaidMelee" type="CharacterBody2D" parent="." unique_id=1638712485 instance=ExtResource("7_kygf7")]
 top_level = true
-position = Vector2(1410, -81)
+position = Vector2(1350, -28)
 collision_layer = 512
 collision_mask = 98
 script = ExtResource("8_w6fs2")
@@ -40,7 +40,7 @@ persist = true
 
 [node name="MeterMaidMelee3" type="CharacterBody2D" parent="." unique_id=34675654 instance=ExtResource("7_kygf7")]
 top_level = true
-position = Vector2(1475, -47)
+position = Vector2(1392, -28)
 collision_layer = 512
 collision_mask = 98
 script = ExtResource("8_w6fs2")

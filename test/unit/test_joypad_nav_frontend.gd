@@ -1,14 +1,13 @@
 extends RefCounted
 
 # Arcade cabinet: joystick/d-pad + buttons only. Every front-end screen (title,
-# story, controls splash; character select lives in test_character_select.gd) must advance or navigate from a pad.
+# controls splash; character select lives in test_character_select.gd) must advance or navigate from a pad.
 # Real scenes are loaded; scene-changing methods are stubbed via thin subclasses so
 # a test never boots main.tscn.
 
 var _T
 
 const START := preload("res://scenes/startscreen.tscn")
-const STORY := preload("res://scenes/story.tscn")
 const CONTROLS := preload("res://scenes/controls_splash.tscn")
 
 const PAD_A := 0
@@ -22,13 +21,6 @@ class StubStart:
 	extends "res://scripts/startscreen.gd"
 	var advanced := 0
 	func _advance() -> void:
-		advanced += 1
-
-
-class StubStory:
-	extends "res://scripts/story.gd"
-	var advanced := 0
-	func transition_to_game() -> void:
 		advanced += 1
 
 
@@ -137,25 +129,6 @@ func test_startscreen_timer_arms_delay() -> String:
 	var s: Node = await _mount(START, StubStart)
 	await _tree().create_timer(s.get_node("Timer").wait_time + 0.2).timeout
 	return _T.assert_true(s.delay, "Timer arms the screen without input")
-
-
-# --- Story ---------------------------------------------------------------------
-
-func test_story_advances_on_pad_after_text_shows() -> String:
-	var s: Node = await _mount(STORY, StubStory)
-	await _pad(PAD_A)
-	var r: String = _T.assert_eq(s.advanced, 0, "pad ignored while text fades in")
-	if r != "":
-		return r
-	var waited := 0.0
-	while not s.can_proceed and waited < 4.0:
-		await _tree().create_timer(0.1).timeout
-		waited += 0.1
-	r = _T.assert_true(s.can_proceed, "story finishes fading in within 4s")
-	if r != "":
-		return r
-	await _pad(PAD_A)
-	return _T.assert_eq(s.advanced, 1, "joypad A advances past the story")
 
 
 # --- Controls splash -----------------------------------------------------------

@@ -7,7 +7,6 @@ extends Control
 ## Arcade has no mouse: a card owns focus the moment the screen opens (last-played
 ## fighter, else the first unlocked one) or the d-pad has nothing to move.
 
-const STORY: PackedScene = preload("res://scenes/story.tscn")
 const CONTROLS_SPLASH: PackedScene = preload("res://scenes/controls_splash.tscn")
 const RosterCard := preload("res://scripts/ui/select/roster_card.gd")
 const HeroStage := preload("res://scripts/ui/select/hero_stage.gd")
@@ -21,8 +20,6 @@ const CHEER: AudioStream = preload("res://sounds/power_up.wav")
 const FANFARE: AudioStream = preload("res://sounds/Unlock.wav")
 ## When the NEW CHALLENGER reveal fires: after the roster has dropped in.
 const REVEAL_AT := 0.6
-const CHECK_ON: Texture2D = preload("res://images/check_square_grey_checkmark.png")
-const CHECK_OFF: Texture2D = preload("res://images/check_square_grey.png")
 
 ## Semitones per card: a major pentatonic run, so sweeping the strip plays a scale.
 const TICK_STEPS: Array[int] = [0, 2, 4, 7, 9, 12]
@@ -39,14 +36,12 @@ const CONFIRM_HOLD := 1.4
 ## Freeze before the burst: the beat that makes a pick land like a hit.
 const HITSTOP := 0.08
 const FADE_TIME := 0.3
-const EXIT_GAP := 48.0
 
 var cards: Array[Button] = []
 var hero: Control
 var info: Panel
 var title: Label
 var cursor: Control
-var skip_intro: CheckBox
 var exit_button: Button
 var flash: ColorRect
 var fade: ColorRect
@@ -217,13 +212,14 @@ func back_to_title() -> void:
 	Transition.change_scene_to_file(TITLE)
 
 
-## Leave for the story, or straight to the controls splash when SKIP INTRO is on.
+## On to the controls splash. The story is told by the street's opening cut scene
+## (any button skips it), so there is no story screen and no SKIP INTRO.
 func start_run() -> void:
 	Transition.change_scene_to_packed(next_scene())
 
 
 func next_scene() -> PackedScene:
-	return CONTROLS_SPLASH if skip_intro.button_pressed else STORY
+	return CONTROLS_SPLASH
 
 
 func _on_card_focus(card: Button) -> void:
@@ -234,7 +230,6 @@ func _on_card_focus(card: Button) -> void:
 	hero.show_character(cfg, card.is_unlocked(), dir)
 	info.show_character(cfg, card.is_unlocked())
 	# Up from the footer returns to the fighter you were on, not the nearest card.
-	skip_intro.focus_neighbor_top = skip_intro.get_path_to(card)
 	exit_button.focus_neighbor_top = exit_button.get_path_to(card)
 	_move_cursor.call_deferred(card, first)
 	_dim_cursor(false)
@@ -332,7 +327,7 @@ func _build_cursor() -> void:
 	bob.parallel().tween_property(arrow, "position:y", 0.0, 0.35).set_trans(Tween.TRANS_SINE)
 
 
-## SKIP INTRO + EXIT GAME, centred under the roster.
+## EXIT GAME, centred under the roster (hidden where the game can't quit).
 func _build_footer() -> void:
 	var bar := HBoxContainer.new()
 	bar.name = "Footer"
@@ -346,23 +341,11 @@ func _build_footer() -> void:
 	focus_box.set_content_margin_all(8)
 	focus_box.set_expand_margin_all(4)
 
-	skip_intro = CheckBox.new()
-	skip_intro.text = "SKIP INTRO"
-	_footer_style(skip_intro, focus_box)
-	skip_intro.add_theme_icon_override("checked", CHECK_ON)
-	skip_intro.add_theme_icon_override("unchecked", CHECK_OFF)
-	bar.add_child(skip_intro)
-
-	var spacer := Control.new()
-	spacer.custom_minimum_size.x = EXIT_GAP
-	bar.add_child(spacer)
-	skip_intro.focus_entered.connect(_on_footer_focus)
 	exit_button = Button.new()
 	exit_button.focus_entered.connect(_on_footer_focus)
 	_footer_style(exit_button, focus_box)
 	bar.add_child(exit_button)
 	QuitGame.wire(exit_button, func() -> void: quit_game.call())
-	spacer.visible = exit_button.visible  # keep SKIP INTRO centred when EXIT is hidden
 	exit_button.text = exit_button.text.to_upper()
 
 
@@ -390,14 +373,11 @@ func _wire_focus() -> void:
 		var card := cards[i]
 		card.focus_neighbor_left = card.get_path_to(cards[(i - 1 + n) % n])
 		card.focus_neighbor_right = card.get_path_to(cards[(i + 1) % n])
-		card.focus_neighbor_bottom = card.get_path_to(skip_intro)
+		# Down reaches EXIT GAME; where it is hidden (web), down stays put.
+		card.focus_neighbor_bottom = card.get_path_to(exit_button if exit_button.visible else card)
 		card.focus_neighbor_top = card.get_path_to(card)
-	skip_intro.focus_neighbor_right = skip_intro.get_path_to(exit_button)
-	skip_intro.focus_neighbor_left = skip_intro.get_path_to(skip_intro)
-	exit_button.focus_neighbor_left = exit_button.get_path_to(skip_intro)
-	exit_button.focus_neighbor_right = exit_button.get_path_to(exit_button)
-	for b in [skip_intro, exit_button]:
-		b.focus_neighbor_bottom = b.get_path_to(b)
+	for side in ["focus_neighbor_left", "focus_neighbor_right", "focus_neighbor_bottom"]:
+		exit_button.set(side, exit_button.get_path_to(exit_button))
 
 
 func _intro() -> void:
@@ -445,7 +425,7 @@ func _move_cursor(card: Button, snap: bool) -> void:
 ## After A: nothing else may take focus or fire while READY! plays.
 func _lock_input() -> void:
 	var all: Array[Button] = cards.duplicate()
-	all.append_array([skip_intro, exit_button])
+	all.append(exit_button)
 	for b in all:
 		b.focus_mode = Control.FOCUS_NONE
 		b.mouse_filter = Control.MOUSE_FILTER_IGNORE

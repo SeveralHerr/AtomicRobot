@@ -12,7 +12,7 @@ How level geometry is authored and how to inspect/edit it. See
 
 - **`scenes/main.tscn`** — THE level (~1200 lines, root `Main: Node2D`, no root script).
 - **`scenes/boss_room.tscn`** — boss fight room (root script `boss_room.gd`).
-- `startscreen.tscn`, `character_select.tscn`, `story.tscn` — Control-based menus.
+- `startscreen.tscn`, `character_select.tscn`, `controls_splash.tscn` — Control-based menus.
 - `final_boss.tscn` — the boss **actor**, instanced by boss_room.gd.
 
 ## main.tscn high-level tree

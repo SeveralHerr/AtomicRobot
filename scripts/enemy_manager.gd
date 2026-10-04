@@ -29,6 +29,10 @@ func _on_spawn_timer_timeout():
 	if is_event_active:
 		spawn_timer.stop()
 		return
+	# No ambush while a cut scene has the camera: the player is frozen.
+	if MicroCutscene.playing:
+		spawn_timer.start()
+		return
 	if not player.is_near_ground():
 		print("player not near ground, skipping enemy spawn")
 		return

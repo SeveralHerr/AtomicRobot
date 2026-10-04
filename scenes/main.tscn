@@ -32,6 +32,7 @@
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="83_eh25q"]
 [ext_resource type="PackedScene" uid="uid://c5plqygsfeeie" path="res://scenes/mobile_controls.tscn" id="100_mobctl"]
 [ext_resource type="PackedScene" path="res://scenes/end_card.tscn" id="900_endcard"]
+[ext_resource type="Script" path="res://scripts/cutscene/street_cutscenes.gd" id="901_cutscenes"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("51_k4pk8")
@@ -376,6 +377,9 @@ flip_h = true
 
 [node name="EnemyManager" type="Node2D" parent="Managers" unique_id=818627881]
 script = ExtResource("58_335wh")
+
+[node name="StreetCutscenes" type="Node" parent="Managers"]
+script = ExtResource("901_cutscenes")
 
 [node name="LeafManager" parent="Managers" unique_id=487693304 groups=["leaf_manager"] instance=ExtResource("65_brcwu")]
 

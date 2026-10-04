@@ -1,7 +1,7 @@
 extends RefCounted
 
 # Character select on an arcade cabinet: joystick/d-pad + buttons only. The real
-# scene is mounted; start_run() is stubbed so a confirmed pick never boots the story.
+# scene is mounted; start_run() is stubbed so a confirmed pick never boots the run.
 
 var _T
 
@@ -249,25 +249,15 @@ func test_stick_moves_focus() -> String:
 	return _T.assert_eq(_focus(), _card("Ryan"), "stick left moves back to Ryan")
 
 
-func test_down_reaches_skip_intro_and_up_returns_to_same_card() -> String:
+func test_down_reaches_exit_and_up_returns_to_same_card() -> String:
 	Globals.selected_character = "Sara"
 	await _mount()
 	await _pad(PAD_DOWN)
-	var r: String = _T.assert_eq(_focus(), _scene.skip_intro, "d-pad down reaches SKIP INTRO")
-	if r != "":
-		return r
-	await _pad(PAD_A)
-	r = _T.assert_true(_scene.skip_intro.button_pressed, "A toggles SKIP INTRO")
+	var r: String = _T.assert_eq(_focus(), _scene.exit_button, "d-pad down reaches EXIT GAME")
 	if r != "":
 		return r
 	await _stick(JOY_AXIS_LEFT_Y, -1.0)
 	return _T.assert_eq(_focus(), _card("Sara"), "stick up returns to the fighter you left")
-
-
-func test_skip_intro_has_visible_focus_style() -> String:
-	await _mount()
-	var sb: StyleBox = _scene.skip_intro.get_theme_stylebox("focus")
-	return _T.assert_false(sb == null or sb is StyleBoxEmpty, "SKIP INTRO focus is visible on an arcade screen")
 
 
 func test_second_pad_navigates() -> String:
@@ -342,7 +332,7 @@ func test_confirm_stamps_ready() -> String:
 
 # --- EXIT GAME -------------------------------------------------------------------
 
-func test_right_of_skip_intro_reaches_exit_and_a_quits() -> String:
+func test_down_reaches_exit_and_a_quits() -> String:
 	Globals.selected_character = "Ryan"
 	await _mount()
 	var quits := [0]
@@ -352,8 +342,7 @@ func test_right_of_skip_intro_reaches_exit_and_a_quits() -> String:
 	if r != "":
 		return r
 	await _pad(PAD_DOWN)
-	await _pad(PAD_RIGHT)
-	r = _T.assert_eq(_focus(), exit, "down then right reaches EXIT GAME")
+	r = _T.assert_eq(_focus(), exit, "down reaches EXIT GAME")
 	if r != "":
 		return r
 	await _pad(PAD_A)
@@ -469,13 +458,9 @@ func test_first_tap_previews_second_tap_picks() -> String:
 	return _T.assert_eq(Globals.selected_character, "Cass", "second tap picks")
 
 
-func test_skip_intro_picks_next_scene() -> String:
+func test_pick_goes_straight_to_the_controls_splash() -> String:
 	await _mount()
-	var r: String = _T.assert_eq(_scene.next_scene(), _scene.STORY, "intro on -> story")
-	if r != "":
-		return r
-	_scene.skip_intro.button_pressed = true
-	return _T.assert_eq(_scene.next_scene(), _scene.CONTROLS_SPLASH, "SKIP INTRO -> controls splash")
+	return _T.assert_eq(_scene.next_scene(), _scene.CONTROLS_SPLASH, "the story moved into the opening cut scene")
 
 
 func test_confirm_twice_is_ignored() -> String:

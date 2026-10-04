@@ -10,6 +10,9 @@ class_name BossBanner
 ## Emitted the frame a title lands, so the room can shake the screen / thud on it.
 signal landed
 
+## Every banner joins this group, so a cut scene can clear whatever callout is up.
+const GROUP := &"callouts"
+
 const STRIPE_H := 150.0
 ## Stripe centre as a fraction of screen height — above the fighters, below the HUD.
 const STRIPE_Y := 0.42
@@ -53,6 +56,7 @@ var _blip: AudioStreamPlayer
 
 func _init() -> void:
 	name = "BossBanner"
+	add_to_group(GROUP)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	_title = ComicStyle.heading("", TITLE_PX, ComicStyle.YELLOW)
