@@ -45,8 +45,16 @@ func _physics_process(delta: float) -> void:
 	_travelled += step
 	var target := find_target(get_tree().get_nodes_in_group("enemies"), lane,
 		global_position.y, from_x, global_position.x, dir)
+	var crack: Crack = null
+	if target == null:
+		crack = find_crack(get_tree().get_nodes_in_group(Crack.GROUP), global_position.y,
+			from_x, global_position.x)
 	if target != null:
 		_hit(target)
+	elif crack != null:
+		# A shot chips a secret wall exactly like a melee blow.
+		crack.take_blow(self)
+		queue_free()
 	elif _travelled >= MAX_TRAVEL:
 		queue_free()
 
@@ -88,3 +96,22 @@ static func find_target(enemies: Array, on_lane: int, shot_y: float, from_x: flo
 			best_d = d
 			best = e
 	return best
+
+
+## A closed secret wall whose hit circle this frame's sweep from `from_x` to `to_x`
+## (at height `shot_y`) touches; null if none. Opened walls let shots through.
+static func find_crack(cracks: Array, shot_y: float, from_x: float, to_x: float) -> Crack:
+	var lo := minf(from_x, to_x) - HALF_LENGTH
+	var hi := maxf(from_x, to_x) + HALF_LENGTH
+	for node in cracks:
+		if not (node is Crack) or not is_instance_valid(node):
+			continue
+		var c: Crack = node
+		if c.is_open():
+			continue
+		var r := c.hit_radius()
+		var p := c.global_position
+		if p.x + r < lo or p.x - r > hi or absf(p.y - shot_y) > r:
+			continue
+		return c
+	return null

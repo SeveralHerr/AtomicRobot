@@ -44,11 +44,9 @@ func trigger_attack(player: Player)-> void:
 	for area in player.area_2d.get_overlapping_areas():
 		var parent = area.get_parent()
 		if parent is Crack:
-			ScreenShake.apply_shake(5, 0.2)
-			parent.receive_hit()
-			ComicPopup.spawn(parent, parent.global_position, &"smash")
-			
-			
+			parent.take_blow(player)
+
+
 func _on_frame_changed(player: Player):
 	if player.default_sprite.animation == "Attack" and player.default_sprite.frame == Globals.get_current_character_attack_frame():
 		trigger_attack(player)
