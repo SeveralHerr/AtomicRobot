@@ -327,7 +327,7 @@ func _build_scenario() -> void:
 			])
 			var thrower := _spawn_maid(110.0, Lanes.GROUND_LANE, false)
 			if thrower != null:
-				thrower.coins = 99
+				thrower.set_deferred("coins", 99)  # after MeterMaid._ready sets 2
 
 		Scenario.POINT_BLANK_RANGED, Scenario.POINT_BLANK_MELEE:
 			var melee := scenario == Scenario.POINT_BLANK_MELEE
@@ -338,7 +338,7 @@ func _build_scenario() -> void:
 			])
 			var maid := _spawn_maid(0.0, Lanes.GROUND_LANE, melee)
 			if maid != null:
-				maid.coins = 99
+				maid.set_deferred("coins", 99)  # after MeterMaid._ready sets 2
 				# Short cooldown so a stall shows inside the sample window; the
 				# first swing can fire mid-fall, before the player lands on her.
 				maid.attack_cooldown = 1.0

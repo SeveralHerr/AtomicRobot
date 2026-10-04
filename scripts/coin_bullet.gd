@@ -12,11 +12,14 @@ var has_hit_player: bool = false
 var bounce_damping: float = 0.3
 var is_falling: bool = false
 var has_landed: bool = false
+## The ONE lane this coin can hurt in. A coin never re-targets: step out of its
+## lane (or be mid-step) and it sails past. Throwers line up in your lane first.
 var lane: int = Lanes.GROUND_LANE
-# Coins arced down by platform/window maids hit whichever lane they land on.
-var lane_agnostic: bool = false
 ## Absolute Y of the virtual floor this coin lands on; INF = ride real collision.
 var virtual_floor_y: float = INF
+## Extra px around the player's body box that still counts as contact (coin radius).
+const HIT_PAD := 2.0
+var _shadow: CoinShadow
 
 func start(_position: Vector2, _direction: Vector2, is_arc: bool = false, gravity: float = 0.55) -> void:
 	global_position = _position
@@ -73,6 +76,16 @@ func set_lane_floor(floor_lane: int, rest_y: float, spawn_y: float = -INF) -> vo
 	set_collision_mask_value(6, false)
 	z_index = Lanes.z_for(floor_lane)
 
+
+## Drop a ground shadow on the lane's floor line so the coin's lane reads in flight.
+func show_shadow(floor_y: float) -> void:
+	if not is_finite(floor_y):
+		return
+	if _shadow == null:
+		_shadow = CoinShadow.new()
+		add_child(_shadow)
+	_shadow.floor_y = floor_y
+
 ## Bounce/rest on the virtual floor, since there is no body there to collide with.
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	if virtual_floor_y == INF or state.linear_velocity.y < 0.0:
@@ -106,14 +119,40 @@ func _physics_process(delta: float) -> void:
 		freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC
 		freeze = true
 		has_landed = true
+	_check_player_contact()
+
+
+## Coins don't physically collide with the player (that made them bounce off a
+## player in a neighbouring lane — lanes are 24px apart, the body is 51px tall).
+## Contact is a lane test plus an overlap of the player's body box instead.
+func _check_player_contact() -> void:
+	if has_hit_player or has_landed:
+		return
+	var player := get_tree().get_first_node_in_group("player") as Player
+	if player == null or not _overlaps(player):
+		return
+	_on_body_entered(player)
+
+
+func _overlaps(player: Player) -> bool:
+	var cs: CollisionShape2D = player.collision_shape_2d_body
+	if cs == null or cs.shape == null:
+		return false
+	var box: Rect2 = cs.global_transform * cs.shape.get_rect()
+	return box.grow(HIT_PAD).has_point(global_position)
+
+
+## A coin hurts only a player standing in its lane. Mid-step counts as out of it:
+## the step IS the dodge, so it must work from its first frame.
+static func lane_allows_hit(coin_lane: int, player_lane: int, player_changing_lane: bool) -> bool:
+	return coin_lane == player_lane and not player_changing_lane
+
 
 func _on_body_entered(body: Node) -> void:
-	#if body is not Player:
-		#set_collision_mask_value(1, false)
 	if body is Player and not has_hit_player:
 		if has_landed:
 			return
-		if not lane_agnostic and body.current_lane != lane:
+		if not lane_allows_hit(lane, body.current_lane, body.is_changing_lane):
 			return
 		print("hit player")
 		body.receive_hit(global_position, 1)

@@ -225,6 +225,9 @@ func _scenario_checks() -> void:
 				_fail("no enemy ever entered an attack state")
 			if _coins_thrown <= 0:
 				_fail("ranged maids closed but never threw a coin")
+			# Positive control for lane-bound coins: in-lane throws still connect.
+			if _player_hits <= 0:
+				_fail("no coin or swing ever hit a player standing still")
 
 		EnemySandbox.Scenario.COIN_REFILL:
 			# They start empty; reaching a meter is the whole scenario.
