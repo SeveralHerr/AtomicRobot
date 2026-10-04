@@ -389,3 +389,10 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: godot-autoplay-test (enhancement: say up front that the brain never presses Interact — now documented), artifact-capabilities. New: godot-speedrun-review.
 - Would have helped: godot-speedrun-review (now exists); somewhat-useful-claude-skills:godot-2d-placement-audit (HUD overlap numerically); mockup-on-screenshot (proposal visuals on cards).
 - MCP: godot-tests (extended with record_autoplay). AGENTS.md referenced by CLAUDE.md does not exist.
+
+## 2026-10-03 sr-hud (HUD presentation: wave clear, timer duck, 2-hit combo, cinematic HUD)
+- Useful: godot-boss-juice (banner/announcer layout; added HudFade gotchas), godot-headful-screenshot
+  (SceneTree capture), godot-autoplay-test (`--resolution 1688x780` snaps), godot-speedrun-review (frames).
+- Wished for: a reusable "capture HUD states" SceneTree script and a generic `(file, original, mutant,
+  filter)` mutation runner checked into tools/ (rewrote both in scratch).
+- Enhancement idea (godot-boss-juice): say up front which HUD rows each callout lands on.
