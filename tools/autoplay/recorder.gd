@@ -56,6 +56,9 @@ var frames: int = 0
 var kills := 0
 var damage_taken := 0
 var hits_taken := 0
+## Hits taken (hp lost) on a frame a car struck the player.
+var car_hits := 0
+var _car_seen := Car.player_hits
 var heals := 0
 var deaths := 0
 var won := false
@@ -180,11 +183,14 @@ func _track_player(tree: SceneTree) -> void:
 		_player_id = p.get_instance_id()
 		_last_hp = p.health
 		return
+	var by_car := Car.player_hits > _car_seen
+	_car_seen = Car.player_hits
 	if p.health < _last_hp:
 		hits_taken += 1
+		car_hits += 1 if by_car else 0
 		damage_taken += _last_hp - p.health
 		log_event("hurt", {"hp": p.health, "x": roundi(p.global_position.x), "lane": p.current_lane,
-			"why": last_why, "near": _nearest_enemy_label(p.global_position)})
+			"why": last_why, "near": "car" if by_car else _nearest_enemy_label(p.global_position)})
 	elif p.health > _last_hp:
 		heals += 1
 		log_event("heal", {"hp": p.health, "x": roundi(p.global_position.x)})
@@ -310,6 +316,7 @@ func metrics(tree: SceneTree) -> Dictionary:
 		"max_stuck_s": snappedf(max_stuck_s, 0.1), "stuck_spots": stuck_spots.size(),
 		"secret_walls": secret_walls.size(), "secret_news": secret_news.size(),
 		"headlines": headlines.size(), "cutscenes": cutscenes,
+		"car_hits": car_hits,
 		"step_failures": step_failures.size(),
 		"errors": errors.script_errors, "engine_errors": errors.engine_errors,
 		"warnings": errors.warnings,

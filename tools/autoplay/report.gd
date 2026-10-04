@@ -45,8 +45,8 @@ static func summary(r: Dictionary, path: String) -> String:
 		lines.append("  step failed: %s: %s" % [f["step"], f["reason"]])
 	lines.append("  scenes: %s" % " > ".join(r["scenes"]))
 	lines.append("  end: scene=%s x=%d lane=%s hp=%s/%s state=%s" % [m["scene"], m["x"], m["lane"], m["hp"], m["max_hp"], m["state"]])
-	lines.append("  combat: kills=%d hits_taken=%d damage=%d heals=%d deaths=%d won=%d score=%s%s" % [
-		m["kills"], m["hits_taken"], m["damage_taken"], m["heals"], m["deaths"], m["won"], m["score"],
+	lines.append("  combat: kills=%d hits_taken=%d car_hits=%d damage=%d heals=%d deaths=%d won=%d score=%s%s" % [
+		m["kills"], m["hits_taken"], m.get("car_hits", 0), m["damage_taken"], m["heals"], m["deaths"], m["won"], m["score"],
 		"" if m.get("boss_hp", -1) < 0 else " boss_hp=%d" % m["boss_hp"]])
 	for e: Dictionary in r.get("events", []):
 		if e.get("ev") == "run":

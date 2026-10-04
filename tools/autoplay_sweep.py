@@ -20,7 +20,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 OUT = REPO / "autoplay_out"
 CHARS = "Ryan,Cody,Sara,Cass,Caitlyn,Robot"
-COLS = ["won", "boss_hp", "t", "hits_taken", "heals", "kills", "deaths", "errors", "engine_errors"]
+COLS = ["won", "boss_hp", "t", "hits_taken", "car_hits", "heals", "kills", "deaths", "errors", "engine_errors"]
 SPLIT = ["street_hits", "boss_hits", "door_hp"]
 
 
