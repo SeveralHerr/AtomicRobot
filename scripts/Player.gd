@@ -128,8 +128,13 @@ func land_hit(target: Node) -> void:
 		return
 	target.receive_hit(get_damage())
 	ScoreSystem.register_hit()
+	if not target is Node2D:
+		return
+	# Enemy.receive_hit flips is_dead on the hit frame, so this is the killing blow.
+	var killed := bool(target.get("is_dead"))
+	HitFeel.hit_landed(self, target, killed)
 	# No comic word on the blow that finishes an enemy off.
-	if target is Node2D and not target.get("is_dead"):
+	if not killed:
 		var kind := &"boss_hit" if target is FinalBoss else &"hit"
 		ComicPopup.spawn(target, (target as Node2D).global_position + Vector2(0.0, -40.0), kind)
 
@@ -421,12 +426,6 @@ func get_air_speed() -> float:
 func _process(delta: float) -> void:
 	state_machine.update(delta)
 	_process_lane_input()
-	#var frame = default_sprite.frame
-	#var x = frame / h
-	#var y = frame / h
-	#var frame_coords = Vector2(x, y)
-	#default_sprite.material.set_shader_parameter("frame_coords",frame_coords)
-	#default_sprite.material.set_shader_parameter("velocity",velocity)
 
 func receive_hit(source_position: Vector2, damage: int, knockback_strength: float = 300) -> void:
 	if is_dead:
@@ -470,15 +469,8 @@ func receive_hit(source_position: Vector2, damage: int, knockback_strength: floa
 	else:
 		velocity.y = knockback_direction.y * final_knockback_strength * 0.5
 	
-	# Add screen shake effect (if you have a camera shake system)
-	if camera_2d.has_method("add_trauma"):
-		camera_2d.add_trauma(0.3)
-	
-	# Use the existing screenshake system
-	var screenshake_node = get_tree().get_first_node_in_group("screenshake")
-	if screenshake_node:
-		screenshake_node.apply_shake(15.0, 0.3)
-	
+	ScreenShake.apply_shake(6, 0.25)
+
 	# Change to knockback state
 	state_machine.change_state("KnockbackState")
 	
@@ -490,16 +482,6 @@ func death() -> void:
 	state_machine.change_state("DeadState")
 
 
-func _on_attack_timer_timeout() -> void:
-	pass # Replace with function body.
-
-# Update player's facing direction based on movement input
-func update_facing_direction() -> void:
-	var direction := Input.get_axis("ui_left", "ui_right")
-	if direction < 0:
-		scale.x = -1 # Face left
-	elif direction > 0:
-		scale.x = 1 # Face right
 func _handle_direction(direction, player) -> void:
 	if direction:
 		if direction < 0:
