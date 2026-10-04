@@ -167,3 +167,33 @@ func test_fall_air_control_reverses_within_a_quarter_second() -> String:
 func test_jump_air_control_reverses_within_a_quarter_second() -> String:
 	var n := await _reverse_frames("JumpState")
 	return _T.assert_true(n <= 15, "full right to 80%% left while rising took %d frames (max 15)" % n)
+
+
+func test_air_swing_still_steers() -> String:
+	await _r.spawn("Ryan", 400.0)
+	_r.p.velocity.x = 0.0
+	_r.tap("Attack")
+	Input.action_press("ui_left")
+	await _r.step(8)
+	var r: String = _T.assert_eq(_r.state_name(), "AttackState", "still swinging")
+	if r != "":
+		return r
+	return _T.assert_gt(-_r.p.velocity.x, 100.0, "held left steers the air swing")
+
+
+## Holding a direction in the air must not walk-cancel the swing: there is no ground
+## to walk on, and the cancel would drop the Attack anim mid-air.
+func test_held_direction_does_not_cancel_an_air_swing() -> String:
+	await _r.spawn("Ryan", 600.0)
+	_r.tap("Attack")
+	Input.action_press("ui_right")
+	var frames := 0
+	for i in 40:
+		await _r.step(1)
+		if _r.state_name() != "AttackState":
+			break
+		frames += 1
+	var anim_frames := _r.p.default_sprite.sprite_frames.get_frame_count("Attack")
+	# Full swing at ANIM_SPEED is anim_frames / (15 * ANIM_SPEED) s; allow slack.
+	var full := int(anim_frames / (15.0 * AttackChain.ANIM_SPEED) * 60.0) - 4
+	return _T.assert_gte(frames, full, "air swing played out (%d of ~%d frames)" % [frames, full + 4])

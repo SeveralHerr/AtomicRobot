@@ -121,3 +121,17 @@ func test_ungrouped_node_with_reflect_is_left_alone() -> String:
 func test_player_swing_scans_the_reflect_area_layer() -> String:
 	await _r.spawn("Ryan")
 	return _T.assert_true(_r.p.area_2d.get_collision_mask_value(8), "Area2D mask includes layer 8 (coin ReflectArea)")
+
+
+## The real coin is a body with a ReflectArea child: the swing can see both, and
+## must still reflect it only once.
+func test_reflectable_seen_as_body_and_area_parent_reflects_once() -> String:
+	await _r.spawn("Ryan")
+	var c := _body(true, _r.p.current_lane)
+	var a := Area2D.new()
+	a.collision_layer = BULLET_LAYER
+	a.collision_mask = 0
+	a.add_child(_shape())
+	c.add_child(a)
+	await _swing()
+	return _T.assert_eq(c.reflected, 1, "one reflect per swing")
