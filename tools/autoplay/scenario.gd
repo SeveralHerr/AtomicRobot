@@ -43,6 +43,7 @@ const VERBS := {
 	"god": ["onoff"],
 	"hp": ["int"],
 	"kill_all": [],
+	"sink": ["num"],
 	"brain": ["goal", "num?"],
 	"menu": ["num?"],
 	"snap": ["name?"],

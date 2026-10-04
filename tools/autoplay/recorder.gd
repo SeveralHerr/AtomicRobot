@@ -116,7 +116,8 @@ func sample(snap: Dictionary, tree: SceneTree) -> void:
 	_track_stuck(snap)
 	if snap_every > 0.0 and t >= _next_auto_snap:
 		_next_auto_snap = t + snap_every
-		snap("t%04d" % int(t))
+		# Frame-numbered: whole-second labels overwrote every sub-second snap.
+		snap("f%06d" % frames)
 
 
 func _track_scene(tree: SceneTree) -> void:

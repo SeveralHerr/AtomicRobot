@@ -28,7 +28,8 @@ Everything is validated before the run (verbs, actions, lanes, metrics, numbers)
 Steps (`"verb args"`): `wait S` · `hold ACTION S` · `tap ACTION` · `press/release ACTION`
 · `walk_to X [T]` · `lane N` (0 walkway .. 3 front; main.tscn only) · `teleport X`
 · `spawn melee|ranged [DX] [LANE]` · `god on|off` (survives scene changes) · `hp N` (raw;
-3 per orb) · `kill_all` (not counted as kills) · `brain advance|clear|monkey [S]` · `menu [S]`
+3 per orb) · `kill_all` (not counted as kills) · `sink DY` (push live non-locked enemies DY px
+off their lane floor, lane unchanged) · `brain advance|clear|monkey [S]` · `menu [S]`
 · `snap [NAME]` · `dump [NAME]` · `assert METRIC OP VALUE`.
 A step that can't do its job (`walk_to`/`lane`/`menu` timeout, `spawn` with no player)
 FAILS the run with `step failed: ...`. Remaining steps are skipped once the player dies.
