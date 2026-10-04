@@ -316,3 +316,5 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: artifact-design (GIF report page). Enhancement idea: tell me up front that a 6-panel CRT-noise GIF blows past 16MB, and give a size budget per frame.
 - Would have helped: godot-autoplay-test (used its CLI; it needs a "force a bad state" section and should say snaps are frame-numbered now); derive-the-list (not needed); a "godot-ab-worktree" skill that runs the same scenario on HEAD vs the working tree and prints a diff table (did this by hand).
 - MCP: none used (godot-tests MCP available; used CLI directly for --filter + mutation loop).
+
+- 2026-10-03 commit+merge: no skill needed; plain git branch -> 4 commits -> --no-ff merge.
