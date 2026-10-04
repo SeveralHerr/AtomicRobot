@@ -214,12 +214,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func back_to_title() -> void:
-	get_tree().change_scene_to_file(TITLE)
+	Transition.change_scene_to_file(TITLE)
 
 
 ## Leave for the story, or straight to the controls splash when SKIP INTRO is on.
 func start_run() -> void:
-	get_tree().change_scene_to_packed(next_scene())
+	Transition.change_scene_to_packed(next_scene())
 
 
 func next_scene() -> PackedScene:

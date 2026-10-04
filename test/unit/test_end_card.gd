@@ -97,6 +97,13 @@ func _key(code: Key, unicode: int = 0) -> void:
 		await _frames(1)
 
 
+## A death plays the DeathBeat (slow-mo, grey) before the card: wait it out.
+func _beat(card: EndCard) -> void:
+	while card.beat.running:
+		await _tree().process_frame
+	await _frames()
+
+
 func _type(text: String) -> void:
 	for c in text:
 		await _key(OS.find_keycode_from_string(c), c.to_lower().unicode_at(0))
@@ -181,7 +188,7 @@ func test_level_has_one_end_screen() -> String:
 func test_death_with_high_score_shows_entry_in_the_card() -> String:
 	var card: EndCard = await _level()
 	Globals.player_death.emit()
-	await _frames()
+	await _beat(card)
 	var r: String = _T.assert_true(card.visible, "card shows on death")
 	if r != "":
 		return r
@@ -206,6 +213,7 @@ func test_death_with_high_score_shows_entry_in_the_card() -> String:
 func test_saving_swaps_entry_for_lit_list_then_restart() -> String:
 	var card: EndCard = await _level()
 	Globals.player_death.emit()
+	await _beat(card)
 	await _tree().create_timer(InitialsEntry.ARM_DELAY + 0.05).timeout
 	await _type("ZAP")
 	await _pad(JOY_BUTTON_A)
@@ -266,7 +274,7 @@ func test_non_qualifier_sees_list_and_restart_at_once() -> String:
 		HighScoreTable.insert(ScoreSystem.high_scores, HighScoreTable.make_entry("TOP", 1_000_000))
 	var card: EndCard = await _level(BOSS_ROOM, 10)
 	Globals.player_death.emit()
-	await _frames()
+	await _beat(card)
 	var r: String = _T.assert_false(card.entry.visible, "no entry")
 	if r != "":
 		return r
@@ -293,6 +301,23 @@ func test_card_fits_screen_and_covers_hud() -> String:
 	var hud_layer: int = (load("res://scenes/score_ui.tscn") as PackedScene).instantiate().layer
 	var ui_layer: int = card.get_parent().layer
 	return _T.assert_gt(ui_layer, hud_layer, "level UI (card) layer above the score HUD")
+
+
+## The boss room adds its HP card and banner to the same UI layer after the EndCard;
+## the card (and a death's grey-out) must still draw over them.
+func test_card_draws_over_the_boss_hud() -> String:
+	for sig in ["player_death", "boss_death"]:
+		var card: EndCard = await _level(BOSS_ROOM)
+		var ui := card.get_parent()
+		Globals.emit_signal(sig)
+		await _frames()
+		var r: String = _T.assert_eq(card.get_index(), ui.get_child_count() - 1, "%s: card is the last UI child" % sig)
+		if r != "":
+			return r
+		for n in _nodes:
+			n.free()
+		_nodes.clear()
+	return ""
 
 
 func test_card_turns_off_touch_controls() -> String:

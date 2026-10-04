@@ -34,12 +34,13 @@ game over / win ──> character_select.tscn        restart ──> startscreen
 | `AudioManager` | `scripts/autoload/audio_manager.gd` | Plays looping music; minimal API |
 | `EnemySpawner` | `scripts/autoload/enemy_spawner.gd` | `spawn_enemy(...)` — random maid/melee at `Vector2(spawn_x, player.position.y)` (line 25) |
 | `LeafSystem` | `scripts/autoload/leaf_system.gd` | Bridges to scene `LeafManager` (gusts, sword-swing leaves) |
+| `Transition` | `scripts/autoload/transition.gd` | The one fader: `change_scene_to_file/_packed(x, sting)` — 0.25s out, swap, 0.3s in, tree paused (no input) mid-fade, re-entrant requests dropped, resets `Engine.time_scale`. Every player-facing scene change goes through it (`test_transition.gd` greps for direct callers); `debug_start_game` stays instant |
 
 ## Global signals (`globals.gd:3-11`)
 
 | Signal | Emitted from | Listened by |
 |---|---|---|
-| `player_death` | `states/dead_state.gd:9`, `states/boss_dead_state.gd:9` | `enemy.gd:64` (freeze), `boss_room.gd:28`, `ui/end_card.gd` (card), `score_ui.gd` (hides HUD) |
+| `player_death` | `states/dead_state.gd:9`, `states/boss_dead_state.gd:9` | `enemy.gd:64` (freeze), `boss_room.gd:28`, `ui/end_card.gd` (plays `ui/death_beat.gd` — 0.35x slow-mo 0.6s real, grey-out 0.45s — then the card; the signal itself is not delayed), `score_ui.gd` (hides HUD) |
 | `meter_maid_death` | `enemy.gd:150` | (kill counting) |
 | `boss_death` | `city_council_boss.gd:21` | `ui/end_card.gd` (card), `score_ui.gd` (hides HUD) |
 | `boss_fight(status)` | boss room | `audio.gd:8` |

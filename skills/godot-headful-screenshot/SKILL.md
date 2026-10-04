@@ -37,3 +37,9 @@ The CRT overlay autoload is in the shot - judge legibility through it, it is wha
 - New `class_name` scripts (from you or a parallel agent) are unknown to `run_tests.gd` until
   `godot --headless --path . --import` refreshes the global class cache -> "Identifier not declared".
 - Opening the editor/import can reorder `project.godot` sections; revert if the diff is order-only.
+- `--resolution 1688x780` with stretch `canvas_items` saves a 1248x780 viewport image (letterboxed
+  content), not 1688 wide: judge fit on that, the bars are outside the viewport texture.
+- Snap timing: scene loads block the main loop, so a "t=0.27" snap can land at 0.9s. Print the
+  state you are judging (fade alpha, `Engine.time_scale`) beside each SNAP line instead of trusting t.
+- `InputEventAction` does not satisfy `any_button.gd` (keys/joy only): send `InputEventKey` ENTER.
+- `print_stack()`/`get_stack()` print nothing without a debugger; trace with plain `print`.

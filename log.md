@@ -335,3 +335,8 @@ Log of skills that might have been useful for a given response, and why (short f
 - Would have helped: a balance-sweep skill that A/Bs a teleport-start mortal scenario across seeds and prints a table (wrote sweep.py by hand); derive-the-list (encounter list derived from main.tscn in the ramp test, not hand-listed).
 - Enhancement idea (godot-headful-screenshot): note that `--resolution` doesn't change the root texture size, so the phone round needs a window grab to judge aspect.
 - MCP: none used (ran suites via shell for --filter + mutation loop).
+
+## 2026-10-03 — Death beat + Transition fades (worktree juice-death)
+- Skills used: godot-headful-screenshot (batched real-flow rounds), godot-autoplay-test (full_run/mortal), juicy-screen-review (round shape), godot-boss-juice (time-scale rules). Enhancement (headful-screenshot): print state beside each snap — load hitches shift timestamps (added).
+- Would have helped: godot-time-scale-beat (created: beat/fade ownership rules + mutant-killing tests); somewhat-useful-claude-skills:derive-the-list (used its idea for the direct-scene-change grep test); extract-a-testable-seam (Transition.fade_through(swap)).
+- MCP: none used (godot-tests MCP available; CLI needed for --filter mutation loop).

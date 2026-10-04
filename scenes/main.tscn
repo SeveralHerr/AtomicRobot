@@ -5,8 +5,6 @@
 [ext_resource type="Texture2D" uid="uid://xaol7ee44k8q" path="res://images/ART-Mobile-logo (1).png" id="4_vq1rx"]
 [ext_resource type="LabelSettings" uid="uid://dljdi7nrv2efb" path="res://styles/font_v2.tres" id="5_yhyvh"]
 [ext_resource type="Script" uid="uid://fv8o1x5w5344" path="res://scripts/notificataion_container.gd" id="7_2pg4o"]
-[ext_resource type="Script" uid="uid://bljv8wkcve17e" path="res://scripts/initial_fade_in.gd" id="7_gdeaw"]
-[ext_resource type="PackedScene" uid="uid://cd687fbnvb516" path="res://scenes/fade_overlay.tscn" id="7_lcs47"]
 [ext_resource type="Script" uid="uid://1oip5i83mu4r" path="res://scripts/news_paper_notification_container.gd" id="8_7k40d"]
 [ext_resource type="PackedScene" path="res://scenes/level_background.tscn" id="13_sgvw8"]
 [ext_resource type="PackedScene" path="res://scenes/building_group_1.tscn" id="14_ygd8o"]
@@ -277,20 +275,6 @@ text = "Event Started...."
 label_settings = SubResource("LabelSettings_k4pk8")
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="InitialFadeIn" type="Control" parent="UI" unique_id=34762658]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("7_gdeaw")
-
-[node name="FadeOverlay" parent="UI/InitialFadeIn" unique_id=669343212 instance=ExtResource("7_lcs47")]
-visible = false
-layout_mode = 1
-color = Color(0, 0, 0, 1)
 
 [node name="MobileUI" parent="UI" unique_id=1905073212 instance=ExtResource("100_mobctl")]
 
