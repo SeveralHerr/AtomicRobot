@@ -80,6 +80,12 @@ hand-edit it. Options:
   `Vector2(player.x ± viewport/3, player.y)` (`enemy_spawner.gd:25`), driven by
   `EnemyManager` (3-30 s random timer, only when `player.is_near_ground()`, paused
   during events).
+- **Ambient traffic**: `Managers/AmbientTraffic` (`ambient_traffic.gd`) sends one car per
+  15-30 s of OPEN play (clock stops in cut scenes / `Globals.event_active()` / while any
+  car drives) down a random road lane from either edge, telegraphed 1.5 s by an edge sign
+  (CanvasLayer 3, above touch UI) and the off-screen engine. Kept inside the end buildings
+  (`street_min_x/max_x`); own RNG (`fixed_seed`, set by autoplay) — never draw from the
+  global stream in new spawners. Intersections still spawn their own (`streetlight.gd`).
 - **Triggers**: `EnemyEvent` Area2Ds (`enemy_event.gd`) fire scripted waves;
   `BuildingGroup4/Enter` (`final_boss_enter.gd`) changes scene to boss_room;
   `building_door_encounter.tscn` (`BuildingDoorEncounter`) is the TMNT-style

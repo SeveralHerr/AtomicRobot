@@ -62,6 +62,7 @@ func setup(source: String, out_dir: String) -> void:
 		return
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	seed(sc["seed"])
+	AmbientTraffic.fixed_seed = sc["seed"]
 	# tools/autoplay.py always runs --fixed-fps 60: hitstop must not zero time there.
 	Utils.fixed_clock = true
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(UNLOCKS))

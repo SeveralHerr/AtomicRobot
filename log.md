@@ -523,3 +523,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - Skills used: none via tool; repo skills godot-headful-screenshot, godot-hit-feel, godot-ab-worktree (enhancement: headful-screenshot should say "reimport after changing a PNG" — stale art cost a round). New skill: skills/godot-door-mouth.
 - Would have helped: kenney-asset-kit (2D palette/measure for authoring into a set), derive-the-list (placement->style table derived from the scene), a "sample wall colour at x" probe.
 - MCP: none used (CLI).
+## 2026-10-04 — Ambient traffic (branch lj-cars)
+- `Managers/AmbientTraffic`: one car per 15-30 s of open play, random road lane/direction/speed, 1.5 s edge-sign + off-screen engine telegraph, never two cars, paused in cut scenes / door-encounter locks, freed off screen, kept inside the end buildings. Car refactor: `launch()`, `road_y()`, direction, `rng`.
+- Found: one extra global RNG draw alone flipped seeded full_run_mortal -> own RNG + `fixed_seed`. Touch buttons hid the world-space sign -> CanvasLayer 3.
+- 905 unit, 2/2 mortal autoplay, 24-seed sweep, lane audit clean, 38/38 mutants killed (after 7 survivors -> new tests).
+- Skills used: none via tool. Would have helped: somewhat-useful-claude-skills:extract-a-testable-seam (static rule funcs), derive-the-list (street bounds from the wall shapes), playthrough-video-review (natural-route video). New repo skill: skills/godot-rare-spawner. Enhancement idea for godot-autoplay-test: document `autoplay_sweep.py --base` for balance-noise checks.
+- MCP: none used (CLI equivalents).
