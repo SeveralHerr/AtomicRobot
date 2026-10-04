@@ -185,17 +185,24 @@ func test_ranged_shot_flies_the_way_the_player_faces() -> String:
 		for facing in [1, -1]:
 			await _spawn(c)
 			await _walk("ui_left" if facing < 0 else "ui_right")
+			# Read the shot's dir as it leaves the tree too: a fast shot (Cass's flip-flop)
+			# can fly its full range and free itself before the swing animation ends.
+			var dirs: Array[int] = []
+			var on_add := func(n: Node) -> void:
+				if n is LaneProjectile:
+					n.tree_exiting.connect(func() -> void: dirs.append(int(sign(n.dir))))
+			_p.get_tree().node_added.connect(on_add)
 			var before := _p.get_parent().get_child_count()
 			await _swing()
-			var shot: Node2D = null
+			_p.get_tree().node_added.disconnect(on_add)
 			for n in _p.get_parent().get_children().slice(before):
-				if "dir" in n and "player" in n:
-					shot = n
+				if n is LaneProjectile:
+					dirs.append(int(sign(n.dir)))
 			var ctx := "%s facing %s" % [c, facing]
-			var r: String = _T.assert_true(shot != null, ctx + ": a projectile spawned")
+			var r: String = _T.assert_true(not dirs.is_empty(), ctx + ": a projectile spawned")
 			if r != "":
 				return r
-			r = _T.assert_eq(int(sign(shot.dir)), facing, ctx + ": projectile dir")
+			r = _T.assert_eq(dirs[0], facing, ctx + ": projectile dir")
 			if r != "":
 				return r
 			teardown()
