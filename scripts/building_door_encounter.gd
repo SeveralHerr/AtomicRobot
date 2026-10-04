@@ -81,8 +81,9 @@ signal squad_cleared
 @export var reward_heart: bool = false
 
 const HEART := preload("res://scenes/atomic_heart_pickup.tscn")
-## Where the heart lands, relative to the encounter: the walkway, in front of the door.
-const HEART_LAND := Vector2(0.0, -26.0)
+## Where the heart lands, relative to the encounter: out on the walkway beside the
+## hole, on the boss-door side — not on the crack, which draws over it (z 1).
+const HEART_LAND := Vector2(48.0, -26.0)
 
 @onready var door_mouth: Marker2D = $DoorMouth
 @onready var crack: AnimatedSprite2D = $DoorMouth/Crack

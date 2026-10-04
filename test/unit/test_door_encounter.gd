@@ -360,6 +360,15 @@ func test_door_reward_heart_drops_once_on_the_clear() -> String:
 	return _T.assert_eq(_tree().get_nodes_in_group("atomic_hearts").size(), 1, "the heart is in the hearts group")
 
 
+## Round-1 video: the heart landed ON the hole — drawn under the crack sprite
+## (z 1), a black-outlined atom on a black hole. It must land out on the walkway.
+func test_door_reward_heart_lands_clear_of_the_hole() -> String:
+	_make(1, 1)
+	var crack_half: float = _enc.crack.sprite_frames.get_frame_texture("default", 0).get_width() * 0.5 		* absf(_enc.crack.scale.x) if _enc.crack.sprite_frames.has_animation("default") else 24.0
+	return _T.assert_true(absf(E.HEART_LAND.x - _enc.door_mouth.position.x) >= crack_half + 16.0,
+		"heart lands %.0f px from the hole (crack half-width %.0f)" % [E.HEART_LAND.x, crack_half])
+
+
 func test_door_without_reward_drops_no_heart() -> String:
 	_make(2, 1)
 	_enc._on_body_entered(_p)
