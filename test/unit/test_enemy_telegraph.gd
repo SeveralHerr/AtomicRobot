@@ -52,9 +52,12 @@ func test_clear_restores_sprite() -> String:
 	var e := _add(MAID_SCENE)
 	var spr := e.animated_sprite_2d
 	var tw := EnemyTelegraph.wind_up(spr, 0.4)
-	spr.self_modulate = EnemyTelegraph.TELL_COLOR
+	tw.custom_step(0.4)
+	var r: String = _T.assert_gt(EnemyTelegraph.strength(spr), 0.3, "lit by the end of the wind-up")
+	if r != "":
+		return r
 	EnemyTelegraph.clear(spr, tw)
-	var r: String = _T.assert_eq(spr.self_modulate, Color.WHITE, "back to white")
+	r = _T.assert_float_eq(EnemyTelegraph.strength(spr), 0.0, 0.0001, "tint off")
 	if r != "":
 		return r
 	return _T.assert_false(tw.is_valid(), "tween killed")
@@ -67,9 +70,12 @@ func test_maid_swing_starts_a_tell_and_release_clears_it() -> String:
 	var r: String = _T.assert_true(st._tell != null and st._tell.is_valid(), "swing lights the tell")
 	if r != "":
 		return r
-	e.animated_sprite_2d.self_modulate = EnemyTelegraph.TELL_COLOR
+	st._tell.custom_step(1.0)
+	r = _T.assert_gt(EnemyTelegraph.strength(e.animated_sprite_2d), 0.0, "glowing mid wind-up")
+	if r != "":
+		return r
 	st._release()
-	r = _T.assert_eq(e.animated_sprite_2d.self_modulate, Color.WHITE, "release clears it")
+	r = _T.assert_float_eq(EnemyTelegraph.strength(e.animated_sprite_2d), 0.0, 0.0001, "release clears it")
 	if r != "":
 		return r
 	return _T.assert_false(st._tell.is_valid(), "tell tween stopped at release")
