@@ -129,13 +129,16 @@ static func throw_coin(spawn_position: Vector2, target_position: Vector2, parent
 	var instance = COIN_BULLET.instantiate()
 	parent_node.add_child(instance)
 	instance.lane = lane
-	# Road lanes have no real floor — hand the coin the same virtual floor line
-	# entities stand on, and tell it where it was thrown from so a throw can't snap
-	# up-screen. The shadow sits on that lane's floor so the coin's lane reads.
+	# Road lanes have no real floor — hand the coin its lane's virtual floor, and
+	# tell it where it was thrown from so a throw can't snap up-screen. The shadow
+	# sits on that lane's floor so the coin's lane reads.
 	var player = parent_node.get_tree().get_first_node_in_group("player")
 	if player and player.lanes_active():
-		instance.set_lane_floor(lane, player.lane_stand_y(lane), spawn_position.y)
-		instance.show_shadow(Lanes.floor_y(player.lane_floor_y, lane))
+		# Rest ON the lane floor, beside its shadow. Coins used to settle on the
+		# player's standing line (their origin, ~20px up) and hung in mid-air.
+		var floor_y: float = Lanes.floor_y(player.lane_floor_y, lane)
+		instance.set_lane_floor(lane, floor_y - Bullet.REST_LIFT, spawn_position.y)
+		instance.show_shadow(floor_y)
 	var direction = (target_position - spawn_position).normalized()
 	instance.start(spawn_position, direction, use_arc)
 	return instance

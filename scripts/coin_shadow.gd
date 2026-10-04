@@ -8,9 +8,9 @@ class_name CoinShadow
 ## World Y of the lane floor the shadow lies on.
 var floor_y: float = INF
 
-const RADIUS := 4.0
+const RADIUS := 6.0
 const SQUASH := 0.4
-const COLOR := Color(0.0, 0.0, 0.0, 0.5)
+const COLOR := Color(0.0, 0.0, 0.0, 0.6)
 ## Height (px) at which the shadow reaches its smallest/faintest.
 const FADE_HEIGHT := 120.0
 const MIN_SCALE := 0.45
@@ -20,8 +20,8 @@ var _scale: float = 1.0
 
 func _ready() -> void:
 	top_level = true
-	# Under the coin, which draws at its lane's z.
-	z_index = -1
+	# Same z as the coin (its lane's z, above the road tiles), drawn before it.
+	show_behind_parent = true
 
 
 func _process(_delta: float) -> void:
