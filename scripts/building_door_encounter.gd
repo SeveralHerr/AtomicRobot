@@ -7,7 +7,7 @@ class_name BuildingDoorEncounter
 ## the lanes, and — if `lock_arena` — barriers plus camera limits hold the player
 ## there until the street is clear. The squad comes out in 1–3 `waves`: each one
 ## rumbles the door and bursts it again once the previous wave is down, with a
-## comic "WAVE 2/3" callout (EncounterAnnouncer), then a "BUSTED!" payoff when the last wave is down.
+## comic "WAVE 2/3" callout (EncounterAnnouncer), then a "STREET CLEAR!" payoff when the last wave is down.
 ##
 ## `DoorMouth/Crack` (sprites/crack.png) doubles as the visual: a hairline crack
 ## sits at the base of the wall as a permanent tell for where an encounter lives,
@@ -349,5 +349,5 @@ func _end() -> void:
 		_pushed_event = false
 	encounter_finished.emit()
 	if one_shot:
-		# Outlive the BUSTED! callout, which lives under this node.
+		# Outlive the STREET CLEAR! callout, which lives under this node.
 		get_tree().create_timer(2.0).timeout.connect(queue_free)

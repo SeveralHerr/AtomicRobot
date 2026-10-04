@@ -88,7 +88,7 @@ hand-edit it. Options:
   (`enemy_count`) comes out in 1–3 `waves`; each next wave waits for the current
   one to be fully down, then rumbles and re-bursts the door with a comic
   `WAVE n/N` callout (`EncounterAnnouncer`, reusing `BossBanner`) and ends on
-  `BUSTED!`. Seven instances ramp along the street (x / waves x squad):
+  `STREET CLEAR!` (squad only; ambient maids may remain). Seven instances ramp along the street (x / waves x squad):
   389 1x3 · 2361 2x4 · 4721 2x4 · 5492 2x4 · 6080 2x5 · 6949 3x6 · 7775 3x6.
   `test_street_waves_*` pins the ramp and "no 1-maid wave"; `door_waves` autoplay
   plays one. Drive it headless with `cmd list_encounters` / `cmd trigger_encounter`.

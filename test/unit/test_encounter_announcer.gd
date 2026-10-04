@@ -56,7 +56,7 @@ func test_announcer_clear_survives_the_release() -> String:
 	rig[0].encounter_finished.emit()
 	var shown: bool = rig[1].visible and rig[1].banner != null
 	rig[0].free()
-	return _T.assert_true(shown, "the BUSTED! payoff stays up after the lock drops")
+	return _T.assert_true(shown, "the STREET CLEAR! payoff stays up after the lock drops")
 
 
 ## Bottom of the HUD's combo slot (scenes/score_ui.tscn: Hud offset_top 126 +
@@ -79,14 +79,14 @@ func _clear_burst_rect() -> Rect2:
 func test_announcer_clear_burst_clears_the_combo_line() -> String:
 	var top := _clear_burst_rect().position.y
 	return _T.assert_true(top >= COMBO_BOTTOM,
-		"BUSTED! burst top %.0f must sit below the combo line (%.0f)" % [top, COMBO_BOTTOM])
+		"Payoff burst top %.0f must sit below the combo line (%.0f)" % [top, COMBO_BOTTOM])
 
 
 func test_announcer_clear_burst_stays_off_the_player() -> String:
 	# Walkway-lane heads stand at ~0.6 of the screen (validation captures).
 	var bottom := _clear_burst_rect().end.y
 	return _T.assert_true(bottom <= BASE_H * 0.6,
-		"BUSTED! burst bottom %.0f must stay above the fighters' heads" % bottom)
+		"Payoff burst bottom %.0f must stay above the fighters' heads" % bottom)
 
 
 func test_announcer_wave_banner_keeps_its_size_after_a_clear() -> String:

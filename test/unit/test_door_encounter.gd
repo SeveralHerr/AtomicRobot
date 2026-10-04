@@ -313,7 +313,7 @@ func test_door_death_between_waves_spawns_nothing_more() -> String:
 	r = _T.assert_false(log.has("wave 2/2"), "no WAVE 2/2 callout after the player died")
 	if r != "":
 		return r
-	return _T.assert_false(log.has("clear"), "no BUSTED! payoff for a death")
+	return _T.assert_false(log.has("clear"), "no STREET CLEAR! payoff for a death")
 
 
 func test_door_death_during_the_telegraph_never_bursts() -> String:

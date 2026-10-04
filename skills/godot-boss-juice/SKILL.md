@@ -48,6 +48,5 @@ pause/CRT) and only listens to encounter signals. Street callouts: `size_k = 0.8
 `stripe_y = 0.36` (waves) / `0.42` (payoff) so stripe and burst clear the HP row,
 the score and the walkway maids. Size the banner by hand with TOP_LEFT anchors (a
 first slam lands the frame it is added; full-rect + `size =` logs a warning). Wave
-callouts on BLUE (yellow-on-orange washed out), last wave RED. Payoff word must not
-lie: ambient maids can still be up after the squad dies (`BUSTED!`, not `STREET
-CLEAR!`). A forced end (death/watchdog) hides the layer.
+callouts on BLUE (yellow-on-orange washed out), last wave RED. Payoff is `STREET CLEAR!`
+(user's call, over `BUSTED!`) even though ambient maids can still be up after the squad dies. A forced end (death/watchdog) hides the layer.

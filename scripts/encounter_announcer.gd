@@ -2,10 +2,10 @@ extends CanvasLayer
 class_name EncounterAnnouncer
 
 ## Comic-book callouts for a BuildingDoorEncounter: "WAVE 2/3" slams onto a stripe
-## as each wave of a multi-wave squad rumbles at the door, and "BUSTED!" bursts
-## out when the last wave goes down. Not "STREET CLEAR!": ambient maids that
-## walked in before the lock can still be swinging (seen in validation), and the
-## payoff must not lie — the squad is what's beaten. Reuses the boss fight's BossBanner (one
+## as each wave of a multi-wave squad rumbles at the door, and "STREET CLEAR!"
+## bursts out when the last wave goes down (the user's pick over "BUSTED!"; it
+## counts the door's squad only — ambient maids that walked in before the lock
+## can still be up). Reuses the boss fight's BossBanner (one
 ## text system, not two) and follows atomic-pinball's callout rules: one message at
 ## a time (a new slam overtakes the old), short holds (well under its 2.5s cap).
 ##
@@ -15,10 +15,10 @@ class_name EncounterAnnouncer
 const LAYER := 3
 const WAVE_HOLD := 0.55
 const CLEAR_HOLD := 0.9
-const CLEAR_TITLE := "BUSTED!"
+const CLEAR_TITLE := "STREET CLEAR!"
 const CLEAR_SUB := "GO! GO! GO!"
 ## Stripe centre as a fraction of screen height, and callout scale: together they
-## keep even the BUSTED! starburst between the HUD rows and the heads of
+## keep even the payoff starburst between the HUD rows and the heads of
 ## maids on the walkway lane (the boss room's 0.42 at full size buries both).
 const STRIPE_Y := 0.36
 const SIZE_K := 0.8
@@ -27,7 +27,7 @@ const SIZE_K := 0.8
 ## ("3 HITS!") that the clearing blow had just bumped. The squad is down by then,
 ## so only the player's lane is below it, and the burst stops short of his head.
 const CLEAR_Y := 0.45
-const CLEAR_SIZE_K := 0.6
+const CLEAR_SIZE_K := 0.5
 const CLEAR_STING := preload("res://sounds/power_up.wav")
 
 var banner: BossBanner
