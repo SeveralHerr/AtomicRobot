@@ -58,6 +58,11 @@ var heals := 0
 var deaths := 0
 var won := false
 var max_stuck_s := 0.0
+## Secrets claimed (Globals.secret_found), keyed by id so a repeat never counts twice.
+var secret_walls := {}
+var secret_news := {}
+## Distinct newspaper headlines read this run.
+var headlines := {}
 var last_why := ""
 
 var step_failures: Array = []
@@ -90,6 +95,22 @@ func _ready() -> void:
 		log_event("powerup", {"id": id, "x": _last_snap.get("player", {}).get("x", 0.0)}))
 	Globals.unlocked.connect(func(what: String, _description: String) -> void:
 		log_event("unlock", {"what": what}))
+	Globals.secret_found.connect(note_secret)
+
+
+## Globals.secret_found: count it, and for a stand, the headline it showed.
+func note_secret(kind: String, id: String) -> void:
+	var data := {"kind": kind, "id": id}
+	if kind == "wall":
+		secret_walls[id] = true
+	elif kind == "news":
+		secret_news[id] = true
+		var stand := get_tree().root.get_node_or_null(NodePath(id)) if is_inside_tree() else null
+		var label: Variant = stand.get("notification_label") if stand else null
+		if label is Label:
+			headlines[label.text] = true
+			data["headline"] = label.text
+	log_event("secret", data)
 
 
 func _exit_tree() -> void:
@@ -271,6 +292,8 @@ func metrics(tree: SceneTree) -> Dictionary:
 		"boss_reached": 1 if "boss_room" in scenes else 0,
 		"enemies_near": _last_snap.get("enemies", []).size(),
 		"max_stuck_s": snappedf(max_stuck_s, 0.1), "stuck_spots": stuck_spots.size(),
+		"secret_walls": secret_walls.size(), "secret_news": secret_news.size(),
+		"headlines": headlines.size(),
 		"step_failures": step_failures.size(),
 		"errors": errors.script_errors, "engine_errors": errors.engine_errors,
 		"warnings": errors.warnings,
