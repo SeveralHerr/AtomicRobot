@@ -79,22 +79,46 @@ static func stand_y(baseline_floor_y: float, lane: int, foot_offset: float) -> f
 ## a footprint. Returns 0.0 when there is no measurable shape (props like Car), so
 ## callers that care must supply their own offset.
 static func measure_foot_offset(body: Node) -> float:
-	if body == null:
+	var cs := _footprint(body)
+	if cs == null:
 		return 0.0
+	return (cs.position.y + _shape_half_height(cs.shape)) * absf((body as Node2D).scale.y if body is Node2D else 1.0)
+
+
+## Half width/height of `body`'s footprint shape (see measure_foot_offset), scaled.
+## Vector2.ZERO when there is none.
+static func measure_half_extents(body: Node) -> Vector2:
+	var cs := _footprint(body)
+	if cs == null:
+		return Vector2.ZERO
+	var half := Vector2(_shape_half_width(cs.shape), _shape_half_height(cs.shape))
+	if body is Node2D:
+		half *= (body as Node2D).scale.abs()
+	return half
+
+
+## The first enabled, measurable DIRECT CollisionShape2D child of `body`.
+static func _footprint(body: Node) -> CollisionShape2D:
+	if body == null:
+		return null
 	for child in body.get_children():
 		if not (child is CollisionShape2D):
 			continue
 		var cs := child as CollisionShape2D
-		if cs.disabled or cs.shape == null:
+		if cs.disabled or cs.shape == null or _shape_half_height(cs.shape) < 0.0:
 			continue
-		var half := _shape_half_height(cs.shape)
-		if half < 0.0:
-			continue
-		var scale_y := 1.0
-		if body is Node2D:
-			scale_y = absf((body as Node2D).scale.y)
-		return (cs.position.y + half) * scale_y
-	return 0.0
+		return cs
+	return null
+
+
+static func _shape_half_width(shape: Shape2D) -> float:
+	if shape is RectangleShape2D:
+		return (shape as RectangleShape2D).size.x * 0.5
+	if shape is CapsuleShape2D:
+		return (shape as CapsuleShape2D).radius
+	if shape is CircleShape2D:
+		return (shape as CircleShape2D).radius
+	return -1.0
 
 
 ## Half-height of the shape kinds this project actually stands bodies on. Returns
@@ -176,6 +200,24 @@ static func accepts_baseline(current: float, candidate: float) -> bool:
 	if not is_finite(current):
 		return true
 	return candidate >= current - BASELINE_TOLERANCE
+
+
+## Which lane soles at `foot_y` are standing on, given the street line.
+##
+## The walkway tiles' collision fills the road strip, so a ground-lane body knocked or
+## walked down into it lands on REAL floor at road height while still reporting lane 0
+## — out of reach of every lane-0 projectile flying at street height. Re-deriving the
+## lane from the feet puts it back on the depth axis. Anything above the street
+## (platforms, ledges) is still GROUND_LANE, and so is anything deeper than the road
+## strip — that is a raised baseline capture to correct (accepts_baseline), not a lane.
+## Nothing is derivable before the street has been measured.
+static func lane_for_floor(baseline_floor_y: float, foot_y: float) -> int:
+	if not is_finite(baseline_floor_y):
+		return GROUND_LANE
+	var depth := foot_y - baseline_floor_y
+	if depth > y_offset(FRONT_LANE) + LANE_SPACING * 0.5:
+		return GROUND_LANE
+	return clamp_lane(GROUND_LANE + roundi(depth / LANE_SPACING))
 
 
 ## Are soles at `foot_y` resting on the street itself, rather than on raised

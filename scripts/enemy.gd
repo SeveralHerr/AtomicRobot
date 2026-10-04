@@ -360,6 +360,10 @@ func _update_lane_floor() -> void:
 		# to whatever they happen to be standing on (it feeds coin and power-up drop
 		# heights as well as this body's own virtual floors).
 		var candidate := global_position.y + foot_offset()
+		var real_lane := Lanes.lane_for_floor(lane_floor_y, candidate)
+		if real_lane != Lanes.GROUND_LANE and not lane_locked:
+			_settle_onto_lane(real_lane)
+			return
 		if Lanes.accepts_baseline(lane_floor_y, candidate):
 			lane_floor_y = candidate
 		return
@@ -370,6 +374,18 @@ func _update_lane_floor() -> void:
 		lane_floor_y = global_position.y + foot_offset()
 		_set_ground_collision(false)
 		global_position.y = lane_stand_y(lane)
+
+
+## Adopt `road_lane` in place: off real collision, onto that lane's virtual floor.
+## For a ground-lane body that ended up standing in the road strip (see
+## Lanes.lane_for_floor) — the street baseline stays where it is.
+func _settle_onto_lane(road_lane: int) -> void:
+	lane = road_lane
+	lane_depth_offset = Lanes.random_in_lane_offset(lane)
+	_set_ground_collision(false)
+	global_position.y = lane_stand_y(lane)
+	velocity.y = 0.0
+	_refresh_depth_z()
 
 
 ## The walkway tiles' collision occupies the road strip; road-lane bodies ignore
