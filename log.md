@@ -537,3 +537,15 @@ Log of skills that might have been useful for a given response, and why (short f
 - MCP: godot-tests (extended with level_pan).
 - Follow-up (user screenshot images/image.png): ledge platform maid walked into Tree9's canopy (x 2287) — the real "maid over a tree" bug; the heart z fix was a second, separate issue. PlatformPatrolState turns at foliage (trees group); 4 tests incl. real-physics maid, 4/4 mutants killed. 954 unit, 19/19 autoplay, 12/12 sandbox.
 - Lesson: an agent "explained" a player report with the first plausible match (heart z); ask for/locate the exact spot before closing a bug report.
+## 2026-10-04 — Playthrough review round 3 (main cd9521b)
+- Catalogue agent → route covers all reachable items; gaps: wall A unreachable, no cutscene/unlock/placed-pickup asserts, 7/9 heals (door 7775 heart never taken).
+- Recorded completionist_mortal: take 1 died at 1:04 (scripted walk_to can't fight a late maid), take 2 won A 15,122, 4:21. Sweep 5 fighters × 4 seeds: 20/20 wins, Cody 7–14 hits vs 14–23, Sara == Caitlyn.
+- Artifact https://claude.ai/artifact/ExkNpGwY4VsaokPtqvLfyr: 13 open cards (9 new, 4 carried), 2 shipped, R3/R2 video tabs, db `decisions`.
+- Skills used: playthrough-video-review (enhancement: say "retry a died recording once before rerouting" and give the bitrate-from-length formula), artifact-capabilities, artifact-design. Repo skill godot-speedrun-review updated (bitrate formula, recorded-death gotcha, sweep command, server-side video copy).
+- Would have helped: somewhat-useful-claude-skills:derive-the-list (route asserts from the catalogue), scope-vs-claim (completionist "100%" claim vs asserts).
+- MCP: none used (CLI equivalents of godot-tests). No new MCP server (YAGNI: record_autoplay/contact_sheet exist).
+
+## 2026-10-04 — pickup FX consistency
+- Useful skills: none listed fit directly; `derive-the-list` (heart list from levels — applied by hand), `godot-level-pickups` (pickup placement context).
+- Wished-for skill: `godot-pickup-fx` (written) — one glow/burst rule for every collectible.
+- Gate: 958 unit, 19 autoplay, 12 sandbox, lane audit clean.
