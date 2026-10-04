@@ -79,8 +79,10 @@ func _banner() -> BossBanner:
 		banner = BossBanner.new()
 		add_child(banner)
 		banner.landed.connect(_thud)
-	# Sized explicitly: a CanvasLayer child's anchors haven't laid out on the frame
-	# it was added, and slam_title centres on `size`.
+		# Sized by hand, not by full-rect anchors: those haven't laid out on the
+		# frame the banner is added (wave 1 slams that same frame), and slam_title
+		# centres on `size`. Top-left anchors so setting size is legal.
+		banner.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	banner.size = banner.get_viewport_rect().size
 	return banner
 
