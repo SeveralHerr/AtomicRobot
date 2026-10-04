@@ -25,6 +25,11 @@ var telegraph_frame: int = 4
 var release_frame_hint: int = 6
 ## Seconds to hold after a swing before re-arming in place (stationary attackers).
 var re_arm_delay: float = 0.0
+## Maids flash through the wind-up (EnemyTelegraph) so a throw reads in time to
+## step a lane. The boss has his own tells and turns this off.
+var wind_up_tell: bool = true
+## Attack-clip playback multiplier (EnemyTuning.WINDUP_SPEED; the boss keeps 1.0).
+var wind_up_speed: float = EnemyTuning.WINDUP_SPEED
 
 var attack_finished: bool = false
 var is_player_crouched: bool = false
@@ -36,6 +41,7 @@ var _elapsed: float = 0.0
 var _hold: float = 0.0
 ## True while this state is holding one of Globals' turn-taking attack slots.
 var _slot_held: bool = false
+var _tell: Tween
 
 
 func enter_state() -> void:
@@ -65,6 +71,7 @@ func exit_state() -> void:
 	if _slot_held:
 		Globals.release_attack_slot(enemy)
 		_slot_held = false
+	EnemyTelegraph.clear(enemy.animated_sprite_2d, _tell)
 	enemy.animated_sprite_2d.frame_changed.disconnect(_on_frame_changed)
 	enemy.animated_sprite_2d.animation_finished.disconnect(_on_animation_finished)
 
@@ -85,7 +92,11 @@ func _begin_swing() -> void:
 	# play() does not rewind a clip that is already selected, so a re-arm would
 	# resume from the last frame and never cross the release frame again.
 	spr.set_frame_and_progress(0, 0.0)
-	spr.play(clip)
+	spr.play(clip, wind_up_speed)
+	if wind_up_tell:
+		EnemyTelegraph.clear(spr, _tell)
+		_tell = EnemyTelegraph.wind_up(spr,
+			EnemyTelegraph.seconds_to_frame(spr.sprite_frames, clip, _release_frame, wind_up_speed))
 
 
 ## The frame a swing actually connects on, given the clip's real length.
@@ -128,6 +139,7 @@ func _on_animation_finished() -> void:
 
 func _release() -> void:
 	_released = true
+	EnemyTelegraph.clear(enemy.animated_sprite_2d, _tell)
 	enemy._face_player()
 	_do_hit()
 	enemy.attack_timer.start()
