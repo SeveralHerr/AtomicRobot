@@ -1,5 +1,9 @@
 extends Node2D
 
+## The scene root is z 2, over trees (z 1) and crates: hearts sit at trunk feet, and
+## under the leaves the white-outlined atom read as a speech bubble lost in the tree.
+## (test_heart_draw_order.gd)
+
 @onready var player_detection: Area2D = $Area2D
 @onready var sprite: Sprite2D = $Sprite2D
 
