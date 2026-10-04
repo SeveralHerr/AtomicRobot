@@ -62,7 +62,7 @@ func test_locked_robot_tells_you_how_to_unlock() -> String:
 
 # --- Overpowered ---------------------------------------------------------------
 
-func test_robot_doubles_every_other_fighter() -> String:
+func test_robot_out_hits_and_out_lasts_every_other_fighter() -> String:
 	for c in Globals.character_dict:
 		if c == "Robot":
 			continue
@@ -70,7 +70,11 @@ func test_robot_doubles_every_other_fighter() -> String:
 		var r: String = _T.assert_gte(_robot().get_starting_health(), 2 * o.get_starting_health(), "Robot HP vs %s" % c)
 		if r != "":
 			return r
-		r = _T.assert_gte(_robot().get_starting_damage(), 2 * o.get_starting_damage(), "Robot damage vs %s" % c)
+		# Damage on the DamageRules scale: "doubles" became "fewest blows per maid" —
+		# 2x of a 3-4 damage fighter would one-shot (test_damage_scale forbids that).
+		var robot_hits := DamageRules.hits_to_kill(DamageRules.MAID_HEALTH, _robot().get_starting_damage())
+		var their_hits := DamageRules.hits_to_kill(DamageRules.MAID_HEALTH, o.get_starting_damage())
+		r = _T.assert_gt(their_hits, robot_hits, "Robot blows per maid vs %s" % c)
 		if r != "":
 			return r
 	return ""

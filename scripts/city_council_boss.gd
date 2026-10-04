@@ -17,7 +17,6 @@ const PHASE_TINTS: Array[Color] = [Color.WHITE, Color(1.0, 0.82, 0.78), Color(1.
 const FINALE_SLOW_MO := 1.1
 const FINALE_HOLD := 1.6
 
-var max_health: int = BossRules.MAX_HEALTH
 var phase: int = 0
 ## Invulnerable, not attacking: the beat between phases.
 var staggered: bool = false
@@ -25,6 +24,7 @@ var fighting: bool = false
 
 
 func _ready() -> void:
+	max_health = BossRules.MAX_HEALTH
 	super._ready()
 	health = max_health
 	coins = 2999
@@ -51,6 +51,16 @@ func params() -> Dictionary:
 ## paces — competing would mean holding a ranged slot until death and leaving the
 ## reinforcement maids to share the other one.
 func competes_for_attack_slots() -> bool:
+	return false
+
+
+## Planted: his throws keep their own BossRules cadence whatever lands on him.
+func flinches() -> bool:
+	return false
+
+
+## BossHealthBar already shows his health; pips over his head would say it twice.
+func shows_hp_pips() -> bool:
 	return false
 
 

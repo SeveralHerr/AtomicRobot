@@ -21,6 +21,9 @@ var bio_label: Label
 var prompt: Label
 var lock_icon: TextureRect
 var op_badge: Label
+## "RANGED" stamp on the shooters, so their lower POWER reads as a trade (they hit
+## from across the street), not as a weak pick. Player feedback on Cass.
+var ranged_badge: Label
 ## Per stat (0 HEALTH, 1 POWER): pips drawn ("best" on the roster) and the roster's
 ## second-best value ("usual"); pips past "usual" glow gold. See roster_scale().
 var _best := [1, 1]
@@ -71,6 +74,7 @@ func _ready() -> void:
 	lock_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(lock_icon)
 	_build_op_badge()
+	_build_ranged_badge()
 
 
 ## Read pip scale off the whole roster, once.
@@ -119,6 +123,9 @@ func show_character(cfg: CharacterConfig, unlocked: bool) -> void:
 	op_badge.visible = unlocked and is_overpowered(cfg)
 	if op_badge.visible:
 		_motion.append(Juice.slam(op_badge, -9.0, 0.3))
+	ranged_badge.visible = unlocked and cfg.is_ranged()
+	if ranged_badge.visible:
+		_motion.append(Juice.slam(ranged_badge, -7.0, 0.3))
 	var wob := create_tween()
 	_motion.append(wob)
 	wob.tween_property(self, "rotation_degrees", TILT - 2.5, 0.06)
@@ -149,6 +156,18 @@ func _build_op_badge() -> void:
 	op_badge.pivot_offset = op_badge.size / 2.0
 	op_badge.hide()
 	add_child(op_badge)
+
+
+## Stamp hanging off the card's left edge beside the name: above the card it covered
+## the CHOOSE YOUR FIGHTER! title. Clear of the OVERPOWERED one (Robot wears both).
+func _build_ranged_badge() -> void:
+	ranged_badge = ComicStyle.label("RANGED", ComicStyle.LABEL, 30, ComicStyle.INK)
+	ranged_badge.add_theme_stylebox_override("normal", ComicStyle.box(ComicStyle.YELLOW, 4, 8, 5))
+	ranged_badge.size = Vector2(132, 44)
+	ranged_badge.position = Vector2(-26, 34)
+	ranged_badge.pivot_offset = ranged_badge.size / 2.0
+	ranged_badge.hide()
+	add_child(ranged_badge)
 
 
 ## Pulsing call to action along the card's bottom edge.

@@ -131,7 +131,8 @@ very often walks into the radius on the wrong lane and only *then* taps across �
 
 ### During a stage
 
-- **Hit** — combo +1, worth `10 × multiplier`.
+- **Hit** — combo +1, worth `5 × multiplier` (halved, with the tiers doubled, when
+  maids went to 3-4 blows on the `DamageRules` scale — a kill chain pays as before).
 - **Kill** — worth `100 × multiplier`. Refreshes the combo window but does *not*
   advance the count: the killing blow was already counted as a hit, and counting it
   twice would let one swing jump two tiers.
@@ -140,7 +141,7 @@ very often walks into the radius on the wrong lane and only *then* taps across �
   which returns early in `god_mode` — so the debug cheat can't cost you a combo.
 - **2.5s window** without landing a hit drops the combo.
 
-Multiplier tiers start at combo 0, 3, 6, 10, 15, 21, 28, 36 → 1× to 8×. Front-loaded
+Multiplier tiers start at combo 0, 6, 12, 20, 30, 42, 56, 72 → 1× to 8×. Front-loaded
 so the meter feels alive in a normal three-enemy scrap, then stretched so 8× is a
 genuine achievement.
 

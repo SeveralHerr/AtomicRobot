@@ -18,6 +18,8 @@ const MAX_TRAVEL: float = 220.0
 ## 600 px/s == the old 10 px per 60 Hz physics frame, but delta-driven so it is
 ## frame-rate independent and respects Engine.time_scale.
 const SPEED: float = 600.0
+## Per-shot speed; subclasses may override (Cass's flip-flop flies faster).
+var speed: float = SPEED
 ## Half the shot's own length along X, added to each body's half-width for contact.
 const HALF_LENGTH: float = 11.0
 ## Vertical reach toward a lane-locked maid, beyond her own half-height.
@@ -39,7 +41,7 @@ func _physics_process(delta: float) -> void:
 	if dir == 0:
 		return
 	_spin(delta)
-	var step: float = SPEED * delta
+	var step: float = speed * delta
 	var from_x := global_position.x
 	position.x += dir * step
 	_travelled += step

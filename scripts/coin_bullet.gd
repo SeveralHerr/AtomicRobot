@@ -30,7 +30,7 @@ const REFLECT_GROUP := "reflectable"
 ## Reflected speed vs. a fresh throw, and the small lift that sells the swat.
 const REFLECT_SPEEDUP := 1.35
 const REFLECT_LIFT := -60.0
-const REFLECT_DAMAGE := 1
+const REFLECT_DAMAGE := DamageRules.REFLECTED_COIN_DAMAGE
 const REFLECT_STOP := 0.06
 const REFLECT_PITCH := 1.7
 ## True once swatted: the coin now hunts enemies in its lane and never the player.
