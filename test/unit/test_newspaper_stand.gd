@@ -20,10 +20,16 @@ func setup() -> void:
 
 func teardown() -> void:
 	Globals.secret_found.disconnect(_on_secret)
+	for a in ["Interact", "Attack", "ui_accept", "pause"]:
+		Input.action_release(a)
 	for n in _nodes:
 		if is_instance_valid(n):
 			n.free()
 	_nodes.clear()
+	# A paper left open pauses the tree for every later test.
+	(Engine.get_main_loop() as SceneTree).paused = false
+	NewsCard.active = false
+	CRTOverlay.reset_focus()
 
 
 func _on_secret(kind: String, id: String) -> void:
@@ -94,13 +100,12 @@ func test_each_stand_is_its_own_secret() -> String:
 	return _T.assert_true(_found[0][1] != _found[1][1], "ids differ per stand")
 
 
-# --- Reading: where the paper shows, how long it stays, reading it again ---------
-# Player report: the paper popped up right under the score (world-space, above the
-# stand, so the HUD column drew over it), expired before it could be read, and could
-# never be read again (a 5-minute cooldown).
+# --- Reading: a modal front page ------------------------------------------------
+# Player report: with the CRT on the paper was unreadable (a small card in the HUD
+# column: mush at the tube's 512x320 grid, its left edge under the bezel curve). It is
+# now a big centred front page that pauses the game until a fresh press folds it.
 
 const NEWS_CARD := preload("res://scripts/ui/news_card.gd")
-const SCORE_UI := preload("res://scenes/score_ui.tscn")
 ## The CRT bezel swallows about this much of every screen edge.
 const CRT_EDGE := 40.0
 const WINDOWS: Array[Vector2i] = [Vector2i(1280, 800), Vector2i(1688, 780)]
@@ -110,13 +115,17 @@ func _tree() -> SceneTree:
 	return Engine.get_main_loop() as SceneTree
 
 
-## Press Interact the way a player does: aligned to frame start, polled by _process.
-func _press_interact() -> void:
+func _real_seconds(s: float) -> void:
+	await _tree().create_timer(s, true, false, true).timeout
+
+
+## Press `action` the way a player does: aligned to frame start, polled by _process.
+func _press(action: String = "Interact") -> void:
 	await _tree().process_frame
-	Input.action_press("Interact")
+	Input.action_press(action)
 	await _tree().process_frame
 	await _tree().process_frame
-	Input.action_release("Interact")
+	Input.action_release(action)
 	await _tree().process_frame
 
 
@@ -126,56 +135,113 @@ func _near_stand() -> Node:
 	return s
 
 
-func test_interact_at_the_stand_opens_the_paper() -> String:
+## Past the arm window without waiting for its timer.
+func _arm(s: Node) -> void:
+	s._card._arm()
+
+
+func _fold_done() -> void:
+	await _real_seconds(NEWS_CARD.FOLD_SECONDS + 0.1)
+
+
+func test_interact_at_the_stand_opens_the_paper_and_pauses() -> String:
 	var s := _near_stand()
-	await _press_interact()
+	await _press()
 	var r: String = _T.assert_true(s.is_reading(), "paper up after Interact")
+	if r != "":
+		return r
+	r = _T.assert_true(_tree().paused, "the game waits while the player reads")
+	if r != "":
+		return r
+	r = _T.assert_true(s._card.photo.texture != null, "front page has its photo")
 	if r != "":
 		return r
 	return _T.assert_eq(_found.size(), 1, "first read is the stand's secret")
 
 
-func test_paper_stays_up_while_the_player_stays_at_the_stand() -> String:
+func test_paper_has_no_timeout() -> String:
 	var s := _near_stand()
-	s._show_notification()
-	s.advance(60.0)
-	return _T.assert_true(s.is_reading(), "a minute at the stand and the paper is still up")
+	await _press()
+	_arm(s)
+	for i in 30:
+		await _tree().process_frame
+	return _T.assert_true(s.is_reading(), "nobody pressed: still up")
 
 
-func test_walking_away_keeps_the_paper_for_the_minimum_read() -> String:
+func test_a_press_inside_the_arm_window_is_ignored() -> String:
 	var s := _near_stand()
-	s._show_notification()
-	s.player_in_area = false
-	var need: float = s.min_read_seconds(s.notification_label.text)
-	s.advance(need - 0.5)
-	var r: String = _T.assert_true(s.is_reading(), "still up before the minimum read time")
+	await _press()
+	await _press("Attack")  # mashing through the fight
+	return _T.assert_true(s.is_reading(), "a mash right after opening does not fold it")
+
+
+func test_the_opening_press_still_held_does_not_fold_it() -> String:
+	var s := _near_stand()
+	await _tree().process_frame
+	Input.action_press("Interact")
+	await _tree().process_frame
+	await _tree().process_frame
+	_arm(s)
+	for i in 5:
+		await _tree().process_frame
+	Input.action_release("Interact")
+	return _T.assert_true(s.is_reading(), "held from the opening press: not a fresh press")
+
+
+func test_a_fresh_press_folds_it_and_resumes_the_game() -> String:
+	for action in ["Interact", "Attack", "ui_accept"]:
+		var s := _near_stand()
+		await _press()
+		_arm(s)
+		await _press(action)
+		var r: String = _T.assert_false(s.is_reading(), "%s folds the paper" % action)
+		if r != "":
+			return r
+		await _fold_done()
+		r = _T.assert_false(_tree().paused, "game resumes once folded (%s)" % action)
+		if r != "":
+			return r
+		s.player_in_area = false  # walked on: the next stand's Interact is its own
+	return ""
+
+
+func test_pause_key_folds_the_paper_not_the_pause_menu() -> String:
+	var s := _near_stand()
+	await _press()
+	_arm(s)
+	await _press("pause")
+	var r: String = _T.assert_false(s.is_reading(), "pause folds the paper")
 	if r != "":
 		return r
-	s.advance(1.0)
-	return _T.assert_false(s.is_reading(), "put away once read and walked off")
-
-
-func test_min_read_time_scales_with_the_headline() -> String:
-	var script: GDScript = STAND_SCENE.instantiate().get_script()
-	var short: float = script.min_read_seconds("Robot Parade Scheduled for Friday!")
-	var long: float = script.min_read_seconds("Meter Maid Union Demands Heavier Quarters: 'These Ones Don't Leave a Dent'")
-	var r: String = _T.assert_true(long > short, "longer headline, longer read (%.1f vs %.1f)" % [long, short])
+	r = _T.assert_false(PauseMenu.visible, "no pause menu on top of the paper")
 	if r != "":
 		return r
-	return _T.assert_true(short >= 3.0, "even a short one stays up 3 s (%.1f)" % short)
+	await _fold_done()
+	return _T.assert_false(_tree().paused, "and the game resumes")
+
+
+func test_freeing_the_stand_mid_read_unpauses() -> String:
+	var s := _near_stand()
+	await _press()
+	s.free()
+	var r: String = _T.assert_false(_tree().paused, "never left paused")
+	if r != "":
+		return r
+	return _T.assert_false(NewsCard.active, "pause key handed back to the pause menu")
 
 
 func test_interact_again_rereads_the_same_paper_without_new_credit() -> String:
 	var s := _near_stand()
-	await _press_interact()
+	await _press()
 	var first: String = s.notification_label.text
-	s.player_in_area = false
-	s.advance(30.0)
+	_arm(s)
+	await _press()
+	await _fold_done()
 	var r: String = _T.assert_false(s.is_reading(), "precondition: paper put away")
 	if r != "":
 		return r
-	s.player_in_area = true
-	await _press_interact()
+	s._reopen_ok = true
+	await _press()
 	r = _T.assert_true(s.is_reading(), "Interact at the stand reads it again")
 	if r != "":
 		return r
@@ -185,9 +251,26 @@ func test_interact_again_rereads_the_same_paper_without_new_credit() -> String:
 	return _T.assert_eq(_found.size(), 1, "re-reading claims no second secret")
 
 
+## Autoplay caught it: Interact pressed again while the paper folded re-opened it
+## the frame the game resumed (three reads of one stand).
+func test_a_mash_through_the_fold_does_not_reopen() -> String:
+	var s := _near_stand()
+	await _press()
+	_arm(s)
+	await _press()
+	await _fold_done()
+	await _press()  # the very next press after the game resumes
+	var r: String = _T.assert_false(s.is_reading(), "a mash through the fold does not re-open it")
+	if r != "":
+		return r
+	s._reopen_ok = true
+	await _press()
+	return _T.assert_true(s.is_reading(), "a deliberate press later reads it again")
+
+
 func test_interact_away_from_the_stand_does_nothing() -> String:
 	var s: Node = _stands(1)[0]
-	await _press_interact()
+	await _press()
 	return _T.assert_false(s.is_reading(), "no stand nearby, no paper")
 
 
@@ -197,20 +280,93 @@ func test_prompt_hides_while_reading_and_returns_after() -> String:
 	var r: String = _T.assert_true(s.interact_label.visible, "prompt at the stand")
 	if r != "":
 		return r
-	s._show_notification()
+	await _press()
 	r = _T.assert_false(s.interact_label.visible, "no prompt over an open paper")
 	if r != "":
 		return r
-	s.player_in_area = false
-	s.advance(30.0)
-	s.player_in_area = true
-	s._refresh_prompt()
+	_arm(s)
+	await _press()
+	await _fold_done()
 	return _T.assert_true(s.interact_label.visible, "prompt back: it can be read again")
 
 
-## The card is screen-space, laid out for real next to the real HUD, at the desktop
-## and landscape-phone sizes: inside the CRT-safe area and clear of every HUD row.
-func test_paper_card_clears_the_hud_and_the_crt_edge() -> String:
+func test_crt_tunes_in_while_reading() -> String:
+	var s := _near_stand()
+	await _press()
+	await _real_seconds(CRTOverlay.TUNE_SECONDS + 0.1)
+	var r: String = _T.assert_true(CRTOverlay.focus > 0.95, "tube focused for reading (%.2f)" % CRTOverlay.focus)
+	if r != "":
+		return r
+	_arm(s)
+	await _press()
+	await _real_seconds(CRTOverlay.TUNE_SECONDS + 0.1)
+	return _T.assert_true(CRTOverlay.focus < 0.05, "and back to the cabinet look (%.2f)" % CRTOverlay.focus)
+
+
+## Touch screens: the pad's buttons are paused with the game, so a tap anywhere folds.
+func test_a_click_or_tap_folds_it_once_armed() -> String:
+	var s := _near_stand()
+	await _press()
+	await _tap_screen()
+	var r: String = _T.assert_true(s.is_reading(), "a tap right away is the mash guard's")
+	if r != "":
+		return r
+	_arm(s)
+	await _tree().process_frame
+	await _tap_screen()
+	return _T.assert_false(s.is_reading(), "a tap once armed folds it")
+
+
+## A screen touch through the real input pipeline (the tree is paused meanwhile).
+func _tap_screen() -> void:
+	for down in [true, false]:
+		var touch := InputEventScreenTouch.new()
+		touch.pressed = down
+		touch.position = Vector2(30, 30)
+		Input.parse_input_event(touch)
+		await _tree().process_frame
+
+
+## Round-2 screenshot: the score peeked out half-hidden behind the top of the page.
+func test_hud_clears_while_reading_and_returns() -> String:
+	var hud := Control.new()
+	hud.add_to_group(HudFade.CINEMATIC)
+	_tree().root.add_child(hud)
+	_nodes.append(hud)
+	var s := _near_stand()
+	await _press()
+	await _real_seconds(0.3)
+	var r: String = _T.assert_true(hud.modulate.a < 0.05, "HUD gone under the paper (%.2f)" % hud.modulate.a)
+	if r != "":
+		return r
+	_arm(s)
+	await _press()
+	await _real_seconds(0.4)
+	return _T.assert_true(hud.modulate.a > 0.95, "HUD back after the fold (%.2f)" % hud.modulate.a)
+
+
+## Every headline gets a front-page photo (derived from the stand's own list).
+func test_every_headline_has_a_photo() -> String:
+	var stand: Node = STAND_SCENE.instantiate()
+	var texts: Array = stand.newspaper_texts
+	var script: GDScript = stand.get_script()
+	stand.free()
+	for t in texts:
+		if script.photo_for(t) == null:
+			return "no photo for '%s'" % t
+	return ""
+
+
+## Laid out for real at the desktop and landscape-phone sizes: big, centred, and
+## inside the CRT-safe area with the longest headline.
+func test_paper_is_big_and_inside_the_crt_safe_area() -> String:
+	var stand: Node = STAND_SCENE.instantiate()
+	var longest := ""
+	for t in stand.newspaper_texts:
+		if t.length() > longest.length():
+			longest = t
+	var photo: Texture2D = stand.get_script().photo_for(longest)
+	stand.free()
 	for window in WINDOWS:
 		var base := Vector2(ProjectSettings.get_setting("display/window/size/viewport_width"),
 			ProjectSettings.get_setting("display/window/size/viewport_height"))
@@ -219,29 +375,18 @@ func test_paper_card_clears_the_hud_and_the_crt_edge() -> String:
 		var vp := SubViewport.new()
 		vp.size = Vector2i(canvas)
 		_tree().root.add_child(vp)
-		var hud: CanvasLayer = SCORE_UI.instantiate()
-		vp.add_child(hud)
-		hud.set_process(false)
-		hud.combo_label.text = "88 HITS!"
 		var card: NewsCard = NEWS_CARD.new()
 		vp.add_child(card)
-		# The longest headline is the tallest card.
-		var longest := ""
-		for t in STAND_SCENE.instantiate().newspaper_texts:
-			if t.length() > longest.length():
-				longest = t
-		card.open(longest, Vector2.ZERO, false)
+		card.open(longest, photo, false)
 		await _tree().process_frame
 		await _tree().process_frame
 		var rect: Rect2 = card.card.get_global_rect()
-		var safe := Rect2(Vector2(CRT_EDGE, CRT_EDGE), canvas - Vector2(CRT_EDGE, CRT_EDGE) * 2.0)
-		var rows: Array = []
-		for row: Control in hud.get_node("Hud/Rows").get_children():
-			rows.append([row.name, row.get_global_rect()])
 		vp.free()
+		var safe := Rect2(Vector2(CRT_EDGE, CRT_EDGE), canvas - Vector2(CRT_EDGE, CRT_EDGE) * 2.0)
 		if not safe.encloses(rect):
 			return "%s: paper %s pokes outside the CRT-safe area %s" % [window, rect, safe]
-		for row in rows:
-			if rect.intersects(row[1]):
-				return "%s: paper %s overlaps HUD row %s %s" % [window, rect, row[0], row[1]]
+		if rect.size.x < canvas.x * 0.6:
+			return "%s: paper %s is not big (canvas %s)" % [window, rect, canvas]
+		if absf(rect.get_center().x - canvas.x * 0.5) > 8.0:
+			return "%s: paper %s is not centred" % [window, rect]
 	return ""

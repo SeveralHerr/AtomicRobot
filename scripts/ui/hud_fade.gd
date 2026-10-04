@@ -74,6 +74,7 @@ static func _restart(node: Node) -> Tween:
 		var old: Variant = node.get_meta(_META)
 		if old is Tween and old.is_valid():
 			old.kill()
-	var tw := node.create_tween().set_ignore_time_scale(true)
+	# Runs on a paused tree too: a newspaper pauses the game and clears the HUD.
+	var tw := node.create_tween().set_ignore_time_scale(true).set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	node.set_meta(_META, tw)
 	return tw

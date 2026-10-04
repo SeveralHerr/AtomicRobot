@@ -86,7 +86,7 @@ func test_the_glyphs_that_broke_the_web_build_are_still_absent() -> String:
 ## above cannot see them - and they are long prose strings, the likeliest place for a
 ## pasted smart quote to hide.
 func test_newspaper_headlines_are_drawable() -> String:
-	# Drawn on the stand's NewsCard, in that card's headline font.
+	# Drawn on the stand's NewsCard, in that card's headline font, in capitals.
 	var font: FontFile = NewsCard.HEADLINE_FONT
 	var script: GDScript = load("res://scripts/interactive_mailbox.gd")
 	var mailbox = script.new()
@@ -95,7 +95,7 @@ func test_newspaper_headlines_are_drawable() -> String:
 	if r != "":
 		return r
 	for headline in headlines:
-		var missing := _missing_glyphs(font, str(headline))
+		var missing := _missing_glyphs(font, str(headline).to_upper())
 		if missing != "":
 			return "headline %s uses glyph(s) [%s] the body font has no character for" % [
 				JSON.stringify(headline), missing]

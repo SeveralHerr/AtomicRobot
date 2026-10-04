@@ -41,6 +41,7 @@ const VERBS := {
 	"teleport": ["num"],
 	"spawn": ["kind", "num?", "lane?"],
 	"god": ["onoff"],
+	"crt": ["onoff"],
 	"hp": ["int"],
 	"kill_all": [],
 	"sink": ["num"],

@@ -41,6 +41,8 @@ var god := false
 var _finished := false
 ## Last frame's MicroCutscene.playing, to log each cut scene's start and end.
 var _was_watching := false
+## rec.t when the open newspaper was first seen (-1 = none up).
+var _paper_t := -1.0
 var _source := ""
 
 
@@ -88,7 +90,8 @@ func _physics_process(_delta: float) -> void:
 		_was_watching = _watching()
 		rec.watching = _was_watching
 		rec.log_event("cutscene", {"playing": _was_watching})
-	if brain_on and not _watching():
+	_read_paper()
+	if brain_on and not _watching() and not NewsCard.active:
 		if is_finite(brain_stop_x):
 			snap["goal_x"] = brain_stop_x
 		var intent := Brain.decide(snap, brain_mem)
@@ -117,7 +120,7 @@ func _run() -> void:
 		if _player_dead() and not step["verb"] in AFTER_DEATH_VERBS:
 			rec.log_event("steps_skipped", {"reason": "player died", "next": step["text"]})
 			break
-		while _watching() and not _finished:
+		while (_watching() or NewsCard.active) and not _finished:
 			await get_tree().physics_frame
 		rec.log_event("step", {"do": step["text"]})
 		await _do(step)
@@ -129,6 +132,18 @@ func _run() -> void:
 ## so the brain and walk_to hold their keys and wait.
 func _watching() -> bool:
 	return MicroCutscene.playing
+
+
+## A newspaper pauses the game: read it like a player (ReadingTime), then fold it.
+func _read_paper() -> void:
+	if not NewsCard.active:
+		_paper_t = -1.0
+		return
+	if _paper_t < 0.0:
+		_paper_t = rec.t
+		rec.log_event("paper", {"open": true})
+	if NewsCard.active_text != "" and rec.t - _paper_t >= ReadingTime.seconds(NewsCard.active_text):
+		pad.tap("Interact")
 
 
 func _player_dead() -> bool:
@@ -162,6 +177,8 @@ func _do(step: Dictionary) -> void:
 		"god":
 			god = a[0] == "on"
 			_with_player(func(p: Player) -> void: p.god_mode = god)
+		# Snaps judge readability through the tube the player sees (user setting may be off).
+		"crt": CRTOverlay.set_enabled(a[0] == "on")
 		"hp": _with_player(func(p: Player) -> void:
 			p.health = int(a[0])
 			rec.rebase_hp(p.health)

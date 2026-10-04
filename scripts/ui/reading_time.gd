@@ -2,8 +2,8 @@ class_name ReadingTime
 extends RefCounted
 
 ## How long a pop-up with text to READ stays on screen: the one rule every such
-## pop-up uses (newspaper card, boss speech bubble, STREET CLEAR!, chat bubbles,
-## unlock toasts), so they agree and can be tuned in one place.
+## pop-up uses (boss speech bubble, STREET CLEAR!, chat bubbles,
+## unlock toasts; the autoplay bot reading a newspaper), so they agree and can be tuned in one place.
 ##
 ## Not for pure-juice slams (hit words, WAVE n/N, phase titles): those are glanced,
 ## not read, and their holds are timed against gameplay (a wave's walk-out, a boss

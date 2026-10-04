@@ -52,9 +52,3 @@ func test_boss_line_bubble_reaches_its_reading_time() -> String:
 
 func test_boss_line_keeps_a_longer_requested_hold() -> String:
 	return _T.assert_float_eq(BossBanner.say_hold("HI", 9.5), 9.5, 0.001, "hold is a floor, not replaced")
-
-
-func test_newspaper_holds_for_the_shared_rule() -> String:
-	var script: GDScript = load("res://scripts/interactive_mailbox.gd")
-	var t := "Robot Parade Scheduled for Friday!"
-	return _T.assert_float_eq(script.min_read_seconds(t), R.seconds(t), 0.001, "same rule")

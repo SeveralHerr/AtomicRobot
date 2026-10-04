@@ -24,7 +24,7 @@ func test_defaults_fill_missing_keys() -> String:
 func test_every_verb_in_the_table_parses_at_its_min_arity() -> String:
 	var samples := {"wait": "1", "hold": "ui_right 1", "tap": "Attack", "press": "Run",
 		"release": "Run", "walk_to": "100", "lane": "1", "teleport": "10", "spawn": "melee",
-		"god": "on", "hp": "3", "kill_all": "", "sink": "38", "brain": "clear", "menu": "", "snap": "",
+		"god": "on", "crt": "on", "hp": "3", "kill_all": "", "sink": "38", "brain": "clear", "menu": "", "snap": "",
 		"dump": "", "assert": "kills >= 1"}
 	for verb: String in Scenario.VERBS:
 		if not samples.has(verb):

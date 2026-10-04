@@ -252,7 +252,7 @@ func _track_kills(tree: SceneTree) -> void:
 ## scripted walk_to steps that never arrive both count.
 func _track_stuck(snap: Dictionary) -> void:
 	var p: Dictionary = snap.get("player", {})
-	if progress_dir == 0 or watching or p.is_empty() or p.get("dead", false):
+	if progress_dir == 0 or watching or NewsCard.active or p.is_empty() or p.get("dead", false):
 		return
 	# Standing still to fight (a crowd, the boss) or at the goal is not stuck.
 	if last_why.begins_with("fight") or last_why == "at goal" or str(p.get("state", "")) in ["AttackState", "KnockbackState"]:

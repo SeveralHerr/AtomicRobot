@@ -1,10 +1,9 @@
 extends Sprite2D
 
-## A newspaper stand. Interact at it to read today's headline on a comic card
-## (scripts/ui/news_card.gd) in the screen's left column; the first read is a secret
-## (Globals.secret_found "news"). The paper stays up while the player stays at the
-## stand, and for at least ReadingTime.seconds() once they walk off; Interact at the
-## stand again re-reads the same paper (no new credit).
+## A newspaper stand. Interact at it to read today's headline: a front page
+## (scripts/ui/news_card.gd) spins in and pauses the game until the player folds it.
+## The first read is a secret (Globals.secret_found "news"); Interact at the stand
+## again re-reads the same paper (no new credit).
 
 @onready var area_2d: Area2D = $Area2D
 @onready var interact_label: Label = $InteractLabel
@@ -20,6 +19,15 @@ var newspaper_texts := [
 	"Parking Meter Develops Sentience, Immediately Quits Job",
 	"Robot Parade Scheduled for Friday!"
 ]
+## Front-page photo: the first [keyword, SpriteFrames or Texture2D path] whose
+## keyword is in the headline (a SpriteFrames shows its "idle" first frame).
+const PHOTOS := [
+	["Council", "res://sprites/boss_ani.tres"],
+	["Union", "res://sprites/metermaid_sprite_frames.tres"],
+	["Tattoo", "res://sprites/cody_sprite_frames.tres"],
+	["Parking Meter", "res://images/new/Parking_Meter.png"],
+	["Robot", "res://sprites/robot_sprite_frames.tres"],
+]
 ## The card's headline label (the autoplay recorder reads `.text` on secret_found).
 var notification_label: Label
 
@@ -31,8 +39,9 @@ var _reported := false
 ## This stand's paper, drawn from the bag on the first read and kept for re-reads.
 var _headline := ""
 var _card: NewsCard
-## Seconds the paper has been up this time.
-var _shown_for := 0.0
+## False for a moment after the paper folds: a mash through the fold must not re-open
+## it the moment the game resumes (autoplay read one stand three times that way).
+var _reopen_ok := true
 
 
 static func reset_headline_bag() -> void:
@@ -46,9 +55,26 @@ static func next_headline(texts: Array) -> String:
 	return _headline_bag.pop_back()
 
 
-## Least time the paper stays up once the player walks off (the shared pop-up rule).
-static func min_read_seconds(text: String) -> float:
-	return ReadingTime.seconds(text)
+static func photo_for(text: String) -> Texture2D:
+	for p: Array in PHOTOS:
+		if text.contains(p[0]):
+			var res: Resource = load(p[1])
+			return _cropped(res.get_frame_texture(&"idle", 0) if res is SpriteFrames else res as Texture2D)
+	return null
+
+
+## `tex` cut to its opaque pixels, so the subject fills the photo instead of
+## standing small in its animation cell.
+static func _cropped(tex: Texture2D) -> Texture2D:
+	var img := tex.get_image()
+	if img == null:  # headless dummy renderer
+		return tex
+	var used := Rect2(img.get_used_rect())
+	var out := AtlasTexture.new()
+	out.atlas = tex.atlas if tex is AtlasTexture else tex
+	var origin: Vector2 = tex.region.position if tex is AtlasTexture else Vector2.ZERO
+	out.region = Rect2(origin + used.position, used.size)
+	return out
 
 
 func _ready() -> void:
@@ -69,10 +95,10 @@ func _on_body_exited(body: Node2D) -> void:
 		_refresh_prompt()
 
 
-func _process(delta: float) -> void:
-	if player_in_area and not is_reading() and Input.is_action_just_pressed("Interact"):
+func _process(_delta: float) -> void:
+	if player_in_area and not is_reading() and Input.is_action_just_pressed("Interact") \
+			and _reopen_ok:
 		_show_notification()
-	advance(delta)
 
 
 func is_reading() -> bool:
@@ -86,24 +112,20 @@ func _show_notification() -> void:
 	if _card == null:
 		_card = NewsCard.new()
 		add_child(_card)
+		_card.closed.connect(_on_paper_closed)
 		notification_label = _card.headline
-	_card.open(_headline, get_global_transform_with_canvas().origin)
-	_shown_for = 0.0
+	_card.open(_headline, photo_for(_headline))
 	if not _reported:
 		_reported = true
 		Globals.secret_found.emit("news", str(get_path()))
 	_refresh_prompt()
 
 
-## Count `delta` seconds of reading; fold the paper once the player has walked off
-## AND it has been up long enough to read.
-func advance(delta: float) -> void:
-	if not is_reading():
-		return
-	_shown_for += delta
-	if not player_in_area and _shown_for >= min_read_seconds(_headline):
-		_card.close()
-		_refresh_prompt()
+func _on_paper_closed() -> void:
+	_reopen_ok = false
+	get_tree().create_timer(NewsCard.ARM_SECONDS, true, false, true).timeout.connect(
+		func() -> void: _reopen_ok = true)
+	_refresh_prompt()
 
 
 ## "[interact]" over the stand whenever pressing it would open the paper.

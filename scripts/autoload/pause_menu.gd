@@ -44,7 +44,9 @@ func _process(_delta: float) -> void:
 	# Input state sees a press even when _input swallowed it, so the remap panel
 	# (open or listening) must veto pause here or binding Start would close the menu.
 	# A scene fade pauses the tree too; toggling here would unpause it mid-fade.
-	if Input.is_action_just_pressed("pause") and not _remap_panel.visible and not Transition.busy:
+	# So does an open newspaper, which folds itself on the pause key.
+	if Input.is_action_just_pressed("pause") and not _remap_panel.visible and not Transition.busy \
+			and not NewsCard.active:
 		toggle_pause()
 
 
