@@ -10,9 +10,11 @@ class_name BuildingDoorEncounter
 ## comic "WAVE 2/3" callout (EncounterAnnouncer), a quick "WAVE CLEAR!" as each earlier
 ## wave goes down, then a "STREET CLEAR!" payoff when the last wave is down.
 ##
-## `DoorMouth/Crack` (sprites/crack.png) doubles as the visual: a hairline crack
-## sits at the base of the wall as a permanent tell for where an encounter lives,
-## widens through the telegraph, and blows open into a hole enemies pour out of.
+## The mouth's look is a DoorMouthFx picked by `mouth_style`: WALL — the hairline
+## `DoorMouth/Crack` (sprites/crack.png) is the permanent tell, widens through the
+## telegraph and blows out into a brick breach (WallMouth); BUSH — the squad tears
+## out of the hedge (BushMouth). Place an encounter by moving `DoorMouth`: its
+## origin sits DoorMouthFx.MOUTH_TO_GROUND above the wall base / hedge foot.
 
 ## Lock released — cleared, watchdog, or player death.
 signal encounter_finished
@@ -57,8 +59,9 @@ signal squad_cleared
 ## and the fan-out never reads.
 @export var lane_hold_min: float = 1.5
 @export var lane_hold_max: float = 4.0
-## Telegraph (door rattle) before the burst.
-@export var arm_seconds: float = 0.35
+## Telegraph (rumble, crack widening / hedge thrashing) before the first burst.
+## 0.6: at 0.35 the build-up (chips, eyes, climbing shake) had no time to read.
+@export var arm_seconds: float = 0.6
 ## How long a spawned enemy takes to step from the crack out to its fan-out lane.
 ## Deliberately much slower than Enemy.LANE_CHANGE_DURATION (0.2s, tuned for snappy
 ## in-combat repositioning) — this is a "walking out of the doorway" beat, not a
@@ -73,21 +76,35 @@ signal squad_cleared
 ## Move speed multiplier applied to a freshly-spawned enemy for walk_out_seconds,
 ## so it doesn't immediately sprint at full chase speed the instant it appears.
 @export_range(0.05, 1.0) var walk_out_speed_scale: float = 0.4
+## Beat between the mouth bursting and the first enemy stepping out: without it
+## the first maid spawned on the burst frame and hid the breach / torn shrub.
+@export var burst_beat_seconds: float = 0.18
 ## Optional explicit lane order, e.g. [0, 2, 1, 3]. Empty = round-robin all lanes.
 @export var lane_pattern: Array[int] = []
 ## Knock an atomic heart loose when the LAST wave goes down (not on a watchdog or
 ## death release). Set on the street's finale only: the refuel before the boss door,
 ## earned by clearing the street's biggest fight — health now carries into the boss.
 @export var reward_heart: bool = false
+## Wall breach or a hedge the squad bursts out of — set per placement, never guessed.
+@export var mouth_style: DoorMouthFx.Style = DoorMouthFx.Style.WALL
+## WALL: the wall's own colour around the mouth (the breach rim and rubble take it).
+@export var wall_color: Color = Color("#6d574e")
+## BUSH: the hedge sprite's modulate behind the mouth (1.0, or 0.73 for dimmed Bush sprites).
+@export_range(0.3, 1.5) var foliage_shade: float = 1.0
+## Size of the mouth (crack, breach / shrub) for a tight spot, e.g. a pier between windows.
+@export_range(0.5, 1.5) var mouth_scale: float = 1.0
 
 const HEART := preload("res://scenes/atomic_heart_pickup.tscn")
-## Where the heart lands, relative to the encounter: out on the walkway beside the
-## hole, on the boss-door side — not on the crack, which draws over it (z 1).
+## A spawned enemy starts in the mouth's shadow and steps out into the light.
+const EMERGE_SHADOW := Color(0.28, 0.28, 0.34)
+const WALL_MOUTH := preload("res://scripts/door_mouth_wall.gd")
+const BUSH_MOUTH := preload("res://scripts/door_mouth_bush.gd")
+## Where the heart lands, relative to the encounter at the mouth's x: out on the
+## walkway beside the breach, on the boss-door side — clear of the hole and rubble.
 const HEART_LAND := Vector2(48.0, -26.0)
 
 @onready var door_mouth: Marker2D = $DoorMouth
 @onready var crack: AnimatedSprite2D = $DoorMouth/Crack
-@onready var dust: CPUParticles2D = $Dust
 @onready var trigger: Area2D = $Trigger
 @onready var left_wall: CollisionShape2D = $Barriers/LeftWall/CollisionShape2D
 @onready var right_wall: CollisionShape2D = $Barriers/RightWall/CollisionShape2D
@@ -105,14 +122,11 @@ var _spawned: Array[Node2D] = []
 var _saved_limit_left: int = 0
 var _saved_limit_right: int = 0
 var _watchdog: Timer
-var _arm_tween: Tween
+var mouth: DoorMouthFx
 var _plan: Array = []
 var _wave: int = 0
 var _spawn_index: int = 0
 var _announcer: EncounterAnnouncer
-
-const _CRACK_WIDEST_FRAME: int = 4
-const _CRACK_BURST_FRAME: int = 5
 
 
 ## Which lane the i-th enemy out of the door takes. Static and pure so it can be
@@ -134,6 +148,27 @@ static func wave_sizes(total: int, wave_count: int) -> Array:
 	return sizes
 
 
+## The look of this mouth (see mouth_style), on the ground under DoorMouth.
+func _make_mouth() -> DoorMouthFx:
+	# The crack keeps its foot on the ground line as it shrinks.
+	crack.scale = Vector2.ONE * mouth_scale
+	crack.position = DoorMouthFx.MOUTH_TO_GROUND * (1.0 - mouth_scale)
+	var fx: DoorMouthFx
+	if mouth_style == DoorMouthFx.Style.BUSH:
+		fx = BUSH_MOUTH.new()
+		fx.foliage_shade = foliage_shade
+		crack.visible = false  # hidden in the foliage, not drawn on it
+	else:
+		fx = WALL_MOUTH.new()
+		fx.wall_color = wall_color
+		fx.crack = crack
+	fx.name = "MouthFx"
+	fx.position = DoorMouthFx.MOUTH_TO_GROUND
+	fx.scale = Vector2.ONE * mouth_scale
+	door_mouth.add_child(fx)
+	return fx
+
+
 ## How long a freshly-spawned enemy is barred from attacking: walk out, then settle.
 func attack_grace_seconds() -> float:
 	return walk_out_seconds + settle_seconds
@@ -141,7 +176,7 @@ func attack_grace_seconds() -> float:
 
 func _ready() -> void:
 	crack.frame = 0
-	dust.emitting = false
+	mouth = _make_mouth()
 	_set_barriers(false)
 
 	_watchdog = Timer.new()
@@ -224,6 +259,7 @@ func _play_wave(index: int) -> void:
 	if not _live():
 		return
 	_burst()
+	await get_tree().create_timer(burst_beat_seconds).timeout
 	for i in _plan[index]:
 		if not _live():
 			_spawning = false
@@ -238,32 +274,17 @@ func _live() -> bool:
 	return is_inside_tree() and _active
 
 
-## First wave: the crack widens. Later waves: the blown-open hole rattles.
+## First wave: the closed mouth builds up. Later waves: the open mouth rattles.
+## The encounter owns the timing; the mouth only decorates it.
 func _telegraph(first: bool) -> void:
-	ScreenShake.apply_shake(3)
-	_arm_tween = create_tween()
-	var wait: float = arm_seconds
-	if first:
-		_arm_tween.tween_property(crack, "frame", _CRACK_WIDEST_FRAME, arm_seconds)
-	else:
-		wait = rearm_seconds
-		dust.restart()  # grit shaken loose from the hole: the rumble reads in a still
-		var beat: float = rearm_seconds / 6.0
-		_arm_tween.set_loops(3)
-		_arm_tween.tween_property(crack, "scale", Vector2(1.25, 1.15), beat)
-		_arm_tween.tween_property(crack, "scale", Vector2.ONE, beat)
+	var wait: float = arm_seconds if first else rearm_seconds
+	mouth.telegraph(first, wait)
 	await get_tree().create_timer(wait).timeout
 
 
-## The crack blows open into a hole and enemies pour out of it.
+## The mouth blows open and enemies pour out of it.
 func _burst() -> void:
-	# Kill the arm tween first: it targets frame 4 and its last step can otherwise
-	# land after this assignment and stomp the burst frame back down.
-	if _arm_tween != null and _arm_tween.is_valid():
-		_arm_tween.kill()
-	crack.frame = _CRACK_BURST_FRAME
-	crack.scale = Vector2.ONE
-	dust.restart()
+	mouth.burst()
 	ScreenShake.apply_shake(9)
 	if door_slam.stream != null:
 		door_slam.play()
@@ -303,6 +324,8 @@ func _walk_out(enemy: Enemy, target_lane: int) -> void:
 		return
 	var normal_speed: float = enemy.move_speed
 	enemy.move_speed = normal_speed * walk_out_speed_scale
+	enemy.modulate = EMERGE_SHADOW
+	enemy.create_tween().tween_property(enemy, "modulate", Color.WHITE, walk_out_seconds * 0.7)
 	if target_lane != Lanes.GROUND_LANE:
 		enemy._start_lane_change(target_lane, walk_out_seconds)
 	enemy.lane_change_cooldown = randf_range(lane_hold_min, lane_hold_max)
@@ -318,7 +341,8 @@ func _drop_heart() -> void:
 	get_parent().add_child(heart)
 	heart.position = position + door_mouth.position + Vector2(0.0, -30.0)
 	var tw := heart.create_tween()
-	tw.tween_property(heart, "position", position + HEART_LAND, 0.6).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+	var land := position + Vector2(door_mouth.position.x, 0.0) + HEART_LAND
+	tw.tween_property(heart, "position", land, 0.6).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 
 
 func _engage_lock() -> void:
@@ -370,8 +394,7 @@ func _end() -> void:
 		return
 	_active = false
 	_watchdog.stop()
-	if _arm_tween != null and _arm_tween.is_valid():
-		_arm_tween.kill()
+	mouth.stop()
 	if lock_arena:
 		_release_lock()
 	if _pushed_event:

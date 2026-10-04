@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://scripts/building_door_encounter.gd" id="1_bdenc"]
 [ext_resource type="Texture2D" uid="uid://cq2lxw1ffcp33" path="res://sprites/crack.png" id="2_crack"]
@@ -9,10 +9,6 @@ size = Vector2(220, 300)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
 size = Vector2(16, 400)
-
-[sub_resource type="Curve" id="Curve_dust"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 2
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_crack0"]
 atlas = ExtResource("2_crack")
@@ -75,24 +71,6 @@ z_index = 1
 sprite_frames = SubResource("SpriteFrames_crack")
 frame = 0
 frame_progress = 0.0
-
-[node name="Dust" type="CPUParticles2D" parent="."]
-position = Vector2(0, -24)
-z_index = 2
-emitting = false
-amount = 24
-lifetime = 0.6
-one_shot = true
-explosiveness = 0.85
-direction = Vector2(0, -1)
-spread = 60.0
-gravity = Vector2(0, 120)
-initial_velocity_min = 40.0
-initial_velocity_max = 140.0
-scale_amount_min = 1.5
-scale_amount_max = 3.0
-scale_amount_curve = SubResource("Curve_dust")
-color = Color(0.75, 0.72, 0.66, 1)
 
 [node name="Trigger" type="Area2D" parent="."]
 position = Vector2(0, -20)

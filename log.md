@@ -516,3 +516,10 @@ Log of skills that might have been useful for a given response, and why (short f
 - 10 validation rounds (one 1688x780). 901 unit, 19/19 autoplay, lane audit clean, 16/16 mutants killed.
 - Skills used: none via tool; repo skills godot-autoplay-test (enhanced: powerups metric, teleport Y), godot-ab-worktree. New skill: skills/godot-level-pickups. Would have helped: somewhat-useful-claude-skills:godot-2d-placement-audit (numeric placement asserts), derive-the-list (placed pickup list from the scene).
 - MCP: none used (CLI equivalents). No new MCP server (YAGNI: godot-tests already wraps autoplay).
+## 2026-10-04 — Door cracks: wall breaches, bush bursts (branch lj-cracks)
+- Every door mouth picks `mouth_style` per placement: 3 brick breaches (tinted rim + rubble, dust, chunk blast), 4 hedge mouths (shrub rustles, eyes peek, tears into halves over a dark hollow, leaf blast). 4721 moved off the window onto the brick pier at 0.75 scale. Secret walls get a chipped brick rim.
+- Juice: shake ramps through the telegraph, 0.05s hitstop on burst, 0.18s beat before the first enemy, squad steps out of the mouth's shadow; arm_seconds 0.35 -> 0.6.
+- 10 validation rounds (+1688x780), before/after crops + 2 GIFs. 896 unit, 12 sandbox, door_waves/secrets_cass/full_run/full_run_mortal pass, 24/24 mutants killed (3 survivors fixed with tests).
+- Skills used: none via tool; repo skills godot-headful-screenshot, godot-hit-feel, godot-ab-worktree (enhancement: headful-screenshot should say "reimport after changing a PNG" — stale art cost a round). New skill: skills/godot-door-mouth.
+- Would have helped: kenney-asset-kit (2D palette/measure for authoring into a set), derive-the-list (placement->style table derived from the scene), a "sample wall colour at x" probe.
+- MCP: none used (CLI).

@@ -40,8 +40,10 @@ static func small_orb() -> Texture2D:
 	return _small_orb
 
 
-## A one-shot burst of brick chunks at `world_pos`, owned by `owner`.
-static func brick_burst(owner: Node2D, world_pos: Vector2, amount: int, speed: float) -> CPUParticles2D:
+## A one-shot burst of brick chunks at `world_pos`, owned by `owner`. `colors`
+## (4 shades, light to dust) defaults to this building's brick.
+static func brick_burst(owner: Node2D, world_pos: Vector2, amount: int, speed: float,
+		colors: Array[Color] = BRICK_COLORS) -> CPUParticles2D:
 	var p := CPUParticles2D.new()
 	p.one_shot = true
 	p.explosiveness = 1.0
@@ -58,7 +60,7 @@ static func brick_burst(owner: Node2D, world_pos: Vector2, amount: int, speed: f
 	p.scale_amount_max = 5.0
 	var ramp := Gradient.new()
 	ramp.offsets = PackedFloat32Array([0.0, 0.33, 0.66, 1.0])
-	ramp.colors = PackedColorArray(BRICK_COLORS)
+	ramp.colors = PackedColorArray(colors)
 	p.color_initial_ramp = ramp
 	p.z_as_relative = false
 	p.z_index = 5
@@ -67,6 +69,50 @@ static func brick_burst(owner: Node2D, world_pos: Vector2, amount: int, speed: f
 	p.emitting = true
 	p.finished.connect(p.queue_free)
 	return p
+
+
+## Margin (px) around a hole's silhouette that rim_texture() draws into.
+const RIM_PX := 3
+
+
+## Broken-brick rim for a hole silhouette (`frame`, any opaque pixel = hole): the
+## brick right at the edge shows its dark broken face, chunks a pixel further out
+## catch the light, and the outline is chipped so it never reads as a clean
+## sticker. The result is `frame` grown by RIM_PX on every side — draw it centred
+## on the hole, behind it.
+static func rim_texture(frame: Texture2D, colors: Array[Color] = BRICK_COLORS, seed: int = 1) -> ImageTexture:
+	var src := frame.get_image()
+	if src.is_compressed():
+		src.decompress()
+	var w := src.get_width() + RIM_PX * 2
+	var h := src.get_height() + RIM_PX * 2
+	var out := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed
+	for y in h:
+		for x in w:
+			var d := _hole_distance(src, x - RIM_PX, y - RIM_PX)
+			if d == 0 or d > RIM_PX:
+				continue
+			# Chunky: whole 2x2 cells drop out past the first ring.
+			var chunk := RandomNumberGenerator.new()
+			chunk.seed = seed * 7919 + (x / 2) * 131 + (y / 2) * 17
+			if d >= 2 and chunk.randf() < 0.45 + 0.2 * (d - 2):
+				continue
+			# d1: the dark broken face; d2: chunk tops catching the light; d3: brick.
+			var c: Color = colors[2] if d == 1 else (colors[3] if d == 2 and chunk.randf() < 0.6 else colors[0])
+			out.set_pixel(x, y, c)
+	return ImageTexture.create_from_image(out)
+
+
+## Chebyshev distance (0..RIM_PX+1) from (x, y) to the nearest opaque pixel of `img`.
+static func _hole_distance(img: Image, x: int, y: int) -> int:
+	for d in range(0, RIM_PX + 1):
+		for yy in range(y - d, y + d + 1):
+			for xx in range(x - d, x + d + 1):
+				if xx >= 0 and yy >= 0 and xx < img.get_width() and yy < img.get_height() 						and img.get_pixel(xx, yy).a > 0.5:
+					return d
+	return RIM_PX + 1
 
 
 ## Screen point where the next HUD orb will appear (right of the last one).
@@ -126,11 +172,12 @@ static func fly_orb(owner: Node2D, world_pos: Vector2, on_arrive: Callable) -> C
 	return layer
 
 
-## Plays `stream` once on a throwaway player under `owner`.
-static func play_once(owner: Node, stream: AudioStream, volume_db: float = 0.0) -> void:
+## Plays `stream` once (at `pitch`) on a throwaway player under `owner`.
+static func play_once(owner: Node, stream: AudioStream, volume_db: float = 0.0, pitch: float = 1.0) -> void:
 	var a := AudioStreamPlayer.new()
 	a.stream = stream
 	a.volume_db = volume_db
+	a.pitch_scale = pitch
 	owner.add_child(a)
 	a.finished.connect(a.queue_free)
 	a.play()

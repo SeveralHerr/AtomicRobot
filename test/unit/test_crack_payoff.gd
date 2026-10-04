@@ -104,6 +104,37 @@ func test_opening_leaves_an_orb_in_the_hole_and_paints_it() -> String:
 	return _T.assert_gt(c.find_children("*", "CPUParticles2D", false, false).size(), 0, "brick chunks fly")
 
 
+## Round-1 review: the open hole was a flat black splat. It gets a broken-brick rim
+## drawn behind it, a few px wider than the hole on every side.
+func test_opening_frames_the_hole_with_a_brick_rim() -> String:
+	var c := _crack()
+	_open(c)
+	var rim := c.animated_sprite_2d.get_node_or_null("Rim") as Sprite2D
+	if rim == null:
+		return "no rim behind the hole"
+	var hole: Texture2D = c.animated_sprite_2d.sprite_frames.get_frame_texture("default", Crack.OPEN_FRAME)
+	var r: String = _T.assert_eq(rim.texture.get_width(), hole.get_width() + SecretFx.RIM_PX * 2, "rim wraps the hole")
+	if r != "":
+		return r
+	r = _T.assert_true(rim.show_behind_parent, "drawn behind the hole")
+	if r != "":
+		return r
+	# Chipped, never a solid outline: the outer rings have gaps.
+	var img := rim.texture.get_image()
+	var src := hole.get_image()
+	var outer := 0
+	var filled := 0
+	for y in img.get_height():
+		for x in img.get_width():
+			var d := SecretFx._hole_distance(src, x - SecretFx.RIM_PX, y - SecretFx.RIM_PX)
+			if d >= 2 and d <= SecretFx.RIM_PX:
+				outer += 1
+				if img.get_pixel(x, y).a > 0.5:
+					filled += 1
+	return _T.assert_true(filled > 0 and filled < outer * 0.8,
+		"outer rim chipped (%d of %d px filled)" % [filled, outer])
+
+
 func test_claim_reports_one_wall_secret() -> String:
 	var c := _crack()
 	_open(c)
@@ -113,8 +144,8 @@ func test_claim_reports_one_wall_secret() -> String:
 	if r != "":
 		return r
 	await _tree().process_frame
-	return _T.assert_eq(c.find_children("*", "Sprite2D", true, false).size(), 1,
-		"the hole orb became the flying orb")
+	var sprites := c.find_children("*", "Sprite2D", true, false).filter(func(n): return n.name != "Rim")
+	return _T.assert_eq(sprites.size(), 1, "the hole orb became the flying orb")
 
 
 func test_claim_before_open_does_nothing() -> String:
