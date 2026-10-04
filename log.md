@@ -381,3 +381,11 @@ Log of skills that might have been useful for a given response, and why (short f
 - First deploy blocked by CI: end card buried by boss letterbox bars added after it moved to front (slow CI frames). Fix: card re-fronts on sibling add; test_card_stays_on_top_of_later_ui. Second deploy green (568/568, 9/9) and shipped.
 - Lesson: a test that "failed once under load" locally (split agent saw it) was a real race — chase it before shipping, not after.
 - Skills: none used; itch-ci-deploy would have helped read the failed run faster. MCP: none.
+
+## 2026-10-03 — 100% speedrun video + footage review artifact
+- Route: completionist_run.json (all hearts, secret wall B, 5 newspapers, both power-ups, boss, Robot unlock). Mortal seed 1 recorded: 3:11 to YOU WIN, 0 deaths, ended 4/30 HP.
+- Fixed: Movie Maker froze on first hitstop (time_scale 0 -> NaN unscaled delta); Utils.hit_pause_scale() gives recordings a 1% near-freeze. Added `brain advance S X`, recorder powerup/unlock events, `autoplay.py --record`, MCP record_autoplay. 571/571 unit, 9/9 sandbox, 14/14 autoplay; 2 stop-x mutants killed.
+- Footage findings (artifact for approval): street HP + score wiped at boss room, cat crack unreachable, projectile chars can't open secrets, NEWS card over HUD, STREET CLEAR mid-door, Robot unlock hidden behind win card.
+- Skills used: godot-autoplay-test (enhancement: say up front that the brain never presses Interact — now documented), artifact-capabilities. New: godot-speedrun-review.
+- Would have helped: godot-speedrun-review (now exists); somewhat-useful-claude-skills:godot-2d-placement-audit (HUD overlap numerically); mockup-on-screenshot (proposal visuals on cards).
+- MCP: godot-tests (extended with record_autoplay). AGENTS.md referenced by CLAUDE.md does not exist.

@@ -230,6 +230,11 @@ Hitstop freezes game time, so autoplay snaps never show it: capture on the wall 
 tag frames with Engine.time_scale (`skills/godot-hit-feel/SKILL.md`). Parallel agents share
 the session scratchpad — work in `scratchpad/<task>/`, never reuse names like `shot.gd`.
 
+Video: `python tools/autoplay.py <scenario> --record out.mp4` (MCP `record_autoplay`);
+footage review recipe in `skills/godot-speedrun-review/SKILL.md`. Re-extract a suspect frame
+at full size before reporting it — adjacent contact-sheet tiles fake "doubled" art. Never
+point `--autoplay-out` at the scenario's own folder: the report overwrites a same-named scenario.
+
 Before/after evidence for a fix: run the same scenario on HEAD and the working tree
 (`skills/godot-ab-worktree/SKILL.md`). Check a forced bug state on the OLD build before
 you trust it in a demo.

@@ -31,7 +31,8 @@ Steps (`"verb args"`): `wait S` · `hold ACTION S` · `tap ACTION` · `press/rel
 · `walk_to X [T]` · `lane N` (0 walkway .. 3 front; main.tscn only) · `teleport X`
 · `spawn melee|ranged [DX] [LANE]` · `god on|off` (survives scene changes) · `hp N` (raw;
 3 per orb) · `kill_all` (not counted as kills) · `sink DY` (push live non-locked enemies DY px
-off their lane floor, lane unchanged) · `brain advance|clear|monkey [S]` · `menu [S]`
+off their lane floor, lane unchanged) · `brain advance|clear|monkey [S] [X]` (X: advance
+fights forward and the step ends on arrival at x=X — route scripting between secrets) · `menu [S]`
 · `snap [NAME]` · `dump [NAME]` · `assert METRIC OP VALUE`.
 A step that can't do its job (`walk_to`/`lane`/`menu` timeout, `spawn` with no player)
 FAILS the run with `step failed: ...`. Once the player dies, the run stops at the first step
@@ -57,6 +58,15 @@ Pure `brain.gd: decide(snapshot, mem) -> intent`, unit tested. Ladder: close thr
 heal (hp <= 6) -> pickup -> fight -> advance (on the road lanes), then unstick (jump ->
 held lane step / remember road block -> seeded random back-off + running jump). The
 report's `why` events are its decision trail — read them first when a run stalls.
+
+## Recording a video
+`python tools/autoplay.py <one scenario> --record out.mp4` (MCP `record_autoplay`) does all of
+this; full review workflow in `skills/godot-speedrun-review/SKILL.md`. By hand, Movie Maker:
+`godot --path . --write-movie out.avi --fixed-fps 60 -- --autoplay x.json --autoplay-out DIR`
+(windowed; omit `--mute` to keep audio; ~9 MB/s MJPEG; hitstop is wall-clock, so frames differ from headless). Encode with the ffmpeg bundled
+in `pip install imageio-ffmpeg` (`imageio_ffmpeg.get_ffmpeg_exe()`): libx264 + aac.
+Reports log `powerup` (id) and `unlock` events. Interact (`tap Interact`) is scripted —
+the brain never presses it; cracks need ~0.6 s between `tap Attack` (taps mid-swing drop).
 
 ## Gotchas
 - A script that fails to PARSE never runs, so `errors` stays 0; autoplay.py scans stdout and
