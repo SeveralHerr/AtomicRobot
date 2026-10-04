@@ -18,7 +18,7 @@ const UNLOCK_TILT := -4.0
 ## The NEW FIGHTER stamp lands after the rank stamp has settled.
 const UNLOCK_DELAY := 0.45
 const ROW_SIZE := 29
-const DETAIL_SIZE := 23
+const DETAIL_SIZE := 26
 
 var title: Label
 var rank_row: Control
@@ -179,7 +179,8 @@ func _fill_breakdown(rows: Array) -> void:
 		var detail: bool = row[2]
 		var size := DETAIL_SIZE if detail else ROW_SIZE
 		var tone := ComicStyle.PLUM if detail else ComicStyle.INK
-		var name_label := ComicStyle.label(row[0], ComicStyle.LABEL, size, tone)
+		# Detail rows sit indented under BONUS: they are its parts, not more subtotals.
+		var name_label := ComicStyle.label(("   " if detail else "") + row[0], ComicStyle.LABEL, size, tone)
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		var value_label := ComicStyle.label(row[1], ComicStyle.LABEL, size, tone)
 		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
