@@ -44,10 +44,10 @@ var is_dead: bool = false
 
 # Stats
 var health: int = 2
-var move_speed: float = 100.0
+var move_speed: float = EnemyTuning.RANGED_MOVE_SPEED
 var coins: int = 1
 var attack_range: int = 120
-var attack_cooldown: float = 4
+var attack_cooldown: float = EnemyTuning.RANGED_ATTACK_COOLDOWN
 var detection_range: float = 600.0
 ## Which attack-slot pool this enemy competes in ("melee" / "ranged"). Base Enemy
 ## throws coins (AttackPlayerState._do_hit), so ranged is the default; melee
