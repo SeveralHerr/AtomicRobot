@@ -31,6 +31,7 @@ const STYLES := {
 	&"orange": [Color("#F2762E"), Color("#FFA766"), Color("#FFF4DC")],
 	&"blue": [Color("#3D86D6"), Color("#8CC6FF"), Color("#FFF4DC")],
 	&"cream": [Color("#FFF4DC"), Color("#FFFFFF"), Color("#C8202A")],
+	&"gold": [Color("#FFB81C"), Color("#FFF0A0"), Color("#C8202A")],
 }
 
 ## Word pools and feel per event kind. `cooldown` is real seconds between two words
@@ -48,9 +49,16 @@ const KINDS := {
 		"words": ["OOF!", "OUCH!", "ACK!"],
 		"style": &"cream", "anim": &"float", "cooldown": 0.6, "life": 0.6, "size": 0.85,
 	},
+	# Orange, not blue: blue vanished into the grey-blue brick it pops over.
 	&"smash": {
 		"words": ["CRASH!", "SMASH!", "KRSSH!"],
-		"style": &"blue", "anim": &"pop", "cooldown": 0.3, "life": 0.7, "size": 1.0,
+		"style": &"orange", "anim": &"pop", "cooldown": 0.3, "life": 0.7, "size": 1.0,
+		"exit": &"shrink",
+	},
+	&"secret": {
+		"words": ["SECRET!"],
+		"style": &"gold", "anim": &"pop", "cooldown": 0.0, "life": 1.4, "size": 1.35,
+		"exit": &"shrink",
 	},
 }
 
@@ -78,6 +86,9 @@ static var _live: WeakRef = null
 var word: String = ""
 var style: StringName = &"yellow"
 var anim: StringName = &"pop"
+## How the word leaves: &"fade" (alpha) or &"shrink" (scales away at full opacity —
+## for words over busy brick, where a half-faded card turns to mud).
+var exit: StringName = &"fade"
 var life: float = 0.55
 var size_mult: float = 1.0
 var age: float = 0.0
@@ -100,6 +111,7 @@ static func spawn(anchor: Node, world_pos: Vector2, kind: StringName, text: Stri
 	popup.word = text if text != "" else pick_word(kind)
 	popup.style = cfg["style"]
 	popup.anim = cfg["anim"]
+	popup.exit = cfg.get("exit", &"fade")
 	popup.life = cfg["life"]
 	popup.size_mult = cfg["size"]
 	popup.tilt = randf_range(-0.15, 0.15)
@@ -205,10 +217,14 @@ func _apply(t: float) -> void:
 			rise = 10.0 * (1.0 - pow(1.0 - clampf(t / 0.7, 0.0, 1.0), 3.0))
 		_:
 			s = pop_scale(t)
+	var out := fade_alpha(t, life, minf(FADE, life))
+	if exit == &"shrink":
+		s *= out
+		out = 1.0
 	scale = Vector2.ONE * s * BASE_SCALE * size_mult
 	rotation = tilt
 	global_position = _base_pos - Vector2(0.0, rise)
-	modulate.a = fade_alpha(t, life, minf(FADE, life))
+	modulate.a = out
 
 
 ## Keeps the card (at rest size) inside the camera view and below the HUD band.
