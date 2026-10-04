@@ -50,11 +50,11 @@ func _roll(lo: int, hi: int) -> int:
 
 ## Put the car on `lane` at `pos` and set it driving `dir` (-1 left, +1 right).
 ## `with_speed` 0 rolls a random speed on the first frame. Call after add_child.
-## Draws mid-band in its lane, so bodies nearer the camera in that lane draw over it.
+## Draws over every body in its own lane and under every body in nearer lanes.
 func launch(car_lane: int, pos: Vector2, dir: int = -1, with_speed: int = 0) -> void:
 	lane = car_lane
 	z_as_relative = false
-	z_index = Lanes.z_for(car_lane) + Lanes.DEPTH_Z_BIAS
+	z_index = Lanes.vehicle_z(car_lane)
 	global_position = pos
 	direction = 1 if dir > 0 else -1
 	sprite_2d.flip_h = direction > 0

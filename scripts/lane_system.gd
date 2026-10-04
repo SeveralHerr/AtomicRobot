@@ -173,6 +173,13 @@ static func depth_z(lane: int, foot_y: float, baseline_floor_y: float) -> int:
 	return z_for(l) + DEPTH_Z_BIAS + roundi(depth)
 
 
+## Draw z for a vehicle on `lane`: just above the deepest in-lane body, still inside
+## the lane's band. A car fills the lane's depth, so a same-lane body must never draw
+## over it; mid-band tied with a body standing on the lane line and lost to tree order.
+static func vehicle_z(lane: int) -> int:
+	return z_for(lane) + DEPTH_Z_BIAS + int(IN_LANE_JITTER) + 1
+
+
 static func same_lane(a: int, b: int) -> bool:
 	return a == b
 

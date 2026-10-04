@@ -178,7 +178,7 @@ func test_spawns_one_car_on_a_road_lane() -> String:
 	res = _T.assert_true(car.lane > Lanes.GROUND_LANE and car.lane <= Lanes.FRONT_LANE, "road lane, got %d" % car.lane)
 	if res != "":
 		return res
-	res = _T.assert_eq(car.z_index, Lanes.z_for(car.lane) + Lanes.DEPTH_Z_BIAS, "z-sorted in its lane band")
+	res = _T.assert_eq(car.z_index, Lanes.vehicle_z(car.lane), "draws over its lane, under the next")
 	if res != "":
 		return res
 	res = _T.assert_true(car.start, "the car is driving")

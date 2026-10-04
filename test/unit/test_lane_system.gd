@@ -310,3 +310,25 @@ func test_lane_for_floor_rederives_road_lanes_from_foot_y() -> String:
 	if r != "":
 		return r
 	return _T.assert_eq(L.lane_for_floor(INF, 37.0), L.GROUND_LANE, "no street known yet")
+
+
+## A car fills its lane's whole depth, so it draws over every body standing in that
+## lane (any in-lane offset) and under every body one lane nearer the camera.
+func test_vehicle_z_tops_its_lane_and_stays_under_the_next() -> String:
+	var floor := 500.0
+	for lane in range(L.GROUND_LANE + 1, L.FRONT_LANE + 1):
+		var car_z := L.vehicle_z(lane)
+		var own: String = _T.assert_true(car_z < L.z_for(lane) + L.ROAD_Z_STRIDE, "lane %d car z %d stays inside its own band" % [lane, car_z])
+		if own != "":
+			return own
+		for d in [-L.IN_LANE_JITTER, 0.0, L.IN_LANE_JITTER]:
+			var body := L.depth_z(lane, L.floor_y(floor, lane) + d, floor)
+			var r: String = _T.assert_true(car_z > body, "lane %d car z %d over body z %d (depth %.0f)" % [lane, car_z, body, d])
+			if r != "":
+				return r
+			if lane < L.FRONT_LANE:
+				var nearer := L.depth_z(lane + 1, L.floor_y(floor, lane + 1) + d, floor)
+				r = _T.assert_true(car_z < nearer, "lane %d car z %d under lane %d body z %d" % [lane, car_z, lane + 1, nearer])
+				if r != "":
+					return r
+	return ""
