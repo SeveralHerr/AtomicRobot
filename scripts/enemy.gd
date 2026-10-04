@@ -196,41 +196,14 @@ func move_towards_target(target_pos: Vector2, delta: float):
 	velocity.x = move_toward(velocity.x, target_velocity.x, 2000 * delta)
 
 
+## Ledge on either side — see EnemyLedgeProbe for why road lanes never have one.
 func is_near_edge() -> bool:
-	# The down-raycasts target Ground(2)/Platforms(32), but road-lane bodies
-	# deliberately disable both bits on themselves (_set_ground_collision) since
-	# virtual lane floors have no real collision under them — so on any non-ground
-	# lane these rays never hit anything and this would permanently read "near an
-	# edge", blocking chase movement outright. The virtual floors run gapless the
-	# length of the level (see docs/LANE_REFACTOR.md), so there's nothing to fall
-	# off there; only check for real ledges on the ground lane.
-	if lane != Lanes.GROUND_LANE:
-		return false
-	return not ray_cast_2d_left_down.is_colliding() or not ray_cast_2d_right_down.is_colliding()
+	return EnemyLedgeProbe.near_edge(lane, ray_cast_2d_left_down, ray_cast_2d_right_down)
 
 
-## Ledge check for the direction we are about to move in (+1 right, -1 left).
-##
-## Chase movement used to be gated on is_near_edge(), which reports an edge on
-## EITHER side — so an enemy that walked up to a ledge could no longer move in
-## the one direction that would take it away from that ledge, and froze on the
-## spot permanently. Only the ray on the leading side can actually stop us.
+## Ledge on the side we are about to move toward (+1 right, -1 left).
 func is_near_edge_ahead(dir: int) -> bool:
-	if lane != Lanes.GROUND_LANE or dir == 0:
-		return false
-	var left_offset := ray_cast_2d_left_down.global_position.x - global_position.x
-	var leading := ray_cast_2d_left_down if leading_ray_is_left(left_offset, dir) else ray_cast_2d_right_down
-	return not leading.is_colliding()
-
-
-## Which down-ray sits on the side we are moving toward.
-##
-## The rays are children of this body, whose transform mirrors on x when facing
-## left (see set_facing), so the node *named* "left" is on the world right half
-## the time — the choice has to be made from the ray's actual world offset, not
-## its name. Pure and static so it can be unit-tested headless.
-static func leading_ray_is_left(left_ray_offset_x: float, dir: int) -> bool:
-	return signf(left_ray_offset_x) == signf(float(dir))
+	return EnemyLedgeProbe.near_edge_ahead(self, lane, ray_cast_2d_left_down, ray_cast_2d_right_down, dir)
 
 
 func is_near_wall() -> bool:
@@ -252,35 +225,13 @@ func face_towards(world_x: float) -> void:
 	set_facing(signi(dx))
 
 
-## Absolute facing setter — +1 looks right, -1 looks left.
-##
-## Two things here are deliberate and both were bugs in the old `scale.x *= -1`
-## toggle (`_handle_direction`):
-##
-## 1. It is *absolute*, not a toggle. The old version only flipped when its argument
-##    disagreed with the previously *requested* direction, so which way the sprite
-##    actually pointed was bookkeeping that any other writer to scale.x/flip_h
-##    silently desynced. It also flipped on the *opposite* of the movement direction
-##    (callers passed the away-from-target vector), so every new caller had a 50/50
-##    chance of coming out mirrored — FindMeterState drew that short straw and
-##    walked backwards to every meter.
-##
-## 2. It writes the transform's basis columns instead of assigning `scale`/`scale.x`.
-##    Transform2D has no way to store a negative x-scale, so Godot re-decomposes
-##    `scale = (-1, 1)` into `rotation = PI, scale = (1, -1)` — a visually identical
-##    mirror, but one that `scale.x` reads back from as *+1*. Worse, Node2D.set_scale
-##    only rescales the existing columns and preserves their direction, so once the
-##    mirror has migrated into `rotation` no assignment to `scale.x` can undo it and
-##    the enemy is stuck facing the wrong way. Setting the columns is idempotent and
-##    survives move_and_slide (which only translates the origin).
+## Absolute facing setter — +1 looks right, -1 looks left. Writes the basis, not
+## scale.x: see FacingTransform for why.
 func set_facing(dir: int) -> void:
 	if dir == 0:
 		return
 	facing = signi(dir)
-	var t := transform
-	t.x = Vector2(_base_scale.x * facing, 0.0)
-	t.y = Vector2(0.0, _base_scale.y)
-	transform = t
+	transform = FacingTransform.mirrored(transform, _base_scale, facing)
 
 
 func _apply_gravity(delta: float) -> void:

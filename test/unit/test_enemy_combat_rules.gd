@@ -3,7 +3,7 @@ extends RefCounted
 # Headless tests for the pure decision rules behind enemy combat:
 #   - Lanes.can_engage      — who can hit whom across the depth axis
 #   - AttackPlayerState.release_frame_for — where in a clip a swing connects
-#   - Enemy.leading_ray_is_left           — which ledge ray gates a move
+#   - EnemyLedgeProbe.leading_ray_is_left — which ledge ray gates a move
 #
 # Each of these was a live bug fixed by extraction: lane parity silenced window
 # and platform maids, a hardcoded frame index never matched the shorter of the two
@@ -146,25 +146,25 @@ func test_shipped_maid_sets_have_every_clip_the_states_play() -> String:
 ## Facing right: the "left" ray sits at a negative offset, so a rightward move is
 ## gated by the right ray.
 func test_leading_ray_when_facing_right() -> String:
-	var r: String = _T.assert_false(ENEMY.leading_ray_is_left(-25.0, 1), "moving right uses the right ray")
+	var r: String = _T.assert_false(EnemyLedgeProbe.leading_ray_is_left(-25.0, 1), "moving right uses the right ray")
 	if r != "":
 		return r
-	return _T.assert_true(ENEMY.leading_ray_is_left(-25.0, -1), "moving left uses the left ray")
+	return _T.assert_true(EnemyLedgeProbe.leading_ray_is_left(-25.0, -1), "moving left uses the left ray")
 
 
 ## Facing left mirrors the body, so the node named "left" is now on the world
 ## right — the choice must follow the world offset, not the node name.
 func test_leading_ray_when_facing_left_is_mirrored() -> String:
-	var r: String = _T.assert_true(ENEMY.leading_ray_is_left(25.0, 1), "mirrored: 'left' ray leads a rightward move")
+	var r: String = _T.assert_true(EnemyLedgeProbe.leading_ray_is_left(25.0, 1), "mirrored: 'left' ray leads a rightward move")
 	if r != "":
 		return r
-	return _T.assert_false(ENEMY.leading_ray_is_left(25.0, -1), "mirrored: 'right' ray leads a leftward move")
+	return _T.assert_false(EnemyLedgeProbe.leading_ray_is_left(25.0, -1), "mirrored: 'right' ray leads a leftward move")
 
 
 func test_leading_ray_always_picks_the_side_being_moved_toward() -> String:
 	for offset in [-25.0, 25.0]:
 		for dir in [-1, 1]:
-			var picked_left: bool = ENEMY.leading_ray_is_left(offset, dir)
+			var picked_left: bool = EnemyLedgeProbe.leading_ray_is_left(offset, dir)
 			var picked_offset: float = offset if picked_left else -offset
 			if signf(picked_offset) != signf(float(dir)):
 				return "offset %.0f dir %d picked the trailing ray" % [offset, dir]
