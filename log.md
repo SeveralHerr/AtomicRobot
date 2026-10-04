@@ -329,3 +329,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - Would have helped: extract-a-testable-seam (ScreenShake.step / allow_headless_hit_pause seams), godot-ab-worktree (before/after; done by hand), godot-hit-feel (created).
 - MCP: none used (godot-tests MCP available; CLI needed for --filter + mutation loop). No new MCP server (YAGNI).
 - Process: shared scratchpad collided with the death-beat agent (shot.gd/sheet.py/shots/base) — rule added to CLAUDE.md.
+
+## 2026-10-03 — Door encounters in 1–3 waves (worktree juice-waves)
+- Skills used: godot-boss-juice (banner reuse; added a street-callout section), godot-headful-screenshot (round.sh + sheet.py), godot-ab-worktree (old-vs-new late-level sweep), godot-autoplay-test.
+- Would have helped: a balance-sweep skill that A/Bs a teleport-start mortal scenario across seeds and prints a table (wrote sweep.py by hand); derive-the-list (encounter list derived from main.tscn in the ramp test, not hand-listed).
+- Enhancement idea (godot-headful-screenshot): note that `--resolution` doesn't change the root texture size, so the phone round needs a window grab to judge aspect.
+- MCP: none used (ran suites via shell for --filter + mutation loop).

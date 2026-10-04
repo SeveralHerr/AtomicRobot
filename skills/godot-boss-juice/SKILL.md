@@ -41,3 +41,13 @@ drop marker), `scripts/boss_room.gd` (director), `scripts/states/boss_*_state.gd
 `hurt` events by `near` to find the culprit attack -> change ONE table value -> repeat.
 Then pin with seeded mortal scenarios both ways (must-win tank, weak char reaches half).
 Visual rounds: `snap_every 0.3` windowed + contact sheet; one `--resolution 1688x780` round.
+
+## Reusing the banner off the boss stage (street door waves)
+`EncounterAnnouncer` hosts a `BossBanner` on its own CanvasLayer (3: above HUD, below
+pause/CRT) and only listens to encounter signals. Street callouts: `size_k = 0.8`,
+`stripe_y = 0.36` (waves) / `0.42` (payoff) so stripe and burst clear the HP row,
+the score and the walkway maids. Size the banner by hand with TOP_LEFT anchors (a
+first slam lands the frame it is added; full-rect + `size =` logs a warning). Wave
+callouts on BLUE (yellow-on-orange washed out), last wave RED. Payoff word must not
+lie: ambient maids can still be up after the squad dies (`BUSTED!`, not `STREET
+CLEAR!`). A forced end (death/watchdog) hides the layer.

@@ -1,0 +1,7 @@
+{
+  "character": "Ryan",
+  "seed": 1,
+  "timeout": 120,
+  "steps": ["god on", "teleport 1900", "brain advance 60", "dump end"],
+  "expect": ["kills >= 4", "x > 2600", "errors == 0", "max_stuck_s < 20"]
+}

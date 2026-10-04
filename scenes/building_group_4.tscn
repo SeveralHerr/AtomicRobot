@@ -71,6 +71,8 @@ texture = ExtResource("3_at3ej")
 position = Vector2(5900, 0)
 script = ExtResource("5_5amyh")
 melee_ratio = 1.0
+enemy_count = 6
+waves = 3
 
 [node name="Lamp5" type="Sprite2D" parent="." unique_id=1290627267 instance=ExtResource("2_xdnbq")]
 z_index = 1

@@ -84,9 +84,14 @@ hand-edit it. Options:
   `BuildingGroup4/Enter` (`final_boss_enter.gd`) changes scene to boss_room;
   `building_door_encounter.tscn` (`BuildingDoorEncounter`) is the TMNT-style
   burst — a squad pours out of a doorway across the lanes and optionally locks the
-  player in with barriers + camera limits until the street is clear. One instance
-  is placed at world x≈4600 (`BuildingGroup2`, beside the parking meters). Drive it
-  headless with `cmd list_encounters` / `cmd trigger_encounter`.
+  player in with barriers + camera limits until the street is clear. The squad
+  (`enemy_count`) comes out in 1–3 `waves`; each next wave waits for the current
+  one to be fully down, then rumbles and re-bursts the door with a comic
+  `WAVE n/N` callout (`EncounterAnnouncer`, reusing `BossBanner`) and ends on
+  `BUSTED!`. Seven instances ramp along the street (x / waves x squad):
+  389 1x3 · 2361 2x4 · 4721 2x4 · 5492 2x4 · 6080 2x5 · 6949 3x6 · 7775 3x6.
+  `test_street_waves_*` pins the ramp and "no 1-maid wave"; `door_waves` autoplay
+  plays one. Drive it headless with `cmd list_encounters` / `cmd trigger_encounter`.
 
 > **Spawning gotcha:** `EnemySpawner.spawn_enemy*()` applies `global_position` while
 > the enemy is still an orphan (its `add_child` is deferred), so the parent's
