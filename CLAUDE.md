@@ -239,6 +239,13 @@ Autoplay writes scores/unlocks to scratch saves (`user://autoplay_*.cfg`); a run
 touched the real `user://scores.cfg` polluted the player's high-score table — keep tools off it.
 Parallel worktrees share `user://`, so a test touching user files can flake under fan-out.
 
+Cut scenes / anything camera-led: validate on contact sheets of windowed snaps
+(`python tools/contact_sheet.py <run> <t0> <t1>`, MCP `contact_sheet`) per scene, and a
+final pass on a `--record` of the NATURAL route — teleporting scenarios hid trigger
+timing against door waves and their STREET CLEAR! payoff (`skills/godot-micro-cutscene`).
+Let table tests check framing/readability rules (shot above the road, title readable
+before the glide back): they caught 3 bad numbers screenshots didn't.
+
 Before/after evidence for a fix: run the same scenario on HEAD and the working tree
 (`skills/godot-ab-worktree/SKILL.md`). Check a forced bug state on the OLD build before
 you trust it in a demo.

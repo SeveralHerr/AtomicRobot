@@ -484,3 +484,22 @@ Log of skills that might have been useful for a given response, and why (short f
 - Artifact: https://claude.ai/artifact/Asc6dfiNUQL2gGz52X8NoJ
 - Skills used: juicy-screen-review (enhanced: CRT capture section), godot-headful-screenshot. Would have helped: somewhat-useful-claude-skills:godot-game-ui-juicy (count-up/stagger recipes), a checked-in end-card capture script (scratch again).
 - MCP: none used.
+
+## 2026-10-04 — Micro cut scenes (opening, The Arch + statue, City Council)
+- New `scripts/cutscene/` (CutsceneShots table, MicroCutscene director, CaptionCard, StreetCutscenes trigger in main.tscn). Freeze fight not city; letterbox + comic caption; skip any button; once per session; only from the real front end.
+- Street trigger waits for quiet (no enemy <700px, no door event) + 1s payoff beat; cut scene clears any banner (`BossBanner.GROUP`). User mid-run: arch must include the statue -> 3rd arch shot pushes in on it.
+- Scout fix: door encounter `_is_alive(enemy: Node2D)` errored on freed enemies -> arena locked forever (test added). Autoplay waits through cut scenes, `cutscenes` metric, freeze not "stuck".
+- 10 validation rounds (contact sheets, 1688x780 round, recorded natural run). 877 unit, 12 sandbox, 18/18 autoplay, 21/21 mutants killed.
+- Artifact: https://claude.ai/artifact/FnL3wVVkynnXio8rwWJLJQ
+- Skills used: none from the list invoked; followed repo skills godot-boss-juice, godot-time-scale-beat, godot-headful-screenshot, godot-autoplay-test (enhancement: autoplay-test should mention `contact_sheet.py` for snap review). New skill: skills/godot-micro-cutscene.
+- Would have helped: playthrough-video-review (recording + reel), somewhat-useful-claude-skills:scope-vs-claim (the "grace" test passed on a skipped scene), derive-the-list (landmark positions from the scene, not hand-typed).
+- MCP: none used directly (CLI equivalents); added `contact_sheet` tool to godot-tests MCP.
+
+## 2026-10-04 — Cut scenes round 2 (story intro, floating fix, hold-to-skip)
+- Floating: opening froze player + roof maid at spawn height (tree paused under the fade, then held before gravity). Now each body is held once landed; `Player.is_settled()` (grounded AND on spawn lane; `lanes_active()` is false on the landing frame — that hid a 48px drop at hand-back).
+- Story screen retired: opening tells it in 4 captions over close-on-maids -> TICKET! popup on the car -> dolly to shop -> push-in. Character select -> controls splash; SKIP INTRO removed (user). Kicker "SIOUX FALLS, DOWNTOWN."; arch kicker "OVER THE BIG SIOUX..." (was "HALFWAY THERE", arch is ~80% along).
+- Hold-to-skip (0.8s, ring prompt, armed after release) — user asked if scenes were too easy to skip.
+- Validation: 4 intro rounds (one 1688x780) + skip prompt capture + recorded natural run. Mutants: landing 4/4 + settle (headless couldn't reproduce until the lanes_active bug was found), skip 6/6.
+- Skills used: none via tool; repo skills godot-micro-cutscene (updated: hold-to-skip, settle rule, story captions), godot-autoplay-test. Would have helped: a "probe positions" helper (wrote 4 throwaway SceneTree probes — player from group, Player gets reparented so get_node("Player") is null).
+- MCP: none used (CLI).
+- Follow-up: opening's melee maids were authored 15-53px in the air (atomic_robot_area.tscn) -> authored at street level (y -28) right behind the red car (user: "like they're issuing a ticket"); enemies count as landed once their street baseline is captured (they rarely read is_on_floor()). New test: nothing in the opening's first shot falls (failed 53px on the old data). 883 unit, 18/18 autoplay, 12/12 sandbox. Merged to main via branch `cutscenes` (not pushed).

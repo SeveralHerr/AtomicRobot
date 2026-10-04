@@ -5,7 +5,7 @@ description: Redo a Godot menu/select screen for game juice, then run a 4-judge 
 ## Build (keeps tests green)
 - Characterize first: run the screen's existing tests, note the public API they touch
   (focus owner on open, what A/locked/footer do). Move them to `test_<screen>.gd` and
-  re-point them at the new API (`card_for(name)`, `skip_intro`, `exit_button`), not node paths.
+  re-point them at the new API (`card_for(name)`, `exit_button`), not node paths.
 - Build UI in code under `scripts/ui/<screen>/`; root `.tscn` holds only the script.
   Every animated piece is a FREE child: Button (in HBox, focus owner) > `drop` (intro)
   > `visual` (hot lift/tilt). Containers reset scale/rotation of their children.
