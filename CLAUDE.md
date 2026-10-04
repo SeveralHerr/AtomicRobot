@@ -225,6 +225,10 @@ the feature is silently absent (autoplay now reports SCRIPT-ERROR).
 When the user asks for presentation/juice, sweep balance AFTER the presentation pass:
 banner timing changed fight length enough to flip a seeded balance scenario.
 
+Hitstop freezes game time, so autoplay snaps never show it: capture on the wall clock and
+tag frames with Engine.time_scale (`skills/godot-hit-feel/SKILL.md`). Parallel agents share
+the session scratchpad — work in `scratchpad/<task>/`, never reuse names like `shot.gd`.
+
 Before/after evidence for a fix: run the same scenario on HEAD and the working tree
 (`skills/godot-ab-worktree/SKILL.md`). Check a forced bug state on the OLD build before
 you trust it in a demo.
