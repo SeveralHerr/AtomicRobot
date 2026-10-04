@@ -17,6 +17,7 @@ var _nodes: Array[Node] = []
 
 
 func teardown() -> void:
+	TRAFFIC.fixed_seed = -1
 	while Globals.event_active():
 		Globals.pop_event()
 	for n in _nodes:
@@ -103,17 +104,21 @@ func test_spawn_point_gives_the_full_warning_lead() -> String:
 
 
 func test_direction_flips_away_from_the_street_ends() -> String:
-	# Near the left end, a right-driver would have to start beyond the street.
-	var res: String = _T.assert_eq(TRAFFIC.pick_direction(1, -1500.0, 256.0, 400, -1680.0, 9400.0), -1,
+	# Near the left end, a right-driver would have to start inside the end building.
+	var res: String = _T.assert_eq(TRAFFIC.pick_direction(1, -1000.0, 256.0, 400, -1440.0, 9170.0), -1,
 		"near the left end, cars come from the right")
 	if res != "":
 		return res
-	res = _T.assert_eq(TRAFFIC.pick_direction(-1, 9300.0, 256.0, 400, -1680.0, 9400.0), 1,
+	res = _T.assert_eq(TRAFFIC.pick_direction(-1, 8700.0, 256.0, 400, -1440.0, 9170.0), 1,
 		"near the right end, cars come from the left")
 	if res != "":
 		return res
-	res = _T.assert_eq(TRAFFIC.pick_direction(1, 4000.0, 256.0, 400, -1680.0, 9400.0), 1,
+	res = _T.assert_eq(TRAFFIC.pick_direction(1, 4000.0, 256.0, 400, -1440.0, 9170.0), 1,
 		"mid-street keeps the rolled direction")
+	if res != "":
+		return res
+	res = _T.assert_eq(TRAFFIC.pick_direction(-1, -1300.0, 256.0, 150, -1440.0, 9170.0), 0,
+		"end building on screen: no car drives into it")
 	if res != "":
 		return res
 	return _T.assert_eq(TRAFFIC.pick_direction(1, 0.0, 256.0, 400, -100.0, 100.0), 0,
@@ -149,7 +154,11 @@ func test_warning_shows_only_while_the_car_is_off_screen_approaching() -> String
 	var res: String = _T.assert_true(TRAFFIC.warning_visible(1400.0, -1, 1000.0, 256.0), "approaching from the right")
 	if res != "":
 		return res
-	res = _T.assert_false(TRAFFIC.warning_visible(1200.0, -1, 1000.0, 256.0), "on screen: the car is its own warning")
+	res = _T.assert_true(TRAFFIC.warning_visible(1256.0 + TRAFFIC.CAR_HALF_LEN - TRAFFIC.EDGE_INSET + 1.0, -1, 1000.0, 256.0),
+		"nose on screen but short of the sign: still up")
+	if res != "":
+		return res
+	res = _T.assert_false(TRAFFIC.warning_visible(1200.0, -1, 1000.0, 256.0), "car past the sign: the car is its own warning")
 	if res != "":
 		return res
 	return _T.assert_false(TRAFFIC.warning_visible(600.0, -1, 1000.0, 256.0), "leaving: no warning")
@@ -226,3 +235,43 @@ func test_countdown_runs_in_open_play_then_spawns() -> String:
 		return res
 	t._physics_process(0.6)
 	return _T.assert_eq(_cars(t).size(), 1, "a car once it does")
+
+
+func test_engine_heard_off_screen_and_sign_over_the_touch_ui() -> String:
+	var t := _traffic()
+	t._physics_process(0.016)
+	var car: Car = _cars(t)[0]
+	var res: String = _T.assert_eq(car.get_node_or_null("VisibleOnScreenEnabler2D"), null,
+		"no on-screen gate on the engine: it is part of the telegraph")
+	if res != "":
+		return res
+	res = _T.assert_true(car.get_node("AudioStreamPlayer2D").can_process(), "engine audio runs off screen")
+	if res != "":
+		return res
+	var layer: CanvasLayer = t.warning.get_parent()
+	res = _T.assert_gt(layer.layer, 2, "the sign draws over the HUD/touch buttons (UI layer 2)")
+	if res != "":
+		return res
+	return _T.assert_true(layer.follow_viewport_enabled, "placed in world units: the layer follows the camera")
+
+
+## One extra global draw reshuffles every later enemy roll (it alone flipped a seeded
+## mortal run to a street death), so traffic rolls on its own generator.
+func test_traffic_never_draws_from_the_global_stream() -> String:
+	seed(42)
+	var expected := randi()
+	seed(42)
+	var t := _traffic()
+	t._physics_process(0.016)
+	var res: String = _T.assert_eq(_cars(t).size(), 1, "a car spawned")
+	if res != "":
+		return res
+	return _T.assert_eq(randi(), expected, "global stream untouched by traffic or its car")
+
+
+func test_fixed_seed_repeats_the_traffic() -> String:
+	TRAFFIC.fixed_seed = 3
+	var a: float = TRAFFIC.next_interval(_traffic()._rng)
+	var b: float = TRAFFIC.next_interval(_traffic()._rng)
+	TRAFFIC.fixed_seed = -1
+	return _T.assert_eq(a, b, "same seed, same rolls")

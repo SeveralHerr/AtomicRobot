@@ -56,10 +56,6 @@ func launch(car_lane: int, pos: Vector2, dir: int = -1, with_speed: int = 0) -> 
 	global_position = pos
 	direction = 1 if dir > 0 else -1
 	sprite_2d.flip_h = direction > 0
-	# The audio enabler's rect trails BEHIND the car (engine heard before it shows).
-	var enabler := get_node_or_null("VisibleOnScreenEnabler2D") as Node2D
-	if enabler:
-		enabler.position.x = absf(enabler.position.x) * -direction
 	speed = with_speed
 	start = true
 

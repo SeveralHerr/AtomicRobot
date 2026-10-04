@@ -31,12 +31,20 @@ const FAR_MARGIN := 960.0
 ## Half the visible world width when there is no camera (1280 px at zoom 2.5).
 const HALF_VIEW_FALLBACK := 256.0
 ## Warning sign inset from the screen edge (world px). The CRT overlay eats ~40
-## screen px (16 world px at zoom 2.5) of every edge.
-const EDGE_INSET := 30.0
+## screen px (16 world px at zoom 2.5) of every edge; at 30 the sign's outer
+## corner sat right on that mask.
+const EDGE_INSET := 44.0
+## The sign's canvas layer: above the HUD and the touch buttons (UI, layer 2) — on
+## a phone the jump/attack cluster and the joystick sit right over the road edges
+## and hid a world-space sign — below the pause menu (99) and CRT overlay (100).
+## It follows the camera, so the sign is still placed in world units.
+const WARNING_LAYER := 3
 
-## Street span a car may start in: the LeftBoundary/RightBoundary walls.
-@export var street_min_x := -1680.0
-@export var street_max_x := 9400.0
+## Street span a car may drive in: the inner faces of the LeftBoundary /
+## RightBoundary end buildings (their wall shapes). Past them a car drew over
+## the building facade.
+@export var street_min_x := -1440.0
+@export var street_max_x := 9170.0
 ## Found from the "player" group when left empty.
 @export var player: Player
 
@@ -65,12 +73,14 @@ static func spawn_x(view_x: float, half_view: float, dir: int, speed: int) -> fl
 	return view_x - dir * (half_view + speed * LEAD_S + CAR_HALF_LEN)
 
 
-## `preferred`, or the other way if that start point is off the street; 0 if neither fits.
+## `preferred`, or the other way if that pass would start or end off the street;
+## 0 if neither fits (an end building is on screen: no car drives into it).
 static func pick_direction(preferred: int, view_x: float, half_view: float, speed: int,
 		min_x: float, max_x: float) -> int:
 	for d: int in [preferred, -preferred]:
-		var x := spawn_x(view_x, half_view, d, speed)
-		if x >= min_x and x <= max_x:
+		var start := spawn_x(view_x, half_view, d, speed)
+		var exit := view_x + d * (half_view + EXIT_MARGIN)
+		if minf(start, exit) >= min_x and maxf(start, exit) <= max_x:
 			return d
 	return 0
 
@@ -80,9 +90,10 @@ static func should_despawn(car_x: float, dir: int, view_x: float, half_view: flo
 	return ahead > half_view + EXIT_MARGIN or absf(car_x - view_x) > half_view + FAR_MARGIN
 
 
-## Up while the car's nose is still off screen on its way in.
+## Up until the car's nose reaches the sign (EDGE_INSET in from the edge): the car
+## takes over from the sign instead of leaving a beat where only a sliver shows.
 static func warning_visible(car_x: float, dir: int, view_x: float, half_view: float) -> bool:
-	return (car_x + dir * CAR_HALF_LEN - view_x) * dir < -half_view
+	return (car_x + dir * CAR_HALF_LEN - view_x) * dir < -(half_view - EDGE_INSET)
 
 
 func _ready() -> void:
@@ -91,9 +102,13 @@ func _ready() -> void:
 	else:
 		_rng.randomize()
 	countdown = next_interval(_rng)
+	var layer := CanvasLayer.new()
+	layer.layer = WARNING_LAYER
+	layer.follow_viewport_enabled = true
+	add_child(layer)
 	warning = TrafficWarning.new()
 	warning.visible = false
-	add_child(warning)
+	layer.add_child(warning)
 
 
 func _physics_process(delta: float) -> void:
@@ -117,6 +132,10 @@ func _spawn(p: Player) -> void:
 	var lane := _rng.randi_range(Lanes.GROUND_LANE + 1, Lanes.FRONT_LANE)
 	_car = CAR.instantiate()
 	_car.rng = _rng
+	# The engine is the audio half of the telegraph: heard (panned to its side) from
+	# off screen, not only once the car shows. Freed before _ready, so the enabler
+	# never gets to switch the player off.
+	_car.get_node("VisibleOnScreenEnabler2D").free()
 	add_child(_car)
 	_car.launch(lane, Vector2(spawn_x(view_x, half, dir, speed), Car.road_y(p, lane)), dir, speed)
 
@@ -136,8 +155,6 @@ func _track_car() -> void:
 	warning.visible = warning_visible(x, _car.direction, view_x, half)
 	if warning.visible:
 		warning.direction = _car.direction
-		warning.z_as_relative = false
-		warning.z_index = _car.z_index + 1
 		warning.global_position = Vector2(view_x - _car.direction * (half - EDGE_INSET), _car.global_position.y)
 
 
@@ -180,13 +197,21 @@ class TrafficWarning extends Node2D:
 
 	func _process(delta: float) -> void:
 		_t += delta
-		# Blink hard enough to read at the corner of the eye, never fully gone.
-		modulate.a = 0.55 + 0.45 * absf(sin(_t * TAU * 2.5))
+		# Pulse (size + brightness) to catch the corner of the eye; never faded out,
+		# so every frame of it reads.
+		var k := absf(sin(_t * TAU * 2.5))
+		scale = Vector2.ONE * (1.0 + 0.15 * k)
+		modulate.a = 0.8 + 0.2 * k
 
 	func _draw() -> void:
 		var tri := PackedVector2Array([Vector2(0, -15), Vector2(13, 8), Vector2(-13, 8)])
+		# Drop shadow + heavy ink so it separates from yellow street furniture.
+		var shadow := PackedVector2Array()
+		for v in tri:
+			shadow.append(v + Vector2(2, 2))
+		draw_colored_polygon(shadow, Color(0, 0, 0, 0.45))
 		draw_colored_polygon(tri, FILL)
-		draw_polyline(PackedVector2Array([tri[0], tri[1], tri[2], tri[0]]), INK, 2.0, true)
+		draw_polyline(PackedVector2Array([tri[0], tri[1], tri[2], tri[0]]), INK, 3.0, true)
 		draw_rect(Rect2(-1.5, -8, 3, 9), INK)
 		draw_rect(Rect2(-1.5, 3, 3, 3), INK)
 		# Chevron under the sign, pointing the way the car will cross the screen.
