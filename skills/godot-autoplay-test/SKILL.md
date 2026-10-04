@@ -63,7 +63,7 @@ report's `why` events are its decision trail — read them first when a run stal
   `snap_every 0.125` windowed, then PIL `quantize(96)` + `save(save_all=True, duration=125)`.
 - Balance: `hurt` events carry `near` (closest enemy) — count them per source to see which
   attack is doing the damage before touching numbers. Pin the result with a seeded mortal
-  scenario both ways (`boss_balance_ryan` must win, `boss_balance_robot` must reach half).
+  scenario both ways (`boss_balance_ryan` must win, `boss_balance_cass` must reach half).
 - `--fixed-fps 60`: deterministic and faster than real time. Same seed = same frames. If
   a rerun diverges, something reads the wall clock or calls `randomize()`.
 - Main street x≈2700-2950: the door-encounter barrier and a crate stack whose collider

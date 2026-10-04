@@ -1,6 +1,6 @@
 {
   "scene": "res://scenes/boss_room.tscn",
-  "character": "Robot",
+  "character": "Cass",
   "seed": 1,
   "timeout": 120,
   "steps": ["brain advance 110"],
