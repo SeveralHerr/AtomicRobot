@@ -64,7 +64,9 @@ const FRICTION := 800
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity: int = 1200
 const ACCELERATION = 1000.0  # Adjust as needed for smoother acceleration
-const AIR_CONTROL: float = 0.6
+## Air steering (px/s^2) for Jump, Fall and air swings: ~0.2s to reverse at full air
+## speed (was 300-600, which took 0.6-1.2s and made boss dodges a guess).
+const AIR_ACCELERATION := 1800.0
 ## Airborne horizontal target = ground speed x this. 1.0 made gaps hard to clear;
 ## 1.2 adds ~20% reach without touching jump height (test_jump_reach.gd).
 const AIR_SPEED_MULT: float = 1.2
@@ -255,7 +257,8 @@ func apply_gravity(delta: float) -> void:
 		velocity.y += gravity * (fall_multiplier - 1.0) * delta
 	velocity.y += gravity * delta
 	if velocity.y > 0:
-		if not (state_machine.current_state is FallState or state_machine.current_state is DeadState or state_machine.current_state is IdleState):
+		var st = state_machine.current_state
+		if not (st is FallState or st is DeadState or st is IdleState or st is AttackState):
 			state_machine.change_state("FallState")
 
 
@@ -371,13 +374,16 @@ func try_change_lane(dir: int) -> bool:
 	if not is_on_street():
 		return false
 	var st = state_machine.current_state
-	if not (st is IdleState or st is WalkState or st is RunState):
+	var attack_cancel: bool = st is AttackState and st.cancellable(self)
+	if not (st is IdleState or st is WalkState or st is RunState or attack_cancel):
 		return false
 	var target := current_lane + dir
 	if not Lanes.is_valid_lane(target):
 		return false
 	if target == Lanes.GROUND_LANE and Lanes.walkway_blocked(self, collision_shape_2d_body, Vector2(global_position.x, lane_stand_y(target))):
 		return false
+	if attack_cancel:
+		state_machine.change_state("IdleState")
 	_start_lane_change(target)
 	return true
 
@@ -437,7 +443,7 @@ func receive_hit(source_position: Vector2, damage: int, knockback_strength: floa
 	if state_machine.current_state is KnockbackState:
 		return
 
-	hurt_audio.play()
+	SfxPitch.play(hurt_audio)
 
 	if animation_player.is_playing():
 		animation_player.stop()
@@ -481,18 +487,10 @@ func death() -> void:
 	state_machine.change_state("DeadState")
 
 
-func _handle_direction(direction, player) -> void:
-	if direction:
-		if direction < 0:
-			if last_dir != -1:
-				if scale.x == -1:
-					scale.x *= -1
-					last_dir = -1
-					return
-				scale.x *= -1
-				last_dir = -1
-
-		elif direction > 0:
-			if last_dir != 1 :
-				scale.x *= -1
-				last_dir = 1
+## Face the way `direction` points; no input keeps the current facing. Flipping
+## scale.x mirrors the whole body (sprite, hitbox, shot spawn) in one go.
+func _handle_direction(direction, _player = null) -> void:
+	var d := int(signf(direction))
+	if d != 0 and d != last_dir:
+		scale.x *= -1
+		last_dir = d

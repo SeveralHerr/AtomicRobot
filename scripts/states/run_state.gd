@@ -2,13 +2,12 @@ extends State
 class_name RunState
 
 func enter_state(player: Player) -> void:
-	player.default_sprite.play("Walk")
-	player.default_sprite.speed_scale = 1.5
+	# Custom speed, not speed_scale: speed_scale is PowerupSystem's (Overclock), and
+	# resetting it on exit used to cancel an active Overclock's faster swings.
+	player.default_sprite.play("Walk", 1.5)
 	player.run_particles.start()
 
 func exit_state(player: Player) -> void:
-
-	player.default_sprite.speed_scale = 1.0
 	player.run_particles.stop()
 
 func handle_input(player: Player, event: InputEvent) -> void:
