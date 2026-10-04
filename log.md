@@ -582,3 +582,26 @@ Log of skills that might have been useful for a given response, and why (short f
 - First push blocked by CI: 3 `res://Sounds/` preloads (folder is `sounds/`) — Windows-only green, 66 Linux fails. Fixed + `test_res_path_case.gd` guard.
 - Would have helped: somewhat-useful-claude-skills:itch-ci-deploy (CI-only failure triage) — idea: list "case-sensitive res:// paths" as a top symptom.
 - Follow-up 2: user: footage too "perfect run". Worktree-only patch (skills/godot-youtube-shorts/human_footage.patch): human-bot's human_style + whiffs/late reactions, god takes hits (HP floor 1). Re-recorded; v8-v10 (car hits, boss down to 1 HP comeback). Would have helped: human-bot merged to main (still unmerged, conflicts with heal logic).
+- Follow-up 3: ending recut (v12) — no boss spoiler; Atomic Rage + Overclock clips with what-they-do captions, title-screen end card. Landscape-video skill delegated to a subagent.
+- Follow-up 4: character select + intro cut scene short (uncropped, narration subtitles), 3 rounds; delivered as artifact https://claude.ai/artifact/2usPSFmGBcoJEv714tL6H2 (downloads capability).
+
+## 2026-10-04 — Landscape YouTube video skill (not committed)
+- New `skills/godot-youtube-video/` (build_video.py, review_video.py with YouTube safe zones + end-screen boxes, example_spec.py). Extracted shared `skills/godot-youtube-shorts/ffx.py` (review_short uses it; build_short refactor was MD5-identical but a parallel session overwrote it, so it is left as a TODO).
+- 7 builds / 4 review rounds -> `autoplay_out/videos/highlight_sample.mp4` (38.2 s, 1920x1080 60 fps).
+- Used: godot-youtube-shorts (reused scripts + copy rules). Enhancement idea: ship a `beats.py` that prints kill/hurt/powerup events from the report, so you don't have to rewrite the one-liner.
+- Would have helped: playthrough-video-review (frame-review loop), godot-speedrun-review (footage recipe). MCP: none used or new (YAGNI: ffmpeg scripts are enough).
+
+## 2026-10-04 — character select TAP AGAIN unclickable
+- Used: none. Would help: `godot-input-test` (read earlier; now notes root hit-test gap), a "windowed input probe" MCP tool (push a real click/touch at a node in a 1280x800 window, report who ate it).
+- Follow-up 5: fighters + Arch short (ch1-ch5, 3 rounds x 2 fixes); artifact https://claude.ai/artifact/UWX26fSWTyfA52GQSfuqXZ
+- Follow-up 6: user: cut flashes look terrible -> removed all white flashes (ch6), artifact republished.
+
+## 2026-10-04 — player on wall ledge drew over sidewalk tree (x~2287)
+- Fix: `Lanes.RAISED_Z`/`on_raised_floor`; Player + enemy mover draw at z 0 when standing on raised ground. Test `test_raised_draw_order.gd`. Gate green (1039 unit, 19 autoplay, 12 sandbox, lane audit).
+- Used: godot-level-map (spot lookup). Enhancement: note that `teleport` keeps the lane, so snap needs `lane 0` first.
+- Would have helped: godot-draw-order (written now), godot-ab-worktree (A/B done by flipping a const instead). MCP: none new (godot-tests covers it).
+
+## 2026-10-04 pi-game-deploy (Atomic Robot to Picade)
+- pi-game-deploy (used): deploy + debug loop. Enhancement: warn that Godot games need cabinet keys in input defaults; reuse existing port name; pkill -f self-kill trap (added to Gotchas).
+- derive-the-list: Picade test loops InputRemap.ACTIONS, not a hand list.
+- Missing skill: none needed beyond the above gotchas.

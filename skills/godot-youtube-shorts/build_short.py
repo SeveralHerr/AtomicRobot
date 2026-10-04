@@ -62,7 +62,7 @@ for j, tx in enumerate(TEXTS):
     chain.append(
         f"drawtext=fontfile={font}:textfile={p}:fontsize='{pop(a, F, tx.get('anim', 'pop'))}'"
         f":fontcolor={col}:borderw={bw}:bordercolor=black:x=(w-text_w)/2:y={y}-text_h/2"
-        f":line_spacing=8{box}:enable='between(t,{a},{b})'")
+        f":line_spacing={tx.get('ls', 8)}{box}:enable='between(t,{a},{b})'")
 for ft in spec.get("FLASH", []):
     chain.append(f"drawbox=x=0:y=0:w=iw:h=ih:color=white@0.7:t=fill:enable='between(t,{ft},{ft + 0.05})'")
 fc += "[cv]" + ",".join(chain) + "[vo]" if chain else "[cv]null[vo]"

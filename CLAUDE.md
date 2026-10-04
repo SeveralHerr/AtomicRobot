@@ -282,6 +282,8 @@ mortal runs hit (heal-seeking) — gate both with `max_stuck_s`.
 
 ## Input-driven features
 
+Cabinet (Picade) sends keys LCtrl/LAlt/Space/LShift/Z/X/Esc + arrows: every remappable action needs one
+(`test_picade_bindings.gd`). Deploy with `/pi-game-deploy` from a clean worktree, never this shared checkout.
 Read `skills/godot-input-test/SKILL.md` before testing pad/key/touch UI. Mutation-check
 new guards with a `(file, original, mutant, filter)` script; add a test per survivor.
 A touch test that emits `button.pressed` proved nothing: "tap again" was broken on a

@@ -1,0 +1,3 @@
+{"character": "Cody", "seed": 2, "timeout": 60,
+ "steps": ["god on", "teleport 1900", "brain advance 16", "dump end"],
+ "expect": ["errors == 0"]}
