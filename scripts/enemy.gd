@@ -5,8 +5,8 @@ class_name Enemy
 
 # State management
 var enemy_state_machine: EnemyStateMachine
-
-# Resources - moved to Utils for shared access
+## Lane movement collaborator (virtual depth) — see EnemyLaneMover.
+var _lanes: EnemyLaneMover
 
 # Node references - cached for performance
 @onready var coin_spawn_point: Node2D = $CoinSpawnPoint
@@ -69,13 +69,6 @@ var knockback_decay: float = 8.0  # How fast knockback decays
 var turn_cooldown: float = 0.0
 var turn_cooldown_duration: float = 0.5
 
-# Same-lane enemies never physically collide with each other (collision_mask
-# excludes the enemy layer, to avoid move_and_slide push jitter), so without an
-# explicit separation nudge they can walk to/spawn at the same X and sit stacked
-# on top of each other indefinitely. See docs/LANE_REFACTOR.md.
-const ENEMY_SEPARATION_DISTANCE := 40.0
-const ENEMY_SEPARATION_STRENGTH := 160.0
-
 # --- LANE SYSTEM (virtual depth, see docs/LANE_REFACTOR.md) ---
 ## Lane this enemy starts on (editor-visible; hand-placed enemies default to the walkway).
 @export var starting_lane: int = Lanes.GROUND_LANE
@@ -86,16 +79,11 @@ var lane: int = Lanes.GROUND_LANE
 ## World Y of the walkway FLOOR SURFACE (where soles rest) — not this node's Y.
 ## Body-independent, so the spawner can seed it from the player; INF until known.
 var lane_floor_y: float = INF
-# Distance from this node's origin down to its soles. Measured lazily: the
-# collision shape isn't reachable until the instanced scene has its children.
-var _foot_offset: float = 0.0
-var _foot_offset_measured: bool = false
 ## Slight depth offset within the current lane (px, down-screen positive) so a lane
 ## doesn't read as sprites on one ruled line. Re-rolled on every lane change and
 ## always 0.0 on the ground lane — see Lanes.random_in_lane_offset.
 var lane_depth_offset: float = 0.0
 var is_changing_lane: bool = false
-var _lane_tween: Tween
 var lane_change_cooldown: float = 0.0
 const LANE_CHANGE_COOLDOWN := 0.7
 const LANE_CHANGE_DURATION := 0.2
@@ -110,8 +98,8 @@ var player: Player
 
 func _init() -> void:
 	enemy_state_machine = EnemyStateMachine.new(self)
-	
 	add_child(enemy_state_machine)
+	_lanes = EnemyLaneMover.new(self)
 
 func _ready() -> void:
 	_base_scale = Vector2(absf(scale.x), scale.y)
@@ -158,7 +146,7 @@ func _physics_process(delta: float) -> void:
 	turn_cooldown -= delta
 	lane_change_cooldown -= delta
 	spawn_grace = maxf(spawn_grace - delta, 0.0)
-	_apply_enemy_separation(delta)
+	EnemySeparation.apply(self, delta)
 
 	move_and_slide()
 
@@ -202,20 +190,10 @@ func is_meter_in_line_of_sight() -> bool:
 	return meter_line_of_sight.is_meter_line_of_sight(nearest.global_position)
 
 
-# Virtual methods to be overridden
-func attack():
-	pass
-
-
-
-
 func move_towards_target(target_pos: Vector2, delta: float):
-	#var direction = sign(dir.x)
 	var direction = (target_pos - global_position).normalized()
 	var target_velocity = direction * move_speed
-	#_update_sprite_direction(direction.x)
 	velocity.x = move_toward(velocity.x, target_velocity.x, 2000 * delta)
-	pass
 
 
 func is_near_edge() -> bool:
@@ -306,179 +284,46 @@ func set_facing(dir: int) -> void:
 
 
 func _apply_gravity(delta: float) -> void:
-	if is_changing_lane:
+	if is_changing_lane or _lanes.rest_on_virtual_floor():
 		return
-	# Road lanes stand on a virtual floor below the walkway line.
-	if lane != Lanes.GROUND_LANE and lane_floor_y != INF:
-		var fy := lane_stand_y(lane)
-		if velocity.y >= 0 and global_position.y >= fy:
-			global_position.y = fy
-			velocity.y = 0.0
-			return
 	if not is_on_floor():
 		velocity.y += 300 * delta
 
 
-## Distance from this node's origin down to its soles — see Lanes.measure_foot_offset.
+# --- Lane movement: thin delegators to EnemyLaneMover (callers across the game use these).
 func foot_offset() -> float:
-	if not _foot_offset_measured:
-		_foot_offset = Lanes.measure_foot_offset(self)
-		_foot_offset_measured = true
-	return _foot_offset
+	return _lanes.foot_offset()
 
 
-## World Y this node's origin sits at when standing on `for_lane`, including its
-## in-lane depth offset. The ground lane ignores the offset outright — real floor
-## collision there would fight it, and a contaminated capture in _update_lane_floor()
-## would bake the jitter into the shared baseline every other body reads.
 func lane_stand_y(for_lane: int) -> float:
-	var offset := 0.0 if for_lane == Lanes.GROUND_LANE else lane_depth_offset
-	return Lanes.stand_y(lane_floor_y, for_lane, foot_offset()) + offset
+	return _lanes.stand_y(for_lane)
 
 
-## Keep the draw z in step with where this body actually stands. Cheap enough to poll:
-## it only writes when the value changes, and it self-heals the frame a baseline is
-## first captured (before that, depth_z has no floor line to measure against).
 func _refresh_depth_z() -> void:
-	var z := Lanes.depth_z(lane, lane_stand_y(lane) + foot_offset(), lane_floor_y)
-	if z != z_index:
-		z_index = z
+	_lanes.refresh_depth_z()
 
 
 func _update_lane_floor() -> void:
-	_refresh_depth_z()
-	if is_changing_lane:
-		return
-	# Capture the walkway ground line whenever physically standing on it. Stored as
-	# the FLOOR (soles), not this node's Y — a maid's origin sits 27px above its
-	# feet and the player's 19.75px, so an origin-based baseline could not be shared
-	# between them without one of the two standing at the wrong height.
-	if is_on_floor() and lane == Lanes.GROUND_LANE:
-		# Platform maids and anyone knocked onto raised geometry are still on the
-		# ground lane; Lanes.accepts_baseline keeps their street line from climbing up
-		# to whatever they happen to be standing on (it feeds coin and power-up drop
-		# heights as well as this body's own virtual floors).
-		var candidate := global_position.y + foot_offset()
-		var real_lane := Lanes.lane_for_floor(lane_floor_y, candidate)
-		if real_lane != Lanes.GROUND_LANE and not lane_locked:
-			_settle_onto_lane(real_lane)
-			return
-		if Lanes.accepts_baseline(lane_floor_y, candidate):
-			lane_floor_y = candidate
-		return
-	# Authored straight onto a road lane (starting_lane 1-3): _ready kept real ground
-	# collision so we'd land on something. First contact defines the walkway line;
-	# from here on the lane's virtual floor takes over.
-	if is_on_floor() and lane_floor_y == INF:
-		lane_floor_y = global_position.y + foot_offset()
-		_set_ground_collision(false)
-		global_position.y = lane_stand_y(lane)
+	_lanes.update_floor()
 
 
-## Adopt `road_lane` in place: off real collision, onto that lane's virtual floor.
-## For a ground-lane body that ended up standing in the road strip (see
-## Lanes.lane_for_floor) — the street baseline stays where it is.
-func _settle_onto_lane(road_lane: int) -> void:
-	lane = road_lane
-	lane_depth_offset = Lanes.random_in_lane_offset(lane)
-	_set_ground_collision(false)
-	global_position.y = lane_stand_y(lane)
-	velocity.y = 0.0
-	_refresh_depth_z()
-
-
-## The walkway tiles' collision occupies the road strip; road-lane bodies ignore
-## Ground(2)/Platforms(6) and stand on virtual floors instead.
 func _set_ground_collision(enabled: bool) -> void:
-	set_collision_mask_value(2, enabled)
-	set_collision_mask_value(6, enabled)
+	_lanes.set_ground_collision(enabled)
 
 
-## Nudges apart from other same-lane enemies within ENEMY_SEPARATION_DISTANCE so
-## they don't sit stacked on top of each other (no physical collision resolves this
-## since enemies deliberately don't collide with their own layer).
-func _apply_enemy_separation(delta: float) -> void:
-	if is_changing_lane or is_dead:
-		return
-	var push := 0.0
-	for node in get_tree().get_nodes_in_group("enemies"):
-		if node == self or not is_instance_valid(node) or not node is Enemy:
-			continue
-		var other: Enemy = node
-		if other.lane != lane or other.is_changing_lane:
-			continue
-		# Corpses take up no space: a dying maid is on the floor for several seconds
-		# and the living should be able to close over her, not shuffle around her.
-		if other.is_dead:
-			continue
-		var dx: float = global_position.x - other.global_position.x
-		var dist := absf(dx)
-		if dist >= ENEMY_SEPARATION_DISTANCE:
-			continue
-		# Perfectly overlapping (dx == 0) has no direction to push in — break the
-		# tie deterministically so both instances agree on opposite directions.
-		var dir := signf(dx) if dist > 0.5 else (1.0 if get_instance_id() > other.get_instance_id() else -1.0)
-		push += dir * (ENEMY_SEPARATION_DISTANCE - dist) / ENEMY_SEPARATION_DISTANCE
-	if push != 0.0:
-		# A direct position nudge rather than a velocity add — idle/attacking enemies
-		# have their velocity.x actively damped to 0 by knockback friction every frame
-		# (see _apply_knockback_decay), which would eat a velocity-based push before
-		# move_and_slide ever applied it.
-		global_position.x += push * ENEMY_SEPARATION_STRENGTH * delta
-
-
-func is_same_lane_as_player() -> bool:
-	return player != null and player.current_lane == lane
-
-
-## Step one lane toward the player's lane (used while chasing). Always targets the
-## player's own lane.
-##
-## This used to route chasers into a *free adjacent* lane whenever another attacker
-## was already camped near the player on the wanted lane, one enemy per lane. That
-## lane exclusivity was the cause of the one-attacker bug: can_attack() requires lane
-## parity (Lanes.can_engage), so every enemy parked in a neighbouring lane was
-## permanently unable to attack and the wave collapsed into a 1v1. Lanes are purely
-## about depth/dodging again; attack pacing now lives in Globals' attack-slot pool,
-## and horizontal crowding is handled by _apply_enemy_separation, which fans the
-## squad out along X within the player's lane.
 func _lane_chase() -> void:
-	if lane_locked or is_changing_lane or lane_change_cooldown > 0.0 or lane_floor_y == INF:
-		return
-	if player == null or player.is_changing_lane:
-		return
-	if player.current_lane == lane:
-		return
-	var target := lane + signi(player.current_lane - lane)
-	if target == Lanes.GROUND_LANE and Lanes.walkway_blocked(self, get_node_or_null("CollisionShape2D"), Vector2(global_position.x, lane_stand_y(target))):
-		return
-	_start_lane_change(target)
+	_lanes.chase()
 
 
 ## `duration` defaults to the snappy in-combat speed; callers that want a slower,
 ## more deliberate step (e.g. walking out of a spawn point) can override it.
 func _start_lane_change(target: int, duration: float = LANE_CHANGE_DURATION) -> void:
-	target = Lanes.clamp_lane(target)
-	if target == lane or lane_floor_y == INF:
-		return
-	is_changing_lane = true
-	lane_change_cooldown = LANE_CHANGE_COOLDOWN
-	velocity.y = 0.0
-	# Fresh jitter for the lane being entered, picked before the tween reads its
-	# destination so the step lands on the offset rather than sliding onto it after.
-	lane_depth_offset = Lanes.random_in_lane_offset(target)
-	if target != Lanes.GROUND_LANE:
-		_set_ground_collision(false)
-	if _lane_tween:
-		_lane_tween.kill()
-	_lane_tween = create_tween()
-	_lane_tween.tween_property(self, "global_position:y", lane_stand_y(target), duration)
-	_lane_tween.finished.connect(func() -> void:
-		lane = target
-		_refresh_depth_z()
-		if target == Lanes.GROUND_LANE:
-			_set_ground_collision(true)
-		is_changing_lane = false)
+	_lanes.start_change(target, duration)
+
+
+func is_same_lane_as_player() -> bool:
+	return player != null and player.current_lane == lane
+
 
 func die() -> void:
 	# Re-entrant kills (two blows on the same frame, or a hazard finishing off an
@@ -579,25 +424,16 @@ func _apply_damage(damage: int) -> void:
 
 
 func _apply_knockback(knockback_strength: float = 200.0) -> void:
-	# Hazards (cars, hitboxes) can damage an enemy with no player resolved — fall
-	# back to knocking it backwards off its own facing rather than crashing.
-	var knockback_direction := Vector2(-facing, 0.0)
-	if _resolve_player() != null:
-		knockback_direction = (global_position - player.global_position).normalized()
-	knockback_velocity = knockback_direction * knockback_strength
-	velocity.y = -50.0
+	# Hazards (cars, hitboxes) can damage an enemy with no player resolved — the
+	# knockback then falls back to its own facing rather than crashing.
+	var from: Variant = player.global_position if _resolve_player() != null else null
+	EnemyKnockback.apply(self, knockback_strength, from)
+
 
 func _apply_knockback_decay(delta: float) -> void:
-	# Apply knockback to velocity
-	velocity.x += knockback_velocity.x * delta
-	
-	# Decay knockback over time
-	knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_decay * delta * 100)
-	
-	# Apply friction to horizontal movement when not being controlled by states
-	if abs(knockback_velocity.x) < 10.0:  # Only apply friction when knockback is minimal
-		velocity.x = move_toward(velocity.x, 0.0, 300.0 * delta)
-	
+	EnemyKnockback.decay(self, delta)
+
+
 ## INF when there is no player, so every "within range" test below reads false.
 func get_distance_to_player() -> float:
 	if _resolve_player() == null:

@@ -186,12 +186,12 @@ func test_gravity_paused_while_changing_lane() -> String:
 func test_separation_pushes_overlapping_same_lane_maids_apart() -> String:
 	var a := _maid(0.0, 1)
 	var b := _maid(10.0, 1)
-	a._apply_enemy_separation(0.1)
+	EnemySeparation.apply(a, 0.1)
 	# push = (40 - 10) / 40 = 0.75; 0.75 * 160 * 0.1 = 12 px away from b.
 	var r: String = _T.assert_float_eq(a.global_position.x, -12.0, 0.001, "a pushed left, away from b")
 	if r != "":
 		return r
-	b._apply_enemy_separation(0.1)
+	EnemySeparation.apply(b, 0.1)
 	return _T.assert_gt(b.global_position.x, 10.0, "b pushed right")
 
 
@@ -202,20 +202,20 @@ func test_separation_ignores_other_lanes_corpses_and_steppers() -> String:
 	corpse.is_dead = true
 	var stepper := _maid(5.0, 1)
 	stepper.is_changing_lane = true
-	a._apply_enemy_separation(0.1)
+	EnemySeparation.apply(a, 0.1)
 	var r: String = _T.assert_float_eq(a.global_position.x, 0.0, 0.0001, "nothing to push from")
 	if r != "":
 		return r
 	a.is_changing_lane = true
 	stepper.is_changing_lane = false
-	a._apply_enemy_separation(0.1)
+	EnemySeparation.apply(a, 0.1)
 	return _T.assert_float_eq(a.global_position.x, 0.0, 0.0001, "a stepping maid is not pushed")
 
 
 func test_separation_breaks_exact_overlap_ties_in_opposite_directions() -> String:
 	var a := _maid(0.0, 1)
 	var b := _maid(0.0, 1)
-	a._apply_enemy_separation(0.1)
-	b._apply_enemy_separation(0.1)
+	EnemySeparation.apply(a, 0.1)
+	EnemySeparation.apply(b, 0.1)
 	return _T.assert_true(signf(a.global_position.x) == -signf(b.global_position.x) and a.global_position.x != 0.0,
 		"stacked maids split opposite ways")
