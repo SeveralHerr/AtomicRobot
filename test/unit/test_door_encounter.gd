@@ -234,6 +234,7 @@ func test_wave_sizes_clamp_wave_count() -> String:
 func _wave_signals() -> Array:
 	var log: Array = []
 	_enc.wave_started.connect(func(i, n): log.append("wave %d/%d" % [i, n]))
+	_enc.wave_cleared.connect(func(i, n): log.append("wave %d/%d down" % [i, n]))
 	_enc.squad_cleared.connect(func(): log.append("clear"))
 	return log
 
@@ -266,7 +267,9 @@ func test_door_second_wave_follows_a_clear_and_holds_the_lock() -> String:
 	r = _T.assert_eq(_finished, 1, "last wave cleared ends it once")
 	if r != "":
 		return r
-	return _T.assert_eq(log, ["wave 1/2", "wave 2/2", "clear"], "wave/clear signals in order")
+	# STREET CLEAR! (squad_cleared) only for the door's last wave; earlier ones get
+	# their own wave_cleared beat.
+	return _T.assert_eq(log, ["wave 1/2", "wave 1/2 down", "wave 2/2", "clear"], "wave/clear signals in order")
 
 
 func test_door_single_wave_still_pays_off_with_a_clear() -> String:

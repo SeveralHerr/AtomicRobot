@@ -27,6 +27,7 @@ func test_announcer_last_wave_is_called_out() -> String:
 ## A stand-in encounter with just the three signals the announcer listens to.
 class FakeEncounter extends Node:
 	signal wave_started(index: int, total: int)
+	signal wave_cleared(index: int, total: int)
 	signal squad_cleared
 	signal encounter_finished
 
@@ -89,6 +90,27 @@ func test_announcer_clear_burst_stays_off_the_player() -> String:
 		"Payoff burst bottom %.0f must stay above the fighters' heads" % bottom)
 
 
+## Mid-door waves get their own, smaller beat; STREET CLEAR! is the door's payoff.
+func test_announcer_mid_door_wave_says_wave_clear() -> String:
+	var rig := _rig()
+	rig[0].wave_cleared.emit(1, 2)
+	var mid: String = rig[1].banner._title.text
+	var mid_k: float = rig[1].banner.size_k
+	rig[0].squad_cleared.emit()
+	var last: String = rig[1].banner._title.text
+	rig[0].free()
+	var r: String = _T.assert_eq(mid, A.WAVE_CLEAR_TITLE, "wave 1/2 down")
+	if r != "":
+		return r
+	r = _T.assert_true(mid != last, "a wave clear never reads as the street clear")
+	if r != "":
+		return r
+	r = _T.assert_eq(last, "STREET CLEAR!", "the last wave pays off")
+	if r != "":
+		return r
+	return _T.assert_true(mid_k < A.CLEAR_SIZE_K, "the mid-door beat is smaller than the payoff")
+
+
 func test_announcer_wave_banner_keeps_its_size_after_a_clear() -> String:
 	var rig := _rig()
 	rig[0].squad_cleared.emit()
@@ -138,6 +160,7 @@ func _hud_under_burst(canvas: Vector2) -> Array:
 	var a: EncounterAnnouncer = A.new()
 	enc.add_child(a)
 	a.watch(enc)
+	# The payoff is the bigger of the two clears; its burst bounds the wave clear's.
 	enc.squad_cleared.emit()
 	await tree.process_frame
 	await tree.process_frame

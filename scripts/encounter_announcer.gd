@@ -2,7 +2,8 @@ extends CanvasLayer
 class_name EncounterAnnouncer
 
 ## Comic-book callouts for a BuildingDoorEncounter: "WAVE 2/3" slams onto a stripe
-## as each wave of a multi-wave squad rumbles at the door, and "STREET CLEAR!"
+## as each wave of a multi-wave squad rumbles at the door, a small "WAVE CLEAR!"
+## pops as each earlier wave goes down, and "STREET CLEAR!"
 ## bursts out when the last wave goes down (the user's pick over "BUSTED!"; it
 ## counts the door's squad only — ambient maids that walked in before the lock
 ## can still be up). Reuses the boss fight's BossBanner (one
@@ -28,11 +29,13 @@ const SIZE_K := 0.8
 ## so only the player's lane is below it, and the burst stops short of his head.
 const CLEAR_Y := 0.45
 const CLEAR_SIZE_K := 0.5
-## There is no room for the burst between the power-up timer stack (which runs
-## down to ~y 340 with both buffs up) and the player's head, so the timers duck out
-## while it shows: slam-in (~0.3s) + hold, fading back in as the burst shrinks away.
-const CLEAR_DUCK := 0.3 + CLEAR_HOLD
 const CLEAR_STING := preload("res://sounds/power_up.wav")
+## Mid-door beat: same burst, smaller, quicker, no sting — it must read as a breath
+## between waves, not as the door's payoff, and be gone before the next wave's
+## stripe (wave_gap_seconds 0.8 after the kill) slams over it.
+const WAVE_CLEAR_TITLE := "WAVE CLEAR!"
+const WAVE_CLEAR_SIZE_K := 0.4
+const WAVE_CLEAR_HOLD := 0.3
 
 var banner: BossBanner
 var _sting: AudioStreamPlayer
@@ -47,6 +50,7 @@ func _init() -> void:
 ## Hook up to `enc`'s wave_started / squad_cleared / encounter_finished.
 func watch(enc: Node) -> void:
 	enc.wave_started.connect(_on_wave_started)
+	enc.wave_cleared.connect(_on_wave_cleared)
 	enc.squad_cleared.connect(_on_squad_cleared)
 	enc.encounter_finished.connect(_on_finished)
 
@@ -76,18 +80,29 @@ func _on_wave_started(index: int, total: int) -> void:
 	banner.slam_title(title, wave_subtitle(index, total), WAVE_HOLD, tint)
 
 
+func _on_wave_cleared(_index: int, _total: int) -> void:
+	_burst(WAVE_CLEAR_TITLE, "", WAVE_CLEAR_SIZE_K, WAVE_CLEAR_HOLD)
+
+
 func _on_squad_cleared() -> void:
 	_cleared = true
-	_banner().stripe_y = CLEAR_Y
-	banner.size_k = CLEAR_SIZE_K
-	banner.slam_title(CLEAR_TITLE, CLEAR_SUB, CLEAR_HOLD, ComicStyle.BLUE, true)
-	HudFade.duck(get_tree(), HudFade.POWERUPS, CLEAR_DUCK)
+	_burst(CLEAR_TITLE, CLEAR_SUB, CLEAR_SIZE_K, CLEAR_HOLD)
 	if _sting == null:
 		_sting = AudioStreamPlayer.new()
 		_sting.stream = CLEAR_STING
 		_sting.volume_db = -8.0
 		add_child(_sting)
 	_sting.play()
+
+
+## A starburst callout at CLEAR_Y. There is no room for it between the power-up
+## timer stack (down to ~y 340 with both buffs up) and the player's head, so the
+## timers duck out for its life: slam-in (~0.3s) + hold, back as the burst shrinks.
+func _burst(title: String, sub: String, k: float, hold: float) -> void:
+	_banner().stripe_y = CLEAR_Y
+	banner.size_k = k
+	banner.slam_title(title, sub, hold, ComicStyle.BLUE, true)
+	HudFade.duck(get_tree(), HudFade.POWERUPS, 0.3 + hold)
 
 
 ## A forced end (player death, watchdog) cuts any callout still on screen: a

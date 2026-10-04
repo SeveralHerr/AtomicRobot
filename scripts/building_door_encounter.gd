@@ -7,7 +7,8 @@ class_name BuildingDoorEncounter
 ## the lanes, and — if `lock_arena` — barriers plus camera limits hold the player
 ## there until the street is clear. The squad comes out in 1–3 `waves`: each one
 ## rumbles the door and bursts it again once the previous wave is down, with a
-## comic "WAVE 2/3" callout (EncounterAnnouncer), then a "STREET CLEAR!" payoff when the last wave is down.
+## comic "WAVE 2/3" callout (EncounterAnnouncer), a quick "WAVE CLEAR!" as each earlier
+## wave goes down, then a "STREET CLEAR!" payoff when the last wave is down.
 ##
 ## `DoorMouth/Crack` (sprites/crack.png) doubles as the visual: a hairline crack
 ## sits at the base of the wall as a permanent tell for where an encounter lives,
@@ -17,6 +18,8 @@ class_name BuildingDoorEncounter
 signal encounter_finished
 ## A wave starts its telegraph. `index` is 1-based, of `total`.
 signal wave_started(index: int, total: int)
+## A wave that is not the last went down; the next one rumbles after the gap.
+signal wave_cleared(index: int, total: int)
 ## The last wave went down (not emitted for a watchdog or death release).
 signal squad_cleared
 
@@ -152,6 +155,7 @@ func _process(_delta: float) -> void:
 	if not _spawned.is_empty():
 		return
 	if _wave < _plan.size() - 1:
+		wave_cleared.emit(_wave + 1, _plan.size())
 		_next_wave()
 	else:
 		squad_cleared.emit()
