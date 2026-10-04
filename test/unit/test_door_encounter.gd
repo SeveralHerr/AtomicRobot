@@ -93,6 +93,7 @@ func _make(count: int, wave_count: int = 1) -> void:
 	_enc.walk_out_seconds = 0.02
 	if "wave_gap_seconds" in _enc:
 		_enc.wave_gap_seconds = 0.02
+		_enc.rearm_seconds = 0.02
 	_stage.add_child(_enc)
 	_enc.encounter_finished.connect(func(): _finished += 1)
 
@@ -192,3 +193,131 @@ func test_door_watchdog_releases_a_stuck_fight() -> String:
 	if r != "":
 		return r
 	return _T.assert_false(_barriers_on(), "watchdog drops the barriers")
+
+
+# --- Waves -----------------------------------------------------------------------
+
+func test_wave_sizes_sum_to_the_squad() -> String:
+	for total in range(1, 10):
+		for w in range(1, 4):
+			var sizes: Array = E.wave_sizes(total, w)
+			var sum := 0
+			for s in sizes:
+				if s < 1:
+					return "wave_sizes(%d, %d) has an empty wave: %s" % [total, w, sizes]
+				sum += s
+			if sum != total:
+				return "wave_sizes(%d, %d) = %s loses enemies" % [total, w, sizes]
+	return ""
+
+
+func test_wave_sizes_back_load_the_remainder() -> String:
+	var r: String = _T.assert_eq(E.wave_sizes(5, 2), [2, 3], "the bigger wave comes last")
+	if r != "":
+		return r
+	r = _T.assert_eq(E.wave_sizes(7, 3), [2, 2, 3], "7 over 3")
+	if r != "":
+		return r
+	return _T.assert_eq(E.wave_sizes(4, 1), [4], "one wave = the whole squad")
+
+
+func test_wave_sizes_clamp_wave_count() -> String:
+	var r: String = _T.assert_eq(E.wave_sizes(2, 3), [1, 1], "never more waves than enemies")
+	if r != "":
+		return r
+	r = _T.assert_eq(E.wave_sizes(6, 9), [2, 2, 2], "at most 3 waves")
+	if r != "":
+		return r
+	return _T.assert_eq(E.wave_sizes(3, 0), [3], "at least 1 wave")
+
+
+func _wave_signals() -> Array:
+	var log: Array = []
+	_enc.wave_started.connect(func(i, n): log.append("wave %d/%d" % [i, n]))
+	_enc.street_cleared.connect(func(): log.append("clear"))
+	return log
+
+
+func test_door_second_wave_follows_a_clear_and_holds_the_lock() -> String:
+	_make(4, 2)
+	var log := _wave_signals()
+	_enc._on_body_entered(_p)
+	await _until(func(): return _alive() == 2 and not _enc._spawning)
+	await _tree().create_timer(0.1).timeout
+	var r: String = _T.assert_eq(_enc._spawn_index, 2, "wave 1 is only its share of the squad")
+	if r != "":
+		return r
+	_kill_live()
+	var ok: bool = await _until(func(): return _alive() == 2 and not _enc._spawning)
+	if not ok:
+		return "wave 2 never arrived (alive=%d)" % _alive()
+	await _tree().physics_frame
+	r = _T.assert_eq(_finished, 0, "clearing wave 1 must not end the encounter")
+	if r != "":
+		return r
+	r = _T.assert_true(_barriers_on(), "arena stays locked between waves")
+	if r != "":
+		return r
+	_kill_live()
+	await _until(func(): return _finished > 0)
+	r = _T.assert_eq(_enc._spawn_index, 4, "both waves together are the whole squad")
+	if r != "":
+		return r
+	r = _T.assert_eq(_finished, 1, "last wave cleared ends it once")
+	if r != "":
+		return r
+	return _T.assert_eq(log, ["wave 1/2", "wave 2/2", "clear"], "wave/clear signals in order")
+
+
+func test_door_single_wave_still_pays_off_with_a_clear() -> String:
+	_make(2, 1)
+	var log := _wave_signals()
+	_enc._on_body_entered(_p)
+	await _until(func(): return _alive() == 2 and not _enc._spawning)
+	_kill_live()
+	await _until(func(): return _finished > 0)
+	return _T.assert_eq(log, ["wave 1/1", "clear"], "one wave, then the payoff")
+
+
+func test_door_watchdog_restarts_each_wave() -> String:
+	_make(2, 2)
+	_enc.watchdog_seconds = 2.0
+	_enc._watchdog.wait_time = 2.0
+	_enc._on_body_entered(_p)
+	await _until(func(): return _alive() == 1 and not _enc._spawning)
+	await _tree().create_timer(0.7).timeout
+	_kill_live()
+	await _until(func(): return _alive() == 1 and not _enc._spawning)
+	return _T.assert_gt(_enc._watchdog.time_left, 1.6, "wave 2 gets a fresh watchdog")
+
+
+func test_door_death_between_waves_spawns_nothing_more() -> String:
+	_make(4, 2)
+	_enc.wave_gap_seconds = 0.3
+	var log := _wave_signals()
+	_enc._on_body_entered(_p)
+	await _until(func(): return _alive() == 2 and not _enc._spawning)
+	_kill_live()
+	await _tree().create_timer(0.05).timeout
+	_enc._on_player_death()
+	await _tree().create_timer(0.6).timeout
+	var r: String = _T.assert_eq(_enc._spawn_index, 2, "no wave 2 after the player died")
+	if r != "":
+		return r
+	r = _T.assert_eq(_finished, 1, "released once")
+	if r != "":
+		return r
+	r = _T.assert_false(_barriers_on(), "barriers down")
+	if r != "":
+		return r
+	return _T.assert_false(log.has("clear"), "no STREET CLEAR payoff for a death")
+
+
+func test_door_watchdog_release_is_not_a_clear() -> String:
+	_make(2, 1)
+	var log := _wave_signals()
+	_enc._on_body_entered(_p)
+	await _until(func(): return _alive() == 2 and not _enc._spawning)
+	_enc._on_watchdog()
+	await _tree().physics_frame
+	return _T.assert_false(log.has("clear"), "a forced release is not a payoff")
