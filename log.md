@@ -356,3 +356,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - Would have helped: a "parallel-agent integration" skill (per-agent scratchpad subdir up front — feel agent clobbered death agent's shots/base); somewhat-useful-claude-skills:godot-game-ui-juicy (banner motion).
 - Enhancement (godot-headful-screenshot): `--resolution` doesn't change capture size in --script runs; document the real phone-size recipe.
 - MCP: none used.
+
+## 2026-10-03 — Split enemy.gd under the 500-line gate (worktree fix-split)
+- enemy.gd 654 -> 441; new scripts/enemy/: EnemyLaneMover, EnemySeparation, EnemyKnockback, EnemyLedgeProbe, FacingTransform. 23 characterization tests added first (test_enemy_lane_motion, test_enemy_body). Autoplay 11/11 summaries byte-identical to baseline.
+- Skills used: none directly (followed godot-autoplay-test recipe by hand: baseline summary diff). Would have helped: somewhat-useful-claude-skills:extract-a-testable-seam (static helpers), a "refactor-autoplay-diff" skill (capture baseline summaries, diff after; seeded runs are deterministic).
+- Note: test_end_card::test_card_draws_over_the_boss_hud failed once on baseline while autoplay ran concurrently, passed on every later run — flaky under load.
+- MCP: none used.
