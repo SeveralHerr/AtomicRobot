@@ -149,7 +149,12 @@ func test_die_counts_once_and_stops_interacting() -> String:
 	r = _T.assert_eq(e.velocity, Vector2.ZERO, "stopped")
 	if r != "":
 		return r
+	# Deferred (die() may run inside a physics callback), so it lands next frame.
+	await _tree().process_frame
 	r = _T.assert_false(e.player_detection.monitoring, "stops detecting")
+	if r != "":
+		return r
+	r = _T.assert_false(e.player_detection.monitorable, "stops being detectable")
 	if r != "":
 		return r
 	return _T.assert_false(e.get_collision_layer_value(3), "off the enemy layer")

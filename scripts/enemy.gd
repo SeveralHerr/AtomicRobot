@@ -299,8 +299,10 @@ func die() -> void:
 	animated_sprite_2d.play("death")
 	print("dead af")
 
-	player_detection.monitorable = false
-	player_detection.monitoring = false
+	# Deferred: die() can run inside a physics callback (a car's body_entered kills
+	# via receive_hit), where Area2D refuses a direct monitorable change.
+	player_detection.set_deferred("monitorable", false)
+	player_detection.set_deferred("monitoring", false)
 	set_collision_layer_value(3, false)
 	set_collision_layer_value(10, false)
 	set_collision_mask_value(1, false)
