@@ -142,17 +142,25 @@ func test_rank_improves_with_score() -> String:
 	var r: String = _T.assert_eq(S.rank_for(0), "D", "a bad run ranks D")
 	if r != "":
 		return r
-	r = _T.assert_eq(S.rank_for(20000), "S", "clearing the top threshold ranks S")
+	var top := _threshold("S")
+	r = _T.assert_eq(S.rank_for(top), "S", "clearing the top threshold ranks S")
 	if r != "":
 		return r
-	return _T.assert_eq(S.rank_for(19999), "A", "one point short of S is A")
+	return _T.assert_eq(S.rank_for(top - 1), "A", "one point short of S is A")
+
+
+func _threshold(rank: String) -> int:
+	for entry in S.RANK_THRESHOLDS:
+		if entry[0] == rank:
+			return int(entry[1])
+	return -1
 
 
 func test_points_to_next_rank() -> String:
-	var r: String = _T.assert_eq(S.points_to_next_rank(4999), 1, "one point from C")
+	var r: String = _T.assert_eq(S.points_to_next_rank(_threshold("C") - 1), 1, "one point from C")
 	if r != "":
 		return r
-	return _T.assert_eq(S.points_to_next_rank(20000), 0, "nothing left to climb at S")
+	return _T.assert_eq(S.points_to_next_rank(_threshold("S")), 0, "nothing left to climb at S")
 
 
 # --- Summary -----------------------------------------------------------------
@@ -256,3 +264,49 @@ func test_run_continues_only_through_the_boss_door() -> String:
 		if S.continues_run(pair[0], pair[1]):
 			return "%s -> %s must start a fresh run" % pair
 	return ""
+
+
+
+# --- Balance pins: reference runs (autoplay seed 1, Ryan, 2026-10-03) -----------
+# Measured with `python tools/autoplay.py` (the "run:" line). Retune the constants,
+# not these runs, unless the level itself changed.
+
+## Completionist route, mortal: street 7,070 + boss 770, 182.5 s, 20 hits, 4 orbs
+## left, and 6 of the 7 secrets the route visits.
+func _clean_run() -> Dictionary:
+	return S.summarise(7840, 182.5, 20, 4, S.PAR_SECONDS, 6, 7070)
+
+
+func test_balance_bonus_is_the_same_order_as_the_fight() -> String:
+	var res := _clean_run()
+	var ratio := float(res["bonus"]) / float(res["fight_score"])
+	if ratio < 0.5 or ratio > 1.5:
+		return "bonus %d vs fight %d (ratio %.2f): should be the same order" % [res["bonus"], res["fight_score"], ratio]
+	var time_ratio := float(res["time_bonus"]) / float(res["fight_score"])
+	if time_ratio > 1.0:
+		return "time bonus alone (%d) outweighs the fight (%d)" % [res["time_bonus"], res["fight_score"]]
+	return ""
+
+
+func test_balance_clean_full_run_ranks_a() -> String:
+	return _T.assert_eq(String(_clean_run()["rank"]), "A", "clean mortal completionist run")
+
+
+## The god-mode bot's completionist run (no hits, 175.7 s, fight 10,180) with every
+## secret: as good as a run gets.
+func test_balance_flawless_run_ranks_s() -> String:
+	var res: Dictionary = S.summarise(10180, 175.7, 0, 10, S.PAR_SECONDS, 7, 7390)
+	return _T.assert_eq(String(res["rank"]), "S", "flawless, fast, every secret")
+
+
+## A sloppy run: slow (5.5 min), battered to one orb, one secret, a thinner fight.
+func test_balance_sloppy_run_ranks_c() -> String:
+	var res: Dictionary = S.summarise(6000, 330.0, 30, 1, S.PAR_SECONDS, 1, 5400)
+	return _T.assert_eq(String(res["rank"]), "C", "slow, battered, few secrets")
+
+
+## Mutation survivor: S must need the secrets too. The same flawless run with none
+## of them stays A.
+func test_balance_flawless_run_without_secrets_is_a() -> String:
+	var res: Dictionary = S.summarise(10180, 175.7, 0, 10, S.PAR_SECONDS, 0, 7390)
+	return _T.assert_eq(String(res["rank"]), "A", "S needs the secrets as well")

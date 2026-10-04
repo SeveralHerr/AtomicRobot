@@ -51,11 +51,13 @@ static func kill_points(combo: int) -> int:
 
 # --- End-of-stage bonuses ----------------------------------------------------
 
-## Target clear time for a stage, in seconds. Beat it and every second saved pays.
-## Tuned against the street level (res://scenes/main.tscn) walked at a normal pace
-## while actually fighting; retune here if the level's length changes.
-const PAR_SECONDS := 240.0
-const POINTS_PER_SECOND_SAVED := 25
+## Target time for the whole run (street + boss), in seconds. Beat it and every second
+## saved pays. Tuned (2026-10-03) so the bonus is the same order as the fight score:
+## the seed-1 bot clears the completionist route in ~180 s (fight ~7,800, time bonus
+## ~3,600); a human taking 5-6 minutes still banks something. When the time bonus was
+## per-stage (boss only, 240 s par, 25/s) it paid ~8x the boss fight.
+const PAR_SECONDS := 420.0
+const POINTS_PER_SECOND_SAVED := 15
 
 ## Flat award for finishing a stage without being hit once.
 const PERFECT_BONUS := 3000
@@ -92,11 +94,14 @@ static func secret_bonus(secrets: int) -> int:
 ## Rank letters paired with the total score each one needs, best first. rank_for()
 ## walks this in order and takes the first one the score clears, so D must sit at 0
 ## to guarantee every run gets a letter.
+## Tuned against full runs (test_score_rules.gd pins the reference runs): a clean
+## mortal completionist run (~182 s, 4 orbs left, most secrets) is A; a flawless fast
+## run with every secret is S; a slow, battered run with a secret or two is C.
 const RANK_THRESHOLDS: Array = [
-	["S", 20000],
-	["A", 14000],
-	["B", 9000],
-	["C", 5000],
+	["S", 18000],
+	["A", 13000],
+	["B", 9500],
+	["C", 6000],
 	["D", 0],
 ]
 
