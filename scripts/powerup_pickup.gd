@@ -86,7 +86,7 @@ func _collect(player: Player) -> void:
 	PowerupSystem.grant(powerup_id)
 	if player.pickup_audio != null:
 		player.pickup_audio.play()
-	ScreenShake.apply_shake(4)
+	ScreenShake.apply_shake(4, 0.2)
 	sprite.visible = true
 	var burst := create_tween().set_parallel()
 	burst.tween_property(sprite, "scale", sprite.scale * 2.5, 0.18)
