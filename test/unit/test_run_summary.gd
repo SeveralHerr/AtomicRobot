@@ -171,3 +171,24 @@ func test_summary_death_card_has_no_stamp() -> String:
 func test_summary_no_secret_row_without_totals() -> String:
 	var rows: Array = RunSummary.breakdown_rows(ScoreRules.summarise(900, 40.0, 1, 2))
 	return _T.assert_eq(_labels(rows), ["BOSS", "BONUS", "TIME", "HEALTH"], "no empty secrets row")
+
+
+## Player report: died at the boss and the card said 470 after a 1,710 street. The
+## death card now shows the run's STREET / BOSS split, so it is plain the street
+## counted.
+func test_summary_boss_death_shows_street_and_boss_split() -> String:
+	var rows := RunSummary.breakdown_rows({"won": false, "total": 1510, "rank": "", "street_score": 1500})
+	return _T.assert_eq(rows, [["STREET", "1,500", false], ["BOSS", "10", false]], "split on a death")
+
+
+func test_score_system_death_in_boss_room_records_the_street_part() -> String:
+	ScoreSystem.enter_scene(STREET)
+	ScoreSystem.score = 1500
+	ScoreSystem.enter_scene("", false)
+	ScoreSystem.enter_scene(BOSS_ROOM)
+	ScoreSystem.score += 10
+	Globals.player_death.emit()
+	var r: String = _T.assert_eq(int(ScoreSystem.last_run["total"]), 1510, "run total, not boss-only")
+	if r != "":
+		return r
+	return _T.assert_eq(int(ScoreSystem.last_run.get("street_score", -1)), 1500, "street part recorded")

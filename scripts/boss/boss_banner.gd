@@ -29,6 +29,9 @@ var size_k: float = 1.0:
 		_sub.add_theme_font_size_override("font_size", int(SUB_PX * k))
 const SLANT := 46.0
 const BLIP := preload("res://sounds/tap.wav")
+## Speech bubble pop-in, and the typewriter's seconds per character.
+const SAY_POP := 0.22
+const TYPE_STEP := 0.03
 
 var _stripe: float = 0.0  # 0..1 sweeping in, 1..2 sweeping out
 var _stripe_color: Color = ComicStyle.RED
@@ -39,6 +42,8 @@ var _sub: Label
 var _sub_tag: PanelContainer
 var _bubble: PanelContainer
 var _bubble_text: Label
+## Bumped per say(): an overtaken line must not pop the newer one away.
+var _say_gen := 0
 var _speaker: Node2D
 ## Bumped per slam_title(): a slam that is overtaken (the finale landing mid phase
 ## banner) must not run its clear-out over the newer title.
@@ -161,7 +166,11 @@ func _set_burst(k: float) -> void:
 # --- Speech bubble ---------------------------------------------------------------
 
 ## Pop a speech bubble over `speaker` and type `text` into it, hold, pop it away.
+## Up for at least ReadingTime.seconds(text) in all; `hold` is the least time it
+## stays once fully typed.
 func say(text: String, speaker: Node2D, hold: float = 1.2) -> void:
+	_say_gen += 1
+	var gen := _say_gen
 	_speaker = speaker
 	_bubble_text.text = text
 	_bubble_text.visible_characters = 0
@@ -170,18 +179,28 @@ func say(text: String, speaker: Node2D, hold: float = 1.2) -> void:
 	_place_bubble()
 	_bubble.pivot_offset = Vector2(_bubble.size.x * 0.5, _bubble.size.y)
 	_bubble.scale = Vector2.ZERO
-	await _tw().tween_property(_bubble, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT).finished
+	await _tw().tween_property(_bubble, "scale", Vector2.ONE, SAY_POP).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT).finished
 	var n := text.length()
 	for i in n:
+		if gen != _say_gen:
+			return  # overtaken mid-typing: stop typing over the newer line
 		_bubble_text.visible_characters = i + 1
 		if i % 2 == 0 and text[i] != " ":
 			_blip.pitch_scale = randf_range(0.8, 1.1)
 			_blip.play()
-		await _wait(0.03).timeout
-	await _wait(hold).timeout
+		await _wait(TYPE_STEP).timeout
+	await _wait(say_hold(text, hold)).timeout
+	if gen != _say_gen:
+		return  # a newer line took the bubble over; it pops it away
 	await _tw().tween_property(_bubble, "scale", Vector2.ZERO, 0.12).set_ease(Tween.EASE_IN).finished
 	_bubble.visible = false
 	queue_redraw()  # clear the tail, which _draw paints outside the bubble
+
+
+## Seconds the bubble holds after typing: `hold`, or longer so pop-in + typing +
+## hold reach the shared pop-up reading time.
+static func say_hold(text: String, hold: float) -> float:
+	return maxf(hold, ReadingTime.seconds(text) - SAY_POP - TYPE_STEP * text.length())
 
 
 ## Above the speaker's head, kept on screen.

@@ -31,13 +31,15 @@ var breakdown: GridContainer
 var unlock_holder: Control
 var unlock_label: Label
 var badge_holder: Control
+## Every rank's threshold, the gap to the next and a tip (scripts/ui/rank_ladder.gd).
+var ladder: RankLadder
 var badge_label: Label
 
 
 func _init() -> void:
 	custom_minimum_size.x = 400
 	alignment = BoxContainer.ALIGNMENT_CENTER
-	add_theme_constant_override("separation", 10)
+	add_theme_constant_override("separation", 5)
 	title = ComicStyle.heading("GAME OVER", 58)
 	add_child(title)
 	_build_unlock_stamp()
@@ -86,6 +88,9 @@ func _init() -> void:
 	breakdown.add_theme_constant_override("v_separation", -4)
 	figures.add_child(breakdown)
 
+	ladder = RankLadder.new()
+	add_child(ladder)
+
 	var badge := PanelContainer.new()
 	var badge_box := ComicStyle.box(ComicStyle.YELLOW, 3, 4, 3)
 	badge_box.content_margin_left = 14
@@ -110,6 +115,7 @@ func show_run(run: Dictionary, won: bool) -> void:
 	(stamp.get_node("Plate").get_theme_stylebox("panel") as StyleBoxFlat).border_color = tone
 	score_label.text = ComicStyle.format_score(total)
 	_fill_breakdown(breakdown_rows(run))
+	ladder.show_run(run, won)
 	unlock_label.text = unlock_text(run)
 	unlock_holder.visible = unlock_label.text != ""
 	badge_label.text = ComicStyle.badge_text(int(run.get("slot", -1)))
@@ -124,10 +130,15 @@ func show_run(run: Dictionary, won: bool) -> void:
 ## final score; the detail rows itemise the bonus. [] on a death (nothing to break
 ## down). A boss-only stage (debug start) has no STREET row.
 static func breakdown_rows(run: Dictionary) -> Array:
-	if not run.has("fight_score"):
-		return []
-	var rows := []
 	var street := int(run.get("street_score", 0))
+	if not run.has("fight_score"):
+		# A death after the boss door: show the split, so it is plain the street's
+		# points are in the total (a player read a boss-room death as boss-only).
+		if street <= 0:
+			return []
+		return [["STREET", ComicStyle.format_score(street), false],
+			["BOSS", ComicStyle.format_score(int(run.get("total", 0)) - street), false]]
+	var rows := []
 	if street > 0:
 		rows.append(["STREET", ComicStyle.format_score(street), false])
 	rows.append(["BOSS", ComicStyle.format_score(int(run.get("boss_score", run["fight_score"]))), false])

@@ -16,7 +16,7 @@ func _show_ui(header: String, description: String) -> void:
 	description_label.text = description
 	
 	show()
-	await get_tree().create_timer(2).timeout
+	await get_tree().create_timer(ReadingTime.seconds(header + " " + description)).timeout
 	hide()
 
 

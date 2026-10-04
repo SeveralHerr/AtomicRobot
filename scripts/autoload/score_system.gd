@@ -259,7 +259,7 @@ func _on_player_death() -> void:
 	# A death ends the run without a rank card — you do not get graded on a stage you
 	# did not finish — but a big enough score still goes on the board, arcade-style.
 	if running:
-		last_run = {"won": false, "total": score, "rank": ""}
+		last_run = {"won": false, "total": score, "rank": "", "street_score": street_score}
 		_offer_high_score(score, "")
 	running = false
 	_reset_combo()

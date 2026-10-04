@@ -327,11 +327,14 @@ func _engage_lock() -> void:
 	var cam: Camera2D = player.camera_2d
 	if cam == null:
 		return
-	_saved_limit_left = cam.limit_left
-	_saved_limit_right = cam.limit_right
+	# The target, not the live limits: the last fight's release may still be easing.
+	var saved := CameraLimitBlend.target_limits(cam)
+	_saved_limit_left = saved.x
+	_saved_limit_right = saved.y
 	var centre: int = int(door_mouth.global_position.x)
-	cam.limit_left = centre - arena_half_width
-	cam.limit_right = centre + arena_half_width
+	# Eased, never snapped: a snapped limit jumps the view up to 640 screen px in one
+	# frame and reads as the player teleporting.
+	CameraLimitBlend.blend(cam, centre - arena_half_width, centre + arena_half_width)
 
 
 func _release_lock() -> void:
@@ -339,8 +342,7 @@ func _release_lock() -> void:
 	var cam: Camera2D = player.camera_2d if player != null else null
 	if cam == null:
 		return
-	cam.limit_left = _saved_limit_left
-	cam.limit_right = _saved_limit_right
+	CameraLimitBlend.blend(cam, _saved_limit_left, _saved_limit_right)
 
 
 func _set_barriers(enabled: bool) -> void:
@@ -375,4 +377,5 @@ func _end() -> void:
 	encounter_finished.emit()
 	if one_shot:
 		# Outlive the STREET CLEAR! callout, which lives under this node.
-		get_tree().create_timer(2.0).timeout.connect(queue_free)
+		var callout := EncounterAnnouncer.SLAM_IN + EncounterAnnouncer.clear_hold() + 0.5
+		get_tree().create_timer(callout).timeout.connect(queue_free)

@@ -1,31 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://bi5pyhjxtocqc"]
+[gd_scene load_steps=6 format=3 uid="uid://bi5pyhjxtocqc"]
 
 [ext_resource type="Texture2D" uid="uid://qktjjix6saih" path="res://images/new/newspaperstand.png" id="1_uwo4u"]
 [ext_resource type="Script" uid="uid://cfhair3py7sgq" path="res://scripts/interactive_mailbox.gd" id="2_uwo4u"]
-[ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="3_5iqop"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="3_u7wxk"]
-[ext_resource type="Texture2D" uid="uid://wc81hy2a7v0m" path="res://images/newspaper.png" id="5_u7wxk"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_64moy"]
 radius = 23.0217
-
-[sub_resource type="FontVariation" id="FontVariation_qt0oh"]
-base_font = ExtResource("3_5iqop")
-spacing_glyph = 1
-
-[sub_resource type="LabelSettings" id="LabelSettings_5iqop"]
-font = SubResource("FontVariation_qt0oh")
-font_size = 20
-font_color = Color(0, 0, 0, 1)
-shadow_size = 0
-shadow_color = Color(0, 0, 0, 0.384314)
-
-[sub_resource type="LabelSettings" id="LabelSettings_fn82b"]
-font = SubResource("FontVariation_qt0oh")
-font_size = 12
-font_color = Color(0, 0, 0, 1)
-shadow_size = 0
-shadow_color = Color(0, 0, 0, 0.384314)
 
 [sub_resource type="LabelSettings" id="LabelSettings_wvjmt"]
 line_spacing = -5.0
@@ -47,54 +27,6 @@ collision_layer = 0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 z_index = -1
 shape = SubResource("CircleShape2D_64moy")
-
-[node name="TextureRect" type="TextureRect" parent="."]
-visible = false
-z_index = 2
-offset_left = -97.0
-offset_top = -171.0
-offset_right = 927.0
-offset_bottom = 853.0
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("5_u7wxk")
-
-[node name="NotificationLabel4" type="Label" parent="."]
-visible = false
-z_index = 2
-custom_minimum_size = Vector2(300, 58)
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -160.0
-offset_top = -262.0
-offset_right = 140.0
-offset_bottom = -88.0
-grow_horizontal = 2
-text = "NEWS
-"
-label_settings = SubResource("LabelSettings_5iqop")
-horizontal_alignment = 1
-vertical_alignment = 2
-autowrap_mode = 2
-
-[node name="NotificationLabel" type="Label" parent="."]
-visible = false
-z_index = 2
-custom_minimum_size = Vector2(120, 58)
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -72.0
-offset_top = -96.0
-offset_right = 48.0
-offset_bottom = 1.0
-grow_horizontal = 2
-text = "FDFDFDAFDFDFDFDFDF
-DFDFDFF
-fd
-fd"
-label_settings = SubResource("LabelSettings_fn82b")
-autowrap_mode = 2
 
 [node name="InteractLabel" type="Label" parent="."]
 visible = false

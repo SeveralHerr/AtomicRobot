@@ -44,6 +44,16 @@ The CRT overlay autoload is in the shot - judge legibility through it, it is wha
 - `InputEventAction` does not satisfy `any_button.gd` (keys/joy only): send `InputEventKey` ENTER.
 - `print_stack()`/`get_stack()` print nothing without a debugger; trace with plain `print`.
 
+## Camera / GIF lessons (2026-10-04, pf-present)
+- `Camera2D.limit_*` setters move the canvas IMMEDIATELY (not next frame): sample the
+  player's screen x BEFORE the action when measuring a camera jump.
+- Limits narrower than the view make Godot CENTRE between them: easing each limit on its
+  own fights itself. Pin the mixed view (`scripts/camera_limit_blend.gd`).
+- A/B GIF of a state the bot can't reach (player pinned at an arena wall): a `--script`
+  capture driving the real handlers, run on both worktrees, PIL -> GIF (64 colours, 420 px
+  keeps 6 s under 3 MB). Redirect saves first: `Globals.use_unlock_save("user://autoplay_cap_unlocks.cfg")`
+  + `ScoreSystem.save_path` — a boss_death in a capture unlocks Robot in the REAL save.
+
 ## Phone-size rounds (verified 2026-10-03)
 - `--resolution 1688x780` on a throwaway `--script` SceneTree capture does NOT change the
   captured image. Use the bot instead: `python tools/autoplay.py my.json --window --resolution 1688x780`
