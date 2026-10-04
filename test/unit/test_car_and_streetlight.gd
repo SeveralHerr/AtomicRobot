@@ -162,3 +162,70 @@ func test_car_takes_half_a_maid() -> String:
 	car._hit(maid)
 	Globals.release_attack_slot(maid)
 	return _T.assert_eq(maid.health, maid.max_health - DamageRules.CAR_ENEMY_DAMAGE, "car damage on the maid")
+
+
+# --- Characterization: how a car moves and where a streetlight puts it -----------
+
+func test_car_is_hidden_until_started() -> String:
+	var car := _keep(CAR.instantiate())
+	(Engine.get_main_loop() as SceneTree).root.add_child(car)
+	car._physics_process(0.5)
+	var r: String = _T.assert_false(car.visible, "an unstarted car stays hidden")
+	if r != "":
+		return r
+	return _T.assert_eq(car.position.x, 0.0, "an unstarted car does not move")
+
+
+func test_started_car_drives_left_at_its_speed() -> String:
+	var car := _keep(CAR.instantiate())
+	(Engine.get_main_loop() as SceneTree).root.add_child(car)
+	car.speed = 200
+	car.start = true
+	car._physics_process(0.5)
+	var r: String = _T.assert_true(car.visible, "a started car shows")
+	if r != "":
+		return r
+	return _T.assert_float_eq(car.position.x, -100.0, 0.01, "200 px/s for 0.5 s, leftward")
+
+
+func test_car_rolls_a_speed_when_launched_with_zero() -> String:
+	var car := _keep(CAR.instantiate())
+	(Engine.get_main_loop() as SceneTree).root.add_child(car)
+	car.speed = 0
+	car.start = true
+	car._physics_process(0.01)
+	return _T.assert_true(car.speed >= 150 and car.speed <= 450, "speed rolled in 150..450, got %d" % car.speed)
+
+
+func test_streetlight_picks_road_lanes_only() -> String:
+	var light := _keep(STREETLIGHT.instantiate())
+	var seen := {}
+	for i in 200:
+		seen[light._pick_car_lane()] = true
+	return _T.assert_eq(seen.keys().size() == 3 and not seen.has(Lanes.GROUND_LANE), true,
+		"lanes 1..3 only, saw %s" % [seen.keys()])
+
+
+func test_streetlight_car_rides_the_player_stand_line() -> String:
+	var light := _keep(STREETLIGHT.instantiate())
+	var p := _player()
+	p.lane_floor_y = 100.0
+	light.player = p
+	return _T.assert_float_eq(Car.road_y(light.player, 2), p.lane_stand_y(2), 0.001, "road y = player's lane stand y")
+
+
+func test_launched_right_drives_right_mirrored() -> String:
+	var car: Car = _keep(CAR.instantiate())
+	(Engine.get_main_loop() as SceneTree).root.add_child(car)
+	car.launch(2, Vector2(100, 50), 1, 200)
+	car._physics_process(0.5)
+	var r: String = _T.assert_float_eq(car.global_position.x, 200.0, 0.01, "200 px/s for 0.5 s, rightward")
+	if r != "":
+		return r
+	return _T.assert_true(car.sprite_2d.flip_h, "art mirrored to face right")
+
+
+func test_car_road_y_before_the_lanes_are_measured() -> String:
+	var p := _player()
+	p.global_position = Vector2(0, 40)
+	return _T.assert_float_eq(Car.road_y(p, 2), 40.0 + Lanes.y_offset(2), 0.001, "player y + lane offset")
