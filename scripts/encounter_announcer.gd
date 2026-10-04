@@ -29,6 +29,8 @@ const SIZE_K := 0.8
 ## so only the player's lane is below it, and the burst stops short of his head.
 const CLEAR_Y := 0.45
 const CLEAR_SIZE_K := 0.5
+## Seconds BossBanner.slam_title takes to land a title (stripe/burst + title punch).
+const SLAM_IN := 0.3
 const CLEAR_STING := preload("res://sounds/power_up.wav")
 ## Mid-door beat: same burst, smaller, quicker, no sting — it must read as a breath
 ## between waves, not as the door's payoff, and be gone before the next wave's
@@ -75,18 +77,16 @@ func _on_wave_started(index: int, total: int) -> void:
 		return
 	# Yellow title on blue reads; on orange it washed out. Red marks the last wave.
 	var tint := ComicStyle.RED if index >= total else ComicStyle.BLUE
-	_banner().stripe_y = STRIPE_Y
-	banner.size_k = SIZE_K
-	banner.slam_title(title, wave_subtitle(index, total), WAVE_HOLD, tint)
+	_slam(title, wave_subtitle(index, total), STRIPE_Y, SIZE_K, WAVE_HOLD, tint)
 
 
 func _on_wave_cleared(_index: int, _total: int) -> void:
-	_burst(WAVE_CLEAR_TITLE, "", WAVE_CLEAR_SIZE_K, WAVE_CLEAR_HOLD)
+	_slam(WAVE_CLEAR_TITLE, "", CLEAR_Y, WAVE_CLEAR_SIZE_K, WAVE_CLEAR_HOLD, ComicStyle.BLUE, true)
 
 
 func _on_squad_cleared() -> void:
 	_cleared = true
-	_burst(CLEAR_TITLE, CLEAR_SUB, CLEAR_SIZE_K, CLEAR_HOLD)
+	_slam(CLEAR_TITLE, CLEAR_SUB, CLEAR_Y, CLEAR_SIZE_K, CLEAR_HOLD, ComicStyle.BLUE, true)
 	if _sting == null:
 		_sting = AudioStreamPlayer.new()
 		_sting.stream = CLEAR_STING
@@ -95,14 +95,16 @@ func _on_squad_cleared() -> void:
 	_sting.play()
 
 
-## A starburst callout at CLEAR_Y. There is no room for it between the power-up
-## timer stack (down to ~y 340 with both buffs up) and the player's head, so the
-## timers duck out for its life: slam-in (~0.3s) + hold, back as the burst shrinks.
-func _burst(title: String, sub: String, k: float, hold: float) -> void:
-	_banner().stripe_y = CLEAR_Y
+## Slam a callout centred at `y` (fraction of screen height) at scale `k`; `burst`
+## for a starburst instead of a stripe. Both the stripe and the bursts land on the
+## power-up timer stack (down to ~y 340 with both buffs up), and there is no room
+## for a burst between it and the player's head, so the timers duck out for the
+## callout's life: slam-in + hold, back as it clears away.
+func _slam(title: String, sub: String, y: float, k: float, hold: float, tint: Color, burst: bool = false) -> void:
+	_banner().stripe_y = y
 	banner.size_k = k
-	banner.slam_title(title, sub, hold, ComicStyle.BLUE, true)
-	HudFade.duck(get_tree(), HudFade.POWERUPS, 0.3 + hold)
+	banner.slam_title(title, sub, hold, tint, burst)
+	HudFade.duck(get_tree(), HudFade.POWERUPS, SLAM_IN + hold)
 
 
 ## A forced end (player death, watchdog) cuts any callout still on screen: a

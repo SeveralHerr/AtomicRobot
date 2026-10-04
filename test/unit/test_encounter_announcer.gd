@@ -190,6 +190,23 @@ func test_announcer_clear_burst_covers_only_ducked_hud_rows() -> String:
 	return ""
 
 
+## The WAVE n/N stripe (STRIPE_Y, 0.8 size) spans the whole timer stack too: duck it
+## so the timers don't flicker at the stripe's edges as it sweeps in and out.
+func test_announcer_wave_stripe_ducks_the_powerup_timers() -> String:
+	var tree := Engine.get_main_loop() as SceneTree
+	var timers := Control.new()
+	timers.add_to_group(HudFade.POWERUPS)
+	tree.root.add_child(timers)
+	var rig := _rig()
+	await tree.process_frame  # soak up a post-load hitch frame
+	rig[0].wave_started.emit(2, 2)
+	await tree.create_timer(0.3, true, false, true).timeout
+	var during := timers.modulate.a
+	rig[0].free()
+	timers.free()
+	return _T.assert_true(during < 0.05, "timers ducked under the wave stripe (a=%.2f)" % during)
+
+
 func test_announcer_clear_ducks_the_powerup_timers_then_restores_them() -> String:
 	var tree := Engine.get_main_loop() as SceneTree
 	var timers := Control.new()
