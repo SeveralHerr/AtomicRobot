@@ -610,3 +610,7 @@ Log of skills that might have been useful for a given response, and why (short f
 ## 2026-10-04 — end card not joystick friendly (stuck after pause)
 - Bug: Start/Esc pause on game-over/win card -> pause slider took focus, hid on resume -> focus none, stick dead. Fix: `EndCard._process` re-grabs RESTART when focus is off its buttons. Tests `test_*_stick_works_after_pause`.
 - Used: none from list. Would have helped: godot-input-test (notes pause/resume focus theft now). MCP: godot-tests covers gate.
+
+## 2026-10-04 — car tyres under player's feet; hearts behind trees
+- Car: `Car.WHEEL_DROP` 28, `road_y` lands tyres on lane floor (was 8.2px below soles). Hearts z 2 -> 0 (reverses earlier "heart over tree" fix at user's request). Gate green (1042/19/12/audit). Proof artifact https://claude.ai/artifact/VDCD5cpKL3LaPUc2wmQYvS
+- Used: godot-draw-order (enhancement: add "height vs z" step — added), godot-headful-screenshot (enhancement: car-lane matrix recipe), godot-ab-worktree. Would help: none new. MCP: none.

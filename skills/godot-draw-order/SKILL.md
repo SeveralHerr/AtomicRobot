@@ -15,3 +15,8 @@ description: Fix "X draws on top of Y" bugs in Atomic Robot (player/maid over a 
    lanes 10+). Fix there, used by both Player and `enemy_lane_mover`, never per prop.
 5. Test derived from the level (every tree.tscn in main/boss_room), see
    `test/unit/test_raised_draw_order.gd`; A/B by flipping the constant and re-snapping.
+6. "X appears below Y's feet" can be a HEIGHT bug, not z: compare art ground lines. Cars
+   rode the player's origin line, so tyres sat 8px under the soles (`Car.WHEEL_DROP`, tested
+   against the PNG alpha). Lane matrix: player lane x car lane, hitbox off (`area_2d.monitoring`).
+7. Pickups at a tree's foot: check visibility after lowering z — a heart inside the canopy
+   (x 2944) nearly vanished behind it.
