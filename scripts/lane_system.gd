@@ -165,12 +165,32 @@ const DEPTH_Z_BIAS := 8
 ## player always out-sorted every maid by a constant 7.25px no matter who actually
 ## stood nearer the camera. Sorting on the foot line is the whole point, so the depth
 ## goes into z explicitly. GROUND_LANE has no sub-ordering — it keeps its bare z.
-static func depth_z(lane: int, foot_y: float, baseline_floor_y: float) -> int:
+## `raised`: a ground-lane body standing on raised geometry (see on_raised_floor).
+static func depth_z(lane: int, foot_y: float, baseline_floor_y: float, raised := false) -> int:
 	var l := clamp_lane(lane)
+	if l == GROUND_LANE and raised:
+		return RAISED_Z
 	if l == GROUND_LANE or not is_finite(baseline_floor_y):
 		return z_for(l)
 	var depth := clampf(foot_y - floor_y(baseline_floor_y, l), -IN_LANE_JITTER, IN_LANE_JITTER)
 	return z_for(l) + DEPTH_Z_BIAS + roundi(depth)
+
+
+## Draw z for a ground-lane body up on raised geometry — the wall ledge, scaffolds,
+## platforms. They all belong to the buildings, behind the sidewalk props sharing
+## z_for(GROUND_LANE) (trees, trash, meters); tied at 1, tree order put a player on the
+## ledge in front of the canopy rooted below it. The sort layer is the scene's last
+## child, so z 0 still draws over the level's own z-0 art.
+const RAISED_Z := 0
+
+
+## Is a ground-lane body standing on raised geometry? Only a body ON a floor re-decides:
+## mid-air keeps the last answer, so a hop off the sidewalk never ducks behind the trees
+## and a drop off the ledge stays behind them until it lands.
+static func on_raised_floor(was_raised: bool, on_floor: bool, baseline_floor_y: float, foot_y: float) -> bool:
+	if not on_floor:
+		return was_raised
+	return is_finite(baseline_floor_y) and foot_y < baseline_floor_y - BASELINE_TOLERANCE
 
 
 ## Draw z for a vehicle on `lane`: just above the deepest in-lane body, still inside

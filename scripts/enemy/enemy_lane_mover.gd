@@ -15,6 +15,8 @@ var _e: Enemy
 var _foot_offset: float = 0.0
 var _foot_offset_measured: bool = false
 var _tween: Tween
+## Standing on raised ground (ledge, scaffold): draws behind the sidewalk trees.
+var _raised: bool = false
 
 
 func _init(enemy: Enemy) -> void:
@@ -42,7 +44,8 @@ func stand_y(for_lane: int) -> float:
 ## it only writes when the value changes, and it self-heals the frame a baseline is
 ## first captured (before that, depth_z has no floor line to measure against).
 func refresh_depth_z() -> void:
-	var z := Lanes.depth_z(_e.lane, stand_y(_e.lane) + foot_offset(), _e.lane_floor_y)
+	_raised = Lanes.on_raised_floor(_raised, _e.is_on_floor(), _e.lane_floor_y, _e.global_position.y + foot_offset())
+	var z := Lanes.depth_z(_e.lane, stand_y(_e.lane) + foot_offset(), _e.lane_floor_y, _raised)
 	if z != _e.z_index:
 		_e.z_index = z
 

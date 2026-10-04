@@ -90,6 +90,8 @@ var _foot_offset: float = 0.0
 var _foot_offset_measured: bool = false
 var is_changing_lane: bool = false
 var _lane_tween: Tween
+## Standing on raised ground (ledge, scaffold): draws behind the sidewalk trees.
+var _raised: bool = false
 ## Lane the player is snapped into as soon as the walkway baseline is known. Only
 ## takes effect where lanes_active() is true (main.tscn) — boss_room ignores it.
 @export var spawn_lane: int = 2
@@ -282,7 +284,8 @@ func lane_stand_y(lane: int) -> float:
 ## jittered nearer the camera correctly draw over the player. See Lanes.depth_z for why
 ## this can't be left to Y-sorting.
 func _refresh_depth_z() -> void:
-	var z := Lanes.depth_z(current_lane, lane_stand_y(current_lane) + foot_offset(), lane_floor_y)
+	_raised = Lanes.on_raised_floor(_raised, is_on_floor(), lane_floor_y, global_position.y + foot_offset())
+	var z := Lanes.depth_z(current_lane, lane_stand_y(current_lane) + foot_offset(), lane_floor_y, _raised)
 	if z != z_index:
 		z_index = z
 
