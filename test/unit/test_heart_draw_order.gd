@@ -1,17 +1,19 @@
 extends RefCounted
 
-## A heart pickup must draw over the street furniture it is placed beside.
+## A heart pickup draws BEHIND the trees it is placed beside, never under a crate.
 ##
-## The bug: a level heart sat at a tree's foot (main.tscn, x~2944, beside the crates)
-## at z 0 under the tree's z 1, so the trunk and leaves cut through the spinning atom.
-## Its white sticker outline then read as a meter maid's speech bubble tangled in the
-## tree. Every heart x every tree/crate pair is checked, in both scenes that hold
-## hearts, plus the bare scene the door encounter and boss room drop at runtime.
+## History: hearts first sat at z 0 under the tree's z 1, and one at a tree's foot
+## (main.tscn, x~2944) read as a maid's speech bubble tangled in the canopy, so they
+## were lifted to z 2. The player then asked for the opposite (2026-10-04): HP pickups
+## belong behind the trees, the trunk passing in front of the atom. Every heart x every
+## tree/crate pair is checked, in both scenes that hold hearts, plus the bare scene the
+## door encounter and boss room drop at runtime.
 
 var _T
 
 const HEART := "res://scenes/atomic_heart_pickup.tscn"
-const SCENERY := ["res://scenes/tree.tscn", "res://scenes/crate.tscn"]
+const TREE := "res://scenes/tree.tscn"
+const CRATE := "res://scenes/crate.tscn"
 const LEVELS := ["res://scenes/main.tscn", "res://scenes/boss_room.tscn"]
 
 
@@ -34,22 +36,30 @@ static func _collect(n: Node, path: String, out: Array) -> void:
 		_collect(c, path, out)
 
 
-func test_heart_draws_over_every_tree_and_crate() -> String:
+func test_heart_draws_under_every_tree_and_not_under_crates() -> String:
 	var checked := 0
 	for level_path in LEVELS:
 		var level: Node = (load(level_path) as PackedScene).instantiate()
 		var hearts: Array = []
 		_collect(level, HEART, hearts)
-		var props: Array = []
-		for s in SCENERY:
-			_collect(level, s, props)
+		var trees: Array = []
+		_collect(level, TREE, trees)
+		var crates: Array = []
+		_collect(level, CRATE, crates)
 		for h in hearts:
-			for p in props:
+			var hz := _effective_z(h)
+			for t in trees:
 				checked += 1
-				if _effective_z(h) <= _effective_z(p):
-					var msg := "%s: heart %s (z %d) is under %s (z %d)" % [
-						level_path, level.get_path_to(h), _effective_z(h),
-						level.get_path_to(p), _effective_z(p)]
+				if hz >= _effective_z(t):
+					var msg := "%s: heart %s (z %d) is not under tree %s (z %d)" % [
+						level_path, level.get_path_to(h), hz, level.get_path_to(t), _effective_z(t)]
+					level.free()
+					return _T.assert_true(false, msg)
+			for c in crates:
+				checked += 1
+				if hz < _effective_z(c):
+					var msg := "%s: heart %s (z %d) is under crate %s (z %d)" % [
+						level_path, level.get_path_to(h), hz, level.get_path_to(c), _effective_z(c)]
 					level.free()
 					return _T.assert_true(false, msg)
 		level.free()
@@ -57,11 +67,11 @@ func test_heart_draws_over_every_tree_and_crate() -> String:
 
 
 ## Door-encounter and boss-room hearts are instantiated bare under a z-0 parent.
-func test_dropped_heart_draws_over_trees() -> String:
+func test_dropped_heart_draws_under_trees() -> String:
 	var heart: Node = (load(HEART) as PackedScene).instantiate()
-	var tree: Node = (load(SCENERY[0]) as PackedScene).instantiate()
+	var tree: Node = (load(TREE) as PackedScene).instantiate()
 	var hz := _effective_z(heart)
 	var tz := _effective_z(tree)
 	heart.free()
 	tree.free()
-	return _T.assert_gt(hz, tz, "a dropped heart's z vs a tree's z")
+	return _T.assert_gt(tz, hz, "a tree's z vs a dropped heart's z")
