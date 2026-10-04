@@ -89,3 +89,18 @@ func test_records_requested_duration() -> String:
 	U.allow_headless_hit_pause = false
 	U.apply_hit_pause(_host, 0.12)
 	return _T.assert_float_eq(U.last_hit_pause_request, 0.12, 0.0001, "request recorded even when skipped")
+
+
+## Movie Maker (--write-movie) runs a fixed clock on which time_scale 0 turns the
+## unscaled delta to NaN: the release timer never fires and the recording freezes.
+## Players keep a true freeze; only recordings get a near-freeze.
+func test_players_get_a_true_freeze() -> String:
+	return _T.assert_eq(U.hit_pause_scale(false), 0.0, "live play freezes fully")
+
+
+func test_movie_maker_gets_a_near_freeze() -> String:
+	var s: float = U.hit_pause_scale(true)
+	var r: String = _T.assert_true(s > 0.0, "never 0 while recording")
+	if r != "":
+		return r
+	return _T.assert_true(s <= 0.02, "still reads as a freeze on video")

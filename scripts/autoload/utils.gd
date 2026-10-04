@@ -49,12 +49,19 @@ static func shake_node2d(node: Node2D, strength: float = 10.0, duration: float =
 ## - On release, time is only restored if it is still ours (still 0).
 ## - Off in headless runs (unit tests, the autoplay bot): a wall-clock freeze would
 ##   make --fixed-fps runs non-deterministic. Tests lift that via allow_headless_hit_pause.
+## - Movie Maker (--write-movie) gets a near-freeze: on its fixed clock time_scale 0
+##   makes the unscaled delta NaN, the release timer never fires and the recording hangs.
 const HIT_PAUSE_SCALE := 0.0
+const MOVIE_HIT_PAUSE_SCALE := 0.01
 static var allow_headless_hit_pause := false
 ## Last requested duration, recorded even when skipped (lets tests see the ask).
 static var last_hit_pause_request := 0.0
 static var _hit_pause_until_usec := 0
 static var _hit_pause_running := false
+
+
+static func hit_pause_scale(movie: bool = OS.has_feature("movie")) -> float:
+	return MOVIE_HIT_PAUSE_SCALE if movie else HIT_PAUSE_SCALE
 
 
 static func apply_hit_pause(node: Node, duration := 0.05) -> void:
@@ -71,14 +78,15 @@ static func apply_hit_pause(node: Node, duration := 0.05) -> void:
 		return
 	_hit_pause_running = true
 	_hit_pause_until_usec = until
-	Engine.time_scale = HIT_PAUSE_SCALE
+	var scale := hit_pause_scale()
+	Engine.time_scale = scale
 	var tree := node.get_tree()
 	var left := duration
 	while left > 0.0:
 		# process_always, ignore_time_scale: the timer must run while time is frozen.
 		await tree.create_timer(left, true, false, true).timeout
 		left = float(_hit_pause_until_usec - Time.get_ticks_usec()) / 1000000.0
-	if Engine.time_scale == HIT_PAUSE_SCALE:
+	if Engine.time_scale == scale:
 		Engine.time_scale = 1.0
 	_hit_pause_running = false
 
