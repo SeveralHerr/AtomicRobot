@@ -54,6 +54,26 @@ const OVERLAY_LAYER := 100
 @export var vignette_intensity := 0.4: set = _set_vignette_intensity
 @export_range(0.0, 1.0) var vignette_opacity := 0.4: set = _set_vignette_opacity
 
+## The look the tube "tunes in" to while a card the player must read is up (the end
+## card): a finer pixel grid and less fringe, scanline, grain and glare. `focus`
+## blends every key here from its exported value (0) to this (1); everything else
+## (warp, vignette, roll) keeps the cabinet look. Player report: the win / game over
+## card was hard to read with CRT on - at the 512x320 grid its 26 px rows were mush.
+const FOCUS := {
+	"resolution": Vector2(1280.0, 800.0),
+	"aberration": 0.0,
+	"scanlines_opacity": 0.0,
+	"grille_opacity": 0.0,
+	"noise_opacity": 0.03,
+	"static_noise_intensity": 0.01,
+	"brightness": 0.97,
+}
+const TUNE_SECONDS := 0.45
+
+## 0 = the exported look, 1 = FOCUS. Tween it with tune_in().
+var focus := 0.0: set = _set_focus
+
+var _tune: Tween
 var _layer: CanvasLayer
 var _rect: ColorRect
 var _material: ShaderMaterial
@@ -85,6 +105,38 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	_material.set_shader_parameter("unscaled_time", Time.get_ticks_msec() / 1000.0)
+
+
+## Ease the focus to 1 (`on`) or back to 0. Unscaled: the end card can open inside a
+## hit-pause.
+func tune_in(on: bool, seconds: float = TUNE_SECONDS) -> void:
+	if _tune:
+		_tune.kill()
+	_tune = create_tween().set_ignore_time_scale()
+	_tune.tween_property(self, "focus", 1.0 if on else 0.0, seconds) 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+## Snap straight back to the normal look (scene change, card freed).
+func reset_focus() -> void:
+	if _tune:
+		_tune.kill()
+	focus = 0.0
+
+
+func _set_focus(value: float) -> void:
+	focus = clampf(value, 0.0, 1.0)
+	for key in FOCUS:
+		_push(key)
+
+
+## Writes one uniform: the exported value, blended toward FOCUS by `focus`.
+func _push(param: String) -> void:
+	if not _material:
+		return
+	var value: Variant = get(param)
+	if FOCUS.has(param) and focus > 0.0:
+		value = lerp(value, FOCUS[param], focus)
+	_material.set_shader_parameter(param, value)
 
 
 func set_enabled(enabled: bool) -> void:
@@ -119,94 +171,94 @@ func _apply_all_parameters() -> void:
 
 func _set_resolution(value: Vector2) -> void:
 	resolution = value
-	if _material: _material.set_shader_parameter("resolution", value)
+	_push("resolution")
 
 
 func _set_pixelate(value: bool) -> void:
 	pixelate = value
-	if _material: _material.set_shader_parameter("pixelate", value)
+	_push("pixelate")
 
 
 func _set_scanlines_opacity(value: float) -> void:
 	scanlines_opacity = value
-	if _material: _material.set_shader_parameter("scanlines_opacity", value)
+	_push("scanlines_opacity")
 
 
 func _set_scanlines_width(value: float) -> void:
 	scanlines_width = value
-	if _material: _material.set_shader_parameter("scanlines_width", value)
+	_push("scanlines_width")
 
 
 func _set_grille_opacity(value: float) -> void:
 	grille_opacity = value
-	if _material: _material.set_shader_parameter("grille_opacity", value)
+	_push("grille_opacity")
 
 
 func _set_roll(value: bool) -> void:
 	roll = value
-	if _material: _material.set_shader_parameter("roll", value)
+	_push("roll")
 
 
 func _set_roll_speed(value: float) -> void:
 	roll_speed = value
-	if _material: _material.set_shader_parameter("roll_speed", value)
+	_push("roll_speed")
 
 
 func _set_roll_size(value: float) -> void:
 	roll_size = value
-	if _material: _material.set_shader_parameter("roll_size", value)
+	_push("roll_size")
 
 
 func _set_roll_variation(value: float) -> void:
 	roll_variation = value
-	if _material: _material.set_shader_parameter("roll_variation", value)
+	_push("roll_variation")
 
 
 func _set_distort_intensity(value: float) -> void:
 	distort_intensity = value
-	if _material: _material.set_shader_parameter("distort_intensity", value)
+	_push("distort_intensity")
 
 
 func _set_noise_opacity(value: float) -> void:
 	noise_opacity = value
-	if _material: _material.set_shader_parameter("noise_opacity", value)
+	_push("noise_opacity")
 
 
 func _set_noise_speed(value: float) -> void:
 	noise_speed = value
-	if _material: _material.set_shader_parameter("noise_speed", value)
+	_push("noise_speed")
 
 
 func _set_static_noise_intensity(value: float) -> void:
 	static_noise_intensity = value
-	if _material: _material.set_shader_parameter("static_noise_intensity", value)
+	_push("static_noise_intensity")
 
 
 func _set_aberration(value: float) -> void:
 	aberration = value
-	if _material: _material.set_shader_parameter("aberration", value)
+	_push("aberration")
 
 
 func _set_brightness(value: float) -> void:
 	brightness = value
-	if _material: _material.set_shader_parameter("brightness", value)
+	_push("brightness")
 
 
 func _set_discolor(value: bool) -> void:
 	discolor = value
-	if _material: _material.set_shader_parameter("discolor", value)
+	_push("discolor")
 
 
 func _set_warp_amount(value: float) -> void:
 	warp_amount = value
-	if _material: _material.set_shader_parameter("warp_amount", value)
+	_push("warp_amount")
 
 
 func _set_vignette_intensity(value: float) -> void:
 	vignette_intensity = value
-	if _material: _material.set_shader_parameter("vignette_intensity", value)
+	_push("vignette_intensity")
 
 
 func _set_vignette_opacity(value: float) -> void:
 	vignette_opacity = value
-	if _material: _material.set_shader_parameter("vignette_opacity", value)
+	_push("vignette_opacity")
