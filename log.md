@@ -618,3 +618,7 @@ Log of skills that might have been useful for a given response, and why (short f
 ## 2026-10-04 — Picade export preset + unreferenced-asset excludes
 - `tools/export_exclude_audit.py` derives unreferenced assets (159) and gates Web/Picade `exclude_filter` both ways; wired into CI. Found live bug: Web excluded `boss.wav` + thunder wav that scripts preload -> AudioManager autoload + morse_sign failed to load in the web build. Fixed (boss.wav now QOA, 29.6 -> 4.0 MB). Web pck 65.5 -> 43.6 MB; new "Picade" preset = same pck size, ETC2 instead of S3TC.
 - Used: none from list directly; derive-the-list idea applied (enhancement: mention export filters as a "list" that drifts when code starts using a file). Would have helped: a godot-export-size skill (pck listing + boot-from-pck proof recipe). MCP: none.
+## 2026-10-04 — right-size big icons/pause bg for Picade (perf-icons)
+- 5 new images (Logo*_256, background_small_1280); repointed pickup, heart, HP orb stages (hp_1 + health_container), SecretFx, pause bg. Tex mem title 147.3->135.3, main 145.8->133.7 MB. `test_texture_budget.gd`. Gate 1049/19/12.
+- Used: godot-autoplay-test (enhancement: note `tap pause` + snap works while paused). derive-the-list would have helped: lead's "3 uses" missed health_container's preloaded stages, SecretFx and the heart (grep every path AND uid before repointing).
+- Missing skill: godot-texture-budget (find art far bigger than drawn: tex px vs scale x camera zoom x burst). MCP: none.

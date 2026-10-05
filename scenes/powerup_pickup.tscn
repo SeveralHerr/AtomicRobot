@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/powerup_pickup.gd" id="1_pupck"]
-[ext_resource type="Texture2D" uid="uid://degiutq3ukb4w" path="res://images/Logo_small.png" id="2_pupck"]
+[ext_resource type="Texture2D" uid="uid://dcwb1nt388dgk" path="res://images/Logo_small_256.png" id="2_pupck"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pupck"]
 radius = 22.0
@@ -10,7 +10,7 @@ radius = 22.0
 script = ExtResource("1_pupck")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.013, 0.013)
+scale = Vector2(0.08125, 0.08125)
 texture = ExtResource("2_pupck")
 
 [node name="Area2D" type="Area2D" parent="."]
