@@ -3,12 +3,13 @@ class_name StreetCutscenes
 
 ## Fires the street's micro cut scenes (CutsceneShots): the opening as the level
 ## fades in, then each landmark once the player walks up to it with the street quiet.
-## Each plays once per session — a restart after a death doesn't replay them.
+## Each plays once per load of the level: a new run or a RESTART after a death plays
+## them all again (player report: later runs "skipped" the story).
 
 ## Off until the real front end (controls splash) starts a run, so tests, sandbox
 ## scenes and autoplay scenarios that load main.tscn directly play as before.
 static var enabled := false
-## Scene ids already played this session.
+## Scene ids already played since the level loaded.
 static var seen := {}
 
 var _current: MicroCutscene
@@ -17,7 +18,8 @@ var _quiet := 0.0
 
 
 func _ready() -> void:
-	if enabled and not seen.has("opening"):
+	seen.clear()
+	if enabled:
 		_play.call_deferred("opening", true)
 
 

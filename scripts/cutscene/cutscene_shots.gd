@@ -19,9 +19,13 @@ const VIEW := Vector2(1280, 800)
 const CLEAR_RADIUS := 700.0
 ## The title must stay up at least this long before the glide back takes it away.
 const READ_S := 1.3
-## Past trigger_x by more than this, the moment has gone (a fight carried the player
-## on through): skip the scene rather than yank the camera back.
+## Past trigger_x by more than this, the moment has gone (the player got there some
+## other way than walking): skip the scene rather than yank the camera back.
 const TRIGGER_WINDOW := 900.0
+## Past trigger_x by this much, a scene still waiting on a busy street plays anyway: a
+## fight that carried the player on used to lose it ("skipped for no reason"). The cut
+## scene freezes the fight. Short enough to land before the boss door (x ~8629).
+const FORCE_AFTER := 300.0
 
 const SCENES := {
 	# The story the old text screen told, told over the street instead: open close
@@ -143,8 +147,8 @@ static func quiet_needed() -> float:
 
 
 ## Street trigger: the player has walked up to `trigger_x` (not long past it) and
-## the street has been quiet for `quiet_for` seconds.
+## the street has been quiet for `quiet_for` seconds, or is FORCE_AFTER past the mark.
 static func should_trigger(player_x: float, trigger_x: float, quiet_for: float) -> bool:
 	if player_x < trigger_x or player_x > trigger_x + TRIGGER_WINDOW:
 		return false
-	return quiet_for >= quiet_needed()
+	return quiet_for >= quiet_needed() or player_x >= trigger_x + FORCE_AFTER

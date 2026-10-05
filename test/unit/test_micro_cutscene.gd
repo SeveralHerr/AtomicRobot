@@ -73,6 +73,18 @@ func teardown() -> void:
 	HudFade.release(_tree(), HudFade.CINEMATIC)
 
 
+## Player report: story scenes "skipped for no reason" — every run after the first in
+## a session started with them all marked seen. Each load of the level (a new run or a
+## RESTART after a death) plays them again.
+func test_every_level_load_replays_the_story() -> String:
+	StreetCutscenes.enabled = false
+	StreetCutscenes.seen = {"opening": true, "arch": true, "council": true}
+	_level = (load(MAIN) as PackedScene).instantiate()
+	_tree().root.add_child(_level)
+	await _frames(2)
+	return _T.assert_true(StreetCutscenes.seen.is_empty(), "seen cleared on load: %s" % [StreetCutscenes.seen])
+
+
 func test_directly_loaded_level_plays_no_cutscene() -> String:
 	var p := await _load(false)
 	var r: String = _T.assert_false(MicroCutscene.playing, "tests and autoplay load main.tscn straight")
@@ -289,7 +301,8 @@ func test_opening_runs_to_the_end_on_its_own() -> String:
 	return r
 
 
-func test_opening_plays_once_per_session() -> String:
+## The user's call (2026-10-04): a RESTART after a death replays the story too.
+func test_opening_replays_on_restart() -> String:
 	await _load(true)
 	var r: String = _T.assert_true(StreetCutscenes.seen.has("opening"), "marked seen")
 	if r != "":
@@ -300,7 +313,7 @@ func test_opening_plays_once_per_session() -> String:
 	_level = (load(MAIN) as PackedScene).instantiate()
 	_tree().root.add_child(_level)
 	await _frames(3)
-	return _T.assert_false(MicroCutscene.playing, "a restart doesn't replay it")
+	return _T.assert_true(MicroCutscene.playing, "a restart replays it")
 
 
 func test_leaving_mid_scene_clears_the_flag_and_buff_hold() -> String:

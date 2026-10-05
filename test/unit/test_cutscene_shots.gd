@@ -142,3 +142,71 @@ func test_trigger_gives_up_once_long_past() -> String:
 	if r != "":
 		return r
 	return _T.assert_true(CutsceneShots.should_trigger(past - 2.0, 1000.0, _q()), "still inside the window")
+
+
+## Player report: story scenes "skipped for no reason". A fight that carried the player
+## past the mark used to drop the scene for good; now it waits for quiet, then plays
+## anyway (the cut scene freezes the fight) before the player can walk out of reach.
+func test_trigger_forces_a_scene_still_waiting_on_a_busy_street() -> String:
+	var at := 1000.0 + CutsceneShots.FORCE_AFTER
+	var r: String = _T.assert_true(CutsceneShots.should_trigger(at, 1000.0, 0.0), "busy street, at the force point")
+	if r != "":
+		return r
+	return _T.assert_false(CutsceneShots.should_trigger(at - 1.0, 1000.0, 0.0), "busy street, still before it: keep waiting")
+
+
+func test_force_point_sits_inside_the_trigger_window() -> String:
+	return _T.assert_gt(CutsceneShots.TRIGGER_WINDOW, CutsceneShots.FORCE_AFTER, "forced before the window gives up")
+
+
+## Derived from the level: every street scene is forced before the next one's mark and
+## before the boss door, or walking on still loses it.
+func test_every_street_scene_is_forced_before_the_player_can_leave() -> String:
+	var main: Node = (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	var door_left := INF
+	for n in main.find_children("*", "", true, false):
+		var s: Script = n.get_script()
+		if s != null and s.resource_path.ends_with("final_boss_enter.gd"):
+			for c in n.find_children("*", "CollisionShape2D", true, false):
+				var cs := c as CollisionShape2D
+				var rect := cs.shape.get_rect()
+				var left := _global_x(cs) + rect.position.x * absf(_global_scale_x(cs))
+				door_left = minf(door_left, left)
+	main.free()
+	var r: String = _T.assert_true(door_left < INF, "found the boss door in main.tscn")
+	if r != "":
+		return r
+	var ids: Array = CutsceneShots.STREET
+	for i in ids.size():
+		var force_x: float = CutsceneShots.scene(ids[i])["trigger_x"] + CutsceneShots.FORCE_AFTER
+		r = _T.assert_gt(door_left - 100.0, force_x, "%s forced before the boss door" % ids[i])
+		if r != "":
+			return r
+		if i + 1 < ids.size():
+			r = _T.assert_gt(CutsceneShots.scene(ids[i + 1])["trigger_x"], force_x, "%s forced before the next mark" % ids[i])
+			if r != "":
+				return r
+	return ""
+
+
+## Position/scale through the parent chain of a node that is not in the tree.
+func _global_x(n: Node) -> float:
+	var node: Node = n
+	var xform := Transform2D.IDENTITY
+	while node != null:
+		if node is Node2D:
+			xform = (node as Node2D).transform * xform
+		elif node is CanvasLayer:
+			break
+		node = node.get_parent()
+	return xform.origin.x
+
+
+func _global_scale_x(n: Node) -> float:
+	var s := 1.0
+	var node: Node = n
+	while node != null:
+		if node is Node2D:
+			s *= (node as Node2D).scale.x
+		node = node.get_parent()
+	return s
