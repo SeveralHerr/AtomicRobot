@@ -634,3 +634,9 @@ Log of skills that might have been useful for a given response, and why (short f
 - Leak: machines free states on PREDELETE; Player parents its StateMachine. Full mortal run orphans: Main end 181 -> 28, BossRoom end 202 -> 25 (flat). `test_state_orphans.gd` failed before (60 vs 12 etc.).
 - Prints: 12 bare `print(` -> `Utils.debug_log` (`-- --verbose-logs`, debug builds only); `test_debug_log.gd` lints scripts/.
 - Used: none from list. Would have helped: extract-a-testable-seam (debug_log returns its line so the gate is testable), a "godot-orphan-check" skill (print_orphan_nodes + Performance monitor recipe). MCP: godot-tests covers the gate.
+
+## 2026-10-04 — native Picade build, skipped cut scenes, looping crumble
+- Native: "Picade Native" preset (Linux arm64) + `tools/picade/deploy_native.sh`; Ports > "Atomic Robot (Native)". Template pulled from the official 4.7.1 tpz by HTTP range (63 MB, not 1.2 GB).
+- Cut scenes: `StreetCutscenes.seen` never reset per run; Arch/Council lost on busy streets (4/9 won bot runs). Each level load replays (user's call); waiting scenes force at FORCE_AFTER. 9/9 after.
+- Audio: door-mouth crumble/rustle reused looping footstep files through `SecretFx.play_once` (frees on `finished`, never sent by a loop): 46 stuck players by wave 3. One-shot copies now.
+- Used: pi-game-deploy (enhancement: native-build launcher template), derive-the-list idea for the looping-sound test. `tools/mutate.py`: patterns must avoid `\n` (CRLF files report MISSING).
