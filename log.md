@@ -614,3 +614,8 @@ Log of skills that might have been useful for a given response, and why (short f
 ## 2026-10-04 — car tyres under player's feet; hearts behind trees
 - Car: `Car.WHEEL_DROP` 28, `road_y` lands tyres on lane floor (was 8.2px below soles). Hearts z 2 -> 0 (reverses earlier "heart over tree" fix at user's request). Gate green (1042/19/12/audit). Proof artifact https://claude.ai/artifact/VDCD5cpKL3LaPUc2wmQYvS
 - Used: godot-draw-order (enhancement: add "height vs z" step — added), godot-headful-screenshot (enhancement: car-lane matrix recipe), godot-ab-worktree. Would help: none new. MCP: none.
+
+## 2026-10-04 — right-size big icons/pause bg for Picade (perf-icons)
+- 5 new images (Logo*_256, background_small_1280); repointed pickup, heart, HP orb stages (hp_1 + health_container), SecretFx, pause bg. Tex mem title 147.3->135.3, main 145.8->133.7 MB. `test_texture_budget.gd`. Gate 1049/19/12.
+- Used: godot-autoplay-test (enhancement: note `tap pause` + snap works while paused). derive-the-list would have helped: lead's "3 uses" missed health_container's preloaded stages, SecretFx and the heart (grep every path AND uid before repointing).
+- Missing skill: godot-texture-budget (find art far bigger than drawn: tex px vs scale x camera zoom x burst). MCP: none.
