@@ -1,7 +1,7 @@
 """Keep unreferenced art/audio out of the web pck, and never exclude a used one.
 
 The browser holds the whole index.pck in RAM (the Pi cabinet has ~400 MB for the tab),
-so assets nothing loads are dropped through the Web/Picade presets' exclude_filter.
+so assets nothing loads are dropped through the Web/Picade/Picade Native presets' exclude_filter.
 The list is DERIVED here, not hand-kept, and checked in both directions:
 
   * every unreferenced asset is matched by an exclude pattern (nothing wasted ships);
@@ -24,7 +24,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PRESETS = os.path.join(ROOT, "export_presets.cfg")
-AUDITED_PRESETS = ("Web", "Picade")
+AUDITED_PRESETS = ("Web", "Picade", "Picade Native")
 # Hand-kept, non-asset excludes: the autoplay bot and the test tree.
 KEEP_PATTERNS = ("tools/autoplay/*", "test/*")
 ASSET_EXT = (".png", ".jpg", ".jpeg", ".webp", ".svg", ".wav", ".ogg", ".mp3", ".ttf", ".otf")
@@ -109,7 +109,7 @@ def audit(files: list[str], used: list[str], unused: list[str],
     errors = [f"preset {p!r} missing from export_presets.cfg"
               for p in AUDITED_PRESETS if p not in filters]
     if len({tuple(v) for v in filters.values()}) > 1:
-        errors.append("Web and Picade exclude_filter differ")
+        errors.append("audited presets' exclude_filter differ: " + ", ".join(filters))
     for preset, pats in filters.items():
         for keep in KEEP_PATTERNS:
             if keep not in pats:

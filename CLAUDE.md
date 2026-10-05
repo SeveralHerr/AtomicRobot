@@ -44,6 +44,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Picade cabinet (ETC2 textures): `godot --export-release "Picade" bin/picade/index.html`. Web/Picade
   `exclude_filter` drops unreferenced assets; `python tools/export_exclude_audit.py` must stay clean
   (`--write` re-derives the list after adding/removing assets).
+- Picade native (Linux arm64, no Chromium): `bash tools/picade/deploy_native.sh pie@<pi-ip>` exports
+  "Picade Native" and installs it as Ports > "Atomic Robot (Native)". Needs the 4.7.1 `linux_release.arm64` template.
 
 
 ## Deep-dive docs (read these before non-trivial changes)
