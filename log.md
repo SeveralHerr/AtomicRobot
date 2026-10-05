@@ -614,3 +614,7 @@ Log of skills that might have been useful for a given response, and why (short f
 ## 2026-10-04 — car tyres under player's feet; hearts behind trees
 - Car: `Car.WHEEL_DROP` 28, `road_y` lands tyres on lane floor (was 8.2px below soles). Hearts z 2 -> 0 (reverses earlier "heart over tree" fix at user's request). Gate green (1042/19/12/audit). Proof artifact https://claude.ai/artifact/VDCD5cpKL3LaPUc2wmQYvS
 - Used: godot-draw-order (enhancement: add "height vs z" step — added), godot-headful-screenshot (enhancement: car-lane matrix recipe), godot-ab-worktree. Would help: none new. MCP: none.
+
+## 2026-10-04 — Picade export preset + unreferenced-asset excludes
+- `tools/export_exclude_audit.py` derives unreferenced assets (159) and gates Web/Picade `exclude_filter` both ways; wired into CI. Found live bug: Web excluded `boss.wav` + thunder wav that scripts preload -> AudioManager autoload + morse_sign failed to load in the web build. Fixed (boss.wav now QOA, 29.6 -> 4.0 MB). Web pck 65.5 -> 43.6 MB; new "Picade" preset = same pck size, ETC2 instead of S3TC.
+- Used: none from list directly; derive-the-list idea applied (enhancement: mention export filters as a "list" that drifts when code starts using a file). Would have helped: a godot-export-size skill (pck listing + boot-from-pck proof recipe). MCP: none.

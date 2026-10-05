@@ -41,6 +41,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Web: `godot --export-release "Web" bin/index.html`
 - Windows: `godot --export-release "Windows Desktop" path/to/output.exe`
+- Picade cabinet (ETC2 textures): `godot --export-release "Picade" bin/picade/index.html`. Web/Picade
+  `exclude_filter` drops unreferenced assets; `python tools/export_exclude_audit.py` must stay clean
+  (`--write` re-derives the list after adding/removing assets).
 
 
 ## Deep-dive docs (read these before non-trivial changes)
