@@ -7,9 +7,9 @@ const HEART_SCENE = preload("res://scenes/hp_1.tscn")
 ## Damage stages for a single orb, indexed by (hits left - 1): the atom sheds an
 ## orbit per hit. Player.HITS_PER_ORB must stay equal to this array's size.
 const ORB_TEXTURES: Array[Texture2D] = [
-	preload("res://images/Logo+Web-3.png"),  # 1 hit left
-	preload("res://images/Logo+Web-2.png"),  # 2 hits left
-	preload("res://images/Logo+Web.png"),    # 3 hits left (untouched)
+	preload("res://images/Logo+Web-3_256.png"),  # 1 hit left
+	preload("res://images/Logo+Web-2_256.png"),  # 2 hits left
+	preload("res://images/Logo+Web_256.png"),  # 3 hits left (untouched)
 ]
 ## Rest pose of an orb. Effects always tween back to these rather than to whatever the
 ## node happened to read as mid-animation, so a hit landing during another hit (or a
@@ -35,7 +35,7 @@ func _ready() -> void:
 ## a hit usually re-textures the rightmost orb rather than removing one.
 func _update_health(current_health: int) -> void:
 	var orbs := Player.orbs_for(current_health)
-	print("Health updated to: ", current_health, " (", orbs, " orbs)")
+	Utils.debug_log("Health updated to: ", current_health, " (", orbs, " orbs)")
 
 	# Check if health increased (heart pickup) and we're past initialization
 	var health_gained = current_health > previous_health and is_initialized
@@ -84,7 +84,7 @@ func _create_heart_instance() -> void:
 	add_child(heart_instance)
 	heart_instances.append(heart_instance)
 	max_hearts = heart_instances.size()
-	print("Created heart instance. Total hearts: ", max_hearts)
+	Utils.debug_log("Created heart instance. Total hearts: ", max_hearts)
 
 func _play_heart_pickup_effect(heart_node: Node) -> void:
 	# Create a pickup effect tween

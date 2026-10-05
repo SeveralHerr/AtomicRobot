@@ -36,6 +36,9 @@ jobs:
     - name: Run gameplay sandbox selftests
       run: python3 tools/run_sandbox_selftests.py
 
+    - name: Audit export excludes
+      run: python3 tools/export_exclude_audit.py
+
     - name: Export project
       run: godot --headless --export-release "Web" "bin/index.html"
 

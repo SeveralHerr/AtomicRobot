@@ -113,7 +113,7 @@ enemy's origin — origins sit different distances above their soles (a maid's 2
 player's 19.75px), so an origin-relative drop would float at a visibly different
 height per enemy type. They live 12s and blink (accelerating) for the last 3.
 
-The sprite is deliberately small (`scale 0.013` on `Logo_small.png`) so a drop reads
+The sprite is deliberately small (`scale 0.08125` on the 256 px `Logo_small_256.png`, ~21 world px) so a drop reads
 as an item lying in the street rather than a billboard. The pickup radius (22px) stays
 noticeably larger than the art so collection still feels forgiving.
 

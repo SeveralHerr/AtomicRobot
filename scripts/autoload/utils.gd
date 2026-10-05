@@ -5,6 +5,21 @@ const HIT_FX = preload("res://scenes/hit_fx.tscn")
 const BRIEFCASE_BULLET = preload("res://scenes/briefcase_bullet2.tscn")
 const POWERUP_PICKUP = preload("res://scenes/powerup_pickup.tscn")
 
+## Debug console lines (state changes, deaths, heals). Off by default: on a slow
+## stdout (a pipe, browser devtools, a recording) each print() stalls a frame
+## 20-35 ms. Turn on in a debug build with the user arg `-- --verbose-logs`.
+static var verbose_logs: bool = OS.is_debug_build() and OS.get_cmdline_user_args().has("--verbose-logs")
+
+
+## The only sanctioned print() under scripts/ (test_debug_log.gd enforces it).
+## Returns the line it printed ("" when silent) so the gate is testable.
+static func debug_log(...parts: Array) -> String:
+	if not verbose_logs:
+		return ""
+	var line := "".join(parts.map(func(p: Variant) -> String: return str(p)))
+	print(line)
+	return line
+
 
 ## Drop a power-up pickup where `enemy` fell. Returns the pickup, or null if the id
 ## is unknown or the enemy is already out of the tree.

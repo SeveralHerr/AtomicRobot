@@ -60,7 +60,7 @@ func _on_body_exited(body: Node2D):
 	pass
 
 func _end_event():
-	print("Event complete...")
+	Utils.debug_log("Event complete...")
 	Globals.pop_event()
 	queue_free()
 

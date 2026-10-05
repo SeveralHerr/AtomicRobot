@@ -19,14 +19,14 @@ const FLIGHT_POP := 1.2
 const TRAIL_GOLD := Color(1.0, 0.78, 0.17, 0.8)
 const TRAIL_WIDTH := 20.0
 const TRAIL_POINTS := 28
-const ORB_TEXTURE := preload("res://images/Logo+Web.png")
+const ORB_TEXTURE := preload("res://images/Logo+Web_256.png")
 ## Hole interior: dark plaster at the rim, a warm glow in the middle where the orb sits.
 const INTERIOR_SHADER := preload("res://scripts/crack_interior.gdshader")
 
 static var _small_orb: Texture2D = null
 
 
-## The orb logo shrunk once on the CPU: the 1463 px source has no mipmaps, so
+## The orb logo shrunk once on the CPU: the 256 px source has no mipmaps, so
 ## drawing it at 14 px straight from the GPU shimmers.
 static func small_orb() -> Texture2D:
 	if _small_orb == null:
