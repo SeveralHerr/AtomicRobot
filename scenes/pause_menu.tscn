@@ -1,6 +1,6 @@
 [gd_scene load_steps=18 format=3]
 
-[ext_resource type="Texture2D" uid="uid://celoqs2lympxv" path="res://images/background_small.png" id="1_bg"]
+[ext_resource type="Texture2D" uid="uid://dgwcbu11ckax5" path="res://images/background_small_1280.png" id="1_bg"]
 [ext_resource type="FontVariation" uid="uid://c0y2iyybvk45p" path="res://styles/white_font.tres" id="3_whitefont"]
 [ext_resource type="FontVariation" uid="uid://c51twhsqhlgup" path="res://styles/font_variation.tres" id="4_fontvar"]
 [ext_resource type="Texture2D" uid="uid://bh61iiq15jejg" path="res://images/check_square_grey_checkmark.png" id="5_checkmark"]

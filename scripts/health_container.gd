@@ -7,9 +7,9 @@ const HEART_SCENE = preload("res://scenes/hp_1.tscn")
 ## Damage stages for a single orb, indexed by (hits left - 1): the atom sheds an
 ## orbit per hit. Player.HITS_PER_ORB must stay equal to this array's size.
 const ORB_TEXTURES: Array[Texture2D] = [
-	preload("res://images/Logo+Web-3.png"),  # 1 hit left
-	preload("res://images/Logo+Web-2.png"),  # 2 hits left
-	preload("res://images/Logo+Web.png"),    # 3 hits left (untouched)
+	preload("res://images/Logo+Web-3_256.png"),  # 1 hit left
+	preload("res://images/Logo+Web-2_256.png"),  # 2 hits left
+	preload("res://images/Logo+Web_256.png"),  # 3 hits left (untouched)
 ]
 ## Rest pose of an orb. Effects always tween back to these rather than to whatever the
 ## node happened to read as mid-animation, so a hit landing during another hit (or a
