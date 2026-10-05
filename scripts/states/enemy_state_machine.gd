@@ -12,6 +12,16 @@ func _init(e: Enemy) -> void:
 func add_state(name: String, state: EnemyState) -> void:
 	states[name] = state
 
+
+## States live only in `states`, never in the tree, so the tree's own cleanup
+## never reaches them: free them with the machine or each enemy leaks its states.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		for s in states.values():
+			if is_instance_valid(s):
+				s.free()
+		states.clear()
+
 func change_state(name: String) -> void:
 	if current_state is DeadEnemyState:
 		return

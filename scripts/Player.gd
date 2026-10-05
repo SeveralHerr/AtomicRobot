@@ -179,6 +179,8 @@ func _init() -> void:
 
 func _ready() -> void:
 	state_machine = StateMachine.new(self)
+	# In the tree so it (and the states it frees) goes when the Player does.
+	add_child(state_machine)
 	state_machine.add_state("IdleState", IdleState.new())
 	state_machine.add_state("JumpState", JumpState.new())
 	state_machine.add_state("AttackState", AttackState.new())
