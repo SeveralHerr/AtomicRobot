@@ -124,7 +124,7 @@ func _ready() -> void:
 	line_of_sight.max_range = maxf(line_of_sight.max_range, detection_range)
 	_resolve_player()
 	if player and player.is_dead:
-		print("Dead player detected")
+		Utils.debug_log("Dead player detected")
 		queue_free()
 
 	Globals.player_death.connect(func():
@@ -135,7 +135,7 @@ func _ready() -> void:
 	
 func _process(delta: float) -> void:
 	if is_too_far() and not persist:
-		print("enemy too far, purgiing....")
+		Utils.debug_log("Enemy too far, purging: ", name)
 		queue_free()
 
 func _physics_process(delta: float) -> void:
@@ -301,7 +301,7 @@ func die() -> void:
 	animated_sprite_2d.play("death")
 	if PartyFx.pops(self):
 		PartyFx.maid_pop(self)
-	print("dead af")
+	Utils.debug_log("Enemy died: ", name)
 
 	# Deferred: die() can run inside a physics callback (a car's body_entered kills
 	# via receive_hit), where Area2D refuses a direct monitorable change.

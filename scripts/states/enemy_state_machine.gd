@@ -40,7 +40,7 @@ func change_state(name: String) -> void:
 	if states[name] == current_state:
 		return
 
-	print("Enemy state", name)
+	Utils.debug_log("Enemy state ", name)
 	if current_state:
 		current_state.exit_state()
 
