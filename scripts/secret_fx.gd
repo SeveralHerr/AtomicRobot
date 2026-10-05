@@ -173,9 +173,35 @@ static func fly_orb(owner: Node2D, world_pos: Vector2, on_arrive: Callable) -> C
 
 
 ## Plays `stream` once (at `pitch`) on a throwaway player under `owner`.
+## Non-looping copies of looping streams, one per source stream.
+static var _one_shots := {}
+
+
+## `stream` as a sound that plays once, whatever its import says. The footstep files
+## loop for the player's run cycle, and a looping stream never emits `finished`, so a
+## play_once of one played (and stacked) until the level unloaded: the door mouths'
+## crumble and rustle (player report: "constant breaking sound").
+static func one_shot(stream: AudioStream) -> AudioStream:
+	var loops := false
+	if stream is AudioStreamWAV:
+		loops = (stream as AudioStreamWAV).loop_mode != AudioStreamWAV.LOOP_DISABLED
+	elif "loop" in stream:
+		loops = bool(stream.get("loop"))
+	if not loops:
+		return stream
+	if not _one_shots.has(stream):
+		var copy := stream.duplicate() as AudioStream
+		if copy is AudioStreamWAV:
+			(copy as AudioStreamWAV).loop_mode = AudioStreamWAV.LOOP_DISABLED
+		else:
+			copy.set("loop", false)
+		_one_shots[stream] = copy
+	return _one_shots[stream]
+
+
 static func play_once(owner: Node, stream: AudioStream, volume_db: float = 0.0, pitch: float = 1.0) -> void:
 	var a := AudioStreamPlayer.new()
-	a.stream = stream
+	a.stream = one_shot(stream)
 	a.volume_db = volume_db
 	a.pitch_scale = pitch
 	owner.add_child(a)
