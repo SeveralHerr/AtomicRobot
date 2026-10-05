@@ -94,3 +94,8 @@ the brain never presses it; cracks need ~0.6 s between `tap Attack` (taps mid-sw
 - `god on` tests the ROUTE (soft locks, progression); a run without it tests difficulty.
 - `run_tests.gd --filter` matches test METHOD names, not files (`--filter autoplay` = 0 tests).
 - A `--script` SceneTree driver can't reference autoloads/class_names; this autoload can.
+- Proof/marketing footage: start the scenario with `crt on`. CRT state comes from the PC's saved
+  `user://settings.cfg` (this dev PC has it off), so a plain run records the raw image, not what
+  players see. Build GIFs with a palette PER FRAME (+ dither): one shared palette shifted colours
+  on character select and the white boss room. An exported pck runs the bot too:
+  `godot --main-pack x.pck -- --autoplay <ABSOLUTE path>.json` (export with tools/autoplay kept).

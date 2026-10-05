@@ -226,6 +226,9 @@ the feature is silently absent (autoplay now reports SCRIPT-ERROR).
 When the user asks for presentation/juice, sweep balance AFTER the presentation pass:
 banner timing changed fight length enough to flip a seeded balance scenario.
 
+Perf/"lag" work: `tools/perf_probe.gd` (`skills/godot-perf-probe`). Send stdout to a FILE, never a
+pipe — print() blocking on a pipe faked "every hit lags"; `snap_every` faked a 10 s stutter.
+
 Hitstop freezes game time, so autoplay snaps never show it: capture on the wall clock and
 tag frames with Engine.time_scale (`skills/godot-hit-feel/SKILL.md`). Parallel agents share
 the session scratchpad — work in `scratchpad/<task>/`, never reuse names like `shot.gd`.
