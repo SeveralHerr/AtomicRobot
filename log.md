@@ -622,3 +622,7 @@ Log of skills that might have been useful for a given response, and why (short f
 - 5 new images (Logo*_256, background_small_1280); repointed pickup, heart, HP orb stages (hp_1 + health_container), SecretFx, pause bg. Tex mem title 147.3->135.3, main 145.8->133.7 MB. `test_texture_budget.gd`. Gate 1049/19/12.
 - Used: godot-autoplay-test (enhancement: note `tap pause` + snap works while paused). derive-the-list would have helped: lead's "3 uses" missed health_container's preloaded stages, SecretFx and the heart (grep every path AND uid before repointing).
 - Missing skill: godot-texture-budget (find art far bigger than drawn: tex px vs scale x camera zoom x burst). MCP: none.
+## 2026-10-04 — perf hygiene: state-node orphan leak + gated debug prints
+- Leak: machines free states on PREDELETE; Player parents its StateMachine. Full mortal run orphans: Main end 181 -> 28, BossRoom end 202 -> 25 (flat). `test_state_orphans.gd` failed before (60 vs 12 etc.).
+- Prints: 12 bare `print(` -> `Utils.debug_log` (`-- --verbose-logs`, debug builds only); `test_debug_log.gd` lints scripts/.
+- Used: none from list. Would have helped: extract-a-testable-seam (debug_log returns its line so the gate is testable), a "godot-orphan-check" skill (print_orphan_nodes + Performance monitor recipe). MCP: godot-tests covers the gate.

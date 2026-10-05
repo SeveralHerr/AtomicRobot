@@ -117,7 +117,7 @@ Global signals for major game events:
 
 ### State Transitions
 
-When working with player/enemy behavior, states are managed through the StateMachine class. State changes are logged to console for debugging.
+When working with player/enemy behavior, states are managed through the StateMachine class. Debug console lines (enemy state changes, deaths, heals) go through `Utils.debug_log` and are OFF by default; turn them on in a debug build/editor run with the user arg `-- --verbose-logs` (e.g. `godot --path . -- --verbose-logs`). Never add a bare `print(` under `scripts/` (`test_debug_log.gd` fails): each one stalls frames on a slow stdout.
 
 ### Node Destruction Persistence
 

@@ -44,7 +44,7 @@ func _ready() -> void:
 
 		Globals.gust.connect(_on_gust)
 	else:
-		print("LeafManager: Could not find player!")
+		Utils.debug_log("LeafManager: Could not find player!")
 
 func get_random_debris_type() -> Dictionary:
 	# Calculate total weight

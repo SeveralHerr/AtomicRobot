@@ -35,7 +35,7 @@ func _ready() -> void:
 ## a hit usually re-textures the rightmost orb rather than removing one.
 func _update_health(current_health: int) -> void:
 	var orbs := Player.orbs_for(current_health)
-	print("Health updated to: ", current_health, " (", orbs, " orbs)")
+	Utils.debug_log("Health updated to: ", current_health, " (", orbs, " orbs)")
 
 	# Check if health increased (heart pickup) and we're past initialization
 	var health_gained = current_health > previous_health and is_initialized
@@ -84,7 +84,7 @@ func _create_heart_instance() -> void:
 	add_child(heart_instance)
 	heart_instances.append(heart_instance)
 	max_hearts = heart_instances.size()
-	print("Created heart instance. Total hearts: ", max_hearts)
+	Utils.debug_log("Created heart instance. Total hearts: ", max_hearts)
 
 func _play_heart_pickup_effect(heart_node: Node) -> void:
 	# Create a pickup effect tween

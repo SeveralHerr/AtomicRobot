@@ -104,7 +104,7 @@ func take_damage(amount: int) -> void:
 	if god_mode:
 		return
 	health -= amount
-	print(health)
+	Utils.debug_log("Player health: ", health)
 
 	# Getting hit is what breaks a combo — this is the one funnel every damage
 	# source already goes through, so nothing can damage the player without the
@@ -161,7 +161,7 @@ static func orb_hits_left(index: int, hp: int) -> int:
 ## `amount` is in ORBS, not raw hits — an atomic heart restores a whole orb.
 func add_heart(amount: int) -> void:
 	health = mini(health + amount * HITS_PER_ORB, max_health())
-	print("Healed! Current health: ", health, " (", orbs_for(health), " orbs)")
+	Utils.debug_log("Healed! Current health: ", health, " (", orbs_for(health), " orbs)")
 	pickup_audio.play()
 	player_health_updated.emit(health)
 
@@ -179,6 +179,8 @@ func _init() -> void:
 
 func _ready() -> void:
 	state_machine = StateMachine.new(self)
+	# In the tree so it (and the states it frees) goes when the Player does.
+	add_child(state_machine)
 	state_machine.add_state("IdleState", IdleState.new())
 	state_machine.add_state("JumpState", JumpState.new())
 	state_machine.add_state("AttackState", AttackState.new())

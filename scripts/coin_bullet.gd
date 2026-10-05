@@ -227,7 +227,7 @@ func _on_body_entered(body: Node) -> void:
 			return
 		if not lane_allows_hit(lane, body.current_lane, body.is_changing_lane):
 			return
-		print("hit player")
+		Utils.debug_log("hit player")
 		body.receive_hit(global_position, 1)
 		var instance = HIT_FX.instantiate()
 		body.get_tree().root.add_child(instance)
