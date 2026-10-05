@@ -614,3 +614,8 @@ Log of skills that might have been useful for a given response, and why (short f
 ## 2026-10-04 — car tyres under player's feet; hearts behind trees
 - Car: `Car.WHEEL_DROP` 28, `road_y` lands tyres on lane floor (was 8.2px below soles). Hearts z 2 -> 0 (reverses earlier "heart over tree" fix at user's request). Gate green (1042/19/12/audit). Proof artifact https://claude.ai/artifact/VDCD5cpKL3LaPUc2wmQYvS
 - Used: godot-draw-order (enhancement: add "height vs z" step — added), godot-headful-screenshot (enhancement: car-lane matrix recipe), godot-ab-worktree. Would help: none new. MCP: none.
+
+## 2026-10-04 — perf hygiene: state-node orphan leak + gated debug prints
+- Leak: machines free states on PREDELETE; Player parents its StateMachine. Full mortal run orphans: Main end 181 -> 28, BossRoom end 202 -> 25 (flat). `test_state_orphans.gd` failed before (60 vs 12 etc.).
+- Prints: 12 bare `print(` -> `Utils.debug_log` (`-- --verbose-logs`, debug builds only); `test_debug_log.gd` lints scripts/.
+- Used: none from list. Would have helped: extract-a-testable-seam (debug_log returns its line so the gate is testable), a "godot-orphan-check" skill (print_orphan_nodes + Performance monitor recipe). MCP: godot-tests covers the gate.
