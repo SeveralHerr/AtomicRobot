@@ -33,6 +33,10 @@ const WEAVE_STEP_S := 0.22
 ## keys and the "chase" was one swing long.
 const GETAWAY_SPEED := 190.0
 const GETAWAY_S := 0.6
+## A warm gold throb on her sprite: the street has other maids in it, and in a scrap
+## the thief read as just one more of them (the keys over her head are small).
+const GLINT := Color(1.35, 1.15, 0.7)
+const GLINT_HZ := 1.6
 ## Close enough to the keys to scoop them up (world px).
 const GRAB_REACH := 10.0
 
@@ -46,6 +50,7 @@ var jukes: int = 0
 var _drift: float = 0.0
 var _juke_cd: float = 0.0
 var _sprint: float = 0.0
+var _t: float = 0.0
 
 
 ## Flee speed after `juke_count` jukes.
@@ -72,7 +77,14 @@ func enter_state() -> void:
 	enemy.animated_sprite_2d.play("walk", 1.8)
 
 
+func exit_state() -> void:
+	enemy.animated_sprite_2d.self_modulate = Color.WHITE
+
+
 func update(delta: float) -> void:
+	_t += delta
+	var k := 0.5 + 0.5 * sin(_t * TAU * GLINT_HZ)
+	enemy.animated_sprite_2d.self_modulate = Color.WHITE.lerp(GLINT, k * 0.6)
 	# Don't fight a knockback (a car clipped her): let it decay first.
 	if absf(enemy.knockback_velocity.x) >= 10.0:
 		return
