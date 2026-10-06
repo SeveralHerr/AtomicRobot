@@ -35,9 +35,9 @@ const STAMP_PX := 40
 
 var title: String = ""
 var status: String = ""
-## Pips: `pip_total` slots, the first `pip_filled` of them marked (tickets landed).
-var pip_total: int = 0
-var pip_filled: int = 0
+## One pip per target, in street order: 0 clean, 0..1 a ticket being written (an
+## orange fill — visible even with its car off screen), 1 marked (ticket landed).
+var pips := PackedFloat32Array()
 ## -1 / +1: the target is off that side of the screen (arrow on the card); 0 none.
 var arrow: int = 0
 var time_frac: float = 1.0
@@ -88,11 +88,18 @@ func set_status(text: String) -> void:
 		_punch = 1.0
 
 
-func set_pips(total: int, filled: int) -> void:
-	if filled != pip_filled and total == pip_total:
+func set_pips(values: PackedFloat32Array) -> void:
+	if values.size() == pips.size() and marked(values) != marked(pips):
 		_punch = 1.0
-	pip_total = total
-	pip_filled = filled
+	pips = values
+
+
+static func marked(values: PackedFloat32Array) -> int:
+	var n := 0
+	for v in values:
+		if v >= 1.0:
+			n += 1
+	return n
 
 
 func set_time(frac: float) -> void:
@@ -161,8 +168,8 @@ func _draw_card() -> void:
 		_draw_arrow(c, Vector2(minf(x0 + title_w + 18, SIZE.x - 18), 30), 1)
 	var row_y := 74.0
 	var sx := 26.0
-	for i in pip_total:
-		_draw_pip(c, Vector2(sx + i * 40, row_y - 24), i < pip_filled)
+	for i in pips.size():
+		_draw_pip(c, Vector2(sx + i * 40, row_y - 24), pips[i])
 	if status != "":
 		# Right-aligned and big: the clock is what the eye comes back to the card for.
 		# Tucked under the arrow at the left it read as part of the arrow.
@@ -191,10 +198,14 @@ func _draw_arrow(c: Control, at: Vector2, dir: int) -> void:
 	c.draw_polyline(pts, ComicStyle.INK, 3.0)
 
 
-## A little ticket slip: white while the car is safe, red once a ticket landed.
-func _draw_pip(c: Control, at: Vector2, filled: bool) -> void:
+## A little ticket slip: white while the car is safe, filling orange while a maid
+## writes it, red once a ticket landed.
+func _draw_pip(c: Control, at: Vector2, value: float) -> void:
 	var r := Rect2(at, Vector2(32, 25))
+	var filled := value >= 1.0
 	c.draw_rect(r, ComicStyle.RED if filled else ComicStyle.PAPER)
+	if not filled and value > 0.0:
+		c.draw_rect(Rect2(at, Vector2(32 * value, 25)), ComicStyle.ORANGE)
 	c.draw_rect(r, ComicStyle.INK, false, 3.0)
 	var line := ComicStyle.PAPER if filled else Color(ComicStyle.INK, 0.35)
 	c.draw_line(at + Vector2(6, 9), at + Vector2(26, 9), line, 2.5)

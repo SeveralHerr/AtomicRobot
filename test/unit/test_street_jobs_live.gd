@@ -266,6 +266,28 @@ func test_job_defense_hit_maid_fights_then_goes_back_to_the_cars() -> String:
 	return _T.assert_true(ok, "left alone, she goes back to writing")
 
 
+## The card's pips follow the cars one to one: a ticket on the far car lit the FIRST
+## pip, and a ticket being written off screen showed nowhere on the card.
+func test_job_defense_pips_track_each_car() -> String:
+	var d := _defense()
+	d.maid_count = 0
+	_make(d)
+	d._park(0.0)
+	d.start(_p)
+	var r: String = _T.assert_eq(Array(d.pip_values()), [0.0, 0.0], "clean")
+	if r != "":
+		return r
+	r = _T.assert_gt(d.cars[0]._shine, 0.0, "the cars glint as the job opens")
+	if r != "":
+		return r
+	d.cars[0].progress = 0.5
+	d.on_ticket(d.cars[1])
+	r = _T.assert_eq(Array(d.pip_values()), [0.5, 1.0], "writing on car 1, car 2 ticketed")
+	if r != "":
+		return r
+	return _T.assert_eq(Array(d.hud.pips), [0.5, 1.0], "the card shows it")
+
+
 func test_job_defense_one_maid_per_car() -> String:
 	var d := _defense()
 	_make(d)

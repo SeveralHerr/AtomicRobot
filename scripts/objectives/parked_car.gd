@@ -17,15 +17,21 @@ const LANE := 1
 ## The sprite's offset inside the node, as car.tscn (tyres land on road_y()).
 const SPRITE_AT := Vector2(-3.67, -4)
 ## Where the slip sits on the windshield (node px, art faces left), and the progress
-## slip's spot above the roof.
+## slip's spot: above the writing maid's head (she stands right behind the roof — at
+## -46 the slip sat on her face and hid who was writing).
 const SLIP_AT := Vector2(-24, -17)
-const METER_AT := Vector2(0, -46)
+const SLIP_SIZE := Vector2(18, 12)
+const METER_AT := Vector2(0, -66)
 const METER_SIZE := Vector2(30, 18)
 ## How far a maid stands from the car's centre on the walkway behind it.
 const CURB_SLOT := 6.0
 ## Seconds to pull out and leave; distance driven.
 const LEAVE_S := 1.8
 const LEAVE_PX := 760.0
+const SHINE_HOP_PX := 6.0
+const SHINE_TINT := Color(1.7, 1.45, 0.6)
+## Half the view at zoom 2.5 plus a car length: a car this far from the player is gone.
+const OFFSCREEN_PX := 256.0 + 2.0 * Car.HALF_LEN
 
 var ticketed: bool = false
 ## 0..1 while a maid writes this car's ticket; 0 when nobody is.
@@ -34,6 +40,9 @@ var progress: float = 0.0
 var claimed_by: Node = null
 var sprite: Sprite2D
 var _flash: float = 0.0
+## Gold glint (1 -> 0): "these are the cars" when the job opens, "this one's free"
+## as a clean car pulls out — otherwise saved and ticketed cars left alike.
+var _shine: float = 0.0
 var _slip_pop: float = 0.0
 var _t: float = 0.0
 
@@ -77,13 +86,34 @@ func ticket() -> void:
 	s.finished.connect(s.queue_free)
 
 
-## Pull out and drive off `dir` (-1 left), then free.
-func drive_off(dir: int, delay: float = 0.0) -> void:
+## Pure: which way a car at `x` leaves with the player at `px` — away from them, so it
+## never drives through the fight (or the crates behind it), and LEAVE_PX then always
+## ends out of view: a fixed westward drive vanished mid-screen beside the player.
+static func leave_dir(x: float, px: float) -> int:
+	return 1 if x >= px else -1
+
+
+## Glint gold and hop on the springs.
+func shine() -> void:
+	_shine = 1.0
+	var hop := create_tween()
+	hop.tween_property(sprite, "position:y", SPRITE_AT.y - SHINE_HOP_PX, 0.12).set_ease(Tween.EASE_OUT)
+	hop.tween_property(sprite, "position:y", SPRITE_AT.y, 0.25).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+
+
+## Pull out and drive off away from the player at `px`, then free. A `saved` car
+## glints and hops first.
+func drive_off(px: float, delay: float = 0.0, saved: bool = false) -> void:
 	progress = 0.0
+	var x := global_position.x
+	var dir := leave_dir(x, px)
 	sprite.flip_h = dir > 0
 	var tw := create_tween()
 	tw.tween_interval(delay)
-	var leave := tw.tween_property(self, "global_position:x", global_position.x + dir * LEAVE_PX, LEAVE_S)
+	if saved:
+		tw.tween_callback(shine)
+		tw.tween_interval(0.4)
+	var leave := tw.tween_property(self, "global_position:x", x + dir * LEAVE_PX, LEAVE_S)
 	leave.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tw.tween_callback(queue_free)
 
@@ -91,8 +121,10 @@ func drive_off(dir: int, delay: float = 0.0) -> void:
 func _process(delta: float) -> void:
 	_t += delta
 	_flash = maxf(_flash - delta * 3.0, 0.0)
+	_shine = maxf(_shine - delta * 1.2, 0.0)
 	_slip_pop = maxf(_slip_pop - delta * 4.0, 0.0)
-	sprite.modulate = Color.WHITE.lerp(Color(1.6, 0.7, 0.7), _flash)
+	var glint := _shine * (0.6 + 0.4 * absf(sin(_t * 14.0)))
+	sprite.modulate = Color.WHITE.lerp(SHINE_TINT, glint).lerp(Color(1.6, 0.7, 0.7), _flash)
 	queue_redraw()
 
 
@@ -103,13 +135,17 @@ func _draw() -> void:
 		_draw_meter()
 
 
-## The ticket under the wiper: a white slip with a red band, tilted.
+## The ticket under the wiper: a white slip with a red band, tilted, flapping in the
+## breeze — the 12x8 slip was invisible at play zoom, so a ticketed car looked clean.
 func _draw_slip(at: Vector2, k: float, fill: float) -> void:
-	draw_set_transform(at, -0.35, Vector2.ONE * k)
-	var r := Rect2(-6, -4, 12, 8)
+	draw_set_transform(at, -0.35 + 0.12 * sin(_t * 7.0), Vector2.ONE * k)
+	var r := Rect2(-SLIP_SIZE * 0.5, SLIP_SIZE)
 	draw_rect(r.grow(1.0), ComicStyle.INK)
 	draw_rect(r, ComicStyle.PAPER)
-	draw_rect(Rect2(-6, -4, 12 * fill, 3), ComicStyle.RED)
+	draw_rect(Rect2(r.position, Vector2(r.size.x * fill, 4)), ComicStyle.RED)
+	for i in 2:
+		var y := r.position.y + 7 + i * 3
+		draw_line(Vector2(r.position.x + 2, y), Vector2(r.end.x - 3 - i * 4, y), Color(ComicStyle.INK, 0.5), 1.0)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 

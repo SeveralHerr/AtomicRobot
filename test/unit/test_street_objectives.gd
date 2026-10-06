@@ -136,6 +136,20 @@ func test_job_ticket_maids_travel_in_the_road_and_write_from_the_curb() -> Strin
 	return _T.assert_true(TicketState.TRAVEL_LANE != ParkedCar.LANE, "never travels through the parked cars")
 
 
+## Leaving cars head away from the player and always end out of view: a fixed 760 px
+## westward drive passed through the fight and vanished on screen beside the player.
+func test_job_cars_leave_away_from_the_player_and_out_of_view() -> String:
+	for car_x: float in [3140.0, 3330.0, 3540.0]:
+		for px in range(2700, 4000, 25):
+			var dir := ParkedCar.leave_dir(car_x, px)
+			if (car_x - px) * dir < 0.0:
+				return "car %.0f drives toward the player at %d" % [car_x, px]
+			var end_x := car_x + dir * ParkedCar.LEAVE_PX
+			if absf(end_x - px) < ParkedCar.OFFSCREEN_PX:
+				return "car %.0f ends in view (%.0f) of the player at %d" % [car_x, end_x, px]
+	return ""
+
+
 func test_job_traffic_avoids_the_curb_lane_beside_parked_cars() -> String:
 	var r: String = _T.assert_eq(AmbientTraffic.road_lane(ParkedCar.LANE, true), ParkedCar.LANE + 1, "moved out")
 	if r != "":

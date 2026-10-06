@@ -98,7 +98,9 @@ func _ready_to_start(p: Player) -> bool:
 func _begin() -> void:
 	announcer.callout(START_TITLE, START_SUB, ComicStyle.RED, false, START_HOLD)
 	hud.open(GOAL, ComicStyle.ORANGE)
-	hud.set_pips(cars.size(), 0)
+	hud.set_pips(pip_values())
+	for car in cars:
+		car.shine()
 	for i in maid_count:
 		get_tree().create_timer(maid_stagger * i, false).timeout.connect(_spawn_maid.bind(i))
 
@@ -181,7 +183,7 @@ func on_ticket(car: ParkedCar) -> void:
 		return
 	car.ticket()
 	tickets += 1
-	hud.set_pips(cars.size(), tickets)
+	hud.set_pips(pip_values())
 	if tickets >= cars.size():
 		_end()
 
@@ -194,6 +196,7 @@ func _tick(delta: float) -> void:
 		alive += 1
 		_watch_grudge(maid, delta)
 	hud.set_arrow(_arrow_to_writing())
+	hud.set_pips(pip_values())
 	if _spawned >= maid_count and alive == 0:
 		_end()
 
@@ -215,6 +218,18 @@ func _watch_grudge(maid: Enemy, delta: float) -> void:
 	if float(_grudge[maid]) <= 0.0 and sm.current_state is ChasePlayerState:
 		_grudge.erase(maid)
 		sm.change_state("TicketState")
+
+
+## The card's pips, one per car in street order: 1 ticketed, else the ticket being
+## written on it (0 clean) — so a ticket started off screen shows on the card.
+func pip_values() -> PackedFloat32Array:
+	var out := PackedFloat32Array()
+	for car in cars:
+		if not is_instance_valid(car):
+			out.append(0.0)
+		else:
+			out.append(1.0 if car.ticketed else minf(car.progress, 0.99))
+	return out
 
 
 ## Point the card at the nearest car a maid is writing on, while it is off screen:
@@ -264,8 +279,9 @@ func _cleanup(_won: bool) -> void:
 			maid.persist = false
 			if maid.enemy_state_machine.current_state is TicketState:
 				maid.enemy_state_machine.change_state("ChasePlayerState")
-	if player != null and player.is_dead:
+	var p := _player()
+	if p == null or p.is_dead:
 		return
 	for i in cars.size():
 		if is_instance_valid(cars[i]):
-			cars[i].drive_off(-1 if i % 2 == 0 else 1, LEAVE_DELAY + i * 0.35)
+			cars[i].drive_off(p.global_position.x, LEAVE_DELAY + i * 0.35, not cars[i].ticketed)
