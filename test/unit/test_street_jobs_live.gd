@@ -266,6 +266,23 @@ func test_job_defense_hit_maid_fights_then_goes_back_to_the_cars() -> String:
 	return _T.assert_true(ok, "left alone, she goes back to writing")
 
 
+## A ticketed car stays dimmed once its red flash is over (the slip alone did not
+## read through the CRT); a clean one keeps its paint.
+func test_job_ticketed_car_stays_dimmed() -> String:
+	var d := _defense()
+	_make(d)
+	d._park(0.0)
+	var clean: ParkedCar = d.cars[0]
+	var hit: ParkedCar = d.cars[1]
+	hit.ticket(false)
+	await _until(func(): return hit._flash <= 0.0 and clean._shine <= 0.0 and hit._shine <= 0.0, 3.0)
+	await _tree().process_frame
+	var r: String = _T.assert_eq(clean.sprite.modulate, Color.WHITE, "clean paint")
+	if r != "":
+		return r
+	return _T.assert_true(hit.sprite.modulate.v < 0.85, "ticketed car dimmed (v %.2f)" % hit.sprite.modulate.v)
+
+
 ## Knocking a writer off her car tears the ticket up (scraps), so the blow pays off.
 func test_job_defense_blow_tears_up_the_ticket_being_written() -> String:
 	var d := _defense()

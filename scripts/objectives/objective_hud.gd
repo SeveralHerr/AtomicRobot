@@ -210,9 +210,14 @@ func _draw_pip(c: Control, at: Vector2, value: float) -> void:
 	var r := Rect2(at, Vector2(32, 25))
 	var filled := value >= 1.0
 	c.draw_rect(r, ComicStyle.RED if filled else ComicStyle.PAPER)
+	var border := ComicStyle.INK
 	if not filled and value > 0.0:
 		c.draw_rect(Rect2(at, Vector2(32 * value, 25)), ComicStyle.ORANGE)
-	c.draw_rect(r, ComicStyle.INK, false, 3.0)
+		# Through the CRT the orange fill alone washed into the paper: the slip being
+		# written also flashes its border red.
+		if sin(_age * 16.0) > 0.0:
+			border = ComicStyle.RED
+	c.draw_rect(r, border, false, 3.0)
 	var line := ComicStyle.PAPER if filled else Color(ComicStyle.INK, 0.35)
 	c.draw_line(at + Vector2(6, 9), at + Vector2(26, 9), line, 2.5)
 	c.draw_line(at + Vector2(6, 16), at + Vector2(20, 16), line, 2.5)

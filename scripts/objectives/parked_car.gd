@@ -22,7 +22,10 @@ const SPRITE_AT := Vector2(-3.67, -4)
 const SLIP_AT := Vector2(-24, -17)
 const SLIP_SIZE := Vector2(18, 12)
 const METER_AT := Vector2(0, -66)
-const METER_SIZE := Vector2(30, 18)
+const METER_SIZE := Vector2(34, 20)
+## A ticketed car sits dimmed for good: through the CRT the slip alone did not tell
+## it from a clean one.
+const TICKETED_TINT := Color(0.72, 0.72, 0.8)
 ## How far a maid stands from the car's centre on the walkway behind it.
 const CURB_SLOT := 6.0
 ## Seconds to pull out and leave; distance driven.
@@ -161,7 +164,8 @@ func _process(delta: float) -> void:
 	_shine = maxf(_shine - delta * 1.2, 0.0)
 	_slip_pop = maxf(_slip_pop - delta * 4.0, 0.0)
 	var glint := _shine * (0.6 + 0.4 * absf(sin(_t * 14.0)))
-	sprite.modulate = Color.WHITE.lerp(SHINE_TINT, glint).lerp(Color(1.6, 0.7, 0.7), _flash)
+	var base := TICKETED_TINT if ticketed else Color.WHITE
+	sprite.modulate = base.lerp(SHINE_TINT, glint).lerp(Color(1.6, 0.7, 0.7), _flash)
 	queue_redraw()
 
 
