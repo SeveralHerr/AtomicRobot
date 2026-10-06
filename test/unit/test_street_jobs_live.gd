@@ -347,6 +347,31 @@ func test_job_win_knocks_a_heart_loose_that_lands_before_it_heals() -> String:
 	return _T.assert_true(landed, "collectable once it lands")
 
 
+## A running job holds ambient traffic like a door fight: its squad walks the road
+## lane the parked cars push traffic into.
+func test_job_running_flag_spans_the_job_and_clears_on_end_and_death() -> String:
+	var d := _defense()
+	d.maid_count = 0
+	_make(d)
+	d._park(0.0)
+	var r: String = _T.assert_false(StreetObjective.any_running(_tree()), "waiting")
+	if r != "":
+		return r
+	d.start(_p)
+	r = _T.assert_true(AmbientTraffic.scripted_fight(_tree()), "traffic holds for the job")
+	if r != "":
+		return r
+	d.finish(true)
+	r = _T.assert_false(StreetObjective.any_running(_tree()), "finished")
+	if r != "":
+		return r
+	var c := _chase()
+	_make(c)
+	c.start(_p)
+	c._on_player_death()
+	return _T.assert_false(StreetObjective.any_running(_tree()), "a death ends it too")
+
+
 func test_job_finish_pays_and_reports_only_once() -> String:
 	var c := _chase()
 	_make(c)

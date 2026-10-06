@@ -38,6 +38,10 @@ const HEART := preload("res://scenes/atomic_heart_pickup.tscn")
 ## door finale's heart: 26 px above the floor).
 const HEART_LAND := Vector2(56.0, -26.0)
 
+## Jobs in this group are running (AmbientTraffic holds its clock for them, as for a
+## door fight).
+const RUNNING := &"street_jobs_running"
+
 ## Report name (Globals.objective_finished, autoplay events).
 @export var id: String = "objective"
 ## The job starts once the player's x passes this (in `trigger_dir`).
@@ -69,6 +73,11 @@ static func should_start(px: float, mark: float, dir: int, cutscene: bool, event
 	if cutscene or event:
 		return false
 	return in_window(px, mark, dir)
+
+
+## Any job running in `tree`.
+static func any_running(tree: SceneTree) -> bool:
+	return tree.get_first_node_in_group(RUNNING) != null
 
 
 static func in_window(px: float, mark: float, dir: int) -> bool:
@@ -116,6 +125,7 @@ func start(p: Player) -> void:
 		return
 	player = p
 	phase = Phase.RUNNING
+	add_to_group(RUNNING)
 	time_left = time_limit
 	_age = 0.0
 	# A door's STREET CLEAR! still up would sit under this job's callout (each
@@ -133,6 +143,7 @@ func finish(won: bool) -> void:
 	if phase != Phase.RUNNING:
 		return
 	phase = Phase.DONE
+	remove_from_group(RUNNING)
 	success = won
 	if won:
 		ScoreSystem.award(reward_points)
@@ -151,6 +162,7 @@ func _on_player_death() -> void:
 	if phase != Phase.RUNNING:
 		return
 	phase = Phase.DONE
+	remove_from_group(RUNNING)
 	if hud != null:
 		hud.dismiss()
 	if announcer != null:

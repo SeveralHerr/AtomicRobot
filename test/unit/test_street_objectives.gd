@@ -175,6 +175,13 @@ func test_job_win_stamp_leaves_the_pips_readable() -> String:
 	return ""
 
 
+func test_job_last_ticket_leaves_the_word_to_the_miss_stripe() -> String:
+	var r: String = _T.assert_true(MD.pops_word(2, 3), "second of three")
+	if r != "":
+		return r
+	return _T.assert_false(MD.pops_word(3, 3), "the last one")
+
+
 func test_job_traffic_avoids_the_curb_lane_beside_parked_cars() -> String:
 	var r: String = _T.assert_eq(AmbientTraffic.road_lane(ParkedCar.LANE, true), ParkedCar.LANE + 1, "moved out")
 	if r != "":

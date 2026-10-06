@@ -63,6 +63,12 @@ static func outcome(ticketed: int, total: int) -> bool:
 	return ticketed < total
 
 
+## Pure: a landed ticket pops TICKET! unless it is the last one — the miss stripe
+## owns that moment, and the word collided with its subtitle.
+static func pops_word(ticketed: int, total: int) -> bool:
+	return ticketed < total
+
+
 ## Pure: the clean cars pay out.
 static func reward_for(ticketed: int, total: int, per_car: int) -> int:
 	return maxi(total - ticketed, 0) * per_car
@@ -182,8 +188,8 @@ func on_no_car(maid: Enemy) -> void:
 func on_ticket(car: ParkedCar) -> void:
 	if phase != Phase.RUNNING:
 		return
-	car.ticket()
 	tickets += 1
+	car.ticket(pops_word(tickets, cars.size()))
 	hud.set_pips(pip_values())
 	if tickets >= cars.size():
 		_end()

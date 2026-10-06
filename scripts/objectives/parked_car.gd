@@ -75,14 +75,17 @@ func curb_x() -> float:
 	return global_position.x + CURB_SLOT
 
 
-func ticket() -> void:
+## `word` false: no TICKET! pop (the last ticket — the miss stripe says it, and the
+## two words collided under it).
+func ticket(word: bool = true) -> void:
 	if ticketed:
 		return
 	ticketed = true
 	progress = 0.0
 	_flash = 1.0
 	_slip_pop = 1.0
-	ComicPopup.spawn(self, global_position + Vector2(0, -26), &"ticket")
+	if word:
+		ComicPopup.spawn(self, global_position + Vector2(0, -26), &"ticket")
 	var s := AudioStreamPlayer2D.new()
 	s.stream = TICKET_SFX
 	add_child(s)

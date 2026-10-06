@@ -11,7 +11,9 @@ class_name AmbientTraffic
 ## - never two at once (any driving car, streetlight ones included, holds the next);
 ## - the clock only runs in open play — not during a cut scene (the player is
 ##   frozen), a scripted fight (door encounter arena lock, event volume: already
-##   peak pressure, and the barriers leave nowhere to go), or before the lanes exist.
+##   peak pressure, and the barriers leave nowhere to go), a street side job (its
+##   squad walks the road lane the parked cars push traffic into), or before the
+##   lanes exist.
 ## The boss room and menus never have one: this node only lives in main.tscn.
 
 const CAR := preload("res://scenes/car.tscn")
@@ -57,6 +59,11 @@ static func may_spawn(cutscene: bool, fight: bool, player_ready: bool, road_busy
 	return player_ready and not cutscene and not fight and not road_busy
 
 
+## A door fight or a street side job is on (the clock holds for both).
+static func scripted_fight(tree: SceneTree) -> bool:
+	return Globals.event_active() or StreetObjective.any_running(tree)
+
+
 ## World x a car driving `dir` starts at: off the entry edge by LEAD_S of travel.
 static func spawn_x(view_x: float, half_view: float, dir: int, speed: int) -> float:
 	return view_x - dir * (half_view + speed * LEAD_S + Car.HALF_LEN)
@@ -92,7 +99,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	var p := _player()
-	if may_spawn(MicroCutscene.playing, Globals.event_active(),
+	if may_spawn(MicroCutscene.playing, scripted_fight(get_tree()),
 			p != null and not p.is_dead and p.lane_floor_y != INF, _road_busy()):
 		countdown -= delta
 		if countdown <= 0.0:
