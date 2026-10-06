@@ -50,6 +50,7 @@ func update(delta: float) -> void:
 		_release()
 		car = job.claim_car(enemy)
 		if car == null:
+			job.on_no_car(enemy)
 			enemy.enemy_state_machine.change_state("ChasePlayerState")
 			return
 	var dx := car.curb_x() - enemy.global_position.x

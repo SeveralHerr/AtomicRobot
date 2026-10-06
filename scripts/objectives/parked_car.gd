@@ -19,8 +19,8 @@ const SPRITE_AT := Vector2(-3.67, -4)
 ## Where the slip sits on the windshield (node px, art faces left), and the progress
 ## slip's spot above the roof.
 const SLIP_AT := Vector2(-24, -17)
-const METER_AT := Vector2(0, -44)
-const METER_SIZE := Vector2(22, 14)
+const METER_AT := Vector2(0, -46)
+const METER_SIZE := Vector2(30, 18)
 ## How far a maid stands from the car's centre on the walkway behind it.
 const CURB_SLOT := 6.0
 ## Seconds to pull out and leave; distance driven.
@@ -106,10 +106,10 @@ func _draw() -> void:
 ## The ticket under the wiper: a white slip with a red band, tilted.
 func _draw_slip(at: Vector2, k: float, fill: float) -> void:
 	draw_set_transform(at, -0.35, Vector2.ONE * k)
-	var r := Rect2(-4, -3, 8, 6)
+	var r := Rect2(-6, -4, 12, 8)
 	draw_rect(r.grow(1.0), ComicStyle.INK)
 	draw_rect(r, ComicStyle.PAPER)
-	draw_rect(Rect2(-4, -3, 8 * fill, 2), ComicStyle.RED)
+	draw_rect(Rect2(-6, -4, 12 * fill, 3), ComicStyle.RED)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 

@@ -28,6 +28,11 @@ const WATCHDOG_SLACK := 6.0
 const WIN_TINT := ComicStyle.BLUE
 const MISS_TINT := ComicStyle.PLUM
 const WIN_STING := preload("res://sounds/Unlock.wav")
+## Payoff holds: shorter than a door's STREET CLEAR! (reading time, ~3.5 s). The street
+## carries on under a job's payoff — the caught thief turns and fights right where the
+## burst sits — so it is glanced, not read; the card's stamp keeps the result up.
+const WIN_HOLD := 1.8
+const MISS_HOLD := 2.2
 
 ## Report name (Globals.objective_finished, autoplay events).
 @export var id: String = "objective"
@@ -190,8 +195,10 @@ func _watchdog_outcome() -> bool:
 	return false
 
 
+## The card's stamp: the points on a win (the burst's subtitle is too small to read
+## them), the job's own word on a miss.
 func _stamp_word(won: bool) -> String:
-	return "DONE!" if won else "MISSED"
+	return "+%d" % reward_points if won else "MISSED"
 
 
 ## Callout + world word for the outcome.

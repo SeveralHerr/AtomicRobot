@@ -455,3 +455,23 @@ func test_job_defense_hit_maid_fights_then_goes_back_to_the_cars() -> String:
 		return r
 	var ok: bool = await _until(func(): return m.enemy_state_machine.current_state is TicketState)
 	return _T.assert_true(ok, "left alone, she goes back to writing")
+
+
+func test_job_defense_one_maid_per_car() -> String:
+	var d := _defense()
+	_make(d)
+	d._park(0.0)
+	var scene: PackedScene = load("res://scenes/meter_maid_melee.tscn")
+	var a: Enemy = scene.instantiate()
+	var b: Enemy = scene.instantiate()
+	var c: Enemy = scene.instantiate()
+	for m in [a, b, c]:
+		m.process_mode = Node.PROCESS_MODE_DISABLED
+		_stage.add_child(m)
+		m.global_position = Vector2(5100, 0)
+	var r: String = _T.assert_true(d.claim_car(a) == d.cars[0], "nearest car")
+	if r == "":
+		r = _T.assert_true(d.claim_car(b) == d.cars[1], "the other car, not a shared one")
+	if r == "":
+		r = _T.assert_true(d.claim_car(c) == null, "no free car left: she fights instead")
+	return r

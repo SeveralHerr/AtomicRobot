@@ -14,16 +14,16 @@ const GOAL := "CATCH THE THIEF!"
 const START_TITLE := "THIEF!"
 const START_SUB := "SHE SWIPED A CUSTOMER'S KEYS!"
 const WIN_TITLE := "KEYS RETURNED!"
-const WIN_WORD := "GOTCHA!"
 const GRAB_WORD := "YOINK!"
 const MISS_TITLE := "SHE GOT AWAY!"
 const MISS_SUB := "SOMEBODY'S TAKING THE BUS HOME"
-const STAMP_WIN := "GOT 'EM!"
+const WIN_SUB := "SOMEBODY'S DRIVING HOME TONIGHT"
 const STAMP_MISS := "GONE!"
 ## The start stripe is glanced, not read: the chase is already on under it.
 const START_HOLD := 1.3
 ## Keys ride this far above the thief's origin (over her head).
 const CARRY := Vector2(0, -40)
+const CARRY_SCALE := 1.5
 ## Seconds the keys take to arc back to the player, and the arc's height.
 const RETURN_S := 0.45
 const RETURN_ARC := 60.0
@@ -31,7 +31,7 @@ const RETURN_ARC := 60.0
 const ESCAPE_FADE_S := 0.5
 
 ## Where the keys lie (world x, on the walkway).
-@export var keys_x: float = 1700.0
+@export var keys_x: float = 1640.0
 ## The way she runs with them: -1 back toward the start of the street.
 @export var flee_dir: int = -1
 ## She is gone once this far past the keys' spot in flee_dir (world px).
@@ -47,7 +47,7 @@ var _thief_hp: int = 0
 
 func _init() -> void:
 	id = "snatch_chase"
-	time_limit = 11.0
+	time_limit = 12.0
 	reward_points = 500
 
 
@@ -113,6 +113,8 @@ func _on_grab() -> void:
 	if is_instance_valid(keys):
 		keys.reparent(thief, false)
 		keys.position = CARRY
+		# Bigger over her head than on the pavement: it is what the player is chasing.
+		keys.scale = Vector2.ONE * CARRY_SCALE
 	ComicPopup.spawn(self, thief.global_position + Vector2(0, -30), &"snatch", GRAB_WORD)
 
 
@@ -138,16 +140,15 @@ func _tick(_delta: float) -> void:
 
 
 func _stamp_word(won: bool) -> String:
-	return STAMP_WIN if won else STAMP_MISS
+	return super(won) if won else STAMP_MISS
 
 
 func _payoff(won: bool) -> void:
 	if won:
-		announcer.callout(WIN_TITLE, "+%d" % reward_points, WIN_TINT, true)
-		var at := thief.global_position if is_instance_valid(thief) else player.global_position
-		ComicPopup.spawn(self, at + Vector2(0, -30), &"job", WIN_WORD)
+		# No world word: the burst hides whatever ComicPopup is up (EncounterAnnouncer).
+		announcer.callout(WIN_TITLE, WIN_SUB, WIN_TINT, true, WIN_HOLD)
 	else:
-		announcer.callout(MISS_TITLE, MISS_SUB, MISS_TINT)
+		announcer.callout(MISS_TITLE, MISS_SUB, MISS_TINT, false, MISS_HOLD)
 
 
 func _cleanup(won: bool) -> void:

@@ -77,13 +77,8 @@ const KINDS := {
 		"style": &"orange", "anim": &"pop", "cooldown": 0.3, "life": 0.7, "size": 0.8,
 		"exit": &"shrink",
 	},
-	# Street side jobs (StreetObjective): the payoff word over the spot it was won...
-	&"job": {
-		"words": ["NICE!"],
-		"style": &"gold", "anim": &"pop", "cooldown": 0.0, "life": 1.2, "size": 1.2,
-		"from": 1.2, "exit": &"shrink",
-	},
-	# ...and the thief's grab, cream like TICKET!: a maid's doing, not the player's.
+	# A street side job's thief grabbing the keys (SnatchChase), cream like TICKET!:
+	# a maid's doing, not the player's.
 	&"snatch": {
 		"words": ["YOINK!"],
 		"style": &"cream", "anim": &"pop", "cooldown": 0.0, "life": 0.9, "size": 1.0,

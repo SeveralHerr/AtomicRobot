@@ -17,8 +17,8 @@ enum Step { APPROACH, FLEE }
 const APPROACH_SPEED := 300.0
 ## Below the player's 170 px/s, so steady pursuit always closes (and a running jump,
 ## x1.2 air speed, closes faster). Each juke takes TIRE off, down to MIN_SPEED.
-const FLEE_SPEED := 135.0
-const MIN_SPEED := 95.0
+const FLEE_SPEED := 120.0
+const MIN_SPEED := 90.0
 const TIRE := 10.0
 ## A juke: the player on her lane within JUKE_RANGE px; then none for JUKE_COOLDOWN s.
 const JUKE_RANGE := 110.0
@@ -27,6 +27,12 @@ const JUKE_COOLDOWN := 0.9
 const DRIFT_MIN := 1.4
 const DRIFT_MAX := 2.4
 const WEAVE_STEP_S := 0.22
+## The getaway: right after the grab she sprints this fast for GETAWAY_S, so there is
+## a gap to close (~300 px at the grab: ~6 s of steady walking to close, inside the
+## 12 s clock; 1.0 s at 200 left ~11 s and a bot that never caught her). Without it the player was standing next to her as she scooped the
+## keys and the "chase" was one swing long.
+const GETAWAY_SPEED := 190.0
+const GETAWAY_S := 0.6
 ## Close enough to the keys to scoop them up (world px).
 const GRAB_REACH := 10.0
 
@@ -39,6 +45,7 @@ var on_grab: Callable
 var jukes: int = 0
 var _drift: float = 0.0
 var _juke_cd: float = 0.0
+var _sprint: float = 0.0
 
 
 ## Flee speed after `juke_count` jukes.
@@ -79,6 +86,7 @@ func _approach() -> void:
 	var dx := grab_x - enemy.global_position.x
 	if absf(dx) <= GRAB_REACH:
 		step = Step.FLEE
+		_sprint = GETAWAY_S
 		_drift = rng.randf_range(0.2, 0.4)
 		enemy.velocity.x = 0.0
 		if on_grab.is_valid():
@@ -89,7 +97,8 @@ func _approach() -> void:
 
 
 func _flee(delta: float) -> void:
-	enemy.velocity.x = flee_dir * flee_speed(jukes)
+	_sprint -= delta
+	enemy.velocity.x = flee_dir * (GETAWAY_SPEED if _sprint > 0.0 else flee_speed(jukes))
 	enemy.face_towards(enemy.global_position.x + flee_dir * 100.0)
 	_drift -= delta
 	_juke_cd -= delta

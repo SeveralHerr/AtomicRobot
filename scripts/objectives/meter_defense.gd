@@ -17,15 +17,15 @@ const START_SUB := "THEY'RE AFTER THE CUSTOMERS' CARS!"
 const WIN_TITLE := "CARS SAVED!"
 const WIN_SUB_ALL := "NOT ONE TICKET!"
 const WIN_SUB_SOME := "%d OF %d DRIVE OFF FREE"
-const WIN_WORD := "SAVED!"
 const MISS_TITLE := "TICKETED!"
 const MISS_SUB := "EVERY LAST CAR. OUCH."
-const STAMP_WIN := "SAVED!"
 const STAMP_MISS := "TICKETED"
 const START_HOLD := 1.4
 ## Cars park this far ahead of the trigger: out of view of a player walking in, so
 ## they are simply there when the street comes into view.
 const PARK_AHEAD := 700.0
+## A writing car this far from the player is off screen (zoom 2.5 shows +-256 px).
+const OFFSCREEN_DX := 230.0
 ## Seconds after the end before the cars pull out (the payoff reads first).
 const LEAVE_DELAY := 1.2
 
@@ -104,11 +104,12 @@ func _begin() -> void:
 
 
 func _spawn_maid(i: int) -> void:
-	if phase != Phase.RUNNING or player == null:
+	var scene := get_tree().current_scene if is_inside_tree() else null
+	if phase != Phase.RUNNING or player == null or scene == null:
 		return
 	var x := _far_car_x() + trigger_dir * (spawn_past + i * 24.0)
 	var melee := melee_every > 0 and (i + 1) % melee_every == 0
-	var maid: Enemy = EnemySpawner.spawn_enemy_at(get_tree().current_scene, player, x, Lanes.GROUND_LANE, melee)
+	var maid: Enemy = EnemySpawner.spawn_enemy_at(scene, player, x, Lanes.GROUND_LANE, melee)
 	_spawned += 1
 	if maid == null:
 		return
@@ -141,25 +142,38 @@ func _arm_maid(maid: Enemy) -> void:
 		maid.enemy_state_machine.change_state("TicketState")
 
 
-## The nearest clean car nobody else is writing on (or any clean car), claimed for `maid`.
+## The nearest clean car nobody else is writing on, claimed for `maid`; null when every
+## clean car is taken. One maid per car: sharing let the whole squad bunch up behind
+## the last car, writing one ticket between them.
 func claim_car(maid: Enemy) -> ParkedCar:
 	var best: ParkedCar = null
 	var best_d := INF
-	for pass_free in [true, false]:
-		for car in cars:
-			if not is_instance_valid(car) or car.ticketed:
-				continue
-			if pass_free and car.claimed_by != null and is_instance_valid(car.claimed_by) and car.claimed_by != maid:
-				continue
-			var d := absf(car.curb_x() - maid.global_position.x)
-			if d < best_d:
-				best_d = d
-				best = car
-		if best != null:
-			break
+	for car in cars:
+		if not is_instance_valid(car) or car.ticketed:
+			continue
+		if _taken(car, maid):
+			continue
+		var d := absf(car.curb_x() - maid.global_position.x)
+		if d < best_d:
+			best_d = d
+			best = car
 	if best != null:
 		best.claimed_by = maid
 	return best
+
+
+## Another live maid has `car`.
+static func _taken(car: ParkedCar, maid: Enemy) -> bool:
+	var other: Node = car.claimed_by
+	if other == null or not is_instance_valid(other) or other == maid:
+		return false
+	return not (other is Enemy and (other as Enemy).is_dead)
+
+
+## A maid found no free car: she fights meanwhile, and the grudge timer sends her back
+## to check for one (a colleague's car frees up when that colleague goes down).
+func on_no_car(maid: Enemy) -> void:
+	_grudge[maid] = grudge_seconds
 
 
 func on_ticket(car: ParkedCar) -> void:
@@ -179,6 +193,7 @@ func _tick(delta: float) -> void:
 			continue
 		alive += 1
 		_watch_grudge(maid, delta)
+	hud.set_arrow(_arrow_to_writing())
 	if _spawned >= maid_count and alive == 0:
 		_end()
 
@@ -202,6 +217,20 @@ func _watch_grudge(maid: Enemy, delta: float) -> void:
 		sm.change_state("TicketState")
 
 
+## Point the card at the nearest car a maid is writing on, while it is off screen:
+## standing back at the start of the row, the tickets landed where nobody saw them.
+func _arrow_to_writing() -> int:
+	var best := INF
+	var dir := 0
+	for car in cars:
+		if is_instance_valid(car) and car.progress > 0.0:
+			var dx := car.global_position.x - player.global_position.x
+			if absf(dx) < best:
+				best = absf(dx)
+				dir = signi(dx)
+	return dir if best > OFFSCREEN_DX else 0
+
+
 func _on_time_up() -> void:
 	_end()
 
@@ -216,17 +245,16 @@ func _end() -> void:
 
 
 func _stamp_word(won: bool) -> String:
-	return STAMP_WIN if won else STAMP_MISS
+	return super(won) if won else STAMP_MISS
 
 
 func _payoff(won: bool) -> void:
 	if won:
 		var clean := cars.size() - tickets
 		var sub := WIN_SUB_ALL if tickets == 0 else WIN_SUB_SOME % [clean, cars.size()]
-		announcer.callout(WIN_TITLE, sub, WIN_TINT, true)
-		ComicPopup.spawn(self, player.global_position + Vector2(0, -40), &"job", WIN_WORD)
+		announcer.callout(WIN_TITLE, sub, WIN_TINT, true, WIN_HOLD)
 	else:
-		announcer.callout(MISS_TITLE, MISS_SUB, MISS_TINT)
+		announcer.callout(MISS_TITLE, MISS_SUB, MISS_TINT, false, MISS_HOLD)
 
 
 func _cleanup(_won: bool) -> void:

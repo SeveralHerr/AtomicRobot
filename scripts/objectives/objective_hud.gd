@@ -30,7 +30,7 @@ const PUNCH_S := 0.22
 const URGENT := 0.3
 
 const TITLE_PX := 30
-const STATUS_PX := 28
+const STATUS_PX := 40
 const STAMP_PX := 40
 
 var title: String = ""
@@ -107,6 +107,9 @@ func set_arrow(dir: int) -> void:
 func close(ok: bool, word: String) -> void:
 	stamp = word
 	stamp_ok = ok
+	# The clock and arrow are over: a stale "9" beside the stamp read as time left.
+	status = ""
+	arrow = 0
 	_punch = 1.0
 	var tw := create_tween()
 	tw.tween_interval(STAMP_HOLD_S)
@@ -160,12 +163,14 @@ func _draw_card() -> void:
 	var sx := 26.0
 	for i in pip_total:
 		_draw_pip(c, Vector2(sx + i * 34, row_y - 20), i < pip_filled)
-	if pip_total > 0:
-		sx += pip_total * 34 + 8
 	if status != "":
+		# Right-aligned and big: the clock is what the eye comes back to the card for.
+		# Tucked under the arrow at the left it read as part of the arrow.
 		var num: Font = ComicStyle.DISPLAY
-		c.draw_string_outline(num, Vector2(sx, row_y), status, HORIZONTAL_ALIGNMENT_LEFT, -1, STATUS_PX, 6, ComicStyle.INK)
-		c.draw_string(num, Vector2(sx, row_y), status, HORIZONTAL_ALIGNMENT_LEFT, -1, STATUS_PX, accent)
+		var w := num.get_string_size(status, HORIZONTAL_ALIGNMENT_LEFT, -1, STATUS_PX).x
+		var at := Vector2(SIZE.x - 20.0 - w, row_y + 2.0)
+		c.draw_string_outline(num, at, status, HORIZONTAL_ALIGNMENT_LEFT, -1, STATUS_PX, 7, ComicStyle.INK)
+		c.draw_string(num, at, status, HORIZONTAL_ALIGNMENT_LEFT, -1, STATUS_PX, ComicStyle.RED if urgent(time_frac) else accent)
 	# Time left drains along the bottom edge, inside the ink border.
 	var bar := Rect2(22, SIZE.y - 15, SIZE.x - 34, 7)
 	c.draw_rect(bar, Color(ComicStyle.INK, 0.25))
