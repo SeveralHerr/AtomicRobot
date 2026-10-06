@@ -17,8 +17,8 @@ class_name ObjectiveHud
 ## Under the HUD (score 1, UI 2 share its layer) and the callout banner (3).
 const LAYER := 2
 ## Card box in the 1280x800 design space (canvas_items stretch keeps it).
-const SIZE := Vector2(330, 92)
-const RIGHT_EDGE := 1236.0
+const SIZE := Vector2(340, 98)
+const RIGHT_EDGE := 1226.0
 const TOP := 182.0
 ## Slide-in distance and time; the stamp's hold before the card leaves.
 const SLIDE_PX := 380.0
@@ -29,7 +29,7 @@ const PUNCH_S := 0.22
 ## Timer bar turns red, and the card starts to throb, under this fraction left.
 const URGENT := 0.3
 
-const TITLE_PX := 30
+const TITLE_PX := 34
 const STATUS_PX := 40
 const STAMP_PX := 40
 
@@ -154,15 +154,15 @@ func _draw_card() -> void:
 	var title_w := font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, TITLE_PX).x
 	var x0 := 26.0
 	if arrow < 0:
-		_draw_arrow(c, Vector2(x0 + 10, 30), -1)
+		_draw_arrow(c, Vector2(x0 + 10, 29), -1)
 		x0 += 26.0
-	c.draw_string(font, Vector2(x0, 38), title, HORIZONTAL_ALIGNMENT_LEFT, -1, TITLE_PX, ComicStyle.INK)
+	c.draw_string(font, Vector2(x0, 40), title, HORIZONTAL_ALIGNMENT_LEFT, -1, TITLE_PX, ComicStyle.INK)
 	if arrow > 0:
 		_draw_arrow(c, Vector2(minf(x0 + title_w + 18, SIZE.x - 18), 30), 1)
-	var row_y := 72.0
+	var row_y := 74.0
 	var sx := 26.0
 	for i in pip_total:
-		_draw_pip(c, Vector2(sx + i * 34, row_y - 20), i < pip_filled)
+		_draw_pip(c, Vector2(sx + i * 40, row_y - 24), i < pip_filled)
 	if status != "":
 		# Right-aligned and big: the clock is what the eye comes back to the card for.
 		# Tucked under the arrow at the left it read as part of the arrow.
@@ -172,7 +172,7 @@ func _draw_card() -> void:
 		c.draw_string_outline(num, at, status, HORIZONTAL_ALIGNMENT_LEFT, -1, STATUS_PX, 7, ComicStyle.INK)
 		c.draw_string(num, at, status, HORIZONTAL_ALIGNMENT_LEFT, -1, STATUS_PX, ComicStyle.RED if urgent(time_frac) else accent)
 	# Time left drains along the bottom edge, inside the ink border.
-	var bar := Rect2(22, SIZE.y - 15, SIZE.x - 34, 7)
+	var bar := Rect2(22, SIZE.y - 17, SIZE.x - 34, 9)
 	c.draw_rect(bar, Color(ComicStyle.INK, 0.25))
 	var fill := bar
 	fill.size.x *= time_frac
@@ -184,8 +184,8 @@ func _draw_card() -> void:
 func _draw_arrow(c: Control, at: Vector2, dir: int) -> void:
 	# Bobs toward the target, so it reads as "that way", not as decoration.
 	var bob := 3.0 * sin(_age * 10.0) * dir
-	var tip := at + Vector2(12 * dir + bob, 0)
-	var pts := PackedVector2Array([tip, at + Vector2(-8 * dir + bob, -11), at + Vector2(-8 * dir + bob, 11)])
+	var tip := at + Vector2(14 * dir + bob, 0)
+	var pts := PackedVector2Array([tip, at + Vector2(-9 * dir + bob, -14), at + Vector2(-9 * dir + bob, 14)])
 	c.draw_colored_polygon(pts, ComicStyle.RED)
 	pts.append(tip)
 	c.draw_polyline(pts, ComicStyle.INK, 3.0)
@@ -193,12 +193,12 @@ func _draw_arrow(c: Control, at: Vector2, dir: int) -> void:
 
 ## A little ticket slip: white while the car is safe, red once a ticket landed.
 func _draw_pip(c: Control, at: Vector2, filled: bool) -> void:
-	var r := Rect2(at, Vector2(26, 22))
+	var r := Rect2(at, Vector2(32, 25))
 	c.draw_rect(r, ComicStyle.RED if filled else ComicStyle.PAPER)
 	c.draw_rect(r, ComicStyle.INK, false, 3.0)
 	var line := ComicStyle.PAPER if filled else Color(ComicStyle.INK, 0.35)
-	c.draw_line(at + Vector2(5, 8), at + Vector2(21, 8), line, 2.0)
-	c.draw_line(at + Vector2(5, 14), at + Vector2(16, 14), line, 2.0)
+	c.draw_line(at + Vector2(6, 9), at + Vector2(26, 9), line, 2.5)
+	c.draw_line(at + Vector2(6, 16), at + Vector2(20, 16), line, 2.5)
 
 
 func _draw_stamp(c: Control) -> void:
