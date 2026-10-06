@@ -182,6 +182,16 @@ func test_job_last_ticket_leaves_the_word_to_the_miss_stripe() -> String:
 	return _T.assert_false(MD.pops_word(3, 3), "the last one")
 
 
+## The card's right arrow sits at the card edge, clear of the title (and inside the card).
+func test_job_card_right_arrow_clears_the_title() -> String:
+	var w := ComicStyle.LABEL.get_string_size(MD.GOAL, HORIZONTAL_ALIGNMENT_LEFT, -1, ObjectiveHud.TITLE_PX).x
+	var x := ObjectiveHud.right_arrow_x(26.0 + w)
+	var r: String = _T.assert_gt(x - 9.0, 26.0 + w + 30.0, "a clear gap after the title")
+	if r != "":
+		return r
+	return _T.assert_true(x + 14.0 + 3.0 < ObjectiveHud.SIZE.x, "tip inside the card")
+
+
 func test_job_traffic_avoids_the_curb_lane_beside_parked_cars() -> String:
 	var r: String = _T.assert_eq(AmbientTraffic.road_lane(ParkedCar.LANE, true), ParkedCar.LANE + 1, "moved out")
 	if r != "":

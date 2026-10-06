@@ -156,6 +156,11 @@ static func stamp_centre(w: float) -> Vector2:
 	return Vector2(SIZE.x - 12.0 - (w + 28.0) * 0.5, SIZE.y * 0.6)
 
 
+## Pure: the right arrow's x for a title ending at `title_end`.
+static func right_arrow_x(title_end: float) -> float:
+	return maxf(title_end + 18.0, SIZE.x - 34.0)
+
+
 static func urgent(frac: float) -> bool:
 	return frac < URGENT
 
@@ -174,7 +179,9 @@ func _draw_card() -> void:
 		x0 += 26.0
 	c.draw_string(font, Vector2(x0, 40), title, HORIZONTAL_ALIGNMENT_LEFT, -1, TITLE_PX, ComicStyle.INK)
 	if arrow > 0:
-		_draw_arrow(c, Vector2(minf(x0 + title_w + 18, SIZE.x - 18), 30), 1)
+		# Out at the card's right edge, pointing off it: jammed against the title's
+		# "!" it read as part of the word.
+		_draw_arrow(c, Vector2(right_arrow_x(x0 + title_w), 30), 1)
 	var row_y := 74.0
 	var sx := 26.0
 	for i in pips.size():
@@ -242,7 +249,7 @@ func _draw_stamp(c: Control) -> void:
 	c.draw_set_transform(centre, deg_to_rad(-6.0), Vector2.ONE)
 	c.draw_style_box(ComicStyle.box(fill, 4, 6, 4), box)
 	var at := Vector2(box.position.x + 14, box.position.y + 44)
-	var ink := ComicStyle.RED if stamp_ok else ComicStyle.INK
+	# Red rubber-stamp ink either way: a miss in cream on the paper fill washed out.
 	c.draw_string_outline(font, at, stamp, HORIZONTAL_ALIGNMENT_LEFT, -1, STAMP_PX, 6, ComicStyle.INK)
-	c.draw_string(font, at, stamp, HORIZONTAL_ALIGNMENT_LEFT, -1, STAMP_PX, ink if stamp_ok else ComicStyle.CREAM)
+	c.draw_string(font, at, stamp, HORIZONTAL_ALIGNMENT_LEFT, -1, STAMP_PX, ComicStyle.RED)
 	c.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
