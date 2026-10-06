@@ -1,0 +1,9 @@
+{
+  "seed": 2,
+  "timeout": 120,
+  "steps": ["god on", "teleport 1500", "kill_all", "lane 2", "walk_to 1840 6", "wait 1.2",
+            "brain clear 12", "wait 3", "assert objectives_won == 1",
+            "teleport 2700", "kill_all", "walk_to 3000 6", "wait 2.5", "walk_to 3330 4",
+            "brain clear 40", "wait 4"],
+  "expect": ["errors == 0", "step_failures == 0", "objectives_won == 2", "objectives_lost == 0"]
+}
