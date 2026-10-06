@@ -14,6 +14,8 @@ class_name StreetObjectives
 ##   x 2361 door and its crates, well short of the x 4018 intersection.
 
 const JOBS := [
+	{"on": true, "script": preload("res://scripts/objectives/snatch_chase.gd"),
+		"props": {"trigger_x": 1820.0, "keys_x": 1700.0, "flee_dir": -1}},
 ]
 
 ## Off for every job (a test or scenario that must not meet one).
