@@ -41,6 +41,9 @@ var pips := PackedFloat32Array()
 ## -1 / +1: the target is off that side of the screen (arrow on the card); 0 none.
 var arrow: int = 0
 var time_frac: float = 1.0
+## False for a job whose clock is only a backstop (TICKET SWEEP!: the tickets are the
+## pressure, and a 40 s bar that barely moved was noise on the card).
+var show_time: bool = true
 var accent: Color = ComicStyle.RED
 ## "" while the job runs; the stamp word once it has ended.
 var stamp: String = ""
@@ -141,7 +144,7 @@ func _place() -> void:
 		return
 	_card.position = Vector2(RIGHT_EDGE - SIZE.x + _slide * SLIDE_PX, TOP)
 	var throb := 0.0
-	if stamp == "" and time_frac < URGENT:
+	if stamp == "" and show_time and time_frac < URGENT:
 		throb = 0.03 * absf(sin(_age * 9.0))
 	_card.scale = Vector2.ONE * (1.0 + 0.12 * _punch + throb)
 	_card.rotation = deg_to_rad(-1.5)
@@ -185,13 +188,18 @@ func _draw_card() -> void:
 		c.draw_string_outline(num, at, status, HORIZONTAL_ALIGNMENT_LEFT, -1, STATUS_PX, 7, ComicStyle.INK)
 		c.draw_string(num, at, status, HORIZONTAL_ALIGNMENT_LEFT, -1, STATUS_PX, ComicStyle.RED if urgent(time_frac) else accent)
 	# Time left drains along the bottom edge, inside the ink border.
+	if show_time:
+		_draw_time_bar(c)
+	if stamp != "":
+		_draw_stamp(c)
+
+
+func _draw_time_bar(c: Control) -> void:
 	var bar := Rect2(22, SIZE.y - 17, SIZE.x - 34, 9)
 	c.draw_rect(bar, Color(ComicStyle.INK, 0.25))
 	var fill := bar
 	fill.size.x *= time_frac
 	c.draw_rect(fill, ComicStyle.RED if urgent(time_frac) else ComicStyle.YELLOW)
-	if stamp != "":
-		_draw_stamp(c)
 
 
 func _draw_arrow(c: Control, at: Vector2, dir: int) -> void:

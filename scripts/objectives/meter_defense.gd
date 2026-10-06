@@ -104,6 +104,7 @@ func _ready_to_start(p: Player) -> bool:
 
 func _begin() -> void:
 	announcer.callout(START_TITLE, START_SUB, ComicStyle.RED, false, START_HOLD)
+	hud.show_time = false
 	hud.open(GOAL, ComicStyle.ORANGE)
 	hud.set_pips(pip_values())
 	for car in cars:

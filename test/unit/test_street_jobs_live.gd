@@ -320,7 +320,11 @@ func test_job_defense_pips_track_each_car() -> String:
 	r = _T.assert_eq(Array(d.pip_values()), [0.5, 1.0], "writing on car 1, car 2 ticketed")
 	if r != "":
 		return r
-	return _T.assert_eq(Array(d.hud.pips), [0.5, 1.0], "the card shows it")
+	r = _T.assert_eq(Array(d.hud.pips), [0.5, 1.0], "the card shows it")
+	if r != "":
+		return r
+	# The tickets are the pressure; the 40 s backstop clock stays off the card.
+	return _T.assert_false(d.hud.show_time, "no time bar")
 
 
 func test_job_defense_one_maid_per_car() -> String:
