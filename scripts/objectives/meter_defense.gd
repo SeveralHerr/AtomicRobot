@@ -33,6 +33,10 @@ const LEAVE_AFTER_PAYOFF := 0.2
 ## Car centres (world x), parked on the road lane next to the curb.
 @export var car_xs: Array[float] = [3140.0, 3330.0, 3540.0]
 @export var maid_count: int = 3
+## A missed sweep's squad walks off this far, fading, over SEND_OFF_S.
+const SEND_OFF_PX := 140.0
+const SEND_OFF_S := 1.2
+
 ## Every 'melee_every'-th maid is a melee maid; the rest throw coins.
 @export var melee_every: int = 3
 ## Seconds a maid stands at a car to write its ticket.
@@ -231,6 +235,25 @@ func _watch_grudge(maid: Enemy, delta: float) -> void:
 		sm.change_state("TicketState")
 
 
+## A missed sweep's squad is done here: they walk off and fade. Piling onto the player
+## with the street's own maids made a miss cost health on top of the cars (a side job
+## must never cost the run).
+func _send_off(maid: Enemy) -> void:
+	Globals.release_attack_slot(maid)
+	maid.remove_from_group("enemies")
+	var px := player.global_position.x if is_instance_valid(player) else maid.global_position.x - trigger_dir
+	var away := 1.0 if maid.global_position.x >= px else -1.0
+	maid.face_towards(maid.global_position.x + away * 100.0)
+	maid.process_mode = Node.PROCESS_MODE_DISABLED
+	# She walks off frozen otherwise: the clip runs while her body is switched off.
+	maid.animated_sprite_2d.process_mode = Node.PROCESS_MODE_PAUSABLE
+	maid.animated_sprite_2d.play("walk")
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(maid, "global_position:x", maid.global_position.x + away * SEND_OFF_PX, SEND_OFF_S)
+	tw.tween_property(maid, "modulate:a", 0.0, SEND_OFF_S).set_ease(Tween.EASE_IN)
+	tw.chain().tween_callback(maid.queue_free)
+
+
 ## The card's pips, one per car in street order: 1 ticketed, else the ticket being
 ## written on it (0 clean) — so a ticket started off screen shows on the card.
 func pip_values() -> PackedFloat32Array:
@@ -298,12 +321,15 @@ func _payoff(won: bool) -> void:
 
 
 func _cleanup(won: bool) -> void:
-	# The squad stays in the street as ordinary maids.
 	for maid in maids:
-		if is_instance_valid(maid) and not maid.is_dead:
-			maid.persist = false
-			if maid.enemy_state_machine.current_state is TicketState:
-				maid.enemy_state_machine.change_state("ChasePlayerState")
+		if not is_instance_valid(maid) or maid.is_dead:
+			continue
+		maid.persist = false
+		if not won:
+			_send_off(maid)
+		elif maid.enemy_state_machine.current_state is TicketState:
+			# A won sweep's stragglers (the clock ran out) stay as ordinary maids.
+			maid.enemy_state_machine.change_state("ChasePlayerState")
 	var p := _player()
 	if p == null or p.is_dead:
 		return

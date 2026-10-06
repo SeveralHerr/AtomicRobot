@@ -215,7 +215,16 @@ func test_job_defense_tickets_every_car_is_a_miss() -> String:
 	r = _T.assert_eq(d.tickets, 2, "both cars ticketed")
 	if r != "":
 		return r
-	return _T.assert_true(d.cars.all(func(car): return car.ticketed), "slips on both cars")
+	r = _T.assert_true(d.cars.all(func(car): return car.ticketed), "slips on both cars")
+	if r != "":
+		return r
+	# Their work done, the squad walks off instead of piling onto the player.
+	var squad: Array = d.maids.filter(func(m): return is_instance_valid(m))
+	r = _T.assert_true(squad.all(func(m): return not m.is_in_group("enemies")), "squad off the fight")
+	if r != "":
+		return r
+	var gone: bool = await _until(func(): return d.maids.all(func(m): return not is_instance_valid(m)), 3.0)
+	return _T.assert_true(gone, "squad faded off the street")
 
 
 func test_job_defense_squad_down_with_a_clean_car_wins() -> String:
