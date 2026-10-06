@@ -12,6 +12,10 @@ const GROUP := &"parked_cars"
 const CAR_BLUE := preload("res://images/new/Car_Blue.png")
 const CAR_RED := preload("res://images/new/Car_Red.png")
 const TICKET_SFX := preload("res://sounds/tap.wav")
+## The tap is also the banners' typing blip: pitched down and louder it reads as a
+## slip slapped on glass, not as text.
+const TICKET_PITCH := 0.6
+const TICKET_DB := 4.0
 ## Lane the cars park on: the road lane next to the curb.
 const LANE := 1
 ## The sprite's offset inside the node, as car.tscn (tyres land on road_y()).
@@ -91,6 +95,8 @@ func ticket(word: bool = true) -> void:
 		ComicPopup.spawn(self, global_position + Vector2(0, -26), &"ticket")
 	var s := AudioStreamPlayer2D.new()
 	s.stream = TICKET_SFX
+	s.pitch_scale = TICKET_PITCH
+	s.volume_db = TICKET_DB
 	add_child(s)
 	s.play()
 	s.finished.connect(s.queue_free)
