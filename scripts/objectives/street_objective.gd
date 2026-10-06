@@ -33,6 +33,10 @@ const WIN_STING := preload("res://sounds/Unlock.wav")
 ## burst sits — so it is glanced, not read; the card's stamp keeps the result up.
 const WIN_HOLD := 1.8
 const MISS_HOLD := 2.2
+const HEART := preload("res://scenes/atomic_heart_pickup.tscn")
+## Where the heart lands from the player: just ahead, on the walkway line (as the
+## door finale's heart: 26 px above the floor).
+const HEART_LAND := Vector2(56.0, -26.0)
 
 ## Report name (Globals.objective_finished, autoplay events).
 @export var id: String = "objective"
@@ -42,6 +46,10 @@ const MISS_HOLD := 2.2
 ## Seconds the player has once the job is on.
 @export var time_limit: float = 12.0
 @export var reward_points: int = 500
+## A win also knocks an atomic heart loose onto the walkway: a reason to bother with a
+## side job besides points, and its fights cost health that the boss fight (health
+## carries over) would otherwise collect. Off: points only.
+@export var reward_heart: bool = true
 
 var phase: Phase = Phase.WAITING
 var time_left: float = 0.0
@@ -129,6 +137,8 @@ func finish(won: bool) -> void:
 	if won:
 		ScoreSystem.award(reward_points)
 		_play_sting()
+		if reward_heart:
+			_drop_heart()
 	if hud != null:
 		hud.close(won, _stamp_word(won))
 	_payoff(won)
@@ -154,6 +164,25 @@ func _player() -> Player:
 	if is_instance_valid(player):
 		return player
 	return get_tree().get_first_node_in_group("player") as Player
+
+
+## The heart pops up off the player and bounces down onto the walkway ahead of them.
+func _drop_heart() -> void:
+	var p := _player()
+	var scene := get_tree().current_scene
+	if p == null or scene == null or p.lane_floor_y == INF:
+		return
+	var heart: Node2D = HEART.instantiate()
+	scene.add_child(heart)
+	heart.global_position = p.global_position + Vector2(0, -40)
+	var ahead := float(signi(p.scale.x)) if p.scale.x != 0.0 else 1.0
+	var land := Vector2(p.global_position.x + HEART_LAND.x * ahead, p.lane_floor_y + HEART_LAND.y)
+	# Not collectable mid-air: it spawns on the player and read as an instant heal.
+	var area: Area2D = heart.get_node("Area2D")
+	area.set_deferred("monitoring", false)
+	var tw := heart.create_tween()
+	tw.tween_property(heart, "global_position", land, 0.6).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+	tw.tween_callback(area.set_deferred.bind("monitoring", true))
 
 
 func _play_sting() -> void:
