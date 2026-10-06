@@ -34,6 +34,7 @@
 [ext_resource type="PackedScene" path="res://scenes/end_card.tscn" id="900_endcard"]
 [ext_resource type="Script" path="res://scripts/cutscene/street_cutscenes.gd" id="901_cutscenes"]
 [ext_resource type="Script" path="res://scripts/ambient_traffic.gd" id="902_traffic"]
+[ext_resource type="Script" path="res://scripts/objectives/street_objectives.gd" id="903_objectives"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("51_k4pk8")
@@ -384,6 +385,9 @@ script = ExtResource("901_cutscenes")
 
 [node name="AmbientTraffic" type="Node2D" parent="Managers"]
 script = ExtResource("902_traffic")
+
+[node name="StreetObjectives" type="Node2D" parent="Managers"]
+script = ExtResource("903_objectives")
 
 [node name="LeafManager" parent="Managers" unique_id=487693304 groups=["leaf_manager"] instance=ExtResource("65_brcwu")]
 
