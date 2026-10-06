@@ -147,6 +147,12 @@ func _place() -> void:
 	_card.rotation = deg_to_rad(-1.5)
 
 
+## Pure: the stamp's centre on the card for a word `w` px wide — right-aligned
+## inside the border, low enough to leave most of the title.
+static func stamp_centre(w: float) -> Vector2:
+	return Vector2(SIZE.x - 12.0 - (w + 28.0) * 0.5, SIZE.y * 0.6)
+
+
 static func urgent(frac: float) -> bool:
 	return frac < URGENT
 
@@ -212,13 +218,15 @@ func _draw_pip(c: Control, at: Vector2, value: float) -> void:
 	c.draw_line(at + Vector2(6, 16), at + Vector2(20, 16), line, 2.5)
 
 
+## Slapped on the card's lower right, clear of the pips: they show WHICH targets
+## were saved, and a centred stamp covered them just as the result read.
 func _draw_stamp(c: Control) -> void:
 	var font: Font = ComicStyle.DISPLAY
 	var w := font.get_string_size(stamp, HORIZONTAL_ALIGNMENT_LEFT, -1, STAMP_PX).x
-	var box := Rect2(SIZE.x * 0.5 - w * 0.5 - 14, SIZE.y * 0.5 - 30, w + 28, 58)
+	var centre := stamp_centre(w)
+	var box := Rect2(-w * 0.5 - 14, -30, w + 28, 58)
 	var fill := ComicStyle.YELLOW if stamp_ok else ComicStyle.PAPER
-	c.draw_set_transform(SIZE * 0.5, deg_to_rad(-6.0), Vector2.ONE)
-	box.position -= SIZE * 0.5
+	c.draw_set_transform(centre, deg_to_rad(-6.0), Vector2.ONE)
 	c.draw_style_box(ComicStyle.box(fill, 4, 6, 4), box)
 	var at := Vector2(box.position.x + 14, box.position.y + 44)
 	var ink := ComicStyle.RED if stamp_ok else ComicStyle.INK

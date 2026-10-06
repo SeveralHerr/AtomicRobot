@@ -26,8 +26,9 @@ const START_HOLD := 1.4
 const PARK_AHEAD := 700.0
 ## A writing car this far from the player is off screen (zoom 2.5 shows +-256 px).
 const OFFSCREEN_DX := 230.0
-## Seconds after the end before the cars pull out (the payoff reads first).
-const LEAVE_DELAY := 1.2
+## Seconds past the payoff callout's hold before the cars pull out: at 1.2 s they
+## left under the burst, and the saved cars' glint with them.
+const LEAVE_AFTER_PAYOFF := 0.2
 
 ## Car centres (world x), parked on the road lane next to the curb.
 @export var car_xs: Array[float] = [3140.0, 3330.0, 3540.0]
@@ -289,7 +290,7 @@ func _payoff(won: bool) -> void:
 		announcer.callout(MISS_TITLE, MISS_SUB, MISS_TINT, false, MISS_HOLD)
 
 
-func _cleanup(_won: bool) -> void:
+func _cleanup(won: bool) -> void:
 	# The squad stays in the street as ordinary maids.
 	for maid in maids:
 		if is_instance_valid(maid) and not maid.is_dead:
@@ -301,4 +302,5 @@ func _cleanup(_won: bool) -> void:
 		return
 	for i in cars.size():
 		if is_instance_valid(cars[i]):
-			cars[i].drive_off(p.global_position.x, LEAVE_DELAY + i * 0.35, not cars[i].ticketed)
+			var delay := (WIN_HOLD if won else MISS_HOLD) + LEAVE_AFTER_PAYOFF + i * 0.35
+			cars[i].drive_off(p.global_position.x, delay, not cars[i].ticketed)

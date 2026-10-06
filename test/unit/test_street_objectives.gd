@@ -164,6 +164,17 @@ func test_job_card_arrow_points_at_off_screen_trouble_only() -> String:
 	return _T.assert_eq(MD.arrow_for(3000.0, [] as Array[float]), 0, "nothing to point at")
 
 
+## A win stamp leaves the three car pips readable (which cars were saved).
+func test_job_win_stamp_leaves_the_pips_readable() -> String:
+	var pips_end := 26.0 + 2 * 40.0 + 32.0
+	for word in ["+300", "+600", "+900"]:
+		var w := ComicStyle.DISPLAY.get_string_size(word, HORIZONTAL_ALIGNMENT_LEFT, -1, ObjectiveHud.STAMP_PX).x
+		var left := ObjectiveHud.stamp_centre(w).x - (w + 28.0) * 0.5
+		if left <= pips_end:
+			return "stamp %s starts at x %.0f, over the pips (end %.0f)" % [word, left, pips_end]
+	return ""
+
+
 func test_job_traffic_avoids_the_curb_lane_beside_parked_cars() -> String:
 	var r: String = _T.assert_eq(AmbientTraffic.road_lane(ParkedCar.LANE, true), ParkedCar.LANE + 1, "moved out")
 	if r != "":

@@ -32,7 +32,8 @@ const SHINE_HOP_PX := 6.0
 ## Brightening, not a gold multiply: gold times the blue paint read as murky green.
 const SHINE_TINT := Color(1.8, 1.7, 1.3)
 ## Scraps of a torn-up ticket (a blow knocked the maid off it).
-const TEAR_BITS := 14
+## Sized for play zoom: 2-3.5 px scraps were lost under the hit flash.
+const TEAR_BITS := 18
 ## Half the view at zoom 2.5 plus a car length: a car this far from the player is gone.
 const OFFSCREEN_PX := 256.0 + 2.0 * Car.HALF_LEN
 
@@ -108,16 +109,16 @@ func tear() -> void:
 	p.emitting = true
 	p.explosiveness = 1.0
 	p.amount = TEAR_BITS
-	p.lifetime = 0.9
+	p.lifetime = 1.1
 	p.direction = Vector2.UP
 	p.spread = 70.0
-	p.initial_velocity_min = 60.0
-	p.initial_velocity_max = 130.0
+	p.initial_velocity_min = 80.0
+	p.initial_velocity_max = 170.0
 	p.gravity = Vector2(0, 260)
 	p.angular_velocity_min = -540.0
 	p.angular_velocity_max = 540.0
-	p.scale_amount_min = 2.0
-	p.scale_amount_max = 3.5
+	p.scale_amount_min = 4.0
+	p.scale_amount_max = 6.0
 	var ink := Gradient.new()
 	ink.offsets = PackedFloat32Array([0.0, 0.7])
 	ink.colors = PackedColorArray([ComicStyle.PAPER, ComicStyle.ORANGE])
@@ -135,18 +136,17 @@ func shine() -> void:
 	hop.tween_property(sprite, "position:y", SPRITE_AT.y, 0.25).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 
 
-## Pull out and drive off away from the player at `px`, then free. A `saved` car
-## glints and hops first.
+## Pull out after `delay` and drive off away from the player at `px`, then free. A
+## `saved` car glints and hops at once — with the win, not later under its burst.
 func drive_off(px: float, delay: float = 0.0, saved: bool = false) -> void:
 	progress = 0.0
 	var x := global_position.x
 	var dir := leave_dir(x, px)
 	sprite.flip_h = dir > 0
+	if saved:
+		shine()
 	var tw := create_tween()
 	tw.tween_interval(delay)
-	if saved:
-		tw.tween_callback(shine)
-		tw.tween_interval(0.4)
 	var leave := tw.tween_property(self, "global_position:x", x + dir * LEAVE_PX, LEAVE_S)
 	leave.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tw.tween_callback(queue_free)
