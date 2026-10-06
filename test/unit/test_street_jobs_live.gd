@@ -395,10 +395,13 @@ func test_job_running_flag_spans_the_job_and_clears_on_end_and_death() -> String
 	r = _T.assert_false(StreetObjective.any_running(_tree()), "finished")
 	if r != "":
 		return r
-	var c := _chase()
-	_make(c)
-	c.start(_p)
-	c._on_player_death()
+	# A second job on the same stage: a second _make would leak this stage's player.
+	var d2 := _defense()
+	d2.maid_count = 0
+	_stage.add_child(d2)
+	d2._park(0.0)
+	d2.start(_p)
+	d2._on_player_death()
 	return _T.assert_false(StreetObjective.any_running(_tree()), "a death ends it too")
 
 
