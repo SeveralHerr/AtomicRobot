@@ -16,6 +16,8 @@ class_name StreetObjectives
 const JOBS := [
 	{"on": true, "script": preload("res://scripts/objectives/snatch_chase.gd"),
 		"props": {"trigger_x": 1820.0, "keys_x": 1700.0, "flee_dir": -1}},
+	{"on": true, "script": preload("res://scripts/objectives/meter_defense.gd"),
+		"props": {"trigger_x": 2990.0, "car_xs": [3140.0, 3330.0, 3540.0]}},
 ]
 
 ## Off for every job (a test or scenario that must not meet one).

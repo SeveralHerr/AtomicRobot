@@ -108,7 +108,8 @@ func _spawn(p: Player) -> void:
 	var dir := pick_direction(-1 if _rng.randf() < 0.5 else 1, view_x, half, speed, street_min_x, street_max_x)
 	if dir == 0:
 		return
-	var lane := _rng.randi_range(Lanes.GROUND_LANE + 1, Lanes.FRONT_LANE)
+	var lane := road_lane(_rng.randi_range(Lanes.GROUND_LANE + 1, Lanes.FRONT_LANE),
+		_parked_near(view_x, half))
 	_car = CAR.instantiate()
 	_car.rng = _rng
 	# The engine is the audio half of the telegraph: heard (panned to its side) from
@@ -117,6 +118,22 @@ func _spawn(p: Player) -> void:
 	_car.get_node("VisibleOnScreenEnabler2D").free()
 	add_child(_car)
 	_car.launch(lane, Vector2(spawn_x(view_x, half, dir, speed), Car.road_y(p, lane)), dir, speed)
+
+
+## `rolled`, unless cars are parked at the curb nearby (a MeterDefense job): then
+## never the curb lane, or the car would drive straight through them. Same RNG draws
+## either way, so seeded runs keep their later rolls.
+static func road_lane(rolled: int, curb_parked: bool) -> int:
+	if curb_parked and rolled == ParkedCar.LANE:
+		return ParkedCar.LANE + 1
+	return rolled
+
+
+func _parked_near(view_x: float, half: float) -> bool:
+	for c in get_tree().get_nodes_in_group(ParkedCar.GROUP):
+		if absf((c as Node2D).global_position.x - view_x) < half + FAR_MARGIN:
+			return true
+	return false
 
 
 ## Free the car once it has left, and keep its warning on the entry edge.
