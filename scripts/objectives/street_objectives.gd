@@ -14,7 +14,9 @@ class_name StreetObjectives
 ##   x 2361 door and its crates, well short of the x 4018 intersection.
 
 const JOBS := [
-	{"on": true, "script": preload("res://scripts/objectives/snatch_chase.gd"),
+	# THIEF! is off until the user approves it (review 2026-10-05); its code and unit
+	# tests stay, so flipping this back to true is the whole change.
+	{"on": false, "script": preload("res://scripts/objectives/snatch_chase.gd"),
 		"props": {"trigger_x": 1820.0, "keys_x": 1640.0, "flee_dir": -1}},
 	{"on": true, "script": preload("res://scripts/objectives/meter_defense.gd"),
 		"props": {"trigger_x": 2990.0, "car_xs": [3140.0, 3330.0, 3540.0]}},
