@@ -25,11 +25,22 @@ Tests: `test_street_objectives.gd` (rules, table, door-arena placement), `test_s
 - Job stripes sit at EncounterAnnouncer.JOB_STRIPE_Y (0.44): at the door's 0.36 they covered the card.
 - A bot-unwinnable chase is a balance smell: size the gap (getaway sprint) and speed so steady
   walking closes it in ~half the clock; the juke-then-tire rule keeps lane matching meaningful.
+- A running job is a scripted fight for AmbientTraffic (`StreetObjective.RUNNING` group,
+  `AmbientTraffic.scripted_fight`): parked cars push lane-1 traffic onto the squad's lane.
+- A miss must not cost health: a missed squad walks off and fades instead of mobbing.
+- Card pips map one to one to targets in street order and show live progress; a centred
+  stamp hid them as the result read (stamp sits lower right). A clock that is only a
+  backstop stays off the card (`show_time = false`).
+- Props that leave (cars) go AWAY from the player and must end off screen; a fixed
+  direction drove through the fight and vanished mid-screen.
+- ComicPopup clamps into view: an off-screen event's word at the screen edge is a cue,
+  not a clipping bug.
 - New maid spawns draw from the global RNG and shift every later seeded roll: rerun
   full_run_mortal; a won job's heart refunds the health its fights cost before the boss.
 
 ## Validate
 Four windowed scenarios (win/miss per job, `snap_every 0.25-0.5`) + contact sheets per round,
-one `--resolution 1688x780` round, one `crt on` round; GIFs cut from `--record` mp4s (trim/concat,
+one `--resolution 1688x780` round, one `crt on` round, one mortal seed sweep (job win
+rate, hits taken inside it); GIFs cut from `--record` mp4s (trim/concat,
 fps 12, width 440-460, 80 colours keeps them < 4 MB). Re-extract a suspect frame at full size:
 adjacent tiles faked two overlapping parked cars.
