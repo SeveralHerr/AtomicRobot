@@ -102,6 +102,17 @@ func _on_squad_cleared() -> void:
 	_sting.play()
 
 
+## A one-off callout with no encounter behind it (street side jobs, StreetObjective):
+## the same stripe/burst, one-at-a-time rule and HUD duck as the door's callouts.
+## `hold` < 0 holds for the shared reading time of the words.
+func callout(title: String, sub: String, tint: Color, burst: bool = false, hold: float = -1.0) -> void:
+	if hold < 0.0:
+		hold = ReadingTime.seconds(title + " " + sub) - SLAM_IN
+	var y := CLEAR_Y if burst else STRIPE_Y
+	var k := CLEAR_SIZE_K if burst else SIZE_K
+	_slam(title, sub, y, k, hold, tint, burst)
+
+
 ## Slam a callout centred at `y` (fraction of screen height) at scale `k`; `burst`
 ## for a starburst instead of a stripe. Both the stripe and the bursts land on the
 ## power-up timer stack (down to ~y 340 with both buffs up), and there is no room

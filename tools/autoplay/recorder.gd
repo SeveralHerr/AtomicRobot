@@ -84,6 +84,9 @@ var watching := false:
 		watching = on
 ## Street cut scenes that started this run.
 var cutscenes := 0
+## Street side jobs (StreetObjective) won / missed this run.
+var objectives_won := 0
+var objectives_lost := 0
 
 var _player_id: int = 0
 var _last_hp: int = 0
@@ -112,6 +115,12 @@ func _ready() -> void:
 	Globals.unlocked.connect(func(what: String, _description: String) -> void:
 		log_event("unlock", {"what": what}))
 	Globals.secret_found.connect(note_secret)
+	Globals.objective_finished.connect(func(id: String, ok: bool) -> void:
+		if ok:
+			objectives_won += 1
+		else:
+			objectives_lost += 1
+		log_event("objective", {"id": id, "success": ok, "x": _last_snap.get("player", {}).get("x", 0.0)}))
 	ScoreSystem.stage_finished.connect(func(result: Dictionary) -> void:
 		var keep := {}
 		for k in ["total", "rank", "street_score", "boss_score", "time_bonus", "no_damage_bonus",
@@ -320,6 +329,7 @@ func metrics(tree: SceneTree) -> Dictionary:
 		"secret_walls": secret_walls.size(), "secret_news": secret_news.size(),
 		"headlines": headlines.size(), "cutscenes": cutscenes,
 		"car_hits": car_hits,
+		"objectives_won": objectives_won, "objectives_lost": objectives_lost,
 		"step_failures": step_failures.size(),
 		"errors": errors.script_errors, "engine_errors": errors.engine_errors,
 		"warnings": errors.warnings,

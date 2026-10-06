@@ -59,7 +59,8 @@ const BRAIN_GOALS := ["advance", "clear", "monkey"]
 const METRICS := ["t", "frames", "scene", "x", "y", "lane", "hp", "max_hp", "state", "kills",
 	"damage_taken", "hits_taken", "heals", "powerups", "deaths", "won", "boss_reached", "enemies_near",
 	"max_stuck_s", "stuck_spots", "step_failures", "errors", "engine_errors", "warnings", "score", "boss_hp",
-	"secret_walls", "secret_news", "headlines", "cutscenes", "car_hits"]
+	"secret_walls", "secret_news", "headlines", "cutscenes", "car_hits",
+	"objectives_won", "objectives_lost"]
 ## Metrics compared as text (== / != only); every other metric needs a number.
 const TEXT_METRICS := ["scene", "state"]
 

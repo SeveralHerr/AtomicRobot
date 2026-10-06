@@ -220,6 +220,13 @@ func register_player_damaged() -> void:
 	_reset_combo()
 
 
+## Flat points for finishing a street side job (StreetObjective). Not multiplied by the
+## combo: the job is its own reward, and a combo already pays the fight inside it.
+func award(points: int) -> void:
+	if running and points > 0:
+		_add(points)
+
+
 func _add(points: int) -> void:
 	score += points
 	score_changed.emit(score)

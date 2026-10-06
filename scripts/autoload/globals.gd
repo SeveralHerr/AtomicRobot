@@ -14,6 +14,9 @@ signal gust(position: Vector2, range: float)
 ## A secret was claimed: kind "wall" (cracked wall's orb taken) or "news" (stand read).
 ## `id` is unique per secret in its level (node path) so repeats can be ignored.
 signal secret_found(kind: String, id: String)
+## A street side job (StreetObjective) ended: `id` names it, `success` is the outcome.
+## Emitted exactly once per job; a death mid-job emits it with success false.
+signal objective_finished(id: String, success: bool)
 
 ## Party Code (typed on the title): every meter maid bursts into confetti on defeat.
 ## Lasts the whole boot (survives game over / back to title), never saved, not a secret.
