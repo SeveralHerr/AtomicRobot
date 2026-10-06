@@ -266,6 +266,24 @@ func test_job_defense_hit_maid_fights_then_goes_back_to_the_cars() -> String:
 	return _T.assert_true(ok, "left alone, she goes back to writing")
 
 
+## Knocking a writer off her car tears the ticket up (scraps), so the blow pays off.
+func test_job_defense_blow_tears_up_the_ticket_being_written() -> String:
+	var d := _defense()
+	d.maid_count = 1
+	d.ticket_seconds = 30.0
+	_make(d)
+	d._park(0.0)
+	d.start(_p)
+	var ok: bool = await _until(func(): return d.cars.any(func(c): return c.progress > 0.0), 6.0)
+	if not ok:
+		return "she never started writing"
+	var car: ParkedCar = d.cars.filter(func(c): return c.progress > 0.0)[0]
+	d.maids[0].receive_hit(1)
+	await _tree().process_frame
+	await _tree().process_frame
+	return _T.assert_true(car.get_node_or_null("TornTicket") != null, "scraps burst off the slip")
+
+
 ## The card's pips follow the cars one to one: a ticket on the far car lit the FIRST
 ## pip, and a ticket being written off screen showed nowhere on the card.
 func test_job_defense_pips_track_each_car() -> String:

@@ -150,6 +150,20 @@ func test_job_cars_leave_away_from_the_player_and_out_of_view() -> String:
 	return ""
 
 
+## The card arrow names the nearest trouble only while it is off screen.
+func test_job_card_arrow_points_at_off_screen_trouble_only() -> String:
+	var r: String = _T.assert_eq(MD.arrow_for(3000.0, [3540.0, 3900.0] as Array[float]), 1, "squad off to the right")
+	if r != "":
+		return r
+	r = _T.assert_eq(MD.arrow_for(3000.0, [3150.0, 2500.0] as Array[float]), 0, "nearest one on screen")
+	if r != "":
+		return r
+	r = _T.assert_eq(MD.arrow_for(3000.0, [2600.0] as Array[float]), -1, "behind")
+	if r != "":
+		return r
+	return _T.assert_eq(MD.arrow_for(3000.0, [] as Array[float]), 0, "nothing to point at")
+
+
 func test_job_traffic_avoids_the_curb_lane_beside_parked_cars() -> String:
 	var r: String = _T.assert_eq(AmbientTraffic.road_lane(ParkedCar.LANE, true), ParkedCar.LANE + 1, "moved out")
 	if r != "":

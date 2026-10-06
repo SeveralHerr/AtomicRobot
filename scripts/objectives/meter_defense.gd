@@ -210,6 +210,9 @@ func _watch_grudge(maid: Enemy, delta: float) -> void:
 		_hp[maid] = maid.health
 		_grudge[maid] = grudge_seconds
 		if sm.current_state is TicketState:
+			var writing: ParkedCar = (sm.current_state as TicketState).car
+			if writing != null and is_instance_valid(writing):
+				writing.tear()
 			sm.change_state("ChasePlayerState")
 		return
 	if not _grudge.has(maid):
@@ -234,15 +237,29 @@ func pip_values() -> PackedFloat32Array:
 
 ## Point the card at the nearest car a maid is writing on, while it is off screen:
 ## standing back at the start of the row, the tickets landed where nobody saw them.
+## Before any ticket is started it points at the squad marching in, so the empty
+## street after the callout says where the trouble comes from.
 func _arrow_to_writing() -> int:
-	var best := INF
-	var dir := 0
+	var xs: Array[float] = []
 	for car in cars:
 		if is_instance_valid(car) and car.progress > 0.0:
-			var dx := car.global_position.x - player.global_position.x
-			if absf(dx) < best:
-				best = absf(dx)
-				dir = signi(dx)
+			xs.append(car.global_position.x)
+	if xs.is_empty():
+		for maid in maids:
+			if is_instance_valid(maid) and not maid.is_dead:
+				xs.append(maid.global_position.x)
+	return arrow_for(player.global_position.x, xs)
+
+
+## Pure: the side of the nearest of `xs` from the player at `px`, 0 when it is on screen
+## (or there is none).
+static func arrow_for(px: float, xs: Array[float]) -> int:
+	var best := INF
+	var dir := 0
+	for x in xs:
+		if absf(x - px) < best:
+			best = absf(x - px)
+			dir = signi(x - px)
 	return dir if best > OFFSCREEN_DX else 0
 
 

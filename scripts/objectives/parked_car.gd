@@ -29,7 +29,10 @@ const CURB_SLOT := 6.0
 const LEAVE_S := 1.8
 const LEAVE_PX := 760.0
 const SHINE_HOP_PX := 6.0
-const SHINE_TINT := Color(1.7, 1.45, 0.6)
+## Brightening, not a gold multiply: gold times the blue paint read as murky green.
+const SHINE_TINT := Color(1.8, 1.7, 1.3)
+## Scraps of a torn-up ticket (a blow knocked the maid off it).
+const TEAR_BITS := 14
 ## Half the view at zoom 2.5 plus a car length: a car this far from the player is gone.
 const OFFSCREEN_PX := 256.0 + 2.0 * Car.HALF_LEN
 
@@ -93,7 +96,38 @@ static func leave_dir(x: float, px: float) -> int:
 	return 1 if x >= px else -1
 
 
-## Glint gold and hop on the springs.
+## The ticket being written is torn up: paper scraps burst off the slip. A blow that
+## knocks the writer off a car otherwise only made the slip vanish — no payoff.
+func tear() -> void:
+	if progress <= 0.0:
+		return
+	var p := CPUParticles2D.new()
+	p.name = "TornTicket"
+	p.position = METER_AT
+	p.one_shot = true
+	p.emitting = true
+	p.explosiveness = 1.0
+	p.amount = TEAR_BITS
+	p.lifetime = 0.9
+	p.direction = Vector2.UP
+	p.spread = 70.0
+	p.initial_velocity_min = 60.0
+	p.initial_velocity_max = 130.0
+	p.gravity = Vector2(0, 260)
+	p.angular_velocity_min = -540.0
+	p.angular_velocity_max = 540.0
+	p.scale_amount_min = 2.0
+	p.scale_amount_max = 3.5
+	var ink := Gradient.new()
+	ink.offsets = PackedFloat32Array([0.0, 0.7])
+	ink.colors = PackedColorArray([ComicStyle.PAPER, ComicStyle.ORANGE])
+	ink.interpolation_mode = Gradient.GRADIENT_INTERPOLATE_CONSTANT
+	p.color_initial_ramp = ink
+	p.finished.connect(p.queue_free)
+	add_child(p)
+
+
+## Glint and hop on the springs.
 func shine() -> void:
 	_shine = 1.0
 	var hop := create_tween()
