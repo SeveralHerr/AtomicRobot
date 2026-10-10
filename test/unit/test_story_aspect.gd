@@ -248,3 +248,22 @@ func test_16_10_layout_is_unchanged() -> String:
 				if CutsceneShots.clamp_center(s["at"], s["zoom"], view) != s["at"]:
 					return "%s shot %s re-aimed at 16:10" % [id, s["at"]]
 	return r
+
+
+## A taller screen shows more sky: on every shot, the part showing under the top bar
+## must stay inside the street's art (main.tscn's play camera limit_top = the sky
+## layer's top). The 130px bar hides the strip above it.
+func test_every_shot_stays_inside_the_sky_at_every_aspect() -> String:
+	var main: Node = (load(MAIN) as PackedScene).instantiate()
+	var sky_top := float((main.get_node("Player/Camera2D") as Camera2D).limit_top)
+	main.free()
+	for size in WINDOWS:
+		var view := await _window(size)
+		for id: String in CutsceneShots.SCENES:
+			for s: Dictionary in CutsceneShots.scene(id)["shots"]:
+				var z: float = s["zoom"]
+				var at := CutsceneShots.clamp_center(s["at"], z, view)
+				var top := at.y - CutsceneShots.half_view(z, view).y + MicroCutscene.TOP_BAR / z
+				if top < sky_top:
+					return "%s: %s shot %s shows y %.0f, above the sky's top %.0f" % [size, id, s["at"], top, sky_top]
+	return ""
