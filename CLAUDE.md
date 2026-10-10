@@ -111,7 +111,10 @@ Global signals for major game events:
 
 ### Physics Configuration
 
-- Viewport: 1280x800 with canvas item stretching
+- Viewport: 1280x800 design, canvas_items stretch, aspect `expand` (4:3 cabinet -> 1280x960 canvas,
+  phone -> ~1731x800). Lay UI out from `get_visible_rect()` + anchors, never a 1280x800 const.
+  `python tools/aspect_sweep.py` plays a tour at 5 sizes -> states x aspects sheet (`skills/godot-aspect-fill`).
+  Headless gets 1280x800 (`Utils.fit_headless_root`); tests wanting another aspect set `root.size`.
 - Physics layers: Player (1), Ground (2), Enemy (3), Platforms (6), Wall (7)
 - Input: WASD + Arrow keys, F (Attack), E (Interact), Shift (Run), C (Crouch)
 
@@ -178,7 +181,9 @@ Immediately before implementing any prompts set up the following tasks as a chec
 
 Ensure the area that will be changed has approrpriate characterization tests making it safe to refactor.
 Ensure characterization tests pass before starting any refactoring.
-Prove a new bug test can fail: `git stash push <fixed file>`, run with `--filter`, `git stash pop`.
+Prove a new bug test can fail: copy the fixed file to scratch, `git checkout -- <file>`, run with `--filter`,
+copy it back. Never `git stash`: the stash list is shared by every worktree, and two fan-out agents
+popped each other's stashes. Never `taskkill /IM` Godot either - kill only PIDs you started.
 
 ## Make it easy to change (which may be hard)
 
@@ -250,6 +255,8 @@ against Shorts UI zones and at half size — thumbnails hid a clipped HUD for 2 
 Autoplay writes scores/unlocks to scratch saves (`user://autoplay_*.cfg`); a run that
 touched the real `user://scores.cfg` polluted the player's high-score table — keep tools off it.
 Parallel worktrees share `user://`, so a test touching user files can flake under fan-out.
+Fan-out agents leave log.md/CLAUDE.md to the coordinator (5 appenders conflict on merge); have them
+put log notes in their report. Split fan-outs by screen/area, give each the shared brief file.
 
 Cut scenes / anything camera-led: validate on contact sheets of windowed snaps
 (`python tools/contact_sheet.py <run> <t0> <t1>`, MCP `contact_sheet`) per scene, and a
