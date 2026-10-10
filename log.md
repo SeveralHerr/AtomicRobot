@@ -640,3 +640,7 @@ Log of skills that might have been useful for a given response, and why (short f
 - Cut scenes: `StreetCutscenes.seen` never reset per run; Arch/Council lost on busy streets (4/9 won bot runs). Each level load replays (user's call); waiting scenes force at FORCE_AFTER. 9/9 after.
 - Audio: door-mouth crumble/rustle reused looping footstep files through `SecretFx.play_once` (frees on `finished`, never sent by a loop): 46 stuck players by wave 3. One-shot copies now.
 - Used: pi-game-deploy (enhancement: native-build launcher template), derive-the-list idea for the looping-sound test. `tools/mutate.py`: patterns must avoid `\n` (CRLF files report MISSING).
+## 2026-10-10 — TICKET SWEEP! moved to the arch
+- Cars + 3 new meters at the arch (6460/6595/6730), between door 6080's arena and door 6949's trigger; job waits for the arch cut scene; doors hold while a job has the street (BUSY through the payoff). THIEF! removed. Derived placement/timing tests caught a car 1 px inside a locked arena. Autoplay `job_overlap_s` metric + job/door_fight events. 10 validation rounds; mortal sweep 13/15 (main 12/15).
+- Used: godot-street-objective (enhancement: added a "Timing against neighbours" section), godot-autoplay-test (enhancement: note the runner pauses steps during cut scenes, so a bot can't test skipping). Would have helped: a "godot-timeline-check" skill (job/door/cutscene interval overlap from autoplay events) — now the job_overlap_s metric.
+- MCP: none used directly (python tools); a `timeline` param on godot-tests run_autoplay would help.
