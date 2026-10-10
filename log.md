@@ -683,3 +683,7 @@ Log of skills that might have been useful for a given response, and why (short f
 - Launch reel: human-style take (human_footage.patch, 3-way) on the shipped build, 7 cuts, 10 review rounds -> 10.3 s 1080x1920 (9.5 MB); artifact https://claude.ai/artifact/Wq9gtzNttFP7hozaGGBXwc (download + post copy + db `decisions` post pick). Video not committed.
 - Used: playthrough-video-review (record/watch/artifact steps; enhancement: a "feature announcement" mode — short reel instead of a full review), godot-youtube-shorts (build/review scripts), social-reel-post (review_keys zone union). Created skill godot-feature-announce (announcement beat shape, rail-crop formula, audio headroom).
 - MCP: none used/new.
+## 2026-10-10 — TICKET SWEEP! ticketing made readable + reel v4
+- Writers were hidden behind the car body; now write at the car's meter past its tail, facing the car; landed ticket arcs onto the windshield (FLY_S) then TICKET!; hop; squad spawns 200 px past the cars (was 320). 5 new tests, 4 guards mutation-killed. Gate: unit 1112, autoplay 23/23, sandbox 12/12, audits ok; mortal sweep 15/15 (main 12/15). Merged to main c9e8e34, not pushed.
+- Reel re-recorded on the edited build: hook + one panned 2x shot (writing -> TICKET! -> fight -> CARS SAVED! 2 of 3) + CTA, 10.9 s.
+- Used: godot-feature-announce (enhancement: "if the reel can't show the feature, fix the feature's readability first"), godot-youtube-shorts. MCP: none.

@@ -19,6 +19,11 @@ announcement and the footage recipe for one specific feature. Never commit video
   feature runs longest and something goes wrong once (a stake beat: here one car got TICKET!).
   Movie Maker time == game time: the recorded report's event `t` indexes the footage.
 
+## 1b. If the footage can't show it, fix the feature
+- User: "it doesn't show enough of the maids trying to ticket". The cause was in-game (writers
+  drawn behind the car body), not the edit. Check the feature's own readability at 2x before
+  cutting around it; fix + test + re-record (TICKET SWEEP! c9e8e34).
+
 ## 2. Clear clips first (user: "just show off clear video snippets of the feature")
 - Every clip in ONE 1080x800 box at `GAME_Y = 560`, cropped at an exact integer scale:
   `cw 1080` (1x, wide: banners, a whole row) or `cw 540, ch 400` (2x, close: the action).
