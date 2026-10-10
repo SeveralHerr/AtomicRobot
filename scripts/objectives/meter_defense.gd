@@ -16,7 +16,10 @@ const START_TITLE := "TICKET SWEEP!"
 const START_SUB := "THEY'RE AFTER THE CUSTOMERS' CARS!"
 const WIN_TITLE := "CARS SAVED!"
 const WIN_SUB_ALL := "NOT ONE TICKET!"
-const WIN_SUB_SOME := "%d OF %d DRIVE OFF FREE"
+## A partial save pays per clean car but drops no heart (user, 2026-10-10: a heart for
+## 1 of 3 read as a reward for failing) — and says so, so the rule is learnable.
+const PARTIAL_TITLE := "%d OF %d SAVED"
+const PARTIAL_SUB := "SAVE THEM ALL FOR A HEART"
 const MISS_TITLE := "TICKETED!"
 const MISS_SUB := "EVERY LAST CAR. OUCH."
 const STAMP_MISS := "TICKETED"
@@ -76,6 +79,11 @@ static func pops_word(ticketed: int, total: int) -> bool:
 
 
 ## Pure: the clean cars pay out.
+## Pure: only a clean sweep (not one ticket) earns the heart.
+static func heart_for(ticketed: int) -> bool:
+	return ticketed == 0
+
+
 static func reward_for(ticketed: int, total: int, per_car: int) -> int:
 	return maxi(total - ticketed, 0) * per_car
 
@@ -314,15 +322,21 @@ func _end() -> void:
 	finish(outcome(tickets, cars.size()))
 
 
+func _earns_heart() -> bool:
+	return heart_for(tickets)
+
+
 func _stamp_word(won: bool) -> String:
 	return super(won) if won else STAMP_MISS
 
 
 func _payoff(won: bool) -> void:
 	if won:
-		var clean := cars.size() - tickets
-		var sub := WIN_SUB_ALL if tickets == 0 else WIN_SUB_SOME % [clean, cars.size()]
-		announcer.callout(WIN_TITLE, sub, WIN_TINT, true, WIN_HOLD)
+		if tickets == 0:
+			announcer.callout(WIN_TITLE, WIN_SUB_ALL, WIN_TINT, true, WIN_HOLD)
+		else:
+			var title := PARTIAL_TITLE % [cars.size() - tickets, cars.size()]
+			announcer.callout(title, PARTIAL_SUB, WIN_TINT, true, WIN_HOLD)
 	else:
 		announcer.callout(MISS_TITLE, MISS_SUB, MISS_TINT, false, MISS_HOLD)
 

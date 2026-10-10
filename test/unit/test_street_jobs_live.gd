@@ -421,3 +421,28 @@ func test_job_defense_writer_turns_to_her_car_from_the_left() -> String:
 	var car: ParkedCar = d.cars.filter(func(c): return c.progress > 0.0)[0]
 	var maid: Enemy = d.maids[0]
 	return _T.assert_eq(maid.facing, int(signf(car.global_position.x - maid.global_position.x)), "she faces her car")
+
+
+## A partial save pays per clean car but drops no heart: a heart for 1 of 3 read as a
+## reward for failing.
+func test_job_partial_save_pays_but_drops_no_heart() -> String:
+	var c := _defense()
+	c.ticket_seconds = 30.0
+	_make(c)
+	c._park(0.0)
+	var before := _tree().get_nodes_in_group("atomic_hearts").size()
+	c.start(_p)
+	await _until(func(): return c.maids.size() == 2)
+	c.on_ticket(c.cars[0])
+	await _tree().process_frame
+	for m in c.maids:
+		m.receive_hit(99)
+	await _until(func(): return not _ended.is_empty())
+	var r: String = _T.assert_eq(_ended, [true], "a clean car still wins the job")
+	if r != "":
+		return r
+	r = _T.assert_eq(c.reward_points, c.points_per_car, "pays for the one clean car")
+	if r != "":
+		return r
+	await _tree().process_frame
+	return _T.assert_eq(_tree().get_nodes_in_group("atomic_hearts").size(), before, "no heart for a partial save")

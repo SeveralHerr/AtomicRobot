@@ -173,7 +173,7 @@ func finish(won: bool) -> void:
 	if won:
 		ScoreSystem.award(reward_points)
 		_play_sting()
-		if reward_heart:
+		if reward_heart and _earns_heart():
 			_drop_heart()
 	if hud != null:
 		hud.close(won, _stamp_word(won))
@@ -196,6 +196,11 @@ func _on_player_death() -> void:
 	_cleanup(false)
 	Globals.objective_finished.emit(id, false)
 	finished.emit(false)
+
+
+## Whether this win knocks the heart loose (reward_heart on). Subclasses narrow it.
+func _earns_heart() -> bool:
+	return true
 
 
 func _release_street() -> void:

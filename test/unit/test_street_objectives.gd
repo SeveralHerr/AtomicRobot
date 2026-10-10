@@ -208,3 +208,10 @@ func _world_x(n: Node) -> float:
 			x += (n as Node2D).position.x
 		n = n.get_parent()
 	return x
+
+
+func test_job_defense_heart_only_for_a_clean_sweep() -> String:
+	for pair in [[0, true], [1, false], [2, false], [3, false]]:
+		if MD.heart_for(pair[0]) != pair[1]:
+			return "%d tickets: heart %s" % [pair[0], MD.heart_for(pair[0])]
+	return ""
