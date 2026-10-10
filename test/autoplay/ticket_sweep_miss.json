@@ -1,6 +1,7 @@
 {
   "seed": 2,
   "timeout": 90,
-  "steps": ["god on", "teleport 2700", "kill_all", "walk_to 3000 6", "wait 22"],
-  "expect": ["errors == 0", "step_failures == 0", "objectives_won == 0", "objectives_lost == 1"]
+  "steps": ["god on", "teleport 6300", "kill_all", "walk_to 6430 6", "wait 22"],
+  "expect": ["errors == 0", "step_failures == 0", "objectives_won == 0", "objectives_lost == 1", "engine_errors == 0",
+             "job_overlap_s == 0"]
 }

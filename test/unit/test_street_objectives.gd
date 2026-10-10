@@ -6,7 +6,6 @@ extends RefCounted
 
 var _T
 const SO = preload("res://scripts/objectives/street_objective.gd")
-const SC = preload("res://scripts/objectives/snatch_chase.gd")
 const MD = preload("res://scripts/objectives/meter_defense.gd")
 
 
@@ -47,54 +46,9 @@ func test_job_watchdog_fires_only_past_the_slack() -> String:
 	return _T.assert_true(SO.overdue(10.0 + SO.WATCHDOG_SLACK, 10.0), "slack spent")
 
 
-func test_job_thief_escapes_only_far_enough_her_way() -> String:
-	var r: String = _T.assert_false(SC.escaped(4000.0, 4880.0, -1, 1000.0), "880 px west: still in reach")
-	if r != "":
-		return r
-	r = _T.assert_true(SC.escaped(3880.0, 4880.0, -1, 1000.0), "1000 px west: gone")
-	if r != "":
-		return r
-	return _T.assert_false(SC.escaped(5880.0, 4880.0, -1, 1000.0), "knocked the wrong way is not an escape")
 
 
-func test_job_one_blow_or_a_death_catches_the_thief() -> String:
-	var r: String = _T.assert_false(SC.caught(12, 12, false), "untouched")
-	if r != "":
-		return r
-	r = _T.assert_true(SC.caught(9, 12, false), "one blow")
-	if r != "":
-		return r
-	return _T.assert_true(SC.caught(12, 12, true), "a car got her")
 
-
-func test_job_weave_never_stays_put_and_never_takes_the_walkway() -> String:
-	for current in range(Lanes.BACK_LANE, Lanes.FRONT_LANE + 1):
-		for roll in 12:
-			var l := ThiefState.next_weave_lane(current, roll)
-			if l == current or l == Lanes.GROUND_LANE or not Lanes.is_valid_lane(l):
-				return "from lane %d roll %d -> %d" % [current, roll, l]
-	return ""
-
-
-func test_job_thief_tires_with_every_juke_but_never_stops() -> String:
-	var r: String = _T.assert_gt(ThiefState.flee_speed(0), ThiefState.flee_speed(2), "jukes wind her")
-	if r != "":
-		return r
-	r = _T.assert_eq(ThiefState.flee_speed(99), ThiefState.MIN_SPEED, "floor")
-	if r != "":
-		return r
-	# A chase must always be winnable on foot: the player walks at 170 px/s.
-	return _T.assert_gt(170.0, ThiefState.flee_speed(0), "slower than the player")
-
-
-func test_job_thief_jukes_only_at_a_close_same_lane_threat() -> String:
-	var r: String = _T.assert_true(ThiefState.threatened(-80.0, true), "close behind on her lane")
-	if r != "":
-		return r
-	r = _T.assert_false(ThiefState.threatened(-80.0, false), "other lane")
-	if r != "":
-		return r
-	return _T.assert_false(ThiefState.threatened(-300.0, true), "far behind")
 
 
 func test_job_defense_any_clean_car_wins_and_pays_per_car() -> String:

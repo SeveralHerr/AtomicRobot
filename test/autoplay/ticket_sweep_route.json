@@ -1,0 +1,11 @@
+{
+ "name": "ticket_sweep_route",
+ "boot": true,
+ "character": "Ryan",
+ "seed": 3,
+ "timeout": 220,
+ "steps": ["menu 40", "god on", "teleport 5800", "brain advance 90 6560", "brain clear 45",
+   "wait 3", "brain advance 120 7400", "wait 2"],
+ "expect": ["cutscenes >= 2", "objectives_won == 1", "job_overlap_s == 0",
+   "errors == 0", "engine_errors == 0", "step_failures == 0", "max_stuck_s < 15"]
+}

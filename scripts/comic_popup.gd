@@ -77,13 +77,6 @@ const KINDS := {
 		"style": &"orange", "anim": &"pop", "cooldown": 0.3, "life": 0.7, "size": 0.8,
 		"exit": &"shrink",
 	},
-	# A street side job's thief grabbing the keys (SnatchChase), cream like TICKET!:
-	# a maid's doing, not the player's.
-	&"snatch": {
-		"words": ["YOINK!"],
-		"style": &"cream", "anim": &"pop", "cooldown": 0.0, "life": 0.9, "size": 1.0,
-		"from": 1.2,
-	},
 	&"secret": {
 		"words": ["SECRET!"],
 		"style": &"gold", "anim": &"pop", "cooldown": 0.0, "life": 1.4, "size": 1.35,

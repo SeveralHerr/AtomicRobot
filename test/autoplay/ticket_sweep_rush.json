@@ -1,0 +1,7 @@
+{
+  "seed": 2,
+  "timeout": 120,
+  "steps": ["god on", "teleport 6300", "kill_all", "walk_to 6440 6", "wait 1.5",
+            "walk_to 6900 6", "wait 4", "assert job_overlap_s == 0", "brain clear 60", "wait 3"],
+  "expect": ["errors == 0", "engine_errors == 0", "step_failures == 0", "job_overlap_s == 0"]
+}

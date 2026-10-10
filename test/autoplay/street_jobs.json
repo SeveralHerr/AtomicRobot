@@ -1,9 +1,8 @@
 {
   "seed": 2,
   "timeout": 120,
-  "steps": ["god on", "teleport 1500", "kill_all", "lane 2", "walk_to 1840 6", "walk_to 2200 6",
-            "wait 3", "assert objectives_lost == 0", "assert objectives_won == 0",
-            "teleport 2700", "kill_all", "walk_to 3000 6", "wait 2.5", "walk_to 3330 4",
-            "brain clear 40", "wait 4"],
-  "expect": ["errors == 0", "step_failures == 0", "objectives_won == 1", "objectives_lost == 0"]
+  "steps": ["god on", "teleport 6300", "kill_all", "lane 2", "walk_to 6440 6", "wait 2.5",
+            "walk_to 6590 4", "brain clear 40", "wait 4"],
+  "expect": ["errors == 0", "step_failures == 0", "objectives_won == 1", "objectives_lost == 0",
+             "job_overlap_s == 0"]
 }

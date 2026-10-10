@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://scenes/building_door_encounter.tscn" id="12_g6llg"]
 [ext_resource type="Shader" uid="uid://fc8uls4asel3" path="res://shaders/sway.gdshader" id="14_4mrnk"]
 [ext_resource type="Texture2D" uid="uid://ds6dn0qq2gslf" path="res://images/new/Black_Trashcan.png" id="17_6gmga"]
+[ext_resource type="PackedScene" uid="uid://dj5v0xinrjdvu" path="res://scenes/meter.tscn" id="18_meter"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_64moy"]
 shader = ExtResource("14_4mrnk")
@@ -99,6 +100,18 @@ position = Vector2(5000, -69)
 
 [node name="Lamp5" parent="." unique_id=976476167 instance=ExtResource("8_55yfn")]
 position = Vector2(4379, -69)
+
+[node name="ArchMeter1" parent="." unique_id=1907316402 instance=ExtResource("18_meter")]
+z_index = 1
+position = Vector2(4649, -28)
+
+[node name="ArchMeter2" parent="." unique_id=1907316403 instance=ExtResource("18_meter")]
+z_index = 1
+position = Vector2(4784, -28)
+
+[node name="ArchMeter3" parent="." unique_id=1907316404 instance=ExtResource("18_meter")]
+z_index = 1
+position = Vector2(4919, -28)
 
 [node name="Tree8" parent="." unique_id=1716645664 instance=ExtResource("10_56tje")]
 position = Vector2(3550, -84)

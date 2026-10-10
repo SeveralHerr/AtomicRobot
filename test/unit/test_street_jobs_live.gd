@@ -73,102 +73,26 @@ func _until(cond: Callable, seconds: float = 3.0) -> bool:
 	return cond.call()
 
 
-func _chase() -> SnatchChase:
-	var c := SnatchChase.new()
-	c.trigger_x = 5000.0
-	c.keys_x = 4880.0
-	c.spawn_dist = 60.0
-	return c
 
 
-func test_job_chase_starts_on_the_mark_and_the_thief_grabs_the_keys() -> String:
-	var c := _chase()
-	_make(c)
-	_p.global_position.x = 4990.0
-	await _tree().process_frame
-	await _tree().process_frame
-	var r: String = _T.assert_eq(c.phase, StreetObjective.Phase.WAITING, "short of the mark")
-	if r != "":
-		return r
-	r = _T.assert_true(is_instance_valid(c.keys), "keys lie on the walkway before the job")
-	if r != "":
-		return r
-	_p.global_position.x = 5010.0
-	var ok: bool = await _until(func(): return c.phase == StreetObjective.Phase.RUNNING)
-	if not ok:
-		return "job never started past the mark (event=%s cutscene=%s floor=%s)" % [
-			Globals.event_active(), MicroCutscene.playing, _p.lane_floor_y]
-	ok = await _until(func(): return c.grabbed)
-	if not ok:
-		return "thief never grabbed the keys"
-	r = _T.assert_true(c.keys.get_parent() == c.thief, "she carries them")
-	if r != "":
-		return r
-	return _T.assert_true(c.thief.enemy_state_machine.current_state is ThiefState, "she is the thief")
 
 
-func test_job_chase_one_blow_wins_once_and_pays() -> String:
-	var c := _chase()
-	_make(c)
-	await _tree().process_frame  # ScoreSystem stops scoring on the stage swap first
-	ScoreSystem.running = true
-	var before := ScoreSystem.score
-	c.start(_p)
-	await _until(func(): return c.grabbed)
-	c.thief.receive_hit(1)
+
+func test_job_defense_runs_out_of_time_with_clean_cars_and_wins() -> String:
+	var d := _defense()
+	d.ticket_seconds = 30.0
+	_make(d)
+	d._park(0.0)
+	d.time_limit = 0.3
+	d.start(_p)
 	var ok: bool = await _until(func(): return not _ended.is_empty())
-	ScoreSystem.running = false
-	if not ok:
-		return "blow never ended the chase"
-	var r: String = _T.assert_eq(_ended, [true], "won exactly once")
-	if r != "":
-		return r
-	r = _T.assert_eq(_reports, [["snatch_chase", true]], "reported once")
-	if r != "":
-		return r
-	r = _T.assert_eq(ScoreSystem.score - before, c.reward_points, "paid the reward")
-	if r != "":
-		return r
-	return _T.assert_true(c.thief.enemy_state_machine.current_state is ChasePlayerState, "she turns on the player")
-
-
-func test_job_chase_thief_escaping_is_a_miss_and_she_leaves() -> String:
-	var c := _chase()
-	_make(c)
-	c.start(_p)
-	await _until(func(): return c.grabbed)
-	c.thief.global_position.x = c.keys_x - c.escape_dist - 5.0
-	var ok: bool = await _until(func(): return not _ended.is_empty())
-	if not ok:
-		return "escape never ended the chase"
-	var r: String = _T.assert_eq(_ended, [false], "missed once")
-	if r != "":
-		return r
-	return _T.assert_true(await _until(func(): return not is_instance_valid(c.thief)), "she fades off the street")
-
-
-func test_job_chase_clock_waits_for_the_grab() -> String:
-	var c := _chase()
-	c.spawn_dist = 400.0
-	_make(c)
-	c.start(_p)
-	await _tree().process_frame
-	await _tree().process_frame
-	return _T.assert_eq(c.time_left, c.time_limit, "no time lost before she has the keys")
-
-
-func test_job_chase_runs_out_of_time() -> String:
-	var c := _chase()
-	_make(c)
-	c.time_limit = 0.3
-	c.start(_p)
-	var ok: bool = await _until(func(): return not _ended.is_empty())
-	return _T.assert_true(ok and _ended == [false], "clock ran out: a miss (%s)" % [_ended])
+	return _T.assert_true(ok and _ended == [true], "clock ran out, cars clean: a win (%s)" % [_ended])
 
 
 func test_job_death_mid_job_ends_it_quietly_once() -> String:
-	var c := _chase()
+	var c := _defense()
 	_make(c)
+	c._park(0.0)
 	c.start(_p)
 	await _tree().process_frame
 	c._on_player_death()
@@ -181,9 +105,10 @@ func test_job_death_mid_job_ends_it_quietly_once() -> String:
 
 
 func test_job_watchdog_ends_a_job_whose_rules_never_close() -> String:
-	var c := _chase()
-	c.spawn_dist = 3000.0  # she never reaches the keys: the clock never starts
+	var c := _defense()
+	c.ticket_seconds = 30.0  # nobody ever finishes a ticket: only the watchdog can close it
 	_make(c)
+	c._park(0.0)
 	c.start(_p)
 	c._age = c.time_limit + SO.WATCHDOG_SLACK
 	var ok: bool = await _until(func(): return not _ended.is_empty())
@@ -357,12 +282,17 @@ func test_job_defense_one_maid_per_car() -> String:
 
 
 func test_job_win_knocks_a_heart_loose_that_lands_before_it_heals() -> String:
-	var c := _chase()
+	var c := _defense()
+	c.ticket_seconds = 30.0
 	_make(c)
+	c._park(0.0)
 	var before := _tree().get_nodes_in_group("atomic_hearts").size()
 	c.start(_p)
-	await _until(func(): return c.grabbed)
-	c.thief.receive_hit(1)
+	await _until(func(): return c.maids.size() == 2)
+	await _tree().process_frame
+	await _tree().process_frame
+	for m in c.maids:
+		m.receive_hit(99)
 	await _until(func(): return not _ended.is_empty())
 	var hearts := _tree().get_nodes_in_group("atomic_hearts")
 	var r: String = _T.assert_eq(hearts.size(), before + 1, "one heart for the win")
@@ -406,8 +336,10 @@ func test_job_running_flag_spans_the_job_and_clears_on_end_and_death() -> String
 
 
 func test_job_finish_pays_and_reports_only_once() -> String:
-	var c := _chase()
+	var c := _defense()
+	c.maid_count = 0
 	_make(c)
+	c._park(0.0)
 	c.start(_p)
 	c.finish(true)
 	c.finish(false)
@@ -418,13 +350,15 @@ func test_job_finish_pays_and_reports_only_once() -> String:
 	return _T.assert_eq(_reports.size(), 1, "reported once")
 
 
-## The distance purge (Enemy.is_too_far) would free a fleeing thief or a ticketing
-## maid the player walked away from — and the job would read her vanishing as a win.
+## The distance purge (Enemy.is_too_far) would free a ticketing maid the player
+## walked away from — and the job would read her vanishing as a win.
 func test_job_actors_are_never_purged_for_distance() -> String:
-	var c := _chase()
+	var c := _defense()
+	c.ticket_seconds = 30.0
 	_make(c)
+	c._park(0.0)
 	c.start(_p)
-	var ok: bool = await _until(func(): return is_instance_valid(c.thief) and c.thief.is_inside_tree())
+	var ok: bool = await _until(func(): return c.maids.size() == 2 and c.maids.all(func(m): return m.is_inside_tree()))
 	if not ok:
-		return "no thief"
-	return _T.assert_true(c.thief.persist, "thief persists while she runs")
+		return "no squad"
+	return _T.assert_true(c.maids.all(func(m): return m.persist), "the squad persists while it writes")

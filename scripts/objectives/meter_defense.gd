@@ -31,7 +31,7 @@ const OFFSCREEN_DX := 230.0
 const LEAVE_AFTER_PAYOFF := 0.2
 
 ## Car centres (world x), parked on the road lane next to the curb.
-@export var car_xs: Array[float] = [3140.0, 3330.0, 3540.0]
+@export var car_xs: Array[float] = [6460.0, 6595.0, 6730.0]
 @export var maid_count: int = 3
 ## A missed sweep's squad walks off this far, fading, over SEND_OFF_S.
 const SEND_OFF_PX := 140.0
@@ -58,7 +58,7 @@ var _grudge := {}
 
 func _init() -> void:
 	id = "meter_defense"
-	trigger_x = 2990.0
+	trigger_x = 6410.0
 	time_limit = 40.0
 
 
@@ -244,6 +244,11 @@ func _send_off(maid: Enemy) -> void:
 	var px := player.global_position.x if is_instance_valid(player) else maid.global_position.x - trigger_dir
 	var away := 1.0 if maid.global_position.x >= px else -1.0
 	maid.face_towards(maid.global_position.x + away * 100.0)
+	# Stay in the physics space, touching nothing: a disabled body is REMOVED from it by
+	# default, and the tween below moving it logged 'body->get_space() is null'.
+	maid.disable_mode = CollisionObject2D.DISABLE_MODE_KEEP_ACTIVE
+	maid.collision_layer = 0
+	maid.collision_mask = 0
 	maid.process_mode = Node.PROCESS_MODE_DISABLED
 	# She walks off frozen otherwise: the clip runs while her body is switched off.
 	maid.animated_sprite_2d.process_mode = Node.PROCESS_MODE_PAUSABLE

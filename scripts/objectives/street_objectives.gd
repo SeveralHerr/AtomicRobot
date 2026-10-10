@@ -8,18 +8,15 @@ class_name StreetObjectives
 ## Placement: each job owns a stretch of street OUTSIDE every door's arena (pinned by
 ## test_job_no_job_triggers_inside_a_door_arena) — door arenas cover 69-709, 2041-2681,
 ## 4487-5127, 5172-5812, 5760-6400, 6629-7269 and 7455-8095.
-## - SnatchChase: the keys lie on the corner of the first intersection (1587-2027);
-##   the thief flees back west past the scaffolds to the first door's breach.
-## - MeterDefense: parks by the BuildingGroup1 meters (x 3069-3618), right after the
-##   x 2361 door and its crates, well short of the x 4018 intersection.
+## - MeterDefense (TICKET SWEEP!): the arch, between the x 6080 hedge door (arena to
+##   6400) and the x 6949 hedge door (trigger from ~6839) — the bare stretch the arch
+##   cut scene (trigger 6250) pans over. The cars are parked before the reveal, the job
+##   waits for the cut scene, and the next door holds while the job has the street
+##   (StreetObjective.BUSY). Meters: BuildingGroup3/ArchMeter1-3, one behind each car.
 
 const JOBS := [
-	# THIEF! is off until the user approves it (review 2026-10-05); its code and unit
-	# tests stay, so flipping this back to true is the whole change.
-	{"on": false, "script": preload("res://scripts/objectives/snatch_chase.gd"),
-		"props": {"trigger_x": 1820.0, "keys_x": 1640.0, "flee_dir": -1}},
 	{"on": true, "script": preload("res://scripts/objectives/meter_defense.gd"),
-		"props": {"trigger_x": 2990.0, "car_xs": [3140.0, 3330.0, 3540.0]}},
+		"props": {"trigger_x": 6410.0, "car_xs": [6460.0, 6595.0, 6730.0], "after_cutscene": "arch"}},
 ]
 
 ## Off for every job (a test or scenario that must not meet one).
