@@ -74,6 +74,10 @@ const TUNE_SECONDS := 0.45
 var focus := 0.0: set = _set_focus
 
 var _tune: Tween
+## Viewport size `resolution` (and FOCUS's) is authored for: the project's 16:10 base.
+var _design := Vector2(
+	ProjectSettings.get_setting("display/window/size/viewport_width", 1280),
+	ProjectSettings.get_setting("display/window/size/viewport_height", 800))
 var _layer: CanvasLayer
 var _rect: ColorRect
 var _material: ShaderMaterial
@@ -101,6 +105,18 @@ func _ready() -> void:
 	_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_rect.material = _material
 	_layer.add_child(_rect)
+	# Stretch aspect "expand" grows the canvas on one axis (4:3 cabinet: 1280x960).
+	get_viewport().size_changed.connect(_push.bind("resolution"))
+	_push("resolution")
+
+
+## The grid `grid` (authored for `design`) on a visible canvas of `view`: grown per
+## axis with the canvas, so each CRT cell stays the same square (2.5 canvas px at
+## 512x320) at any aspect instead of stretching tall on 4:3 or wide on 16:9.
+static func grid_for(grid: Vector2, view: Vector2, design: Vector2) -> Vector2:
+	if design.x <= 0.0 or design.y <= 0.0:
+		return grid
+	return grid * view / design
 
 
 func _process(_delta: float) -> void:
@@ -137,6 +153,8 @@ func _push(param: String) -> void:
 	var value: Variant = get(param)
 	if FOCUS.has(param) and focus > 0.0:
 		value = lerp(value, FOCUS[param], focus)
+	if param == "resolution" and is_inside_tree():
+		value = grid_for(value, get_viewport().get_visible_rect().size, _design)
 	_material.set_shader_parameter(param, value)
 
 
