@@ -23,7 +23,12 @@ announcement and the footage recipe for one specific feature. Never commit video
 - Every clip in ONE 1080x800 box at `GAME_Y = 560`, cropped at an exact integer scale:
   `cw 1080` (1x, wide: banners, a whole row) or `cw 540, ch 400` (2x, close: the action).
   No `zoom` punches and no other `cw` — non-integer scaling smears pixel art.
-- Fewer, longer clips (4 + CTA, ~8 s); one short caption per clip at y 400 (kicker y 270).
+- As few cuts as possible (user: "too many clips, hard to follow"): a 1x hook shot, ONE
+  continuous 2x shot of the whole feature (rule -> fight -> payoff), the CTA. Captions may change
+  inside the shot (one per phase) — cuts are what lose the viewer, not captions.
+- The game camera follows the player, so a fixed 2x crop clips bursts at both edges: give the
+  shot `"pan": [(seg_t, x_centre), ...]` (build_short eases between keys with smoothstep).
+  Read keys off a 4 fps grid of the shot; hold a key until a burst at the edge has faded.
 - End each caption one frame before its cut (`t1 - 1/60`): build_short's cut lands a frame
   before the text's `between()` window closes. Start clips after the game's own banner/burst
   has text on it (an empty banner stripe or blank starburst reads as a glitch on frame 1).
@@ -56,4 +61,4 @@ announcement and the footage recipe for one specific feature. Never commit video
   capability (fetch the published file → Blob → `downloads.save`), chapter buttons that seek,
   suggested post copy with copy buttons, and a Post it? Approve/Later card in db `decisions`
   (posting itself follows `skills/social-reel-post`, only after the user says yes).
-- Example spec: `example_ticket_sweep.py` (TICKET SWEEP! v2 — clean, integer-scale; raw = seed 1 take, `crt off`).
+- Example spec: `example_ticket_sweep.py` (TICKET SWEEP! v3 — hook + one panned shot + CTA, 9.1 s; raw = seed 1 take, `crt off`).

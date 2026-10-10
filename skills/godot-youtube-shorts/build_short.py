@@ -16,6 +16,21 @@ def pop(a, F, kind="pop"):
         return f"if(lt({d},0.12),{F}*(2.5-{d}*12.5),{F})"
     return str(F)
 
+def pan_x(s, cw):
+    """Crop left edge: fixed from `x`, or eased between `pan` keyframes [(seg_t, x_centre), ...]
+    so one continuous shot can follow action the game camera lets drift to an edge."""
+    keys = s.get("pan")
+    if not keys:
+        return s["x"] - cw // 2
+    expr = str(keys[-1][1] - cw // 2)
+    for (t0, x0), (t1, x1) in reversed(list(zip(keys, keys[1:]))):
+        k = f"(t-{t0})/{t1 - t0}"
+        ease = f"({k})*({k})*(3-2*({k}))"  # smoothstep: no jolt at either end of a move
+        expr = f"if(lt(t,{t1}),{x0 - cw // 2}+({x1 - x0})*{ease},{expr})"
+    expr = f"if(lt(t,{keys[0][0]}),{keys[0][1] - cw // 2},{expr})"
+    return "'" + expr.replace(",", "\,") + "'"
+
+
 parts, labels, t = [], [], 0.0
 os.makedirs("txt", exist_ok=True)
 for i, s in enumerate(SEGS):
@@ -29,7 +44,7 @@ for i, s in enumerate(SEGS):
         gy = s.get("y", 600)
     else:
         ch, cy = s.get("ch", 800), s.get("cy", 0)  # vertical crop: drop sky/road to dodge app UI
-        fg = f"crop={cw}:{ch}:{s['x'] - cw // 2}:{cy},scale=1080:{int(ch * 1080 / cw)}:flags=neighbor"
+        fg = f"crop={cw}:{ch}:{pan_x(s, cw)}:{cy},scale=1080:{int(ch * 1080 / cw)}:flags=neighbor"
         gy = GAME_Y
     if zoom:
         fg += (f",scale=w='iw*(1+{zoom}*exp(-t*10))':h='ih*(1+{zoom}*exp(-t*10))':eval=frame"

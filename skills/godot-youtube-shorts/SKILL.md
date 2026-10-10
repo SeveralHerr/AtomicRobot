@@ -51,7 +51,7 @@ Shared ffmpeg helpers live in `ffx.py` (used by review_short.py and `../godot-yo
 
 - Layout 1080x1920: blurred, darkened copy of the clip fills the frame; game crop (640 px wide → 1.69x, nearest-neighbour) at y 360; 2-line caption above (white setup line, big yellow/red punchline).
 
-- Per segment: `zoom` (punch-in on the cut), `speed` (0.5 slow-mo, atempo keeps pitch), `freeze` (tpad after `fps`, or the frozen tail is dropped), `full` + `cw` for the end card.
+- Per segment: `pan` [(seg_t, x_centre), ...] (eased crop pan: one continuous shot follows the action instead of cutting), `zoom` (punch-in on the cut), `speed` (0.5 slow-mo, atempo keeps pitch), `freeze` (tpad after `fps`, or the frozen tail is dropped), `full` + `cw` for the end card.
 
 - `cy`/`ch` crop the game frame vertically (default 0/800). src times snap to the 60 fps grid and each
   segment is trimmed to an exact frame count (fps used to drop ~1 frame per segment, drifting text cues).
