@@ -63,7 +63,9 @@ announcement and the footage recipe for one specific feature. Never commit video
 - Final encode for the artifact (15 MB file cap): `-b:v 8M -maxrate 9M -bufsize 16M`,
   audio `volume=-3dB,alimiter=limit=0.8` (-1.5 dB still peaked -0.3 after AAC; alimiter alone 0.0).
 - Artifact: `<video controls playsinline poster>`, a Download button using the `downloads`
-  capability (fetch the published file → Blob → `downloads.save`), chapter buttons that seek,
+  capability (fetch the published file → Blob → `downloads.save({filename, data})` — NEVER pass
+  `request`: it is only for answering a platform export token; with any other string every save
+  was refused and the user couldn't download the MP4), chapter buttons that seek,
   suggested post copy with copy buttons, and a Post it? Approve/Later card in db `decisions`
   (posting itself follows `skills/social-reel-post`, only after the user says yes).
 - Example spec: `example_ticket_sweep.py` (TICKET SWEEP! v3 — hook + one panned shot + CTA, 9.1 s; raw = seed 1 take, `crt off`).
