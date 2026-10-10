@@ -688,3 +688,4 @@ Log of skills that might have been useful for a given response, and why (short f
 - Reel re-recorded on the edited build: hook + one panned 2x shot (writing -> TICKET! -> fight -> CARS SAVED! 2 of 3) + CTA, 10.9 s.
 - Used: godot-feature-announce (enhancement: "if the reel can't show the feature, fix the feature's readability first"), godot-youtube-shorts. MCP: none.
 - 2026-10-10 follow-up: writers moved to lean over the trunk (METER_SLOT 34; user found the meter spot 'silly'); gate green, mortal sweep 15/15; main d81dd71, not pushed; reel v5 re-recorded (seed 2 take). Used: godot-feature-announce. MCP: none.
+- 2026-10-10 follow-up: heart only for a clean sweep (partial = per-car points, 'N OF 3 SAVED / SAVE THEM ALL FOR A HEART'); gate green, mortal sweep 15/15; reel v6 from a clean-sweep take. MCP: none.
