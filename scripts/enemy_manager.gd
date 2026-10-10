@@ -2,14 +2,10 @@ extends Node2D
 @onready var player: Player = $"../../Player"
 
 var spawn_timer: Timer
-var viewport_size: Vector2
 
 var is_event_active: bool = false
 
 func _ready():
-	# Get the viewport size
-	viewport_size = get_viewport_rect().size
-	
 	# Set up spawn timer
 	spawn_timer = Timer.new()
 	add_child(spawn_timer)
@@ -36,7 +32,7 @@ func _on_spawn_timer_timeout():
 	if not player.is_near_ground():
 		Utils.debug_log("player not near ground, skipping enemy spawn")
 		return
-	EnemySpawner.spawn_enemy(self, player, viewport_size, -50)
+	EnemySpawner.spawn_enemy(self, player, -50)
 	# Reset timer with new random interval
 	spawn_timer.wait_time = randf_range(10.0, 30.0)
 	spawn_timer.start()

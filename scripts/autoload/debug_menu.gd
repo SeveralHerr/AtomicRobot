@@ -110,7 +110,7 @@ func _spawn_wave() -> void:
 	var player := _player()
 	if player == null:
 		return
-	EnemySpawner.spawn_wave(get_tree().current_scene, player, get_viewport().get_visible_rect().size, 3)
+	EnemySpawner.spawn_wave(get_tree().current_scene, player, 3)
 
 
 func _spawn_car() -> void:

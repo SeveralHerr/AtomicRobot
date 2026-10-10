@@ -46,10 +46,9 @@ func _on_spawn_timer_timeout() -> void:
 	_spawn_enemy()
 
 func _spawn_enemy(force_right_spawn: bool = false) -> void:
-	var viewport_size = get_viewport_rect().size
 	if player:
 		# Scene root, not self — see the note in enemy_event.gd: spawn_enemy() sets
 		# global_position on an orphan, so a non-zero parent transform displaces it.
-		EnemySpawner.spawn_enemy(get_tree().current_scene, player, viewport_size, 0, force_right_spawn)
+		EnemySpawner.spawn_enemy(get_tree().current_scene, player, 0, force_right_spawn)
 		spawn_count += 1
 		

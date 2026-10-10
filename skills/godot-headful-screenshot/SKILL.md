@@ -53,6 +53,11 @@ The CRT overlay autoload is in the shot - judge legibility through it, it is wha
   capture driving the real handlers, run on both worktrees, PIL -> GIF (64 colours, 420 px
   keeps 6 s under 3 MB). Redirect saves first: `Globals.use_unlock_save("user://autoplay_cap_unlocks.cfg")`
   + `ScoreSystem.save_path` — a boss_death in a capture unlocks Robot in the REAL save.
+- Aspect "expand" (2026-10-10): zoom stays 2.5, so 4:3/5:4 add world ABOVE (bottom limit pinned)
+  and 16:9/phone add it at the SIDES (phone ~692 world px > a 640 px door arena -> centred).
+  Hunt for grey clear colour at the top with `teleport X -680` snaps at 1280x1024; the fix is a
+  per-level `limit_top` (main -808 = sky layer top, boss -504), pinned by `test_world_aspect.gd`.
+  Headless tests can set `get_tree().root.size = Vector2i(w, h)`: visible rect follows (64x64 -> 1280x1280).
 
 ## Phone-size rounds (verified 2026-10-03)
 - `--resolution 1688x780` on a throwaway `--script` SceneTree capture does NOT change the
