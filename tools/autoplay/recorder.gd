@@ -87,6 +87,11 @@ var cutscenes := 0
 ## Street side jobs (StreetObjective) won / missed this run.
 var objectives_won := 0
 var objectives_lost := 0
+## Seconds a street side job had the street (StreetObjective.any_busy) while a door
+## fight (Globals.event_active) or a cut scene was also live: timing collisions.
+var job_overlap_s := 0.0
+var _job_busy := false
+var _door_fight := false
 
 var _player_id: int = 0
 var _last_hp: int = 0
@@ -169,11 +174,27 @@ func sample(snap: Dictionary, tree: SceneTree) -> void:
 	_track_scene(tree)
 	_track_player(tree)
 	_track_kills(tree)
+	_track_jobs(tree)
 	_track_stuck(snap)
 	if snap_every > 0.0 and t >= _next_auto_snap:
 		_next_auto_snap = t + snap_every
 		# Frame-numbered: whole-second labels overwrote every sub-second snap.
 		snap("f%06d" % frames)
+
+
+## Logs `job` / `door_fight` on-off events (the street's timeline) and sums the
+## seconds they overlap each other or a cut scene.
+func _track_jobs(tree: SceneTree) -> void:
+	var busy := StreetObjective.any_busy(tree)
+	var fight := Globals.event_active()
+	if busy != _job_busy:
+		_job_busy = busy
+		log_event("job", {"on": busy, "x": roundi(_last_snap.get("player", {}).get("x", 0.0))})
+	if fight != _door_fight:
+		_door_fight = fight
+		log_event("door_fight", {"on": fight, "x": roundi(_last_snap.get("player", {}).get("x", 0.0))})
+	if busy and (fight or MicroCutscene.playing):
+		job_overlap_s += 1.0 / Engine.physics_ticks_per_second
 
 
 func _track_scene(tree: SceneTree) -> void:
@@ -330,6 +351,7 @@ func metrics(tree: SceneTree) -> Dictionary:
 		"headlines": headlines.size(), "cutscenes": cutscenes,
 		"car_hits": car_hits,
 		"objectives_won": objectives_won, "objectives_lost": objectives_lost,
+		"job_overlap_s": snappedf(job_overlap_s, 0.01),
 		"step_failures": step_failures.size(),
 		"errors": errors.script_errors, "engine_errors": errors.engine_errors,
 		"warnings": errors.warnings,

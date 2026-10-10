@@ -2,7 +2,7 @@ extends Node2D
 class_name StreetObjective
 
 ## A side job on the street: something to do other than walk right and clear the next
-## door — run down a thief, keep the meter maids off the customers' cars. Subclasses
+## door — keep the meter maids off the customers' cars (MeterDefense). Subclasses
 ## own the job's rules; this base owns the lifecycle every job shares:
 ##
 ##   WAITING --player crosses trigger_x on a quiet street--> RUNNING --> DONE
@@ -29,8 +29,8 @@ const WIN_TINT := ComicStyle.BLUE
 const MISS_TINT := ComicStyle.PLUM
 const WIN_STING := preload("res://sounds/Unlock.wav")
 ## Payoff holds: shorter than a door's STREET CLEAR! (reading time, ~3.5 s). The street
-## carries on under a job's payoff — the caught thief turns and fights right where the
-## burst sits — so it is glanced, not read; the card's stamp keeps the result up.
+## carries on under a job's payoff — a straggler keeps fighting right where the burst
+## sits — so it is glanced, not read; the card's stamp keeps the result up.
 const WIN_HOLD := 1.8
 const MISS_HOLD := 2.2
 const HEART := preload("res://scenes/atomic_heart_pickup.tscn")
@@ -41,6 +41,10 @@ const HEART_LAND := Vector2(56.0, -26.0)
 ## Jobs in this group are running (AmbientTraffic holds its clock for them, as for a
 ## door fight).
 const RUNNING := &"street_jobs_running"
+## Jobs in this group still have the street: running, or their payoff callout is still
+## up. A door fight waits this out — its WAVE stripe slammed over CARS SAVED! (each
+## announcer has its own banner) and its arena locked mid-job.
+const BUSY := &"street_jobs_busy"
 
 ## Report name (Globals.objective_finished, autoplay events).
 @export var id: String = "objective"
@@ -54,6 +58,10 @@ const RUNNING := &"street_jobs_running"
 ## side job besides points, and its fights cost health that the boss fight (health
 ## carries over) would otherwise collect. Off: points only.
 @export var reward_heart: bool = true
+## A street cut scene (CutsceneShots id) that must have played first, when cut scenes
+## are on: a job set on a landmark's stretch waits for the landmark's reveal instead of
+## its squad keeping the street from ever going quiet for it.
+@export var after_cutscene: String = ""
 
 var phase: Phase = Phase.WAITING
 var time_left: float = 0.0
@@ -78,6 +86,22 @@ static func should_start(px: float, mark: float, dir: int, cutscene: bool, event
 ## Any job running in `tree`.
 static func any_running(tree: SceneTree) -> bool:
 	return tree.get_first_node_in_group(RUNNING) != null
+
+
+## Any job running or still showing its payoff in `tree`.
+static func any_busy(tree: SceneTree) -> bool:
+	return tree.get_first_node_in_group(BUSY) != null
+
+
+## Seconds a finished job's payoff callout owns the screen (slam-in + hold).
+static func payoff_seconds(won: bool) -> float:
+	return EncounterAnnouncer.SLAM_IN + (WIN_HOLD if won else MISS_HOLD)
+
+
+## Pure: the job's landmark cut scene `scene_id` is out of the way — none asked for,
+## cut scenes off (tests, sandboxes, autoplay), or it has played (`seen`).
+static func cutscene_cleared(scene_id: String, cutscenes_on: bool, seen: Dictionary) -> bool:
+	return scene_id == "" or not cutscenes_on or seen.has(scene_id)
 
 
 static func in_window(px: float, mark: float, dir: int) -> bool:
@@ -107,8 +131,7 @@ func _process(delta: float) -> void:
 	if MicroCutscene.playing:
 		return
 	_age += delta
-	if _clock_running():
-		time_left = maxf(time_left - delta, 0.0)
+	time_left = maxf(time_left - delta, 0.0)
 	if hud != null:
 		hud.set_time(time_left / maxf(time_limit, 0.01))
 	_tick(delta)
@@ -116,7 +139,7 @@ func _process(delta: float) -> void:
 		return
 	if overdue(_age, time_limit):
 		finish(_watchdog_outcome())
-	elif time_left <= 0.0 and _clock_running():
+	elif time_left <= 0.0:
 		_on_time_up()
 
 
@@ -126,6 +149,7 @@ func start(p: Player) -> void:
 	player = p
 	phase = Phase.RUNNING
 	add_to_group(RUNNING)
+	add_to_group(BUSY)
 	time_left = time_limit
 	_age = 0.0
 	# A door's STREET CLEAR! still up would sit under this job's callout (each
@@ -144,6 +168,7 @@ func finish(won: bool) -> void:
 		return
 	phase = Phase.DONE
 	remove_from_group(RUNNING)
+	get_tree().create_timer(payoff_seconds(won), false).timeout.connect(_release_street)
 	success = won
 	if won:
 		ScoreSystem.award(reward_points)
@@ -163,6 +188,7 @@ func _on_player_death() -> void:
 		return
 	phase = Phase.DONE
 	remove_from_group(RUNNING)
+	_release_street()
 	if hud != null:
 		hud.dismiss()
 	if announcer != null:
@@ -170,6 +196,11 @@ func _on_player_death() -> void:
 	_cleanup(false)
 	Globals.objective_finished.emit(id, false)
 	finished.emit(false)
+
+
+func _release_street() -> void:
+	if is_inside_tree():
+		remove_from_group(BUSY)
 
 
 func _player() -> Player:
@@ -210,7 +241,7 @@ func _play_sting() -> void:
 
 ## Extra start condition on top of should_start (e.g. the lanes exist yet).
 func _ready_to_start(p: Player) -> bool:
-	return p.lane_floor_y != INF
+	return p.lane_floor_y != INF and cutscene_cleared(after_cutscene, StreetCutscenes.enabled, StreetCutscenes.seen)
 
 
 ## The job is on: spawn its actors, slam its callout, open the card.
@@ -221,11 +252,6 @@ func _begin() -> void:
 ## Per frame while running (after the clock).
 func _tick(_delta: float) -> void:
 	pass
-
-
-## False while the job's clock should hold (e.g. before the thief has grabbed anything).
-func _clock_running() -> bool:
-	return true
 
 
 func _on_time_up() -> void:

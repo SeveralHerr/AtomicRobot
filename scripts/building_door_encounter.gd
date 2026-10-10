@@ -127,6 +127,9 @@ var _plan: Array = []
 var _wave: int = 0
 var _spawn_index: int = 0
 var _announcer: EncounterAnnouncer
+## The player walked in while a street side job had the street (StreetObjective.BUSY):
+## the door holds until the job and its payoff are done, then fires if they're still in.
+var _held: Player
 
 
 ## Which lane the i-th enemy out of the door takes. Static and pure so it can be
@@ -190,6 +193,8 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	if _held != null and not _fired:
+		_release_hold()
 	if not _active or _spawning:
 		return
 	# Dropped on death, not on free: a corpse plays out ~3.5s of death clip and
@@ -220,6 +225,24 @@ func _is_alive(enemy) -> bool:
 func _on_body_entered(body: Node2D) -> void:
 	if _fired or body is not Player:
 		return
+	if StreetObjective.any_busy(get_tree()):
+		_held = body
+		return
+	_fire(body)
+
+
+## A held door goes once the street is the door's again — if the player is still in the
+## trigger; one who walked out is caught by body_entered on the way back in.
+func _release_hold() -> void:
+	if StreetObjective.any_busy(get_tree()):
+		return
+	var p := _held
+	_held = null
+	if is_instance_valid(p) and not p.is_dead and trigger.overlaps_body(p):
+		_fire(p)
+
+
+func _fire(body: Player) -> void:
 	_fired = true
 	player = body
 	# body_entered fires inside a physics callback — defer the monitoring change.
