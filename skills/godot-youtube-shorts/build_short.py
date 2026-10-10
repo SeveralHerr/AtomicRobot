@@ -19,7 +19,7 @@ def pop(a, F, kind="pop"):
 parts, labels, t = [], [], 0.0
 os.makedirs("txt", exist_ok=True)
 for i, s in enumerate(SEGS):
-    a, b = s["src"]
+    a, b = (round(v * 60) / 60 for v in s["src"])  # snap to the 60 fps frame grid: text cues land on the cut
     speed = s.get("speed", 1.0)
     dur = (b - a) / speed
     cw = s.get("cw", 720)
@@ -28,13 +28,15 @@ for i, s in enumerate(SEGS):
         fg = f"crop={s.get('cw', 1280)}:800,scale=1080:-2:flags=lanczos"
         gy = s.get("y", 600)
     else:
-        fg = f"crop={cw}:800:{s['x'] - cw // 2}:0,scale=1080:{int(800 * 1080 / cw)}:flags=neighbor"
+        ch, cy = s.get("ch", 800), s.get("cy", 0)  # vertical crop: drop sky/road to dodge app UI
+        fg = f"crop={cw}:{ch}:{s['x'] - cw // 2}:{cy},scale=1080:{int(ch * 1080 / cw)}:flags=neighbor"
         gy = GAME_Y
     if zoom:
         fg += (f",scale=w='iw*(1+{zoom}*exp(-t*10))':h='ih*(1+{zoom}*exp(-t*10))':eval=frame"
-               f",crop=1080:{int(800 * 1080 / cw)}")
+               f",crop=1080:{int(s.get('ch', 800) * 1080 / cw)}")
     freeze = s.get("freeze", 0)
-    tail = f",tpad=stop_mode=clone:stop_duration={freeze}" if freeze else ""
+    # pad then cut to an exact frame count: fps drops a frame at some segment ends, which drifts text cues
+    tail = f",tpad=stop_mode=clone:stop_duration={freeze + 0.1},trim=end_frame={round((dur + freeze) * 60)}"
     parts.append(
         f"[0:v]trim={a}:{b},setpts=(PTS-STARTPTS)/{speed},split[s{i}a][s{i}b];"
         f"[s{i}a]scale=-2:{H},crop={W}:{H},boxblur=30:3,eq=brightness=-0.25[bg{i}];"
