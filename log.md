@@ -640,3 +640,37 @@ Log of skills that might have been useful for a given response, and why (short f
 - Cut scenes: `StreetCutscenes.seen` never reset per run; Arch/Council lost on busy streets (4/9 won bot runs). Each level load replays (user's call); waiting scenes force at FORCE_AFTER. 9/9 after.
 - Audio: door-mouth crumble/rustle reused looping footstep files through `SecretFx.play_once` (frees on `finished`, never sent by a loop): 46 stuck players by wave 3. One-shot copies now.
 - Used: pi-game-deploy (enhancement: native-build launcher template), derive-the-list idea for the looping-sound test. `tools/mutate.py`: patterns must avoid `\n` (CRLF files report MISSING).
+
+## 2026-10-05 — social-reel-post skill
+- Used: skill-creator (enhance: skip subagent evals for skills that publish externally — offer dry-run evals instead).
+- Useful: godot-youtube-shorts (build/review pipeline reused), claude-in-chrome / chrome-browser (posting), artifact-design (approval page).
+- Wished existed: a footage index (which raw take + beat timestamps live where) — old scratchpads hold raw_h.mp4 with no index.
+
+## 2026-10-05 — select+intro reel: cover/thumbnail + approval page
+- User clip (22 s, 14 MB) → `reel_up.mp4` 7.4 MB; frame 0 = clipped mid-slam title, so built covers A (Cody) / B (locked "?") over 10 rounds; approval page https://claude.ai/artifact/3biU2NvuLJPGMatx2fFZ5D. Nothing posted yet.
+- Used: social-reel-post (enhance: §3b cover step + `cover.py`/`cover_review.py` added — it had no thumbnail step and assumed a 5-10 s self-built reel, not a user-supplied clip), artifact-design, chrome-browser (loaded early; posting waits on approval).
+- Wished existed: ffmpeg on PATH (only imageio_ffmpeg's binary; no ffprobe) — note in CLAUDE.md env.
+- Follow-up: posting run — YouTube draft saved private (cover B, captions); auto-mode classifier blocked the Visibility/Publish step, so no public posts. Lesson for social-reel-post: auto mode cannot publish; ask user to allow or do the final click.
+
+## 2026-10-05 — /social-reel: self-built reels A (Atomic Rage) / B (traffic double hit)
+- 10 validation rounds; approval page https://claude.ai/artifact/LAEcXCT7cVNmqQhQwXgwau. Nothing posted (awaits pick).
+- Used: social-reel-post (enhance: `review_keys.py` union-zone key frames + verified beat timestamps + "check who hit whom at 30 fps"), godot-youtube-shorts build_short (enhance: `cy`/`ch` vertical crop, frame-exact segments so text cues land on cuts), artifact-design.
+- Useful had it existed: a beat index JSON for raw_h.mp4 (hit/KO/flash times) so specs don't re-derive them; `/social-reel` alias (user typed it; skill is `social-reel-post`, not in session skill list).
+- MCP: none used/made — ffmpeg scripts were enough (YAGNI).
+- Follow-up: user asked for "advertisy" copy (power-ups/combat) -> 4 rendered copy options (A1/A2/B1/B2) on the same page. Used: social-reel-post (enhance: added "copy is an ad" rule + 2 rendered options per clip). Useful had it existed: a copy bank of verified feature claims (from powerup_rules.gd etc.) for ad lines.
+- Posting round 2: YouTube public (QeJp4D0rU60), Bluesky posted; TikTok+IG stalled (hidden MCP window blocks client-side video read). Skill platforms.md: Bluesky drop trick, Escape trap, brand-tag rule, hidden-window check. Repeated own "never close last tab" mistake once — rule now in SKILL.md.
+- Posting round 3: TikTok + Instagram posted once the Claude Chrome window was in front (root cause: Chrome defers media in never-shown tabs). Mis-tagged TikTok @robotatomicotattoo (a different shop, "Robot Atomico") on thin evidence, caught via IG look-alike, removed. Lesson: cross-check brand look-alikes before tagging. Skill: accounts, brand handles, visibility check, TikTok/IG click paths.
+
+## 2026-10-10 — /pi-game-deploy: audit cabinet "two of each game"
+- Read-only ssh audit. Ports = web (Chromium kiosk) + Native per game. Web Atomic Pinball: all 209 files 0 bytes (dead). `atomic-robot.prev` 101 MB leftover. No changes made.
+- Used: pi-game-deploy (enhance: `pi_audit` helper listing ports/launchers/sizes/empty files/last launches in one call; deploy-game.sh should refuse a build with 0-byte files — OneDrive cloud-only placeholders tar as empty).
+- Useful had it existed: `.env` in AtomicRobot (had to borrow atomic-pinball's); skill to retire a port (remove .sh + configs/ports + games dir + gamelist entry).
+- MCP: none used/made (YAGNI).
+- Follow-up: removed web ports (Atomic Pinball, Atomic Robot): ports .sh, configs/ports, ~/games dirs, atomic-robot.prev, gamelist entries; ES restarted, only (Native) left. Gamelist backup /tmp/gamelist.bak (tmpfs). Used: pi-game-deploy (enhance: add `retire-game.sh <slug>` doing exactly this).
+- Follow-up 2: renamed ports to "Atomic Pinball"/"Atomic Robot" (slugs stay *-native); gamelist updated, ES restarted. Fixed NAME in deploy_native.sh + pinball deploy-arm64.sh (+CLAUDE.md, pinball pi-native-export SKILL.md) so redeploy does not re-add "(Native)". Uncommitted. Used: pi-game-deploy (enhance: deploy-game.sh should delete any other ports/*.sh that runs the same slug).
+
+## 2026-10-10 — commit everything and ship
+- Dropped accidental editor drag in main.tscn (Background moved 237,-553; user OK'd revert); kept Godot uid/unique_id normalizations.
+- Gate before push: unit 1065/1065, autoplay full_run 2/2 PASS. Pushed main (CI deploys itch).
+- Used: none (enhance n/a). Useful had it existed: a `ship` skill — diff audit for stray editor transforms + gate + push in one step.
+- MCP: none used/made (YAGNI; godot-tests MCP would match bash).

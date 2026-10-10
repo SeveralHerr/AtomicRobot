@@ -11,6 +11,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   also sit in `Downloads\` — don't use them, the project targets 4.7.
 - Python 3.12 is installed user-scope (`python`, not `python3`). If a shell can't find
   it, it lives at `%LOCALAPPDATA%\Programs\Python\Python312\python.exe`.
+- ffmpeg is NOT on PATH (no ffprobe either): use `python -c "import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())"`
+  and `ffmpeg -i file` for probing.
 - After pulling changes that touch images/resources, run
   `godot --headless --path . --import` once to refresh the import/UID cache.
 - If lint reports `uid mismatch` errors (stale `uid://` refs after reimports), run
@@ -45,7 +47,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   `exclude_filter` drops unreferenced assets; `python tools/export_exclude_audit.py` must stay clean
   (`--write` re-derives the list after adding/removing assets).
 - Picade native (Linux arm64, no Chromium): `bash tools/picade/deploy_native.sh pie@<pi-ip>` exports
-  "Picade Native" and installs it as Ports > "Atomic Robot (Native)". Needs the 4.7.1 `linux_release.arm64` template.
+  "Picade Native" and installs it as Ports > "Atomic Robot". Needs the 4.7.1 `linux_release.arm64` template.
 
 
 ## Deep-dive docs (read these before non-trivial changes)
@@ -219,7 +221,8 @@ Always make the changes to the AGENTS.md with these changes. Update this very li
 
 ## Validation Loop 
 
-When doing an iteration or feature, take a screenshot and look for 3 things to improve. Do this 10 times. 
+When doing an iteration or feature, take a screenshot and look for 3 things to improve - focus on presentation, ux, and game juice. Do this 10 times. 
+
 Batch it: one throwaway SceneTree script captures every state of the feature per round,
 plus a `--resolution 1688x780` (landscape phone) round; review a PIL contact sheet.
 Drive the REAL flow (emit the real signal, e.g. `Globals.boss_death`) — calling an inner
@@ -246,6 +249,8 @@ point `--autoplay-out` at the scenario's own folder: the report overwrites a sam
 Shorts/vertical clips: one recorded take, cut many (`skills/godot-youtube-shorts`); review
 against Shorts UI zones and at half size — thumbnails hid a clipped HUD for 2 rounds. Marketing footage must look human-played
 (hits taken, whiffs) — main's god mode + plain bot read as a "perfect run"; never "we/our shop" copy.
+Reels (`/social-reel`, `skills/social-reel-post`): confirm WHO hit WHOM at 30 fps before captioning (an 8 fps
+sheet turned a sword KO into a false "car hit" line), and check the CTA cut at 60 fps — a 3-frame text lag hid in every sheet.
 
 Autoplay writes scores/unlocks to scratch saves (`user://autoplay_*.cfg`); a run that
 touched the real `user://scores.cfg` polluted the player's high-score table — keep tools off it.
