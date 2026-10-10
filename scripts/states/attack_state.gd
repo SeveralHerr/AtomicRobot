@@ -19,7 +19,11 @@ func enter_state(player: Player) -> void:
 	_swing(player)
 
 
+## Every swing (first, chained, or a new string) faces the held stick: mashing Attack
+## chains on the first cancellable frame, so a turn left to the recovery cancel never
+## got its frame and the facing stayed locked for the whole string.
 func _swing(player: Player) -> void:
+	player._handle_direction(Input.get_axis("ui_left", "ui_right"))
 	player.default_sprite.play("Attack", AttackChain.ANIM_SPEED)
 	player.default_sprite.set_frame_and_progress(0, 0.0)
 	SfxPitch.play(player.attack_audio, chain.step)
@@ -90,9 +94,9 @@ func _on_frame_changed(player: Player) -> void:
 		trigger_attack(player)
 	if chain.should_chain(sprite.frame, _hit_frame()):
 		chain.advance()
+		_swing(player)
 		if not _airborne:
 			player.velocity.x = player.last_dir * AttackChain.LUNGE
-		_swing(player)
 
 
 ## The follow-through is cancellable (Player.try_change_lane asks before a lane step).
