@@ -205,14 +205,17 @@ text = "RUN"
 [node name="PauseButton" type="CenterContainer" parent="." unique_id=1513221270]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 1
-anchors_preset = 1
+anchors_preset = 6
 anchor_left = 1.0
+anchor_top = 0.5
 anchor_right = 1.0
+anchor_bottom = 0.5
 offset_left = -128.0
-offset_top = 335.0
+offset_top = -65.0
 offset_right = -28.0
-offset_bottom = 435.0
+offset_bottom = 35.0
 grow_horizontal = 0
+grow_vertical = 2
 
 [node name="Button" type="Button" parent="PauseButton" unique_id=330207190]
 custom_minimum_size = Vector2(100, 100)

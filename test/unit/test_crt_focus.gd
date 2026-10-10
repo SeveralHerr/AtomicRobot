@@ -5,6 +5,15 @@ extends RefCounted
 # win / game over card was hard to read with CRT on. Focus 0 is the normal look.
 
 var _T
+## Grid values below are the 16:10 design ones; other aspects scale the grid
+## (test_hud_aspect.gd), so pin the root to the design size while these run.
+var _old_size: Vector2i
+
+
+func setup() -> void:
+	var root := (Engine.get_main_loop() as SceneTree).root
+	_old_size = root.size
+	root.size = Vector2i(1280, 800)
 
 
 func _param(name: String) -> Variant:
@@ -13,6 +22,7 @@ func _param(name: String) -> Variant:
 
 func teardown() -> void:
 	CRTOverlay.focus = 0.0
+	(Engine.get_main_loop() as SceneTree).root.size = _old_size
 
 
 func test_crt_focus_zero_is_the_normal_look() -> String:
