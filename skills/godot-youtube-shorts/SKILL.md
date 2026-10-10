@@ -53,6 +53,9 @@ Shared ffmpeg helpers live in `ffx.py` (used by review_short.py and `../godot-yo
 
 - Per segment: `zoom` (punch-in on the cut), `speed` (0.5 slow-mo, atempo keeps pitch), `freeze` (tpad after `fps`, or the frozen tail is dropped), `full` + `cw` for the end card.
 
+- `cy`/`ch` crop the game frame vertically (default 0/800). src times snap to the 60 fps grid and each
+  segment is trimmed to an exact frame count (fps used to drop ~1 frame per segment, drifting text cues).
+
 - Text via `textfile=` (no escaping), `pop`/`slam` fontsize expressions; NO white flashes (user rejected them) - leave `FLASH = []`.
 
 
