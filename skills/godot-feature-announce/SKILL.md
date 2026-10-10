@@ -12,14 +12,25 @@ announcement and the footage recipe for one specific feature. Never commit video
 - Detached worktree at the shipped commit (`git worktree add --detach C:/Users/gotmi/wt-announce <sha>`),
   `--import`, then `git apply --3way <main>/skills/godot-youtube-shorts/human_footage.patch`
   (plain apply fails once Player.gd moved on; 3-way applies cleanly).
-- Scenario: `boot` (cut scenes on — the feature's own reveal is often the best "where" shot),
-  `menu 40`, `crt on`, `god on` (patched god takes real hits), `teleport` to just before the
+- Scenario: `boot` (cut scenes on), `menu 40`, **`crt off`** (user rejected CRT footage as
+  "terrible": scanlines + bezel blur the art), `god on` (patched god takes real hits), `teleport` to just before the
   previous door so the route reaches the feature naturally, `brain advance` / `brain clear`.
 - Try 3-4 seeds headless with `--events job,objective,kill,hurt`; record the one where the
   feature runs longest and something goes wrong once (a stake beat: here one car got TICKET!).
   Movie Maker time == game time: the recorded report's event `t` indexes the footage.
 
-## 2. Shape (≈10 s, one idea per beat, captions top y 190/300)
+## 2. Clear clips first (user: "just show off clear video snippets of the feature")
+- Every clip in ONE 1080x800 box at `GAME_Y = 560`, cropped at an exact integer scale:
+  `cw 1080` (1x, wide: banners, a whole row) or `cw 540, ch 400` (2x, close: the action).
+  No `zoom` punches and no other `cw` — non-integer scaling smears pixel art.
+- Fewer, longer clips (4 + CTA, ~8 s); one short caption per clip at y 400 (kicker y 270).
+- End each caption one frame before its cut (`t1 - 1/60`): build_short's cut lands a frame
+  before the text's `between()` window closes. Start clips after the game's own banner/burst
+  has text on it (an empty banner stripe or blank starburst reads as a glitch on frame 1).
+- A cut-scene establishing shot is only worth it if the subject reads at 1x; otherwise caption
+  the location instead.
+
+## 2b. Shape (≈10 s, one idea per beat, captions top y 190/300)
 | beat | ~s | content | rule learned |
 |---|---|---|---|
 | hook | 1.6 | in-game feature banner + first hit | caption says WHAT KIND ("NEW IN … / SIDE JOBS!"), never the feature name the banner already shows |
@@ -39,9 +50,9 @@ announcement and the footage recipe for one specific feature. Never commit video
 
 ## 4. Deliver
 - Final encode for the artifact (15 MB file cap): `-b:v 8M -maxrate 9M -bufsize 16M`,
-  audio `volume=-1.5dB,alimiter=limit=0.85` (alimiter alone still peaked 0.0 dB after AAC).
+  audio `volume=-3dB,alimiter=limit=0.8` (-1.5 dB still peaked -0.3 after AAC; alimiter alone 0.0).
 - Artifact: `<video controls playsinline poster>`, a Download button using the `downloads`
   capability (fetch the published file → Blob → `downloads.save`), chapter buttons that seek,
   suggested post copy with copy buttons, and a Post it? Approve/Later card in db `decisions`
   (posting itself follows `skills/social-reel-post`, only after the user says yes).
-- Example spec: `example_ticket_sweep.py` (TICKET SWEEP!, 2026-10-10, raw = seed 1 take).
+- Example spec: `example_ticket_sweep.py` (TICKET SWEEP! v2 — clean, integer-scale; raw = seed 1 take, `crt off`).
