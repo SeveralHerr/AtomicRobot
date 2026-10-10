@@ -12,8 +12,7 @@ const RosterCard := preload("res://scripts/ui/select/roster_card.gd")
 const HeroStage := preload("res://scripts/ui/select/hero_stage.gd")
 const InfoCard := preload("res://scripts/ui/select/info_card.gd")
 const Juice := preload("res://scripts/ui/select/juice.gd")
-const BG_ART: Texture2D = preload("res://images/ARTBG.png")
-const SWAY: Script = preload("res://scripts/sway.gd")
+const Backdrop := preload("res://scripts/ui/select/backdrop.gd")
 const TICK: AudioStream = preload("res://sounds/tap.wav")
 const DENY: AudioStream = preload("res://sounds/hit3.ogg")
 const CHEER: AudioStream = preload("res://sounds/power_up.wav")
@@ -63,14 +62,16 @@ var quit_game: Callable = func() -> void: QuitGame.quit(get_tree())
 
 var _hot := -1
 var _stage: Control  # everything that shakes on confirm
+var _frame: Control  # the DESIGN-sized box _stage lives in, centred on any screen
 var _cursor_tween: Tween
 
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE  # clicks off the cards reach _unhandled_input
-	_build_background()
-	_stage = Juice.layer(self)
+	Backdrop.build(self)
+	_frame = Backdrop.centred_frame(self, DESIGN)
+	_stage = Juice.layer(_frame)
 	_stage.pivot_offset = DESIGN / 2.0
 	_build_title()
 	hero = HeroStage.new()
@@ -268,8 +269,6 @@ func _on_card_focus(card: Button) -> void:
 		_play(TICK, tick_pitch(card.index), -8.0)
 
 
-## Same swaying street art as the title screen (startscreen.tscn's TextureRect), so
-## title -> select reads as one place.
 func _on_footer_focus() -> void:
 	_play(TICK, tick_pitch(0) * 0.75, -8.0)
 	_dim_cursor(true)
@@ -278,31 +277,6 @@ func _on_footer_focus() -> void:
 ## P1 fades while focus is down in the footer, so only one thing reads as selected.
 func _dim_cursor(dim: bool) -> void:
 	cursor.create_tween().tween_property(cursor, "modulate:a", 0.25 if dim else 1.0, 0.12)
-
-
-func _build_background() -> void:
-	var bg := TextureRect.new()
-	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	bg.texture = BG_ART
-	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	bg.position = Vector2(-42, -2)
-	bg.size = DESIGN
-	bg.scale = Vector2(1.1, 1.15)
-	bg.set_script(SWAY)
-	add_child(bg)
-	# Plum shade over the bright left of the art so yellow rays/title/stamps read.
-	var shade := TextureRect.new()
-	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	var grad := GradientTexture2D.new()
-	grad.gradient = Gradient.new()
-	grad.gradient.set_color(0, Color(ComicStyle.PLUM.darkened(0.35), 0.62))
-	grad.gradient.set_color(1, Color(ComicStyle.PLUM.darkened(0.35), 0.12))
-	grad.fill_from = Vector2(0, 0)
-	grad.fill_to = Vector2(1, 0)
-	shade.texture = grad
-	shade.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	add_child(shade)
 
 
 func _build_title() -> void:
@@ -412,14 +386,14 @@ func _wire_focus() -> void:
 
 
 func _intro() -> void:
-	title.position.y = -160.0
+	title.position.y = -160.0 - _frame.position.y  # above the top edge on any screen
 	var t := title.create_tween()
 	t.tween_property(title, "position:y", 18.0, 0.5).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 	t.parallel().tween_callback(_play_extra.bind(DENY, 0.45)).set_delay(0.18)  # thud on first bounce
 	var wobble := title.create_tween().set_loops()
 	wobble.tween_property(title, "rotation_degrees", 2.0, 1.4).set_trans(Tween.TRANS_SINE)
 	wobble.tween_property(title, "rotation_degrees", -2.0, 1.4).set_trans(Tween.TRANS_SINE)
-	info.position.x = DESIGN.x + 40
+	info.position.x = size.x - _frame.position.x + 40  # past the right edge
 	info.create_tween().tween_property(info, "position:x", INFO_AT.x, 0.45) \
 		.set_delay(0.15).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	for card in cards:

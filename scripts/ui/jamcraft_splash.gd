@@ -37,7 +37,15 @@ const DEFAULT_LOGO_PATH := "res://images/jamcraft_logo.png"
 ## Scale the logo starts at before settling to 1.0.
 @export var pop_scale := 1.12
 
+## The logo is framed in the largest box of this shape that fits the screen: with
+## stretch aspect "expand" the screen can be 4:3 or 21:9, and covering it all would
+## crop the logo (4:3) - the box keeps the 16:10 framing everywhere. The box clips,
+## so the art's own 2px navy border never shows as a seam on the black (at 16:10 the
+## box is the screen and the clip changes nothing).
+const FRAME_ASPECT := 1280.0 / 800.0
+
 var _background: ColorRect
+var _frame: Control
 var _logo_rect: TextureRect
 var _flash: ColorRect
 var _tween: Tween
@@ -71,6 +79,14 @@ func _build() -> void:
 	_background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(_background)
 
+	_frame = Control.new()
+	_frame.name = "LogoFrame"
+	_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_frame.clip_contents = true
+	_background.add_child(_frame)
+	_background.resized.connect(_fit_frame)
+	_fit_frame()
+
 	_logo_rect = TextureRect.new()
 	_logo_rect.name = "Logo"
 	_logo_rect.texture = logo
@@ -85,7 +101,7 @@ func _build() -> void:
 	_logo_rect.anchor_bottom = 1.03
 	_logo_rect.modulate.a = 0.0
 	_logo_rect.scale = Vector2.ONE * pop_scale
-	_background.add_child(_logo_rect)
+	_frame.add_child(_logo_rect)
 	_logo_rect.resized.connect(_center_pivot)
 	_center_pivot()
 
@@ -99,6 +115,13 @@ func _build() -> void:
 	additive.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 	_flash.material = additive
 	_background.add_child(_flash)
+
+
+func _fit_frame() -> void:
+	var view := _background.size
+	var box := Vector2(minf(view.x, view.y * FRAME_ASPECT), minf(view.y, view.x / FRAME_ASPECT))
+	_frame.position = (view - box) / 2.0
+	_frame.size = box
 
 
 func _center_pivot() -> void:
