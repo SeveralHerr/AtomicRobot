@@ -364,9 +364,9 @@ func test_job_actors_are_never_purged_for_distance() -> String:
 	return _T.assert_true(c.maids.all(func(m): return m.persist), "the squad persists while it writes")
 
 
-## A writer stands at the meter past the car's tail, in full view, facing the car: behind
-## the middle of the car only her head showed and the squad never read as ticketing.
-func test_job_defense_writer_works_in_view_facing_her_car() -> String:
+## A writer stands behind the car's rear half, facing the car: behind its middle only her
+## head showed, and out past the tail she stood in the open with her arm stuck out.
+func test_job_defense_writer_works_over_the_trunk_facing_her_car() -> String:
 	var d := _defense()
 	d.maid_count = 1
 	d.ticket_seconds = 30.0
@@ -378,8 +378,9 @@ func test_job_defense_writer_works_in_view_facing_her_car() -> String:
 		return "she never started writing"
 	var car: ParkedCar = d.cars.filter(func(c): return c.progress > 0.0)[0]
 	var maid: Enemy = d.maids[0]
-	var r: String = _T.assert_gte(absf(maid.global_position.x - car.global_position.x), Car.HALF_LEN + 4.0,
-		"she writes beside the car body, not behind it")
+	var dx := absf(maid.global_position.x - car.global_position.x)
+	var r: String = _T.assert_true(dx >= Car.HALF_LEN * 0.5 and dx <= Car.HALF_LEN,
+		"she writes behind the car's rear half (dx %.0f)" % dx)
 	if r != "":
 		return r
 	return _T.assert_eq(maid.facing, int(signf(car.global_position.x - maid.global_position.x)), "she faces her car")

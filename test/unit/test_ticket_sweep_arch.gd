@@ -324,13 +324,14 @@ func test_door_held_and_left_waits_for_the_player_to_come_back() -> String:
 	return _T.assert_true(enc._fired, "walking back in fires it")
 
 
-## The writer's spot (ParkedCar.curb_x) is the car's own meter in the level.
+## The writer's spot (ParkedCar.curb_x) is by the car's own meter in the level, just
+## behind her: she writes over the trunk, the meter at her back.
 func test_sweep_writers_stand_at_a_level_meter() -> String:
 	var level: Node = load("res://scenes/main.tscn").instantiate()
 	var meters := _meters(level)
 	level.free()
 	for car: float in _car_xs():
 		var spot := car + ParkedCar.METER_SLOT
-		if meters.filter(func(m): return absf(m - spot) <= 12.0).is_empty():
+		if meters.filter(func(m): return m >= spot and m - spot <= 36.0).is_empty():
 			return "no meter where the maid writes for the car at %.0f (x %.0f)" % [car, spot]
 	return ""

@@ -4,8 +4,8 @@ class_name ParkedCar
 ## A customer's car parked at the curb for a MeterDefense: the traffic cars' art, no
 ## hitbox (it is scenery the maids are after, not a hazard), on the nearest road lane.
 ##
-## Shows the job's state on the car itself: while a maid writes at the meter beside the
-## tail, a ticket slip fills above her head; once she is done, the slip flies from her
+## Shows the job's state on the car itself: while a maid writes over the trunk, a ticket
+## slip fills above her head; once she is done, the slip flies from her
 ## onto the windshield, the car flashes and TICKET! pops. When the job ends it pulls out
 ## and drives off the screen.
 
@@ -26,11 +26,11 @@ const SPRITE_AT := Vector2(-3.67, -4)
 ## -46 the slip sat on her face and hid who was writing).
 const SLIP_AT := Vector2(-24, -17)
 const SLIP_SIZE := Vector2(18, 12)
-## A maid writes standing at the car's meter, on the walkway just past its tail (the
-## level's meters sit METER_SLOT px behind each parking spot). Behind the middle of the
-## car she was hidden by its body: only her head showed, so the squad never read as
-## "ticketing the cars".
-const METER_SLOT := 64.0
+## A maid writes from the walkway behind the car's rear, leaning over the trunk: the
+## body hides her legs and she reads as writing ON the car. Behind its middle (6) she
+## was hidden to the head and never read as ticketing; out at the meter past the tail
+## (64) she stood in the open, arm stuck out — "silly" in the user's words.
+const METER_SLOT := 34.0
 ## The progress slip floats over the writing maid's head, at the meter.
 const METER_AT := Vector2(METER_SLOT, -66)
 ## Seconds a finished ticket flies from her hand to the windshield before it lands
@@ -88,7 +88,7 @@ func park(x: float, lane_floor_y: float) -> void:
 	global_position = Vector2(x, Lanes.floor_y(lane_floor_y, LANE) - Car.WHEEL_DROP)
 
 
-## World x a maid writes this car's ticket from: its meter, past the tail.
+## World x a maid writes this car's ticket from: behind its rear, by its meter.
 func curb_x() -> float:
 	return global_position.x + METER_SLOT
 
