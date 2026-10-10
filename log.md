@@ -678,3 +678,8 @@ Log of skills that might have been useful for a given response, and why (short f
 - Cars + 3 new meters at the arch (6460/6595/6730), between door 6080's arena and door 6949's trigger; job waits for the arch cut scene; doors hold while a job has the street (BUSY through the payoff). THIEF! removed. Derived placement/timing tests caught a car 1 px inside a locked arena. Autoplay `job_overlap_s` metric + job/door_fight events. 10 validation rounds; mortal sweep 13/15 (main 12/15).
 - Used: godot-street-objective (enhancement: added a "Timing against neighbours" section), godot-autoplay-test (enhancement: note the runner pauses steps during cut scenes, so a bot can't test skipping). Would have helped: a "godot-timeline-check" skill (job/door/cutscene interval overlap from autoplay events) — now the job_overlap_s metric.
 - MCP: none used directly (python tools); a `timeline` param on godot-tests run_autoplay would help.
+## 2026-10-10 — Shipped TICKET SWEEP! + launch Short
+- main fast-forwarded to 8848279 (ticket-sweep), pushed; itch deploy green.
+- Launch reel: human-style take (human_footage.patch, 3-way) on the shipped build, 7 cuts, 10 review rounds -> 10.3 s 1080x1920 (9.5 MB); artifact https://claude.ai/artifact/Wq9gtzNttFP7hozaGGBXwc (download + post copy + db `decisions` post pick). Video not committed.
+- Used: playthrough-video-review (record/watch/artifact steps; enhancement: a "feature announcement" mode — short reel instead of a full review), godot-youtube-shorts (build/review scripts), social-reel-post (review_keys zone union). Created skill godot-feature-announce (announcement beat shape, rail-crop formula, audio headroom).
+- MCP: none used/new.
