@@ -4,6 +4,7 @@ Dependency-free (no `mcp` package): speaks newline-delimited JSON-RPC 2.0 on std
 Tools:
   run_unit_tests(filter?)   -> "Total: ..." line plus every FAIL/BROKEN/SCRIPT ERROR line
   run_sandbox_selftests()   -> the sandbox runner's per-scenario table
+  aspect_sweep(sizes?, crt?) -> tour at several screen sizes, states x aspects sheet
   run_autoplay(filter?)     -> bot-playthrough summaries (test/autoplay/*.json name substrings)
   audit_lane_walls()        -> Wall-layer colliders that block the road lanes (invisible walls)
   record_autoplay(filter)   -> one scenario recorded to autoplay_out/<filter>.mp4 (Movie Maker)
@@ -32,6 +33,13 @@ TOOLS = [
         "name": "run_unit_tests",
         "description": "Run test/unit/test_*.gd headless. Optional filter = test-method substring.",
         "inputSchema": {"type": "object", "properties": {"filter": {"type": "string"}}},
+    },
+    {
+        "name": "aspect_sweep",
+        "description": "Play tools/aspect/tour.json windowed at several screen sizes (default 4:3, 5:4, "
+                       "16:10, 16:9, phone) and build autoplay_out/aspect/sheet.png (states x aspects). "
+                       "sizes = comma list of WxH; crt = force the CRT overlay on.",
+        "inputSchema": {"type": "object", "properties": {"sizes": {"type": "string"}, "crt": {"type": "boolean"}}},
     },
     {
         "name": "run_sandbox_selftests",
@@ -147,6 +155,16 @@ def level_pan(x_from=-1400, x_to=7800, step=450) -> str:
         return str(e)
 
 
+SIZES_RE = re.compile(r"^\d{3,4}x\d{3,4}(,\d{3,4}x\d{3,4}){0,7}$")
+
+
+def aspect_sweep(sizes: str = "", crt: bool = False) -> str:
+    if sizes and not SIZES_RE.match(sizes):
+        return "sizes must be a comma list of WxH, e.g. 1024x768,1688x780"
+    args = (["--sizes", sizes] if sizes else []) + (["--crt"] if crt else [])
+    return _py("aspect_sweep.py", *args)[-2000:]
+
+
 def audit_lane_walls() -> str:
     return _py("lane_wall_audit.py")[-3000:]
 
@@ -174,6 +192,8 @@ def handle(msg: dict):
             text = contact_sheet(str(args.get("run", "")), args.get("t_from"), args.get("t_to"))
         elif p.get("name") == "level_pan":
             text = level_pan(args.get("x_from", -1400), args.get("x_to", 7800), args.get("step", 450))
+        elif p.get("name") == "aspect_sweep":
+            text = aspect_sweep(str(args.get("sizes", "")), bool(args.get("crt", False)))
         elif p.get("name") == "audit_lane_walls":
             text = audit_lane_walls()
         else:
