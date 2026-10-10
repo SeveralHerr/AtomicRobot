@@ -1,6 +1,6 @@
 #!/bin/bash
 # Export the "Picade Native" preset (Linux arm64) and install it on the cabinet as its own Ports entry,
-# next to the web build. Needs the Godot 4.7.1 linux_release.arm64 export template installed.
+# replacing the web build (removed from the cabinet 2026-10-10). Needs the Godot 4.7.1 linux_release.arm64 export template installed.
 #
 #   bash tools/picade/deploy_native.sh pie@192.168.1.58 [path/to/godot_console.exe]
 #
@@ -8,7 +8,7 @@
 set -euo pipefail
 TARGET="${1:?usage: deploy_native.sh user@host [godot]}"
 GODOT="${2:-/c/Users/gotmi/Downloads/Godot_v4.7.1_fixed/Godot_v4.7.1-stable_win64_console.exe}"
-SLUG="atomic-robot-native"; NAME="Atomic Robot (Native)"; BIN="atomic_robot.arm64"
+SLUG="atomic-robot-native"; NAME="Atomic Robot"; BIN="atomic_robot.arm64"
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 OUT="$(mktemp -d)"
 pi() { ssh -i "$HOME/.ssh/id_ed25519_picade" -o IdentitiesOnly=yes -o BatchMode=yes -o ConnectTimeout=8 "$TARGET" "$@"; }
