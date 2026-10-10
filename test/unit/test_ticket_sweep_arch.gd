@@ -322,3 +322,15 @@ func test_door_held_and_left_waits_for_the_player_to_come_back() -> String:
 	for i in 4:
 		await _tree().physics_frame
 	return _T.assert_true(enc._fired, "walking back in fires it")
+
+
+## The writer's spot (ParkedCar.curb_x) is the car's own meter in the level.
+func test_sweep_writers_stand_at_a_level_meter() -> String:
+	var level: Node = load("res://scenes/main.tscn").instantiate()
+	var meters := _meters(level)
+	level.free()
+	for car: float in _car_xs():
+		var spot := car + ParkedCar.METER_SLOT
+		if meters.filter(func(m): return absf(m - spot) <= 12.0).is_empty():
+			return "no meter where the maid writes for the car at %.0f (x %.0f)" % [car, spot]
+	return ""

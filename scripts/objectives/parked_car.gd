@@ -4,9 +4,10 @@ class_name ParkedCar
 ## A customer's car parked at the curb for a MeterDefense: the traffic cars' art, no
 ## hitbox (it is scenery the maids are after, not a hazard), on the nearest road lane.
 ##
-## Shows the job's state on the car itself: while a maid writes, a ticket slip fills
-## above the roof; once she is done, the slip sits under the wiper, the car flashes and
-## TICKET! pops. When the job ends it pulls out and drives off the screen.
+## Shows the job's state on the car itself: while a maid writes at the meter beside the
+## tail, a ticket slip fills above her head; once she is done, the slip flies from her
+## onto the windshield, the car flashes and TICKET! pops. When the job ends it pulls out
+## and drives off the screen.
 
 const GROUP := &"parked_cars"
 const CAR_BLUE := preload("res://images/new/Car_Blue.png")
@@ -25,13 +26,20 @@ const SPRITE_AT := Vector2(-3.67, -4)
 ## -46 the slip sat on her face and hid who was writing).
 const SLIP_AT := Vector2(-24, -17)
 const SLIP_SIZE := Vector2(18, 12)
-const METER_AT := Vector2(0, -66)
+## A maid writes standing at the car's meter, on the walkway just past its tail (the
+## level's meters sit METER_SLOT px behind each parking spot). Behind the middle of the
+## car she was hidden by its body: only her head showed, so the squad never read as
+## "ticketing the cars".
+const METER_SLOT := 64.0
+## The progress slip floats over the writing maid's head, at the meter.
+const METER_AT := Vector2(METER_SLOT, -66)
+## Seconds a finished ticket flies from her hand to the windshield before it lands
+## (TICKET!, flash, slap): a slip that just appeared on the glass read as nothing.
+const FLY_S := 0.32
 const METER_SIZE := Vector2(34, 20)
 ## A ticketed car sits dimmed for good: through the CRT the slip alone did not tell
 ## it from a clean one.
 const TICKETED_TINT := Color(0.72, 0.72, 0.8)
-## How far a maid stands from the car's centre on the walkway behind it.
-const CURB_SLOT := 6.0
 ## Seconds to pull out and leave; distance driven.
 const LEAVE_S := 1.8
 const LEAVE_PX := 760.0
@@ -56,6 +64,9 @@ var _flash: float = 0.0
 var _shine: float = 0.0
 var _slip_pop: float = 0.0
 var _t: float = 0.0
+## The finished ticket in flight (0 -> 1), from _fly_from (car-local) to the windshield.
+var _fly: float = 1.0
+var _fly_from: Vector2 = Vector2.ZERO
 
 
 func _init(red: bool = false, facing_right: bool = false) -> void:
@@ -77,18 +88,32 @@ func park(x: float, lane_floor_y: float) -> void:
 	global_position = Vector2(x, Lanes.floor_y(lane_floor_y, LANE) - Car.WHEEL_DROP)
 
 
-## World x a maid writes this car's ticket from.
+## World x a maid writes this car's ticket from: its meter, past the tail.
 func curb_x() -> float:
-	return global_position.x + CURB_SLOT
+	return global_position.x + METER_SLOT
 
 
 ## `word` false: no TICKET! pop (the last ticket — the miss stripe says it, and the
-## two words collided under it).
-func ticket(word: bool = true) -> void:
+## two words collided under it). `from` (world): where the writer stands — the slip
+## flies from there to the windshield and lands FLY_S later; INF lands it at once.
+func ticket(word: bool = true, from: Vector2 = Vector2.INF) -> void:
 	if ticketed:
 		return
 	ticketed = true
 	progress = 0.0
+	if from != Vector2.INF:
+		_fly = 0.0
+		_fly_from = from - global_position + Vector2(0, -34)
+		create_tween().tween_property(self, "_fly", 1.0, FLY_S).set_ease(Tween.EASE_IN)
+		get_tree().create_timer(FLY_S, false).timeout.connect(_land.bind(word))
+	else:
+		_land(word)
+
+
+## The slip hits the glass: flash, TICKET!, slap.
+func _land(word: bool) -> void:
+	if not is_inside_tree():
+		return
 	_flash = 1.0
 	_slip_pop = 1.0
 	if word:
@@ -176,7 +201,11 @@ func _process(delta: float) -> void:
 
 
 func _draw() -> void:
-	if ticketed:
+	if ticketed and _fly < 1.0:
+		# In flight: an arc from her hand over to the glass.
+		var at := _fly_from.lerp(SLIP_AT, _fly) - Vector2(0, 26.0 * 4.0 * _fly * (1.0 - _fly))
+		_draw_slip(at, 1.2, 1.0)
+	elif ticketed:
 		_draw_slip(SLIP_AT, 1.0 + 0.8 * _slip_pop, 1.0)
 	elif progress > 0.0:
 		_draw_meter()

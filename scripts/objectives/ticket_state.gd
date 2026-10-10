@@ -67,6 +67,8 @@ func update(delta: float) -> void:
 		return
 	if enemy.animated_sprite_2d.animation != "refill":
 		enemy.animated_sprite_2d.play("refill")
+		# Head down over the car she is ticketing, not the empty walkway behind her.
+		enemy.face_towards(car.global_position.x)
 	progress += delta / maxf(write_s, 0.01)
 	car.progress = progress
 	if progress >= 1.0:
@@ -74,7 +76,17 @@ func update(delta: float) -> void:
 		_release()
 		car = null
 		progress = 0.0
-		job.on_ticket(done)
+		_got_one()
+		job.on_ticket(done, enemy.global_position)
+
+
+## A little hop: "got one!" — a landed ticket was otherwise just the next walk-off.
+func _got_one() -> void:
+	var spr := enemy.animated_sprite_2d
+	var base := spr.position
+	var t := enemy.create_tween()
+	t.tween_property(spr, "position:y", base.y - 7.0, 0.12).set_ease(Tween.EASE_OUT)
+	t.tween_property(spr, "position:y", base.y, 0.14).set_ease(Tween.EASE_IN)
 
 
 func _release() -> void:

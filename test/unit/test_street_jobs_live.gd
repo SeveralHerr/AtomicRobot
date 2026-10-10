@@ -362,3 +362,61 @@ func test_job_actors_are_never_purged_for_distance() -> String:
 	if not ok:
 		return "no squad"
 	return _T.assert_true(c.maids.all(func(m): return m.persist), "the squad persists while it writes")
+
+
+## A writer stands at the meter past the car's tail, in full view, facing the car: behind
+## the middle of the car only her head showed and the squad never read as ticketing.
+func test_job_defense_writer_works_in_view_facing_her_car() -> String:
+	var d := _defense()
+	d.maid_count = 1
+	d.ticket_seconds = 30.0
+	_make(d)
+	d._park(0.0)
+	d.start(_p)
+	var ok: bool = await _until(func(): return d.cars.any(func(c): return c.progress > 0.0), 6.0)
+	if not ok:
+		return "she never started writing"
+	var car: ParkedCar = d.cars.filter(func(c): return c.progress > 0.0)[0]
+	var maid: Enemy = d.maids[0]
+	var r: String = _T.assert_gte(absf(maid.global_position.x - car.global_position.x), Car.HALF_LEN + 4.0,
+		"she writes beside the car body, not behind it")
+	if r != "":
+		return r
+	return _T.assert_eq(maid.facing, int(signf(car.global_position.x - maid.global_position.x)), "she faces her car")
+
+
+## A finished ticket flies from the writer to the glass: the car is ticketed at once
+## (the rules), but the flash and TICKET! land when the slip does.
+func test_job_ticket_flies_then_lands() -> String:
+	var d := _defense()
+	d.maid_count = 0
+	_make(d)
+	d._park(0.0)
+	var car: ParkedCar = d.cars[0]
+	car.ticket(true, car.global_position + Vector2(64, 0))
+	var r: String = _T.assert_true(car.ticketed, "ticketed at once")
+	if r != "":
+		return r
+	r = _T.assert_eq(car._flash, 0.0, "no flash while the slip is in the air")
+	if r != "":
+		return r
+	await _tree().create_timer(ParkedCar.FLY_S + 0.05).timeout
+	return _T.assert_gt(car._flash, 0.0, "the slip landed: flash")
+
+
+## Arriving from the left (back from a fight), she turns round to face her car: she
+## would otherwise write facing the empty street.
+func test_job_defense_writer_turns_to_her_car_from_the_left() -> String:
+	var d := _defense()
+	d.maid_count = 1
+	d.ticket_seconds = 30.0
+	d.spawn_past = -400.0  # spawns left of the cars, walks right to her meter
+	_make(d)
+	d._park(0.0)
+	d.start(_p)
+	var ok: bool = await _until(func(): return d.cars.any(func(c): return c.progress > 0.0), 8.0)
+	if not ok:
+		return "she never started writing"
+	var car: ParkedCar = d.cars.filter(func(c): return c.progress > 0.0)[0]
+	var maid: Enemy = d.maids[0]
+	return _T.assert_eq(maid.facing, int(signf(car.global_position.x - maid.global_position.x)), "she faces her car")

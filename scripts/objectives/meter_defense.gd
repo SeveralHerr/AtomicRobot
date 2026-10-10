@@ -44,7 +44,9 @@ const SEND_OFF_S := 1.2
 ## Seconds a hit maid fights before she goes back to the cars.
 @export var grudge_seconds: float = 3.0
 ## Maids march in from this far past the last car, one every maid_stagger seconds.
-@export var spawn_past: float = 320.0
+## 200: at 320 the squad took ~4 s to reach the cars after TICKET SWEEP! — dead air. Still
+## off screen from the mark (test_sweep_squad_marches_in_from_off_screen).
+@export var spawn_past: float = 200.0
 @export var maid_stagger: float = 0.9
 @export var points_per_car: int = 300
 
@@ -190,11 +192,11 @@ func on_no_car(maid: Enemy) -> void:
 	_grudge[maid] = grudge_seconds
 
 
-func on_ticket(car: ParkedCar) -> void:
+func on_ticket(car: ParkedCar, from: Vector2 = Vector2.INF) -> void:
 	if phase != Phase.RUNNING:
 		return
 	tickets += 1
-	car.ticket(pops_word(tickets, cars.size()))
+	car.ticket(pops_word(tickets, cars.size()), from)
 	hud.set_pips(pip_values())
 	if tickets >= cars.size():
 		_end()
