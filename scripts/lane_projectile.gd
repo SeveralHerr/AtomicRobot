@@ -11,9 +11,10 @@ class_name LaneProjectile
 ## platform) are the exception — they are up on the building, so they still need
 ## real vertical overlap.
 
-## World px the shot may travel before it despawns. The camera (zoom 2.5 on a
-## 1280-wide viewport) shows 512 px of world, so the screen edge sits ~256 px from
-## the player — anything beyond this would land hits on enemies that are off-frame.
+## World px the shot may travel before it despawns. The camera (zoom 2.5) shows at
+## least 512 px of world (the 1280-wide design view; wider screens show more), so the
+## screen edge sits >= 256 px from the player — anything beyond this could land hits on
+## enemies that are off-frame.
 const MAX_TRAVEL: float = 220.0
 ## 600 px/s == the old 10 px per 60 Hz physics frame, but delta-driven so it is
 ## frame-rate independent and respects Engine.time_scale.

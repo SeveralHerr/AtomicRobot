@@ -6,14 +6,11 @@ var event_length: float = 20.0
 
 var spawn_timer: Timer
 var wave_timer: Timer
-var viewport_size: Vector2
 var is_active: bool = false
 var waves_done: bool = false
 var spawned_enemies: Array[Node2D] = []
 
 func _ready():
-	viewport_size = get_viewport_rect().size
-	
 	# Set up wave timer
 	wave_timer = Timer.new()
 	add_child(wave_timer)
@@ -70,6 +67,6 @@ func _on_spawn_timer_timeout():
 		# BuildingGroup at (1875, -1), and spawn_enemy() applies global_position
 		# while the enemy is still an orphan — so a non-zero parent transform used
 		# to shift every spawned maid thousands of px to the right.
-		var enemy = EnemySpawner.spawn_enemy(get_tree().current_scene, player, viewport_size, 0)
+		var enemy = EnemySpawner.spawn_enemy(get_tree().current_scene, player, 0)
 		spawned_enemies.append(enemy)
 		spawn_timer.start()
