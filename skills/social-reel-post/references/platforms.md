@@ -68,3 +68,18 @@ Fill text from `captions.json`. Screenshot before the final click.
   > Original. Edit step: Cover photo > "Select from computer" (hidden input, accept image/jpeg,png).
   Caption: end an @handle with a space before Enter. Tag people (on the preview) > search > pick by
   avatar. Share > "Your reel has been shared"; link from `/<user>/reels/` first `/reel/` href.
+
+## Learned 2026-10-10 (TICKET SWEEP! Short)
+- Hidden window: this time TikTok Studio AND Instagram uploads both worked with
+  visibilityState "hidden" (YouTube/Bluesky too). Try the upload before asking the user to
+  raise the window; ask only if the upload stalls.
+- TikTok description: clicking the element ref did not focus the editor — ctrl+a then selected
+  the whole PAGE and typing went nowhere. Click inside the text area by coordinate, confirm
+  `document.activeElement.isContentEditable`, then ctrl+a Delete and type.
+- Re-`find` refs after every page change: an old ref (from the description step) clicked the
+  "Who can see this post" dropdown instead of Post. Check it still says Everyone.
+- YouTube Studio: the Create menu "Upload videos" item may not open the dialog; the dashboard's
+  upload icon (top right of "Channel dashboard") does. The thumbnail input is `#file-loader`.
+- Instagram Create: the first click on Create may not open the submenu (Post / Live video / Ad);
+  click it again by coordinate. Reel links: `a[href]` values come back masked in JS results —
+  print path segments instead (`h.split('/')`), then open the reel and check the caption text.
