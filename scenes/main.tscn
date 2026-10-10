@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" path="res://scenes/level_background.tscn" id="13_sgvw8"]
 [ext_resource type="PackedScene" path="res://scenes/building_group_1.tscn" id="14_ygd8o"]
 [ext_resource type="PackedScene" path="res://scenes/building_group_2.tscn" id="15_xrs0c"]
-[ext_resource type="PackedScene" path="res://scenes/building_group_3.tscn" id="16_e755i"]
+[ext_resource type="PackedScene" uid="uid://ck6s7untbvaj0" path="res://scenes/building_group_3.tscn" id="16_e755i"]
 [ext_resource type="PackedScene" path="res://scenes/building_group_4.tscn" id="18_1v6qk"]
 [ext_resource type="PackedScene" path="res://scenes/level_right_boundary.tscn" id="19_ty1g6"]
 [ext_resource type="PackedScene" path="res://scenes/atomic_robot_area.tscn" id="20_nvyfr"]
@@ -32,8 +32,8 @@
 [ext_resource type="Texture2D" uid="uid://btcwsgnp27tx6" path="res://images/Sprite-0001.png" id="83_eh25q"]
 [ext_resource type="PackedScene" uid="uid://c5plqygsfeeie" path="res://scenes/mobile_controls.tscn" id="100_mobctl"]
 [ext_resource type="PackedScene" path="res://scenes/end_card.tscn" id="900_endcard"]
-[ext_resource type="Script" path="res://scripts/cutscene/street_cutscenes.gd" id="901_cutscenes"]
-[ext_resource type="Script" path="res://scripts/ambient_traffic.gd" id="902_traffic"]
+[ext_resource type="Script" uid="uid://dr4q3m6jiqb7h" path="res://scripts/cutscene/street_cutscenes.gd" id="901_cutscenes"]
+[ext_resource type="Script" uid="uid://dc1saoytpepsw" path="res://scripts/ambient_traffic.gd" id="902_traffic"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ikgy1"]
 font = ExtResource("51_k4pk8")
@@ -280,7 +280,7 @@ vertical_alignment = 1
 
 [node name="MobileUI" parent="UI" unique_id=1905073212 instance=ExtResource("100_mobctl")]
 
-[node name="EndCard" parent="UI" instance=ExtResource("900_endcard")]
+[node name="EndCard" parent="UI" unique_id=95981054 instance=ExtResource("900_endcard")]
 
 [node name="Background" parent="." unique_id=1104501429 instance=ExtResource("13_sgvw8")]
 
@@ -379,10 +379,10 @@ flip_h = true
 [node name="EnemyManager" type="Node2D" parent="Managers" unique_id=818627881]
 script = ExtResource("58_335wh")
 
-[node name="StreetCutscenes" type="Node" parent="Managers"]
+[node name="StreetCutscenes" type="Node" parent="Managers" unique_id=959085123]
 script = ExtResource("901_cutscenes")
 
-[node name="AmbientTraffic" type="Node2D" parent="Managers"]
+[node name="AmbientTraffic" type="Node2D" parent="Managers" unique_id=1657768594]
 script = ExtResource("902_traffic")
 
 [node name="LeafManager" parent="Managers" unique_id=487693304 groups=["leaf_manager"] instance=ExtResource("65_brcwu")]
