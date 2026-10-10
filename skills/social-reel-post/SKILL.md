@@ -125,9 +125,13 @@ one tab and `navigate` it to each platform in turn.
 After a click that changes page state (YouTube "Public"), screenshots can time out on a busy
 tab: confirm with `find` / `get_page_text` instead (e.g. find the shorts URL in "Video published").
 
-Before ANY upload: `document.visibilityState` must be "visible". Chrome defers media loading in a tab
-that has never been shown; TikTok + Instagram read the video's metadata client-side and hang on a
-spinner forever (no network request). Ask the user to click the Claude tab-group window itself.
+Hidden tab (`document.visibilityState == "hidden"`): do NOT stop to ask first. Upload anyway and
+watch for ~10 s: on 2026-10-10 TikTok and Instagram both uploaded fine while hidden. Only if the
+upload hangs on a spinner (Chrome deferring media in a never-shown tab, seen 2026-10-05) ask the user
+to click the Claude tab-group window itself — and re-check visibilityState, since a user opening the
+same URL in their own tab does not fix the Claude tab.
+Every page change invalidates element refs: `find` again right before each click that matters
+(Post/Share/Publish) — a stale ref once opened TikTok's "Who can see" menu instead of Post.
 Before tagging a brand on a new platform, cross-check the candidate's avatar/name against the
 brand's known account (IG search shows look-alike shops side by side).
 

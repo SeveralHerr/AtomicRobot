@@ -21,19 +21,29 @@ Fill text from `captions.json`. Screenshot before the final click.
 
 ## TikTok Studio — tiktok.com/tiktokstudio/upload
 - `file_upload` into the upload area's input. Wait for the upload bar to finish.
-- Description box (contenteditable) → clear the auto-filled filename, type `tiktok`. Hashtags
-  typed with `#` open a suggestion popup — press Escape after each so it doesn't swap the tag.
+- Description box (contenteditable): clicking its ref does NOT focus it — click INSIDE the text
+  by coordinate, check `document.activeElement.isContentEditable` is true, then `ctrl+a Delete`
+  (else ctrl+a selects the whole page and typing goes nowhere). Type `tiktok` WITHOUT the hashtags,
+  then each hashtag as its own type + Escape (the popup would swap the tag). Read the box back
+  (`innerText`) and compare with captions.json before posting.
 - Cover: pick the hook frame. Who can watch: Everyone. Leave "AI-generated content" off (it isn't),
   leave "Content disclosure / branded" off unless the user says it's paid promo.
-- Post. If a "Continue to post?" content-check dialog appears, report it before confirming.
+- Post: `find "Post button next to Discard"` fresh, then click. If a "Continue to post?" dialog
+  appears, report it before confirming. Afterwards Studio opens Posts; the new post shows
+  "Content under review / Only me" — that is normal, it flips to Everyone after review.
 
 ## Instagram Reels — instagram.com
 - Sidebar Create (+) → Post → "Select from computer" — don't click it; `find` the file input
   and `file_upload`. A "Video posts are now shared as reels" notice → OK.
+- Create may need two clicks before the Post / Live video / Ad submenu shows (click by coordinate).
 - Crop: choose Original / 9:16 (portrait icon) so nothing is cut. Next → Next (skip filters).
+- Cover: Edit step > Cover photo has a hidden `input[type=file]` (accept image/jpeg,png):
+  `file_upload` the cover straight into it.
 - Caption = `instagram`. Optionally "Tag people"/collab with @atomicrobottattoo only if the user
   asked — a collab invite is a message on their behalf.
-- Share. Copy the reel link from the profile.
+- Share; wait for "Your reel has been shared". Link: open the profile, collect `/reel/` hrefs as
+  path segments (`h.split('/')` — whole hrefs come back masked), open the newest and confirm its
+  caption text before reporting it.
 
 ## Common failures
 - `file_upload` path rejected → file not shared with session; give user the path to drag in.
