@@ -237,3 +237,19 @@ func test_boss_room_view_stays_inside_the_room_art_at_every_aspect() -> String:
 		if r != "":
 			return r
 	return ""
+
+
+## Boss reinforcements: the maids appear just past the screen edge at every aspect
+## (they popped in ~56 px on screen on a phone), and exactly where they did at 16:10.
+func test_boss_maids_appear_just_past_the_edge_at_every_aspect() -> String:
+	var room := load("res://scripts/boss_room.gd")
+	var r: String = _T.assert_float_eq(room.maid_reach(256.0), 290.0, 0.01, "design reach")
+	if r != "":
+		return r
+	for size in ASPECTS:
+		_tree().root.size = size
+		var half := _tree().root.get_visible_rect().size.x / (2.0 * 2.5)
+		r = _T.assert_float_eq(room.maid_reach(half) - half, 34.0, 0.01, "%s: past the edge" % size)
+		if r != "":
+			return r
+	return ""
