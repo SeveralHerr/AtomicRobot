@@ -6,7 +6,8 @@ description: Add, tune or remove a street side job (StreetObjective) in Atomic R
 
 Reference: `scripts/objectives/` - `StreetObjective` (lifecycle), `ObjectiveHud` (goal card),
 `StreetObjectives` (JOBS table in main.tscn's Managers: one entry per job, `"on"` toggles it),
-`SnatchChase` + `ThiefState` + `KeysProp`, `MeterDefense` + `TicketState` + `ParkedCar`.
+`MeterDefense` + `TicketState` + `ParkedCar` (TICKET SWEEP!, at the arch since 2026-10-10;
+the THIEF! chase was dropped — it lives in branch street-objectives' history).
 Tests: `test_street_objectives.gd` (rules, table, door-arena placement), `test_street_jobs_live.gd`
 (real player + maids). Autoplay `street_jobs.json`; metrics `objectives_won/lost`, event `objective`.
 
@@ -37,6 +38,20 @@ Tests: `test_street_objectives.gd` (rules, table, door-arena placement), `test_s
   not a clipping bug.
 - New maid spawns draw from the global RNG and shift every later seeded roll: rerun
   full_run_mortal; a won job's heart refunds the health its fights cost before the boss.
+
+## Timing against neighbours (placement is never just an x)
+- A job set on a landmark waits for its cut scene: `after_cutscene` (e.g. "arch"). Its squad
+  would otherwise keep the street from going quiet and the reveal gets forced mid-fight.
+- A job has the street from start until its payoff callout is gone (`StreetObjective.BUSY`,
+  `payoff_seconds`). A door entered meanwhile holds and fires once free if the player is still in
+  its trigger (`BuildingDoorEncounter._held`); a WAVE stripe over CARS SAVED! is the failure.
+- Derive the fit from the level (`test_ticket_sweep_arch.gd`): stretch between the previous
+  door's arena edge and the next door's TRIGGER (not arena) with a margin, a meter per car, cars
+  park off screen, squad spawns off screen, the reveal frames the cars, the reveal's forced point
+  comes before the next door. It caught Car.HALF_LEN 56 (not 53): a car 1 px into a locked arena.
+- Autoplay timeline: `job` / `door_fight` events and the `job_overlap_s` metric (job busy while a
+  door fight or cut scene is live) — assert `job_overlap_s == 0` in every job scenario; a
+  `boot` scenario (cut scenes on) is the only one that exercises the reveal gate.
 
 ## Validate
 Four windowed scenarios (win/miss per job, `snap_every 0.25-0.5`) + contact sheets per round,
