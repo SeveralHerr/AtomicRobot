@@ -42,7 +42,8 @@ announcement and the footage recipe for one specific feature. Never commit video
 | CTA | 1.7 | live title (raw 1.6-2.9) + freeze | "PLAY FREE / ATOMIC ROBOT ON ITCH.IO / PLAYS ON YOUR PHONE TOO" |
 
 ## 3. Safe zones (union of Shorts, TikTok, Reels — `review_keys.py` at half size)
-- `GAME_Y = 380`; bottom labels at y ≤ 1385 (the bottom zone starts at 1440).
+- With the 1080x800 box at `GAME_Y = 560` the game ends at 1360; bottom labels at y ≤ 1400
+  (the bottom zone starts at 1440).
 - Right rail x > 900 (y 700-1440): an actor at source x `sx` lands at
   `(sx - (x - cw/2)) * 1080 / cw`. One ~100 px from the frame edge needs `cw ≤ 480` to land
   left of ~860 — zoom in rather than let the rail cover the beat.
