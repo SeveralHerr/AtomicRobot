@@ -362,6 +362,7 @@ autoplay = &"RESET"
 position = Vector2(0, 20)
 zoom = Vector2(2.5, 2.5)
 limit_left = -465
+limit_top = -504
 limit_right = 475
 limit_bottom = 0
 limit_smoothed = true
