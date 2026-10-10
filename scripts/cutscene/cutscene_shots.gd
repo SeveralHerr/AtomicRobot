@@ -13,7 +13,9 @@ class_name CutsceneShots
 const PLAY_ZOOM := 2.5
 const PLAY_OFFSET := Vector2(0, 20)
 const LIMIT_BOTTOM := 96.0
-## The design viewport (project.godot); cut scenes frame against it.
+## The design viewport (project.godot). Stretch aspect "expand" grows the real view
+## on one axis (4:3 cabinet: 1280x960), so the framing funcs take the real size;
+## VIEW is the 16:10 default the shots were picked at.
 const VIEW := Vector2(1280, 800)
 ## Street triggers wait for the walk-in to be quiet: no live enemy this close.
 const CLEAR_RADIUS := 700.0
@@ -95,21 +97,22 @@ static func duration(id: String) -> float:
 	return t
 
 
-## Half the world area a camera at `zoom` shows.
-static func half_view(zoom: float) -> Vector2:
-	return VIEW * 0.5 / zoom
+## Half the world area a camera at `zoom` shows on a `view`-sized screen.
+static func half_view(zoom: float, view: Vector2 = VIEW) -> Vector2:
+	return view * 0.5 / zoom
 
 
 ## The centre a camera at `zoom` really shows when aimed at `center`: Camera2D's
-## bottom limit pushes it up so the view never dips under the road.
-static func clamp_center(center: Vector2, zoom: float) -> Vector2:
-	return Vector2(center.x, minf(center.y, LIMIT_BOTTOM - half_view(zoom).y))
+## bottom limit pushes it up so the view never dips under the road. A taller screen
+## (4:3) shows more sky above the same road line, not more under it.
+static func clamp_center(center: Vector2, zoom: float, view: Vector2 = VIEW) -> Vector2:
+	return Vector2(center.x, minf(center.y, LIMIT_BOTTOM - half_view(zoom, view).y))
 
 
 ## Where the play camera sits for a player at `player_pos` — the cut scene glides
 ## back to exactly this, so the hand-off doesn't jump.
-static func play_center(player_pos: Vector2) -> Vector2:
-	return clamp_center(player_pos + PLAY_OFFSET, PLAY_ZOOM)
+static func play_center(player_pos: Vector2, view: Vector2 = VIEW, zoom: float = PLAY_ZOOM) -> Vector2:
+	return clamp_center(player_pos + PLAY_OFFSET, zoom, view)
 
 
 ## Seconds from the scene start until caption `i`'s title has landed. A caption that
