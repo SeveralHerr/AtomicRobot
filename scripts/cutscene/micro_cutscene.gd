@@ -55,6 +55,8 @@ var _frozen_enemies: Array = []
 ## Bodies still falling to the ground, held as each one lands.
 var _settling: Array = []
 var _shake := 0.0
+## The screen the shots are framed for (stretch "expand": 1280x960 on the 4:3 cabinet).
+var _view := CutsceneShots.VIEW
 
 
 ## Start cut scene `scene_id` for `player`, hosted under `host`. `instant`: open on
@@ -83,16 +85,18 @@ func _ready() -> void:
 	_card = CaptionCard.new()
 	_layer.add_child(_card)
 	_card.landed.connect(func() -> void: _shake = 7.0)
+	_view = get_viewport().get_visible_rect().size
+	get_viewport().size_changed.connect(_fit_to_screen)
 	_cam = Camera2D.new()
 	_cam.limit_bottom = int(CutsceneShots.LIMIT_BOTTOM)
 	add_child(_cam)
 	var first: Dictionary = _spec["shots"][0]
 	if instant:
-		_cam.global_position = first["at"]
+		_cam.global_position = _framed(first)
 		_cam.zoom = Vector2.ONE * first["zoom"]
 	else:
-		_cam.global_position = CutsceneShots.play_center(_player.global_position)
-		_cam.zoom = Vector2.ONE * CutsceneShots.PLAY_ZOOM
+		_cam.global_position = _play_center()
+		_cam.zoom = Vector2.ONE * _play_zoom()
 	_cam.make_current()
 	_cam.reset_smoothing()
 	HudFade.fade(get_tree(), HudFade.CINEMATIC, 0.0, HUD_FADE)
@@ -118,15 +122,46 @@ func _snap_open() -> void:
 	_bars[1].position.y = view.y - _bars[1].size.y
 
 
+## Where shot `s` aims on this screen: a taller one (4:3) lifts it so the view's
+## bottom stays on the road, the way the camera's bottom limit would anyway.
+func _framed(s: Dictionary) -> Vector2:
+	return CutsceneShots.clamp_center(s["at"], s["zoom"], _view)
+
+
+## The play camera's own zoom: the glide back lands on exactly its framing.
+func _play_zoom() -> float:
+	if is_instance_valid(_player) and _player.camera_2d:
+		return _player.camera_2d.zoom.x
+	return CutsceneShots.PLAY_ZOOM
+
+
+func _play_center() -> Vector2:
+	return CutsceneShots.play_center(_player.global_position, _view, _play_zoom())
+
+
+## The window changed shape mid-scene: the bars span it again and the bottom one
+## stays on the bottom edge. Shots already queued keep their aim (the camera's limit
+## still holds them above the road).
+func _fit_to_screen() -> void:
+	var view := get_viewport().get_visible_rect().size
+	for bar in _bars:
+		if is_instance_valid(bar):
+			bar.size.x = view.x
+	if _bars.size() > 1 and is_instance_valid(_bars[1]):
+		_bars[1].position.y += view.y - _view.y
+	_view = view
+
+
 func _run_shots() -> void:
 	_shots = create_tween()
 	for s: Dictionary in _spec["shots"]:
+		var at := _framed(s)
 		if s["move"] > 0.0:
-			_shots.tween_property(_cam, "global_position", s["at"], s["move"]).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			_shots.tween_property(_cam, "global_position", at, s["move"]).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 			_shots.parallel().tween_property(_cam, "zoom", Vector2.ONE * s["zoom"], s["move"]).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		else:
 			_shots.tween_callback(func() -> void:
-				_cam.global_position = s["at"]
+				_cam.global_position = at
 				_cam.zoom = Vector2.ONE * s["zoom"])
 		if s["hold"] > 0.0:
 			_shots.tween_interval(s["hold"])
@@ -223,8 +258,8 @@ func _end(skipped: bool) -> void:
 		d.tween_property(_dusk, "color", Color.WHITE, back)
 		d.tween_callback(_dusk.queue_free)
 	var tw := create_tween().set_parallel()
-	tw.tween_property(_cam, "global_position", CutsceneShots.play_center(_player.global_position), back).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	tw.tween_property(_cam, "zoom", Vector2.ONE * CutsceneShots.PLAY_ZOOM, back).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(_cam, "global_position", _play_center(), back).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(_cam, "zoom", Vector2.ONE * _play_zoom(), back).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tw.tween_property(_cam, "offset", Vector2.ZERO, back)
 	await tw.finished
 	_hand_back()
