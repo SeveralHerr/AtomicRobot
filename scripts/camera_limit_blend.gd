@@ -75,7 +75,12 @@ static func weight(progress: float) -> float:
 
 ## Where a view `width` wide whose unlimited left edge is `free_left` sits under the
 ## limits [left, right] (right wins first, then left: the camera's own order).
+## Limits narrower than the view (a 640 px door arena on a phone's ~690 px wide view)
+## make Camera2D centre the view between them; mirror that, or the blend ends
+## left-aligned and the camera snaps half the overhang on its last frame.
 static func view_left(free_left: float, left: float, right: float, width: float) -> float:
+	if right - left < width:
+		return (left + right - width) * 0.5
 	var v := free_left
 	if v + width > right:
 		v = right - width

@@ -20,6 +20,7 @@ var _p: Player
 var _cam: Camera2D
 var _old_scene: Node
 var _old_fps: int
+var _old_size: Vector2i
 
 
 func _tree() -> SceneTree:
@@ -27,6 +28,7 @@ func _tree() -> SceneTree:
 
 
 func _make() -> void:
+	_old_size = _tree().root.size
 	_old_fps = Engine.max_fps
 	Engine.max_fps = 60
 	_stage = Node2D.new()
@@ -52,6 +54,7 @@ func teardown() -> void:
 	if _stage == null:
 		return
 	Engine.max_fps = _old_fps
+	_tree().root.size = _old_size
 	ScreenShake.stop()
 	_tree().current_scene = _old_scene
 	for e in _enc._spawned:
@@ -167,6 +170,32 @@ func test_view_left_follows_the_camera_order() -> String:
 	if r != "":
 		return r
 	return _T.assert_float_eq(BLEND.view_left(700.0, 680.0, 1320.0, 512.0), 700.0, 0.01, "free inside")
+
+
+## A view wider than the limits (a phone's ~692 px view on a 640 px arena): Camera2D
+## centres it, so the blend must aim there too, or it lands left-aligned and the
+## camera snaps half the overhang on the last frame.
+func test_view_left_centres_a_view_wider_than_the_limits() -> String:
+	return _T.assert_float_eq(BLEND.view_left(654.0, 680.0, 1320.0, 692.0), 654.0, 0.01, "centred")
+
+
+## Landscape phone (1688x780 -> 1731x800 canvas, 692 world px): the 640 px arena
+## is narrower than the view. Lock-in with the player at the door: nothing should move.
+func test_lock_on_a_view_wider_than_the_arena_never_snaps() -> String:
+	_make()
+	_tree().root.size = Vector2i(1688, 780)
+	_p.global_position = Vector2(1000, 0)
+	for i in 3:
+		await _tree().process_frame
+	var width := _cam.get_viewport_rect().size.x / _cam.zoom.x
+	var r: String = _T.assert_true(width > 2.0 * _enc.arena_half_width,
+		"setup: view %.0f wider than the arena" % width)
+	if r != "":
+		return r
+	var before := _screen_x()
+	_enc._on_body_entered(_p)
+	var s: Array = await _sample(1.0, before)
+	return _T.assert_true(s[0] <= 2.0, "lock moved the player %.0f screen px in one frame" % s[0])
 
 
 func test_blend_weight_is_eased_and_clamped() -> String:
