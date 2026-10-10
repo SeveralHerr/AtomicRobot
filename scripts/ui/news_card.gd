@@ -37,6 +37,9 @@ const SPIN_SECONDS := 0.62
 const PUNCH := 1.07
 const PUNCH_SECONDS := 0.14
 const FOLD_SECONDS := 0.26
+## The fold drops the paper this fraction of the screen's height (640px at 16:10), so
+## a taller 4:3 / 5:4 screen sees it leave the same way.
+const FOLD_DROP := 0.8
 ## A press this soon after opening is still the one that opened it (or a mash).
 const ARM_SECONDS := 0.55
 const CLOSE_ACTIONS: Array[StringName] = [&"Interact", &"Attack", &"ui_accept", &"pause"]
@@ -262,7 +265,7 @@ func close() -> void:
 	_kill()
 	_tween = create_tween().set_ignore_time_scale()
 	_tween.set_parallel()
-	_tween.tween_property(card, "position:y", card.position.y + 640.0, FOLD_SECONDS).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	_tween.tween_property(card, "position:y", card.position.y + FOLD_DROP * get_viewport().get_visible_rect().size.y, FOLD_SECONDS).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
 	_tween.tween_property(card, "rotation_degrees", TILT + 9.0, FOLD_SECONDS).set_ease(Tween.EASE_IN)
 	_tween.tween_property(dim, "color:a", 0.0, FOLD_SECONDS)
 	_tween.chain().tween_callback(_release_game)
