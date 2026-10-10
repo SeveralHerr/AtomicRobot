@@ -60,6 +60,11 @@ Runner: `godot --headless --path . --script res://tools/run_tests.gd -- --filter
 - "Bug seen in a screenshot" in combat: before fixing, add a temporary `print` of the
   hit geometry (dx * facing, lanes) in the hit loop and run autoplay; 0 negatives in
   ~220 real hits proved melee-hits-behind was not real (test_melee_facing.gd).
+- **Held stick + mashed button**: test the COMBINATION (hold `ui_left` while tapping
+  Attack every 2 frames) and run it 3-4 times. A buffered chain won the same frame the
+  turn-cancel opened: turning failed 3/4 runs, passed 1/4 (test_attack_turn.gd).
+  Autoplay `tap` is 5 frames min (12 Hz, human mash): back-to-back `tap Attack` steps
+  reproduce it; `tap` + `wait 0.08` (10 frames) does NOT, so a before/after looked identical.
 - **Assert the precondition** before asserting a state change ("player live before the
   clear"): `boss_room.gd` already freezes the player, so "frozen after" passed vacuously
   until a mutant survived.

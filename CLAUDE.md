@@ -305,6 +305,8 @@ It broke AGAIN on a green suite: headless never hit-tests the root Control, so i
 filter ate every real tap/click. Confirm tap fixes in a windowed script, guard catchers by rect.
 Pad screens: a green "focus is on RESTART" test missed that pause (Start/Esc) steals focus and drops
 it on resume - cabinet stick then moved nothing. Test focus screens across pause/resume.
+"Tricky to turn while mashing": a buffered press and a held stick competed for the same frame and the
+press always won (1/4 runs turned). Test held-direction x mashed-button together, repeat runs for races.
 Draw order: an equal z_index silently loses to tree order — assert strict `>` against
 every in-lane depth (`test_vehicle_z_tops_its_lane...`), never one sample z.
 The `godot-tests` MCP server (`.mcp.json`) runs the unit/sandbox suites with a short summary.
