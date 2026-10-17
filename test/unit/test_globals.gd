@@ -18,7 +18,7 @@ func teardown() -> void:
 
 
 func test_character_dict_has_expected_roster() -> String:
-	var expected := ["Cody", "Ryan", "Sara", "Cass", "Caitlyn", "Robot"]
+	var expected := ["Cody", "Ryan", "Sara", "Cass", "Payton", "Caitlyn", "Robot"]
 	for name in expected:
 		if not _globals.character_dict.has(name):
 			return "character_dict missing '%s'" % name

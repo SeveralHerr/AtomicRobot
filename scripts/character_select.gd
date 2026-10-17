@@ -22,8 +22,8 @@ const FANFARE: AudioStream = preload("res://sounds/Unlock.wav")
 const REVEAL_AT := 0.6
 
 ## Semitones per card: a major pentatonic run, so sweeping the strip plays a scale.
-const TICK_STEPS: Array[int] = [0, 2, 4, 7, 9, 12]
-const ROSTER: Array[String] = ["Cody", "Ryan", "Cass", "Caitlyn", "Sara", "Robot"]
+const TICK_STEPS: Array[int] = [0, 2, 4, 7, 9, 12, 14]
+const ROSTER: Array[String] = ["Cody", "Ryan", "Cass", "Payton", "Caitlyn", "Sara", "Robot"]
 const DESIGN := Vector2(1280, 800)
 const STAGE_FEET := Vector2(330, 530)
 const INFO_AT := Vector2(700, 128)

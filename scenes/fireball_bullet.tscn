@@ -1,0 +1,77 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/fireball_bullet.gd" id="1_fire"]
+[ext_resource type="Texture2D" path="res://sprites/Payton.png" id="2_tex"]
+
+[sub_resource type="AtlasTexture" id="fire_0"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 768, 128, 128)
+
+[sub_resource type="AtlasTexture" id="fire_1"]
+atlas = ExtResource("2_tex")
+region = Rect2(128, 768, 128, 128)
+
+[sub_resource type="AtlasTexture" id="fire_2"]
+atlas = ExtResource("2_tex")
+region = Rect2(256, 768, 128, 128)
+
+[sub_resource type="AtlasTexture" id="fire_3"]
+atlas = ExtResource("2_tex")
+region = Rect2(384, 768, 128, 128)
+
+[sub_resource type="AtlasTexture" id="fire_4"]
+atlas = ExtResource("2_tex")
+region = Rect2(512, 768, 128, 128)
+
+[sub_resource type="AtlasTexture" id="fire_5"]
+atlas = ExtResource("2_tex")
+region = Rect2(640, 768, 128, 128)
+
+[sub_resource type="AtlasTexture" id="fire_6"]
+atlas = ExtResource("2_tex")
+region = Rect2(768, 768, 128, 128)
+
+[sub_resource type="AtlasTexture" id="fire_7"]
+atlas = ExtResource("2_tex")
+region = Rect2(896, 768, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fire"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("fire_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("fire_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("fire_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("fire_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("fire_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("fire_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("fire_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("fire_7")
+}],
+"loop": true,
+"name": &"fly",
+"speed": 15.0
+}]
+
+[node name="Fireball" type="Node2D"]
+script = ExtResource("1_fire")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(-2, 0)
+sprite_frames = SubResource("SpriteFrames_fire")
+animation = &"fly"
+autoplay = "fly"

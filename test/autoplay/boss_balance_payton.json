@@ -1,0 +1,8 @@
+{
+  "scene": "res://scenes/boss_room.tscn",
+  "character": "Payton",
+  "seed": 1,
+  "timeout": 120,
+  "steps": ["brain advance 110"],
+  "expect": ["boss_hp <= 30", "errors == 0", "engine_errors == 0"]
+}

@@ -10,7 +10,6 @@ var _T
 const PLAYER_SCENE := preload("res://scenes/player.tscn")
 const MAID_SCENE := preload("res://scenes/meter_maid.tscn")
 ## AttackState fires a projectile for these; everyone else swings a fist.
-const RANGED := ["Robot", "Cass"]
 const GAP := 40.0  # maid centre to player centre; the fist reaches 16..80px ahead
 const HP := 50
 
@@ -140,7 +139,7 @@ func test_swing_after_right_left_right_misses_maid_behind() -> String:
 
 
 func _melee_characters() -> Array:
-	return Globals.character_dict.keys().filter(func(c): return not c in RANGED)
+	return Globals.character_dict.keys().filter(func(c): return not c in _ranged())
 
 
 func test_every_melee_character_lands_front_hit_both_ways() -> String:
@@ -181,7 +180,7 @@ func test_swing_misses_maid_hugging_the_players_back() -> String:
 
 
 func test_ranged_shot_flies_the_way_the_player_faces() -> String:
-	for c in RANGED:
+	for c in _ranged():
 		for facing in [1, -1]:
 			await _spawn(c)
 			await _walk("ui_left" if facing < 0 else "ui_right")
@@ -207,3 +206,8 @@ func test_ranged_shot_flies_the_way_the_player_faces() -> String:
 				return r
 			teardown()
 	return ""
+
+
+## Every fighter whose config says ranged (derived, so a new shooter is covered).
+static func _ranged() -> Array:
+	return Globals.character_dict.keys().filter(func(c): return Globals.character_dict[c].is_ranged())

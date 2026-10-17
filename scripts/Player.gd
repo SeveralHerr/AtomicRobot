@@ -8,6 +8,7 @@ const PLAYER_NORMAL_COLLISION_SHAPE = preload("res://sprites/player_normal_colli
 
 const ROBOT_BULLET = preload("uid://dt4euylnjmkp7")
 const FLIPFLOP_BULLET = preload("uid://b2gx172dqadbi")
+const FIREBALL_BULLET = preload("res://scenes/fireball_bullet.tscn")
 
 
 # Import the states
@@ -15,6 +16,11 @@ const KnockbackState = preload("res://scripts/states/knockback_state.gd")
 const FallState = preload("res://scripts/states/fall_state.gd")
 const RunState = preload("res://scripts/states/run_state.gd")
 @onready var robot_attack_position: Node2D = $RobotAttackPosition
+## Where Payton's fireball leaves his hand: the head of the swoosh in his release
+## frame (Attack frame 3), so the shot picks up exactly where the art lets go.
+@onready var fireball_position: Node2D = $FireballPosition
+## Where Cass's flip-flop leaves her open hand (Attack frame 5, the first empty-handed one).
+@onready var flipflop_position: Node2D = $FlipflopPosition
 @onready var default_sprite: AnimatedSprite2D = $DefaultSprite
 @onready var area_2d: Area2D = $Area2D
 @onready var collision_shape_2d: CollisionShape2D = $Area2D/CollisionShape2D

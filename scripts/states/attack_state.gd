@@ -36,7 +36,10 @@ func trigger_attack(player: Player)-> void:
 		_shoot(player, player.ROBOT_BULLET)
 		return
 	elif Globals.selected_character == "Cass":
-		_shoot(player, player.FLIPFLOP_BULLET)
+		_shoot(player, player.FLIPFLOP_BULLET, player.flipflop_position)
+		return
+	elif Globals.selected_character == "Payton":
+		_shoot(player, player.FIREBALL_BULLET, player.fireball_position)
 		return
 
 	var bodies = player.area_2d.get_overlapping_bodies()
@@ -72,11 +75,13 @@ func _reflect(player: Player, bodies: Array) -> void:
 		n.reflect(player)
 
 
-func _shoot(player: Player, scene: PackedScene) -> void:
+func _shoot(player: Player, scene: PackedScene, muzzle: Node2D = null) -> void:
 	var instance = scene.instantiate()
 	player.get_parent().add_child(instance)
-	instance.global_position = player.robot_attack_position.global_position
+	instance.global_position = (muzzle if muzzle else player.robot_attack_position).global_position
 	instance.dir = player.last_dir
+	# First hit sweep starts at the body's front edge, not the hand.
+	instance.origin_x = player.global_position.x + player.last_dir * LaneProjectile.HALF_LENGTH
 	instance.player = player
 	instance.lane = player.current_lane
 

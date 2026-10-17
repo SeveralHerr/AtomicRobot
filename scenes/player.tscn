@@ -275,3 +275,9 @@ stream = ExtResource("12_jej6c")
 
 [node name="RobotAttackPosition" type="Node2D" parent="."]
 position = Vector2(20, -4)
+
+[node name="FireballPosition" type="Node2D" parent="."]
+position = Vector2(51, -16)
+
+[node name="FlipflopPosition" type="Node2D" parent="."]
+position = Vector2(56, -2)

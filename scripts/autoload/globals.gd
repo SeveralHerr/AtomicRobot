@@ -92,7 +92,7 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 			preload("res://sounds/Voice_Female_V2_Attack_Mono_01.wav"),
 			preload("res://sounds/throw.wav")  # weapon sound
 		),
-		3,  # Attack frame: the flip-flop leaves the hand early (was 5, half the swing)
+		5,  # Attack frame: first empty-handed frame; her wind-up (0-4) plays fast so it still leaves at 0.14 s
 		3, # hp: ranged trades health, not power (was 2)
 		4, # dmg: 3 shots a maid; FlipflopBullet's knockback holds her off
 		true # ranged
@@ -114,6 +114,25 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		5,  # Attack frame
 		4, # hp
 		4 # dmg: heavy scythe, slow 10-frame swing, 3 blows a maid
+	),
+	"Payton": CharacterConfig.new(
+		"Payton",
+		"PAYTON IS NOW PLAYABLE",
+		true,
+		"Artist at Atomic Robot Tattoo",
+		preload("res://sprites/payton_sprite_frames.tres"),
+		"",
+		CharacterSounds.new(
+			preload("res://sounds/Voice_Male_V2_Jump_Mono_05.wav"),
+			preload("res://sounds/Voice_Male_V1_Hit_Short_Mono_07.wav"),
+			preload("res://sounds/Voice_Male_V2_Jump_Mono_05.wav"),
+			preload("res://sounds/Voice_Male_V2_Attack_Short_Mono_07.wav"),
+			preload("res://sounds/fireball.wav")  # weapon sound: its whoosh peaks on the release frame
+		),
+		4,  # Attack frame: the first frame the fireball has left his hand (3 draws the swoosh)
+		3, # hp: ranged trades health, not power (as Cass)
+		4, # dmg: 3 fireballs a maid; same speed and slide-back as the flip-flop
+		true # ranged
 	),
 	# Locked until the player first beats the boss, and deliberately overpowered:
 	# the reward run should feel like a victory lap. Unlock: CharacterUnlocks.

@@ -20,13 +20,22 @@ const MAX_TRAVEL: float = 220.0
 const SPEED: float = 600.0
 ## Per-shot speed; subclasses may override (Cass's flip-flop flies faster).
 var speed: float = SPEED
+## Slide-back on a hit (0 = none, Robot's bullet); see FlipflopBullet.KNOCKBACK.
+var knockback: float = 0.0
 ## Half the shot's own length along X, added to each body's half-width for contact.
 const HALF_LENGTH: float = 11.0
 ## Vertical reach toward a lane-locked maid, beyond her own half-height.
 const HALF_HEIGHT: float = 7.0
 
-var dir = 0
+var dir = 0:
+	set(value):
+		dir = value
+		_aimed()
 var player: Player
+## World x the first frame's hit sweep starts from; the spawner sets it to the
+## shooter's body so a maid between body and hand isn't skipped (Payton's hand is
+## far forward). NAN: start at the spawn point.
+var origin_x: float = NAN
 ## Set by the spawner right after instantiation. Road lanes fly over the road tiles,
 ## so the projectile must take the lane's z or the TileMapLayer (z=1) hides it.
 var lane: int = Lanes.GROUND_LANE:
@@ -42,7 +51,8 @@ func _physics_process(delta: float) -> void:
 		return
 	_spin(delta)
 	var step: float = speed * delta
-	var from_x := global_position.x
+	var from_x := global_position.x if is_nan(origin_x) else origin_x
+	origin_x = NAN
 	position.x += dir * step
 	_travelled += step
 	var target := find_target(get_tree().get_nodes_in_group("enemies"), lane,
@@ -58,7 +68,7 @@ func _physics_process(delta: float) -> void:
 		crack.take_blow(self)
 		queue_free()
 	elif _travelled >= MAX_TRAVEL:
-		queue_free()
+		_expire()
 
 
 ## Visual-only hook for subclasses.
@@ -66,11 +76,27 @@ func _spin(_delta: float) -> void:
 	pass
 
 
+## Out of range: gone. Subclasses may play a fizzle first (they must stop flying).
+func _expire() -> void:
+	queue_free()
+
+
+## Visual-only hook: `dir` was just set (the spawner aims right after add_child).
+func _aimed() -> void:
+	pass
+
+
 func _hit(enemy: Enemy) -> void:
+	# Straight back along the shot: the enemy's lane y can differ from the shot's.
+	var from := enemy.global_position - Vector2(dir * 10.0, 0.0)
 	# Shake, sparks and hitstop come from player.land_hit (HitFeel).
 	if player != null:
 		player.land_hit(enemy)
 	queue_free()
+	# The boss is planted (FinalBoss shoves himself 60); a corpse doesn't slide.
+	if knockback <= 0.0 or enemy is FinalBoss or enemy.is_dead:
+		return
+	EnemyKnockback.apply(enemy, knockback, from)
 
 
 ## The first living enemy on `lane` this frame's sweep from `from_x` to `to_x`

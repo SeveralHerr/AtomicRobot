@@ -6,7 +6,7 @@ extends RefCounted
 var _T
 
 const SELECT := preload("res://scenes/character_select.tscn")
-const ROSTER := ["Cody", "Ryan", "Cass", "Caitlyn", "Sara", "Robot"]
+const ROSTER := ["Cody", "Ryan", "Cass", "Payton", "Caitlyn", "Sara", "Robot"]
 
 const PAD_A := 0
 const PAD_UP := 11
@@ -214,12 +214,12 @@ func test_unlocked_after_locked_clears_mystery() -> String:
 func test_dpad_walks_every_card_and_back() -> String:
 	Globals.selected_character = "Cody"
 	await _mount()
-	for n in range(1, 6):
+	for n in range(1, ROSTER.size()):
 		await _pad(PAD_RIGHT)
 		var r: String = _T.assert_eq(_focus(), _scene.cards[n], "d-pad right reaches card %d" % n)
 		if r != "":
 			return r
-	for n in range(4, -1, -1):
+	for n in range(ROSTER.size() - 2, -1, -1):
 		await _pad(PAD_LEFT)
 		var r: String = _T.assert_eq(_focus(), _scene.cards[n], "d-pad left reaches card %d" % n)
 		if r != "":
@@ -373,9 +373,9 @@ func test_cursor_lands_over_focused_card() -> String:
 	await _pad(PAD_RIGHT)
 	await _pad(PAD_RIGHT)
 	await _tree().create_timer(0.4).timeout
-	var card := _card("Caitlyn")
+	var card: Button = _scene.cards[ROSTER.find("Ryan") + 2]
 	var want: float = card.global_position.x + card.size.x / 2.0
-	return _T.assert_float_eq(_scene.cursor.global_position.x, want, 1.0, "P1 tag centred over Caitlyn")
+	return _T.assert_float_eq(_scene.cursor.global_position.x, want, 1.0, "P1 tag centred over %s" % card.character)
 
 
 func test_wrap_dir_takes_the_short_way() -> String:
@@ -389,7 +389,7 @@ func test_wrap_dir_takes_the_short_way() -> String:
 
 func test_tick_pitch_rises_left_to_right() -> String:
 	var S = load("res://scripts/character_select.gd")
-	for i in range(1, 6):
+	for i in range(1, ROSTER.size()):
 		var r: String = _T.assert_gt(S.tick_pitch(i), S.tick_pitch(i - 1), "card %d ticks higher than %d" % [i, i - 1])
 		if r != "":
 			return r
