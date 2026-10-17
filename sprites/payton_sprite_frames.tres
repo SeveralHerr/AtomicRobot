@@ -1,6 +1,11 @@
 [gd_resource type="SpriteFrames" format=3]
 
 [ext_resource type="Texture2D" path="res://sprites/Payton.png" id="1_xywy0"]
+[ext_resource type="Texture2D" path="res://sprites/payton_idle_breath.png" id="2_breath"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_breath"]
+atlas = ExtResource("2_breath")
+region = Rect2(-22, 0, 128, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_n55bi"]
 atlas = ExtResource("1_xywy0")
@@ -256,6 +261,9 @@ animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_o6myg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_breath")
 }],
 "loop": 1,
 "name": &"idle",

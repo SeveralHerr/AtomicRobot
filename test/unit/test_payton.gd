@@ -129,6 +129,25 @@ func test_payton_stands_where_the_roster_stands() -> String:
 	return ""
 
 
+## Every fighter breathes: an idle of 2+ frames whose feet stay planted while the body
+## moves (a 1-frame idle stands frozen while the rest of the roster bobs).
+func test_every_fighter_has_a_breathing_idle() -> String:
+	for c in Globals.character_dict:
+		var n := _frames(c).get_frame_count("idle")
+		if n < 2:
+			return "%s idle has %d frame(s): stands frozen" % [c, n]
+		var first := _img(c, "idle", 0)
+		var moved := false
+		for i in range(1, n):
+			var img := _img(c, "idle", i)
+			if absf(_stance(img).y - _stance(first).y) > 2.0:
+				return "%s idle[%d] feet move %d px" % [c, i, _stance(img).y - _stance(first).y]
+			moved = moved or img.get_data() != first.get_data()
+		if not moved:
+			return "%s idle frames are all identical" % c
+	return ""
+
+
 ## Walk loops: no frame-to-frame (or last-to-first) jump in the legs bigger than a
 ## normal step, so the run cycle doesn't hitch at the wrap.
 func test_payton_walk_cycle_loops_without_a_hitch() -> String:
