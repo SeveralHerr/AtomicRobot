@@ -1,7 +1,7 @@
 extends RefCounted
 
-# Robot ships locked, is earned by beating the boss (once, saved to disk), and is
-# deliberately overpowered. run_tests.gd points Globals at a scratch save and restores
+# Robot ships locked, is earned once every other fighter has beaten the boss (each
+# win saved to disk), and is deliberately overpowered. run_tests.gd points Globals at a scratch save and restores
 # shipped lock states before every test, so these drive the real autoload.
 
 var _T
@@ -32,6 +32,14 @@ func _robot() -> CharacterConfig:
 	return Globals.character_dict["Robot"]
 
 
+## Every fighter but `last` has already won; `last` is up for the final clear.
+func _one_win_away(last := "Cody") -> void:
+	for c in Globals.robot_contenders():
+		if c != last:
+			Globals.record_win(c)
+	Globals.selected_character = last
+
+
 ## A Globals as a fresh boot would build it, reading the test save.
 func _reboot() -> Node:
 	_fresh = load("res://scripts/autoload/globals.gd").new()
@@ -57,7 +65,8 @@ func test_everyone_else_ships_unlocked() -> String:
 
 
 func test_locked_robot_tells_you_how_to_unlock() -> String:
-	return _T.assert_true("BOSS" in _robot().get_unlock_hint().to_upper(), "hint names the boss: %s" % _robot().get_unlock_hint())
+	var h := _robot().get_unlock_hint().to_upper()
+	return _T.assert_true("BOSS" in h and "EVERY FIGHTER" in h, "hint names the boss and every fighter: %s" % h)
 
 
 # --- Overpowered ---------------------------------------------------------------
@@ -87,12 +96,62 @@ func test_robot_health_fits_the_hud() -> String:
 
 # --- Earning it ----------------------------------------------------------------
 
-func test_boss_death_unlocks_robot() -> String:
+func test_one_fighter_beating_the_boss_does_not_unlock_robot() -> String:
+	Globals.selected_character = "Ryan"
 	Globals.boss_death.emit()
-	return _T.assert_true(_robot().unlocked, "beating the boss unlocks Robot")
+	var r: String = _T.assert_false(_robot().unlocked, "one clear isn't enough")
+	if r != "":
+		return r
+	return _T.assert_eq(Globals.robot_progress(), Vector2i(1, 6), "Ryan's win counts")
+
+
+func test_every_fighter_beating_the_boss_unlocks_robot() -> String:
+	for c in Globals.robot_contenders():
+		var r: String = _T.assert_false(_robot().unlocked, "still locked before %s wins" % c)
+		if r != "":
+			return r
+		Globals.selected_character = c
+		Globals.boss_death.emit()
+	return _T.assert_true(_robot().unlocked, "the last fighter's clear unlocks Robot")
+
+
+func test_repeat_wins_by_one_fighter_count_once() -> String:
+	Globals.selected_character = "Sara"
+	for i in 6:
+		Globals.boss_death.emit()
+	var r: String = _T.assert_false(_robot().unlocked, "six Sara clears aren't six fighters")
+	if r != "":
+		return r
+	return _T.assert_eq(Globals.robot_progress(), Vector2i(1, 6), "Sara counted once")
+
+
+func test_robot_is_not_a_contender() -> String:
+	return _T.assert_false("Robot" in Globals.robot_contenders(), "Robot can't earn itself")
+
+
+func test_wins_survive_a_restart() -> String:
+	Globals.selected_character = "Cass"
+	Globals.boss_death.emit()
+	return _T.assert_eq(Array(_reboot().beaten), ["Cass"], "a fresh boot reads Cass's win from the save")
+
+
+func test_switching_save_forgets_wins() -> String:
+	Globals.record_win("Cass")
+	Globals.use_unlock_save(SAVE + ".other")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE + ".other"))
+	var r: String = _T.assert_eq(Globals.robot_progress().x, 0, "another save starts with no wins")
+	Globals.use_unlock_save(SAVE)
+	return r
+
+
+func test_boss_death_unlocks_robot() -> String:
+	_one_win_away()
+	Globals.boss_death.emit()
+	return _T.assert_true(_robot().unlocked, "the final fighter's clear unlocks Robot")
 
 
 func test_boss_death_announces_once() -> String:
+	_one_win_away()
 	for i in 3:  # the boss re-emits on every hit after 0 HP
 		Globals.boss_death.emit()
 	var r: String = _T.assert_eq(_announced.size(), 1, "one ROBOT IS NOW PLAYABLE, not three")
@@ -105,6 +164,7 @@ func test_boss_death_announces_once() -> String:
 
 
 func test_unlock_survives_a_restart() -> String:
+	_one_win_away()
 	Globals.boss_death.emit()
 	return _T.assert_true(_reboot().character_dict["Robot"].unlocked, "a fresh boot reads Robot from the save")
 
@@ -137,6 +197,7 @@ func test_save_keeps_earlier_unlocks() -> String:
 func test_already_unlocked_is_not_reannounced_after_restart() -> String:
 	Unlocks.save_unlocked(SAVE, "Robot")
 	Globals.load_unlocks()
+	_one_win_away()
 	Globals.boss_death.emit()
 	return _T.assert_eq(_announced.size(), 0, "beating the boss again doesn't re-announce Robot")
 
@@ -165,6 +226,7 @@ func test_only_bool_true_unlocks() -> String:
 
 func test_end_card_restart_keeps_the_reveal() -> String:
 	# End card RESTART runs Globals.reset() before opening character select.
+	_one_win_away()
 	Globals.boss_death.emit()
 	Globals.reset()
 	var r: String = _T.assert_true(_robot().unlocked, "reset doesn't re-lock Robot")

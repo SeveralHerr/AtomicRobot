@@ -281,14 +281,19 @@ func test_run_secret_after_the_run_ended_is_ignored() -> String:
 
 
 func test_run_unlock_is_reported() -> String:
-	# tools/run_tests.gd points Globals at a scratch unlock save with Robot locked.
+	# tools/run_tests.gd points Globals at a scratch unlock save with Robot locked;
+	# every fighter but Cody has won, so this clear is the one that earns Robot.
+	for c in Globals.robot_contenders():
+		if c != "Cody":
+			Globals.record_win(c)
+	Globals.selected_character = "Cody"
 	ScoreSystem.enter_scene(STAGE)
 	Globals.boss_death.emit()
 	var unlocks: Array = ScoreSystem.last_run.get("unlocks", [])
 	ScoreSystem.enter_scene(STAGE)
 	Globals.boss_death.emit()
 	var again: Array = ScoreSystem.last_run.get("unlocks", [])
-	var r: String = _T.assert_eq(unlocks, ["Robot"], "first clear unlocks Robot")
+	var r: String = _T.assert_eq(unlocks, ["Robot"], "the last fighter's clear unlocks Robot")
 	if r != "":
 		return r
 	return _T.assert_eq(again, [], "already unlocked: nothing new")
@@ -296,7 +301,8 @@ func test_run_unlock_is_reported() -> String:
 
 ## Mutation survivor: a run that ends with a fighter still locked reports no unlock.
 func test_run_still_locked_is_not_an_unlock() -> String:
-	# tools/run_tests.gd points Globals at a scratch unlock save with Robot locked.
+	# tools/run_tests.gd points Globals at a scratch unlock save with Robot locked;
+	# every fighter but Cody has won, so this clear is the one that earns Robot.
 	ScoreSystem.enter_scene(STAGE)
 	ScoreSystem.finish_stage()  # cleared without the boss_death unlock
 	var unlocks: Array = ScoreSystem.last_run.get("unlocks", [])

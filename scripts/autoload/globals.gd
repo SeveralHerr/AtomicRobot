@@ -134,15 +134,15 @@ var character_dict: Dictionary[String, CharacterConfig] = {
 		4, # dmg: 3 fireballs a maid; same speed and slide-back as the flip-flop
 		true # ranged
 	),
-	# Locked until the player first beats the boss, and deliberately overpowered:
-	# the reward run should feel like a victory lap. Unlock: CharacterUnlocks.
+	# Locked until every other fighter has beaten the boss, and deliberately
+	# overpowered: the reward run should feel like a victory lap. Unlock: record_win.
 	"Robot": CharacterConfig.new(
 		"Robot",
 		"ROBOT IS NOW PLAYABLE",
 		false,
 		"Mascot of Atomic Robot Tattoo",
 		preload("res://sprites/robot_sprite_frames.tres"),
-		"Beat the boss to unlock!",
+		"Beat the boss with every fighter!",
 		CharacterSounds.new(
 			preload("res://sounds/robot_noise.ogg"),
 			preload("res://sounds/robot_noise.ogg"),
@@ -163,6 +163,8 @@ var meter_maid_boss_killed: int = 0
 
 ## Save file for earned unlocks. Tests point it at a temp file.
 var unlocks_path := CharacterUnlocks.DEFAULT_PATH
+## Fighters who have beaten the boss (saved), toward Robot's unlock.
+var beaten: PackedStringArray = []
 ## Fighters unlocked this session that the select screen hasn't revealed yet.
 var unseen_unlocks: PackedStringArray = []
 ## Lock states as shipped, before any save is applied.
@@ -180,6 +182,7 @@ func _ready() -> void:
 func use_unlock_save(path: String) -> void:
 	unlocks_path = path
 	unseen_unlocks = PackedStringArray()
+	beaten = PackedStringArray()
 	for c in _shipped_unlocks:
 		character_dict[c].unlocked = _shipped_unlocks[c]
 	load_unlocks()
@@ -190,6 +193,9 @@ func load_unlocks() -> void:
 	for character in CharacterUnlocks.load_unlocked(unlocks_path):
 		if character_dict.has(character):
 			character_dict[character].unlocked = true
+	for character in CharacterUnlocks.load_beaten(unlocks_path):
+		if character_dict.has(character) and character not in beaten:
+			beaten.append(character)
 
 
 ## Earn `character`: unlock, save, announce. Repeat calls do nothing (boss_death can
@@ -206,7 +212,36 @@ func unlock_character(character: String) -> void:
 
 
 func _on_boss_death() -> void:
-	unlock_character(CharacterUnlocks.BOSS_REWARD)
+	record_win(selected_character)
+
+
+## Every fighter Robot's unlock waits on: the whole roster but Robot.
+func robot_contenders() -> PackedStringArray:
+	var out := PackedStringArray()
+	for c in character_dict:
+		if c != CharacterUnlocks.BOSS_REWARD:
+			out.append(c)
+	return out
+
+
+## (fighters who have beaten the boss, fighters needed) for the locked Robot's hint.
+func robot_progress() -> Vector2i:
+	var contenders := robot_contenders()
+	var done := 0
+	for c in contenders:
+		if c in beaten:
+			done += 1
+	return Vector2i(done, contenders.size())
+
+
+## `character` beat the boss: save it once; the last one needed earns Robot.
+func record_win(character: String) -> void:
+	if character in robot_contenders() and character not in beaten:
+		beaten.append(character)
+		CharacterUnlocks.save_beaten(unlocks_path, character)
+	var p := robot_progress()
+	if p.x == p.y:
+		unlock_character(CharacterUnlocks.BOSS_REWARD)
 
 
 ## Turn-taking attack slots (TMNT-style crowd combat): caps how many enemies can be

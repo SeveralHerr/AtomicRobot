@@ -490,15 +490,26 @@ func test_cursor_dims_in_footer_and_returns() -> String:
 # --- Robot: locked, earned, overpowered -----------------------------------------
 
 func test_locked_robot_hint_names_the_boss() -> String:
+	Globals.record_win("Cody")
+	Globals.record_win("Cass")
 	Globals.selected_character = "Sara"
 	await _mount()
 	await _pad(PAD_RIGHT)
-	return _T.assert_true("BOSS" in _scene.info.bio_label.text, "locked card says how: %s" % _scene.info.bio_label.text)
+	var t: String = _scene.info.bio_label.text
+	return _T.assert_true("BOSS" in t and "2/6" in t, "locked card says how and how far: %s" % t)
+
+
+## The real flow's last win: every other fighter has already beaten the boss.
+func _earn_robot(last := "Ryan") -> void:
+	for c in Globals.robot_contenders():
+		if c != last:
+			Globals.record_win(c)
+	Globals.selected_character = last
+	Globals.boss_death.emit()
 
 
 func test_boss_win_reveals_new_challenger() -> String:
-	Globals.selected_character = "Ryan"
-	Globals.boss_death.emit()  # the real flow: boss dies, then the run ends at select
+	_earn_robot("Ryan")  # the real flow: boss dies, then the run ends at select
 	await _mount()
 	var r: String = _T.assert_eq(_focus(), _card("Robot"), "the new fighter owns focus")
 	if r != "":
@@ -551,7 +562,7 @@ func test_early_pick_still_names_the_new_fighter() -> String:
 
 
 func test_reveal_only_on_first_visit() -> String:
-	Globals.boss_death.emit()
+	_earn_robot()
 	await _mount()
 	_scene.free()
 	Globals.selected_character = "Ryan"
@@ -561,7 +572,7 @@ func test_reveal_only_on_first_visit() -> String:
 
 
 func test_robot_is_pickable_once_earned() -> String:
-	Globals.boss_death.emit()
+	_earn_robot()
 	await _mount()
 	await _pad(PAD_A)
 	return _T.assert_eq(Globals.selected_character, "Robot", "A picks the earned Robot")
@@ -634,7 +645,7 @@ func test_roster_scale_reads_best_and_runner_up() -> String:
 
 
 func test_stamp_clears_when_you_move_on() -> String:
-	Globals.boss_death.emit()
+	_earn_robot()
 	await _mount()
 	await _tree().create_timer(_scene.REVEAL_AT + 0.3).timeout
 	await _pad(PAD_LEFT)
@@ -652,7 +663,7 @@ func test_p1_tag_clears_info_card_on_last_card() -> String:
 
 
 func test_early_pick_keeps_ready_over_reveal() -> String:
-	Globals.boss_death.emit()
+	_earn_robot()
 	await _mount()
 	await _pad(PAD_A)  # before REVEAL_AT
 	await _tree().create_timer(_scene.REVEAL_AT + 0.05).timeout

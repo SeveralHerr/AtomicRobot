@@ -4,6 +4,7 @@ extends Panel
 ## pips. Laid out by hand (no Containers) so every piece can be punched by tweens.
 
 const Juice := preload("res://scripts/ui/select/juice.gd")
+const CharacterUnlocks := preload("res://scripts/character_unlocks.gd")
 const SIZE := Vector2(500, 346)
 const TILT := 2.0
 const PIP := Vector2(40, 30)
@@ -210,7 +211,12 @@ func set_device(device: String) -> void:
 
 func _hint(cfg: CharacterConfig) -> String:
 	var h := cfg.get_unlock_hint().strip_edges()
-	return h.to_upper() if h != "" else LOCKED_HINT
+	if h == "":
+		return LOCKED_HINT
+	if cfg.character_name == CharacterUnlocks.BOSS_REWARD:
+		var p: Vector2i = Globals.robot_progress()
+		h += " %d/%d" % [p.x, p.y]
+	return h.to_upper()
 
 
 func _add_stat_row(title: String, at: Vector2) -> void:
