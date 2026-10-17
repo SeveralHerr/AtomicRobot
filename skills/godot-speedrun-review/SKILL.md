@@ -19,7 +19,9 @@ mortal "human" take, copy it without `god on` and try seeds 1-4 headless first
   right + 6 jumps (bins are steps).
 - Secret wall B: fire escape x 3765, 8 × (`press ui_accept`, 0.32 s, release, 0.42 s),
   face left, `tap Attack` with **0.6 s** gaps (taps mid-swing are dropped), `tap Interact`.
-- Wall A (cat, x 391) is UNREACHABLE today (bottom rung 190 px, jump apex 88 px).
+- Wall A (cat, x 389 y -448): the x 343 rungs reach its height, but 6 blows from the route's
+  rung top (x 333, y -491, facing right) register nothing (2026-10-10). It still counts on the
+  end card (7 secrets), so every run reads 6/7 until it is fixed.
 - `brain advance S X` fights forward and stops at x=X — the glue between secrets.
 
 ## 2. Record
@@ -37,7 +39,7 @@ mortal "human" take, copy it without `god on` and try seeds 1-4 headless first
   1:04, retake won). Retry once before changing the route; check the recorded report.
 
 ## 3. Review
-- `fps=1/2` frames → PIL 4x4 sheets with a timecode label per tile. Read every sheet.
+- `python tools/video_sheets.py run.mp4 out 2` → 4x4 sheets, timecode per tile. Read every sheet.
 - Adjacent thumbnails can fake a bug (two tiles of one sign read as a doubled sign):
   re-extract the exact frame at full size before calling it a finding.
 - Cross-check the report: `hurt` events by `near` (who hurts you), heal/powerup times,
@@ -71,3 +73,10 @@ Video + poster as published `files`, `downloads` capability for the MP4 button,
 `db` collection `decisions/<id>` = {status: approved|later|rejected, note}. Read the
 user's picks back with ArtifactData `list decisions`. Copy an older round's video into a new
 page server-side with `files: {"r2.mp4": {artifact: <old url>, path: "after.mp4"}}`.
+
+## Round 4 lessons (2026-10-10)
+- Event `t` in the recorded report matches the video clock (Movie Maker): use it for timecodes.
+  A `fps=0.5` sheet tile can sit ~1 s off its label; settle timing on a 4 fps strip.
+- Carry-over: re-check every undecided card from the last page in the new footage. Still live →
+  card marked "still open"; not seen → one line in a "rechecked" panel, no card.
+- Door 7775 heart: 1 of 21 runs took it (Sara seed 4, x 7787) — reachable, the bot rarely goes.

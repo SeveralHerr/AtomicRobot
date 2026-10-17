@@ -236,6 +236,7 @@ The CRT overlay hides ~40px of every screen edge: judge edge UI (bars, HUD) on t
 screenshot, never on node rects. Add `--resolution` to `tools/autoplay.py` rounds.
 After adding a `class_name`, run `--import` first — otherwise the script fails to parse and
 the feature is silently absent (autoplay now reports SCRIPT-ERROR).
+Review rounds: re-check the last page's undecided cards in the new footage; carry only the live ones.
 When the user asks for presentation/juice, sweep balance AFTER the presentation pass:
 banner timing changed fight length enough to flip a seeded balance scenario.
 
