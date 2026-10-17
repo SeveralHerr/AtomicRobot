@@ -13,6 +13,12 @@ const PIP_GAP := 10.0
 const PIP_LEFT := 140.0
 const PIP_ROOM := SIZE.x - PIP_LEFT - 2 * 28.0
 const LOCKED_HINT := "KEEP PLAYING TO UNLOCK!"
+## Bio box (position y, height): unlocked it sits over the stat rows; locked the stats
+## hide, so the how-to-unlock hint drops clear of LOCKED with room for two lines.
+const BIO_UNLOCKED := Vector2(112, 72)
+const BIO_LOCKED := Vector2(126, 92)
+## Lock icon (position y, size) under the locked hint, inside the card's bottom edge.
+const LOCK_AT := Vector2(222, 108)
 ## Call-to-action per input device, so the prompt never names the wrong button
 ## (keyboard "A" is ui_left here).
 const FIGHT_TEXT := {"pad": "PRESS A TO FIGHT!", "keys": "PRESS ENTER TO FIGHT!", "touch": "TAP AGAIN TO FIGHT!"}
@@ -58,8 +64,9 @@ func _ready() -> void:
 
 	bio_label = ComicStyle.label("", ComicStyle.LABEL, 34)
 	bio_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	bio_label.position = Vector2(24, 112)
-	bio_label.size = Vector2(SIZE.x - 48, 72)
+	bio_label.position.x = 24
+	bio_label.size.x = SIZE.x - 48
+	_place_bio(BIO_UNLOCKED)
 	add_child(bio_label)
 
 	for i in 2:
@@ -70,8 +77,8 @@ func _ready() -> void:
 	lock_icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	lock_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	lock_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	lock_icon.size = Vector2(150, 150)
-	lock_icon.position = Vector2((SIZE.x - 150) / 2.0, 180)
+	lock_icon.size = Vector2.ONE * LOCK_AT.y
+	lock_icon.position = Vector2((SIZE.x - LOCK_AT.y) / 2.0, LOCK_AT.x)
 	lock_icon.modulate = ComicStyle.INK  # the grey pixel lock is mush through the CRT
 	lock_icon.pivot_offset = lock_icon.size / 2.0
 	lock_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -114,6 +121,7 @@ func show_character(cfg: CharacterConfig, unlocked: bool) -> void:
 	_motion.clear()
 	name_label.text = cfg.get_character_name().to_upper() if unlocked else "LOCKED"
 	bio_label.text = bio(cfg) if unlocked else _hint(cfg)
+	_place_bio(BIO_UNLOCKED if unlocked else BIO_LOCKED)
 	_motion.append(Juice.pop(name_label, 1.3, 1.0, 0.3))
 	for row in stat_rows:
 		row.visible = unlocked
@@ -207,6 +215,11 @@ func _build_prompt() -> void:
 
 func set_device(device: String) -> void:
 	prompt.text = FIGHT_TEXT[device]
+
+
+func _place_bio(box: Vector2) -> void:
+	bio_label.position.y = box.x
+	bio_label.size.y = box.y
 
 
 func _hint(cfg: CharacterConfig) -> String:

@@ -117,13 +117,24 @@ func test_summary_card_shows_street_and_boss_subtotals() -> String:
 	return _T.assert_true("BOSS 600" in text, "boss subtotal in '%s'" % text)
 
 
-## The first clear unlocks Robot behind this card: the card has to say so.
+## The clear that completes the roster unlocks Robot behind this card: it has to say so.
 func test_summary_card_stamps_the_unlock() -> String:
+	for c in Globals.robot_contenders():
+		if c != "Cody":
+			Globals.record_win(c)
+	Globals.selected_character = "Cody"
 	var card := await _clear(7000)
 	var r: String = _T.assert_true(card.summary.unlock_holder.visible, "stamp shown")
 	if r != "":
 		return r
 	return _T.assert_eq(card.summary.unlock_label.text, "NEW FIGHTER: ROBOT", "names the fighter")
+
+
+## A first clear with fighters still to go earns nothing yet: no stamp.
+func test_summary_card_no_stamp_before_every_fighter_wins() -> String:
+	Globals.selected_character = "Cody"
+	var card := await _clear(7000)
+	return _T.assert_false(card.summary.unlock_holder.visible, "no stamp at 1/6")
 
 
 func test_summary_card_without_unlock_has_no_stamp() -> String:

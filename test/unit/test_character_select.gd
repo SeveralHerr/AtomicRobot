@@ -499,6 +499,31 @@ func test_locked_robot_hint_names_the_boss() -> String:
 	return _T.assert_true("BOSS" in t and "2/6" in t, "locked card says how and how far: %s" % t)
 
 
+## The longer "every fighter" hint ran into LOCKED and the card edge: on the locked card
+## the hint sits below the heading, all its lines fit, and the lock sits below it.
+func test_locked_hint_clears_heading_and_lock() -> String:
+	Globals.record_win("Cody")
+	Globals.selected_character = "Sara"
+	await _mount()
+	await _pad(PAD_RIGHT)
+	await _frames()
+	var info: Control = _scene.info
+	var bio: Label = info.bio_label
+	# Both labels centre their text vertically: compare the drawn text, not the boxes.
+	# A caps-only heading draws about 1 em tall (caps + outline + shadow) about its box centre.
+	var heading: Label = info.name_label
+	var heading_size := heading.get_theme_font_size("font_size")
+	var heading_bottom := heading.position.y + heading.size.y / 2.0 + heading_size * 0.5
+	var text_h := bio.get_line_count() * bio.get_line_height()
+	var text_top := bio.position.y + (bio.size.y - text_h) / 2.0
+	var got := [text_top >= heading_bottom, text_h <= bio.size.y,
+		bio.position.y + bio.size.y <= info.lock_icon.position.y,
+		info.lock_icon.position.y + info.lock_icon.size.y <= info.SIZE.y - 12]
+	return _T.assert_eq(got, [true, true, true, true],
+		"text below heading / lines fit / above lock / lock inside card (%s: text %d..%d, heading to %d)"
+		% [bio.text, text_top, text_top + text_h, heading_bottom])
+
+
 ## The real flow's last win: every other fighter has already beaten the boss.
 func _earn_robot(last := "Ryan") -> void:
 	for c in Globals.robot_contenders():
