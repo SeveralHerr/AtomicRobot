@@ -17,6 +17,10 @@ const PHASE_TINTS: Array[Color] = [Color.WHITE, Color(1.0, 0.82, 0.78), Color(1.
 const FINALE_SLOW_MO := 1.1
 const FINALE_HOLD := 1.6
 
+## World x range his centre may use while fighting: the room's on-screen span
+## (boss_room.gd sets it from the camera limits). The walls sit outside the camera, so
+## without it a charge ran him off screen. Unset: no limit.
+var arena := Vector2(-INF, INF)
 var phase: int = 0
 ## Invulnerable, not attacking: the beat between phases.
 var staggered: bool = false
@@ -34,6 +38,14 @@ func _ready() -> void:
 	enemy_state_machine.add_state("DeadEnemyState", DeadEnemyState.new(self))
 	set_physics_process(false)
 	animated_sprite_2d.play("idle")
+
+
+func _physics_process(delta: float) -> void:
+	super._physics_process(delta)
+	# Whatever moved him this frame (charge, shove, separation), keep him on screen.
+	if fighting and (global_position.x < arena.x or global_position.x > arena.y):
+		global_position.x = clampf(global_position.x, arena.x, arena.y)
+		velocity.x = 0.0
 
 
 ## Called by the room once the intro is over: from here he attacks.

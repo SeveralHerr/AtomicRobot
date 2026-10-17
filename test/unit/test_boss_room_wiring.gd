@@ -38,3 +38,9 @@ func test_entrance_trigger_starts_the_intro() -> String:
 func test_background_sprite_resolves() -> String:
 	return _T.assert_true(_room.boss_room_background_sprite != null,
 		"falling briefcases spawn across the background sprite")
+
+
+## The room hands the boss its on-screen span, so his charge can't run off camera.
+func test_spawned_boss_gets_the_rooms_arena() -> String:
+	var b: FinalBoss = _room.spawn_boss()
+	return _T.assert_eq(b.arena, _room._room_x_limits(), "boss arena = the room's x limits")

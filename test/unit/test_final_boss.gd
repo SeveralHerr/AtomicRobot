@@ -162,3 +162,57 @@ func _free(fan: Array[Bullet]) -> void:
 	for b in fan:
 		if is_instance_valid(b):
 			b.free()
+
+
+# --- staying on screen --------------------------------------------------------------
+# Player report: "the boss was off screen and not visible, he bounced out". His charge
+# aims OVERSHOOT px past the player and only stopped at a wall, and the room's walls sit
+# outside the camera: with the player near a wall he ran to x ~499 past the 475 edge.
+
+func test_dash_target_is_clamped_to_the_arena() -> String:
+	var arena := Vector2(-435, 445)
+	var r: String = _T.assert_float_eq(BossDashState.target_x(400.0, 1, arena), 445.0, 0.01, "runs to the right edge, not past it")
+	if r == "":
+		r = _T.assert_float_eq(BossDashState.target_x(-400.0, -1, arena), -435.0, 0.01, "left edge")
+	if r == "":
+		r = _T.assert_float_eq(BossDashState.target_x(0.0, 1, arena), BossDashState.OVERSHOOT, 0.01, "mid-room overshoot unchanged")
+	return r
+
+
+## Whatever moves him (charge, shove, separation), a fighting boss stays in the arena.
+func test_fighting_boss_never_leaves_the_arena() -> String:
+	_boss.arena = Vector2(-100, 100)
+	_boss.fighting = true
+	_boss.global_position = Vector2(90, 0)
+	_boss.set_physics_process(true)
+	_boss.velocity = Vector2(900, 0)
+	_boss.enemy_state_machine.change_state("BossDashState")
+	var hi := -INF
+	for i in 120:
+		await (Engine.get_main_loop() as SceneTree).physics_frame
+		hi = maxf(hi, _boss.global_position.x)
+	# The charge's tell wobbles him (Utils.shake_node2d, 3 px): that's a shake, not travel.
+	return _T.assert_true(hi <= 100.0 + 3.0, "boss reached x %.1f past the arena edge 100" % hi)
+
+
+## Before the fight (walking in from off screen) nothing clamps him.
+func test_boss_walk_in_is_not_clamped() -> String:
+	_boss.arena = Vector2(-100, 100)
+	_boss.global_position = Vector2(150, 0)
+	_boss.set_physics_process(true)
+	# physics_frame fires BEFORE that frame's _physics_process: wait for two.
+	for i in 2:
+		await (Engine.get_main_loop() as SceneTree).physics_frame
+	return _T.assert_true(_boss.global_position.x > 100.0, "walk-in start left alone")
+
+
+## The per-frame clamp is the safety net for anything but the charge (a shove, a
+## separation push): a fighting boss pushed past the edge is put back on the next frame.
+func test_a_shove_past_the_edge_is_undone_next_frame() -> String:
+	_boss.arena = Vector2(-100, 100)
+	_boss.fighting = true
+	_boss.set_physics_process(true)
+	_boss.global_position = Vector2(140, 0)
+	for i in 2:
+		await (Engine.get_main_loop() as SceneTree).physics_frame
+	return _T.assert_float_eq(_boss.global_position.x, 100.0, 0.01, "back on the arena edge")

@@ -28,7 +28,7 @@ func enter_state() -> void:
 	enemy._face_player()
 	_dir = enemy.facing
 	var px: float = enemy.player.global_position.x if enemy.player else enemy.global_position.x
-	_target_x = px + _dir * OVERSHOOT
+	_target_x = target_x(px, _dir, enemy.arena)
 	enemy.animated_sprite_2d.play("idle")
 	Utils.shake_node2d(enemy, 3.0, TELL)
 	var tw := enemy.create_tween()
@@ -64,6 +64,12 @@ func _try_hit() -> void:
 		_hit = true
 		p.receive_hit(enemy.global_position, 1, 520.0)
 		ScreenShake.apply_shake(10.0, 0.5)
+
+
+## Where a charge toward `dir` through a player at `px` stops: OVERSHOOT past them, but
+## never past the arena (the room's on-screen x range). Pure for the unit test.
+static func target_x(px: float, dir: int, arena: Vector2) -> float:
+	return clampf(px + dir * OVERSHOOT, arena.x, arena.y)
 
 
 ## Whether a charging boss with feet at (bx, by) flattens a player with feet at

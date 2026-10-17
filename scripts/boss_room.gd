@@ -118,6 +118,7 @@ func spawn_boss() -> FinalBoss:
 	add_child(b)
 	# top_level: these are world coordinates. He drops onto the floor under gravity.
 	b.global_position = Vector2(BOSS_ENTER_FROM, player.global_position.y - 30.0)
+	b.arena = _room_x_limits()
 	b.health_changed.connect(func(hp: int, _m: int) -> void: bar.set_health(hp))
 	# Deferred: hits land inside a physics callback, and both handlers add or kill
 	# bodies with Area2Ds (maids, the heart) — not allowed mid-flush.
