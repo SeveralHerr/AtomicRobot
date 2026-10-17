@@ -57,7 +57,10 @@ static func drop_powerup(enemy: Node2D, id: String) -> Node2D:
 	var floor_line: float = enemy.global_position.y + enemy.foot_offset()
 	if is_finite(enemy.lane_floor_y):
 		floor_line = Lanes.floor_y(enemy.lane_floor_y, enemy.lane)
-	pickup.global_position = Vector2(enemy.global_position.x, floor_line - PowerupPickup.HOVER_HEIGHT)
+	# The add is deferred, so place it in the parent's space now: a world spot set on a
+	# node outside the tree reads as local, and the boss room's root sits at (19, -251)
+	# (the pickup hovered near the ceiling there).
+	pickup.position = parent.to_local(Vector2(enemy.global_position.x, floor_line - PowerupPickup.HOVER_HEIGHT))
 	return pickup
 static func shake_node2d(node: Node2D, strength: float = 10.0, duration: float = 0.3, frequency: float = 0.02) -> void:
 	var original_pos = node.position

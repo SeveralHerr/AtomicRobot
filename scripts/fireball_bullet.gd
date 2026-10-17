@@ -39,10 +39,12 @@ func _hit(enemy: Enemy) -> void:
 	var puff := AnimatedSprite2D.new()
 	puff.sprite_frames = sprite.sprite_frames
 	puff.play(sprite.animation)
-	puff.global_position = sprite.global_position
 	puff.scale = Vector2(scale.x, 1.0)
 	puff.z_index = z_index
 	get_parent().add_child(puff)
+	# After add_child: set before, a world spot reads as local and an offset room (the
+	# boss room's root sits at (19, -251)) put the burst near the ceiling.
+	puff.global_position = sprite.global_position
 	var t := puff.create_tween().set_parallel()
 	t.tween_property(puff, "scale", Vector2(scale.x * 1.7, 1.7), FIZZLE_TIME)
 	t.tween_property(puff, "modulate:a", 0.0, FIZZLE_TIME)
