@@ -61,6 +61,8 @@ var _armed: Control
 var quit_game: Callable = func() -> void: QuitGame.quit(get_tree())
 
 var _hot := -1
+## The just-earned fighter's card until its reveal flips: the info card shows "???".
+var _mystery: Button
 var _stage: Control  # everything that shakes on confirm
 var _frame: Control  # the DESIGN-sized box _stage lives in, centred on any screen
 var _cursor_tween: Tween
@@ -88,9 +90,10 @@ func _ready() -> void:
 	sfx = AudioStreamPlayer.new()
 	add_child(sfx)
 	_wire_focus()
+	var fresh := revealing()
+	_mystery = fresh  # before focus lands on it: the info card must not spoil the flip
 	initial_card().grab_focus()
 	_intro()
-	var fresh := revealing()
 	Globals.unseen_unlocks = PackedStringArray()  # announce once
 	if fresh:
 		_reveal(fresh)
@@ -259,8 +262,12 @@ func _on_card_focus(card: Button) -> void:
 	var dir := 0 if first else wrap_dir(_hot, card.index, cards.size())
 	_hot = card.index
 	var cfg: CharacterConfig = card.config()
-	hero.show_character(cfg, card.is_unlocked(), dir)
-	info.show_character(cfg, card.is_unlocked())
+	if card == _mystery:  # before the flip: silhouette and "???", like a locked card
+		hero.show_character(cfg, false, dir)
+		info.show_mystery()
+	else:
+		hero.show_character(cfg, card.is_unlocked(), dir)
+		info.show_character(cfg, card.is_unlocked())
 	# Up from the footer returns to the fighter you were on, not the nearest card.
 	exit_button.focus_neighbor_top = exit_button.get_path_to(card)
 	_move_cursor.call_deferred(card, first)
@@ -406,7 +413,11 @@ func _reveal(card: Button) -> void:
 	var t := create_tween()
 	t.tween_interval(REVEAL_AT)
 	t.tween_callback(func() -> void:
+		_mystery = null
+		if info.mystery:  # still on the "???" (focused, or picked before the flip)
+			info.show_character(Globals.character_dict[card.character], true)
 		if confirmed:  # picked before the reveal landed; READY! owns the stage
+			hero.unveil()
 			return
 		if card.has_focus():
 			hero.reveal()

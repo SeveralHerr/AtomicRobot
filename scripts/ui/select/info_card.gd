@@ -33,7 +33,9 @@ var _pips: Array = []  # one Array[Panel] per stat row
 var _pip_on: StyleBoxFlat
 var _pip_off: StyleBoxFlat
 var _pip_gold: StyleBoxFlat
-var _motion: Array[Tween] = []  # this card's live tweens; killed on every change
+var _motion: Array[Tween] = []
+## Showing the "???" of a reveal that hasn't flipped (show_mystery), not a fighter.
+var mystery := false  # this card's live tweens; killed on every change
 
 
 func _ready() -> void:
@@ -105,6 +107,7 @@ func is_overpowered(cfg: CharacterConfig) -> bool:
 
 
 func show_character(cfg: CharacterConfig, unlocked: bool) -> void:
+	mystery = false
 	for t in _motion:
 		t.kill()
 	_motion.clear()
@@ -130,6 +133,24 @@ func show_character(cfg: CharacterConfig, unlocked: bool) -> void:
 	_motion.append(wob)
 	wob.tween_property(self, "rotation_degrees", TILT - 2.5, 0.06)
 	wob.tween_property(self, "rotation_degrees", TILT, 0.3).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+
+
+## A fighter whose reveal hasn't flipped yet: a "???" heading and nothing else, so the
+## card never names who is behind the silhouette.
+func show_mystery() -> void:
+	mystery = true
+	for t in _motion:
+		t.kill()
+	_motion.clear()
+	name_label.text = "???"
+	bio_label.text = ""
+	for row in stat_rows:
+		row.visible = false
+	lock_icon.visible = false
+	prompt.visible = false
+	op_badge.visible = false
+	ranged_badge.visible = false
+	_motion.append(Juice.pop(name_label, 1.3, 1.0, 0.3))
 
 
 ## First line of the config description; the "+2 hp" line is drawn as pips instead.

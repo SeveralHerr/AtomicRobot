@@ -5,6 +5,7 @@ extends RefCounted
 
 var _T
 
+const Juice := preload("res://scripts/ui/select/juice.gd")
 const SELECT := preload("res://scenes/character_select.tscn")
 const ROSTER := ["Cody", "Ryan", "Cass", "Payton", "Caitlyn", "Sara", "Robot"]
 
@@ -493,6 +494,43 @@ func test_boss_win_reveals_new_challenger() -> String:
 	if r != "":
 		return r
 	return _T.assert_eq(_card("Robot").plate.text, "ROBOT", "card name revealed")
+
+
+## The reveal must not spoil itself: while the new fighter's card is still "???" the
+## info card keeps the name, bio, stats and badges hidden; they land on the flip.
+## (Seen in the Payton reel: the info card read PAYTON over the silhouette.)
+func test_info_card_keeps_the_new_fighter_secret_until_the_flip() -> String:
+	Globals.selected_character = "Ryan"
+	Globals.unseen_unlocks = PackedStringArray(["Payton"])
+	await _mount()
+	var info = _scene.info
+	var r: String = _T.assert_eq(info.name_label.text, "???", "name hidden before the flip")
+	if r == "":
+		r = _T.assert_false(info.stat_rows[0].visible or info.stat_rows[1].visible, "stats hidden before the flip")
+	if r == "":
+		r = _T.assert_false(info.ranged_badge.visible or info.bio_label.text.contains("Atomic"), "badge and bio hidden")
+	if r == "":
+		r = _T.assert_eq(_scene.hero.sprite.modulate, Juice.SILHOUETTE, "hero is a silhouette before the flip")
+	if r != "":
+		return r
+	await _tree().create_timer(_scene.REVEAL_AT + 0.4).timeout
+	r = _T.assert_eq(info.name_label.text, "PAYTON", "name lands on the flip")
+	if r == "":
+		r = _T.assert_true(info.stat_rows[0].visible and info.ranged_badge.visible, "stats and RANGED stamp land too")
+	if r != "":
+		return r
+	await _tree().create_timer(0.6).timeout  # the reveal's overbright flash settles
+	return _T.assert_eq(_scene.hero.sprite.modulate, Color.WHITE, "hero in full colour after the flip")
+
+
+## Picked before the flip: READY! plays, and the info card still lands the fighter's name.
+func test_early_pick_still_names_the_new_fighter() -> String:
+	Globals.selected_character = "Ryan"
+	Globals.unseen_unlocks = PackedStringArray(["Payton"])
+	await _mount()
+	_scene.confirm(_card("Payton"))
+	await _tree().create_timer(_scene.REVEAL_AT + 0.3).timeout
+	return _T.assert_eq(_scene.info.name_label.text, "PAYTON", "name lands even after an early pick")
 
 
 func test_reveal_only_on_first_visit() -> String:

@@ -97,6 +97,12 @@ func show_character(cfg: CharacterConfig, unlocked: bool, dir: int) -> void:
 		Juice.pop(mystery, 1.4, 1.0, 0.3)
 
 
+## Drop the pre-reveal silhouette without the NEW CHALLENGER! stamp (READY! owns it).
+func unveil() -> void:
+	sprite.modulate = Color.WHITE
+	mystery.hide()
+
+
 ## The outgoing fighter: a frozen copy that slides off the other way and fades.
 func _ghost_out(dir: int) -> void:
 	var ghost := AnimatedSprite2D.new()
