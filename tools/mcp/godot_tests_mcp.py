@@ -68,6 +68,13 @@ TOOLS = [
             "x_from": {"type": "integer"}, "x_to": {"type": "integer"}, "step": {"type": "integer"}}},
     },
     {
+        "name": "audit_fighter_frames",
+        "description": "Per fighter SpriteFrames: animation set, loop, fps, and each frame's leg "
+                       "centre / feet line vs its cell centre (a new sheet must stand where the "
+                       "roster stands; hitboxes are shared). Optional `path` to one .tres.",
+        "inputSchema": {"type": "object", "properties": {"path": {"type": "string"}}},
+    },
+    {
         "name": "audit_lane_walls",
         "description": "List always-on Wall-layer colliders in main.tscn that reach the road lanes "
                        "(invisible walls). Barriers/boundaries are reported as expected.",
@@ -147,6 +154,12 @@ def level_pan(x_from=-1400, x_to=7800, step=450) -> str:
         return str(e)
 
 
+def audit_fighter_frames(path: str = "") -> str:
+    if path and not re.match(r"^sprites/[\w.-]+\.tres$", path):
+        return "path must look like sprites/<name>_sprite_frames.tres"
+    return (_py("fighter_frames_audit.py", path) if path else _py("fighter_frames_audit.py"))[-6000:]
+
+
 def audit_lane_walls() -> str:
     return _py("lane_wall_audit.py")[-3000:]
 
@@ -174,6 +187,8 @@ def handle(msg: dict):
             text = contact_sheet(str(args.get("run", "")), args.get("t_from"), args.get("t_to"))
         elif p.get("name") == "level_pan":
             text = level_pan(args.get("x_from", -1400), args.get("x_to", 7800), args.get("step", 450))
+        elif p.get("name") == "audit_fighter_frames":
+            text = audit_fighter_frames(str(args.get("path", "")))
         elif p.get("name") == "audit_lane_walls":
             text = audit_lane_walls()
         else:

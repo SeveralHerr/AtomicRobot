@@ -268,6 +268,13 @@ family from the levels in a test, never patch one instance (`skills/godot-pickup
 Scan level .tscn instance OVERRIDES too: a level restyled the wall's prompt (`text = "[e]"`,
 own LabelSettings) where the prop scene looked fine (`test_interact_prompt.gd`).
 
+New fighter from a sheet: `skills/godot-new-fighter` (frames audit, muzzle through DefaultSprite's
+`offset (0,-33.19)` - forgot it, shot spawned 33 px low). Start the baseline suite in a HEAD worktree
+(`git worktree add C:/wt-x HEAD --detach`) BEFORE editing: a run in this checkout raced the edits.
+"Not fluid" ranged throw = the shot spawned while the art still held it (Cass: f3 spawn, hand empty on f5).
+Fix the hit frame, keep balance by shortening the wind-up's frame durations (`test_cass_throw.gd`).
+Python `Path.write_text` on Windows writes CRLF into LF files: edit with `read_bytes`/`write_bytes`.
+
 Placed pickups: judge them at the player's STANDING height — zoom 2.5 puts anything ~95px
 above the floor in the HUD band (`skills/godot-level-pickups/SKILL.md`).
 

@@ -700,3 +700,12 @@ Log of skills that might have been useful for a given response, and why (short f
 - 2026-10-10: pushed main 95ac98d (itch deploy green). Posted TICKET SWEEP! Short via social-reel-post: YouTube https://youtube.com/shorts/CTcG7Z_39J8, Bluesky .../post/3mxkhr4tav22n, TikTok .../video/7695160683515710734 (under review), Instagram https://www.instagram.com/reel/DeVGWk5ReFH/. Used: social-reel-post (enhancement: captions.py strips '!' from --title; keep the feature name's punctuation), chrome-browser. MCP: claude-in-chrome.
 - 2026-10-10 retry via /pi-game-deploy: mDNS fail, no 98:fe:54 MAC after 3-min poll; Picade off LAN. Used: pi-game-deploy (enhancement: ship a `find-pi.ps1` that pings /24 + polls ARP for the cabinet MAC for N min). MCP: none.
 - 2026-10-10 follow-up: before/after proof artifact https://claude.ai/artifact/AH5dXhCaJ1RQVnpJjDF3yd (stacked GIFs, HEAD worktree vs fix, CRT on): push left while mashing 12 Hz -> old turns +0.82 s (after the string), fix +0.28 s. First A/B at 6 Hz taps showed no difference: cadence matters. Used: godot-ab-worktree (enhancement: note per-frame-palette GIF stacking + a "tap cadence" line), godot-autoplay-test. Would have helped: an input-HUD overlay in tools/autoplay --record (draw held/tapped actions on the video). MCP: none.
+
+## 2026-10-16 — Add Payton (fireball fighter)
+- Skills that helped / would have: `godot-autoplay-test` (real-game runs), `godot-speedrun-review` (record + sheets), `godot-hit-feel` (impact burst), `godot-input-test` (real taps), `somewhat-useful-claude-skills:godot-2d-placement-audit` (muzzle = spawn placement), `derive-the-list` (roster lists checked both ways), `extract-a-testable-seam` (QOA wav -> read RIFF).
+- Missing, now written: `skills/godot-new-fighter` (sheet audit, muzzle math incl. DefaultSprite offset, sound timing, evidence recipe); `tools/fighter_frames_audit.py` + MCP `audit_fighter_frames`.
+- Enhancement idea (godot-speedrun-review): add a "two fighters, same input, side-by-side GIF" recipe.
+
+## 2026-10-16 — Cass throw made fluid
+- Skills that helped / would have: `godot-new-fighter` (just written; release-frame + muzzle recipe applied as-is), `godot-ab-worktree` (before/after capture on HEAD), `derive-the-list` (test_melee_facing's hand-typed RANGED missed Payton), `somewhat-useful-claude-skills:godot-2d-placement-audit`.
+- Enhancement idea (godot-new-fighter): add a ready-made capture + compose script pair under the skill so GIF rounds need no throwaway edits.
