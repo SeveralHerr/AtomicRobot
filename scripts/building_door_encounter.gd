@@ -46,7 +46,9 @@ signal squad_cleared
 ## Barriers + camera limits while the fight is live. Off = burst with no lock.
 @export var lock_arena: bool = true
 ## Half-width of the locked arena in world px. Must exceed 256 — the camera shows
-## 512 px of world at zoom 2.5, so anything smaller never binds.
+## 512 px of world at zoom 2.5 on the 1280-wide design view, so anything smaller never
+## binds. Wider screens (16:9, phones: up to ~692 px) can be wider than the arena; the
+## camera then centres on it (CameraLimitBlend.view_left) and shows a sliver past each wall.
 @export var arena_half_width: int = 320
 ## Force-release after this long, so a stuck enemy can never softlock the player.
 @export var watchdog_seconds: float = 45.0

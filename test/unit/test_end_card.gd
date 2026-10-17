@@ -288,20 +288,8 @@ func test_non_qualifier_sees_list_and_restart_at_once() -> String:
 	return _T.assert_true(card.restart_button.has_focus(), "RESTART focused")
 
 
-## Integration, not stacking: the card fits the 1280x800 screen and draws above the
-## score HUD (which the level UI layer covers).
-func test_card_fits_screen_and_covers_hud() -> String:
-	var card: EndCard = await _level(BOSS_ROOM, 26400)
-	Globals.boss_death.emit()
-	await _frames(4)
-	var panel := card.find_child("Card", true, false) as Control
-	var rect := panel.get_global_rect()
-	var screen := Rect2(Vector2.ZERO, Vector2(1280, 800))
-	if not screen.encloses(rect.grow(-12)):
-		return "card %s spills off the 1280x800 screen" % rect
-	var hud_layer: int = (load("res://scenes/score_ui.tscn") as PackedScene).instantiate().layer
-	var ui_layer: int = card.get_parent().layer
-	return _T.assert_gt(ui_layer, hud_layer, "level UI (card) layer above the score HUD")
+## Fits the screen and draws over the score HUD at every aspect:
+## test_story_aspect.gd::test_end_card_centres_and_dims_the_whole_screen_at_every_aspect.
 
 
 ## The boss room adds its HP card and banner to the same UI layer after the EndCard;

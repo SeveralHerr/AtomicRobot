@@ -422,6 +422,9 @@ frame_progress = 0.0
 libraries/ = SubResource("AnimationLibrary_qxslq")
 autoplay = &"RESET"
 
+[node name="Camera2D" parent="Player" index="11"]
+limit_top = -808
+
 [node name="RunParticles" parent="Player" index="17"]
 color_ramp = SubResource("Gradient_d2wvv")
 

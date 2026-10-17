@@ -11,6 +11,20 @@ const POWERUP_PICKUP = preload("res://scenes/powerup_pickup.tscn")
 static var verbose_logs: bool = OS.is_debug_build() and OS.get_cmdline_user_args().has("--verbose-logs")
 
 
+func _ready() -> void:
+	if DisplayServer.get_name() == "headless":
+		fit_headless_root(get_tree().root)
+
+
+## Headless has a 64x64 window, which stretch aspect "expand" turns into a square
+## 1280x1280 canvas: tests, sandboxes and the autoplay bot would all play a screen
+## no player owns. Give them the 1280x800 design view (a test that wants another
+## aspect sets `root.size` itself).
+static func fit_headless_root(root: Window) -> void:
+	root.size = Vector2i(ProjectSettings.get_setting("display/window/size/viewport_width"),
+		ProjectSettings.get_setting("display/window/size/viewport_height"))
+
+
 ## The only sanctioned print() under scripts/ (test_debug_log.gd enforces it).
 ## Returns the line it printed ("" when silent) so the gate is testable.
 static func debug_log(...parts: Array) -> String:

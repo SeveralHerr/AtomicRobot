@@ -19,6 +19,12 @@ funcs), `MicroCutscene` (director), `CaptionCard` (comic caption box),
 - A shot must never look under the road: centre.y <= limit_bottom - 400/zoom. Pinned by
   `test_every_shot_stays_above_the_road` (caught 2 shots off by 2-6 px).
 
+- Aspect "expand" (2026-10-10): the view is 1280x960 on 4:3, 1731x800 on a phone. Frame
+  with the REAL size (`clamp_center/play_center(..., view)`); the director clamps each shot
+  so its aim equals what the bottom limit shows. Headless root is 64x64 (= 1280x1280
+  canvas): set `root.size` in tests (`test_story_aspect.gd`). Top bar must hide anything
+  above the sky (`limit_top` -808): arch at 5:4 peeks 27 px above it, under the bar.
+
 ## Rules (each was a real miss)
 - Off unless the run came through the front end (`StreetCutscenes.enabled` set by the
   controls splash): tests/sandboxes/autoplay loading main.tscn directly are untouched.

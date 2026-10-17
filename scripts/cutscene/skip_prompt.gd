@@ -6,8 +6,9 @@ class_name SkipPrompt
 ## fades. Drawn, not built from nodes, so it costs one Control.
 
 const TEXT := "HOLD TO SKIP"
-## Ring centre, inside the CRT bezel and the 130px top bar.
-const CENTRE := Vector2(1196, 84)
+## Ring centre as an inset from the top-right corner, inside the CRT bezel and the
+## 130px top bar: the same distance in on a 4:3 cabinet as on a wide phone.
+const INSET := Vector2(84, 84)
 const RADIUS := 18.0
 
 ## 0..1 fill.
@@ -26,8 +27,18 @@ func _init() -> void:
 	_label = ComicStyle.label(TEXT, ComicStyle.LABEL, 28, ComicStyle.PAPER)
 	_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_label.size = Vector2(260, 40)
-	_label.position = CENTRE - Vector2(RADIUS + 14.0 + 260.0, 20.0)
 	add_child(_label)
+	resized.connect(_place)
+	_place()
+
+
+func centre() -> Vector2:
+	return Vector2(size.x - INSET.x, INSET.y)
+
+
+func _place() -> void:
+	_label.position = centre() - Vector2(RADIUS + 14.0 + 260.0, 20.0)
+	queue_redraw()
 
 
 ## Fade in (a button went down) or out (released, or the scene is ending).
@@ -37,6 +48,6 @@ func show_prompt(on: bool) -> void:
 
 
 func _draw() -> void:
-	draw_arc(CENTRE, RADIUS, 0.0, TAU, 40, Color(1, 1, 1, 0.25), 4.0, true)
+	draw_arc(centre(), RADIUS, 0.0, TAU, 40, Color(1, 1, 1, 0.25), 4.0, true)
 	if progress > 0.0:
-		draw_arc(CENTRE, RADIUS, -PI / 2.0, -PI / 2.0 + TAU * progress, 40, ComicStyle.YELLOW, 5.0, true)
+		draw_arc(centre(), RADIUS, -PI / 2.0, -PI / 2.0 + TAU * progress, 40, ComicStyle.YELLOW, 5.0, true)

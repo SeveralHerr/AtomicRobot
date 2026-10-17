@@ -108,7 +108,9 @@ func test_each_stand_is_its_own_secret() -> String:
 const NEWS_CARD := preload("res://scripts/ui/news_card.gd")
 ## The CRT bezel swallows about this much of every screen edge.
 const CRT_EDGE := 40.0
-const WINDOWS: Array[Vector2i] = [Vector2i(1280, 800), Vector2i(1688, 780)]
+## Desktop 16:10, landscape phone, 4:3 Picade cabinet, 5:4, 16:9.
+const WINDOWS: Array[Vector2i] = [Vector2i(1280, 800), Vector2i(1688, 780), Vector2i(1024, 768),
+	Vector2i(1280, 1024), Vector2i(1920, 1080)]
 
 
 func _tree() -> SceneTree:
@@ -359,8 +361,10 @@ func test_every_headline_has_a_photo() -> String:
 	return ""
 
 
-## Laid out for real at the desktop and landscape-phone sizes: big, centred, and
-## inside the CRT-safe area with the longest headline.
+## Laid out for real at every shipped screen shape: big, centred, and inside the
+## CRT-safe area with the longest headline. "Big" is against the 16:10 design area
+## the screen fits: stretch "expand" adds extra world at the sides of a wide phone
+## (1731x800 canvas), not a bigger screen, so the paper keeps its real size there.
 func test_paper_is_big_and_inside_the_crt_safe_area() -> String:
 	var stand: Node = STAND_SCENE.instantiate()
 	var longest := ""
@@ -387,7 +391,8 @@ func test_paper_is_big_and_inside_the_crt_safe_area() -> String:
 		var safe := Rect2(Vector2(CRT_EDGE, CRT_EDGE), canvas - Vector2(CRT_EDGE, CRT_EDGE) * 2.0)
 		if not safe.encloses(rect):
 			return "%s: paper %s pokes outside the CRT-safe area %s" % [window, rect, safe]
-		if rect.size.x < canvas.x * 0.6:
+		var design_w := minf(canvas.x, canvas.y * base.x / base.y)
+		if rect.size.x < design_w * 0.6:
 			return "%s: paper %s is not big (canvas %s)" % [window, rect, canvas]
 		if absf(rect.get_center().x - canvas.x * 0.5) > 8.0:
 			return "%s: paper %s is not centred" % [window, rect]

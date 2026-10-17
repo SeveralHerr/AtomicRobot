@@ -16,6 +16,8 @@ const BOSS_MARK := -20.0
 const WALK_IN_TIME := 1.5
 ## Ceiling drops and reinforcements land within this many px of the player.
 const WAVE_REACH := 250.0
+## Half the 1280-wide design view in world px (zoom 2.5).
+const DESIGN_HALF_VIEW := 256.0
 ## HUD out before the letterbox slides in (real seconds).
 const HUD_FADE_TIME := 0.15
 ## Banner stripe colour per phase: red, then hotter.
@@ -176,9 +178,10 @@ func _drop_volley() -> void:
 
 func _send_maids(count: int) -> void:
 	var lim := _room_x_limits()
+	var reach := maid_reach(CarWarning.half_view(get_viewport()))
 	for i in count:
 		var side := -1.0 if i % 2 == 0 else 1.0
-		var x := clampf(player.global_position.x + side * (WAVE_REACH + 40.0), lim.x + 20.0, lim.y - 20.0)
+		var x := clampf(player.global_position.x + side * reach, lim.x + 20.0, lim.y - 20.0)
 		var maid: Enemy = (EnemySpawner.METER_MAID_MELEE if i % 2 == 0 else EnemySpawner.METER_MAID).instantiate()
 		maid.persist = true
 		maid.spawn_grace = 1.2
@@ -233,6 +236,13 @@ func _play(stream: AudioStream) -> void:
 	sfx.finished.connect(sfx.queue_free)
 	add_child(sfx)
 	sfx.play()
+
+
+## How far from the player a summoned maid appears: just past the screen edge. Tuned
+## on the 1280-wide design view (256 world px each way); wider screens (16:9 ~284,
+## phone ~346) add their extra half-width, or she popped in on screen.
+static func maid_reach(half_view: float) -> float:
+	return WAVE_REACH + 40.0 + maxf(0.0, half_view - DESIGN_HALF_VIEW)
 
 
 ## World X range the camera may show — the room's walls, as far as play goes.

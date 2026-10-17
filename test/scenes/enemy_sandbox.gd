@@ -355,7 +355,7 @@ func _build_scenario() -> void:
 func _spawn_ambient_wave() -> void:
 	if player == null or player.is_dead:
 		return
-	EnemySpawner.spawn_enemy(self, player, get_viewport_rect().size, -50)
+	EnemySpawner.spawn_enemy(self, player, -50)
 
 
 # ----------------------------------------------------------------------- HUD

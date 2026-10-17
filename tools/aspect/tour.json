@@ -1,0 +1,12 @@
+{
+  "name": "aspect",
+  "boot": true,
+  "character": "Ryan",
+  "seed": 1,
+  "timeout": 900,
+  "snap_every": 45,
+  "steps": ["wait 3", "snap a_title", "tap ui_accept", "wait 1.5", "snap b_select", "tap ui_accept", "wait 1.5",
+            "snap c_controls", "menu 40", "wait 1", "snap d_street", "tap pause", "wait 1", "snap e_pause",
+            "tap pause", "wait 0.5", "god on", "brain advance 840", "wait 3", "snap z_win"],
+  "expect": ["won == 1", "errors == 0"]
+}
