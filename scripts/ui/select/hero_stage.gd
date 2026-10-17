@@ -139,10 +139,14 @@ func _set_stamp(text: String, font_size: int) -> void:
 	stamp.add_theme_font_size_override("font_size", font_size)
 
 
-## Hitstop: hold the fighter on its current frame.
+## Hitstop: hold the fighter on its current frame. A pick mid swap-in snaps to the
+## settled pose first: killing the tween left them half-faded and squashed.
 func freeze() -> void:
 	if _swap:
 		_swap.kill()
+	sprite.position = Vector2.ZERO
+	sprite.scale = Vector2.ONE * SPRITE_SCALE
+	sprite.self_modulate.a = 1.0
 	sprite.speed_scale = 0.0
 
 

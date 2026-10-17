@@ -323,6 +323,9 @@ A touch test that emits `button.pressed` proved nothing: "tap again" was broken 
 green suite. Drive real taps (`_tap` in test_character_select.gd) at several hold lengths.
 It broke AGAIN on a green suite: headless never hit-tests the root Control, so its STOP
 filter ate every real tap/click. Confirm tap fixes in a windowed script, guard catchers by rect.
+Third time ("one tap picks" on phones): Godot dispatches a finger's EMULATED mouse press before the
+touch, and its hover focused the card first; tests pushed touch-first. Push events in engine order and
+prove taps under Xvfb with `Input.parse_input_event` (`skills/godot-touch-emulation`).
 Pad screens: a green "focus is on RESTART" test missed that pause (Start/Esc) steals focus and drops
 it on resume - cabinet stick then moved nothing. Test focus screens across pause/resume.
 "Tricky to turn while mashing": a buffered press and a held stick competed for the same frame and the

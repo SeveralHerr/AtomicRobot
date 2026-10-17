@@ -163,6 +163,23 @@ func test_stage_shows_focused_fighter_frames() -> String:
 		Globals.character_dict["Cass"].sprite_frames, "stage plays Cass's idle")
 
 
+## A pick during the swap-in froze the fighter half-faded and squashed (a ghostly
+## Cass under READY!): the hitstop must land on the settled pose, for every fighter.
+func test_pick_mid_swap_shows_fighter_settled() -> String:
+	await _mount()
+	var hero: Control = _scene.hero
+	for c in ROSTER:
+		hero.show_character(Globals.character_dict[c], true, 1)
+		hero.freeze()
+		var s: AnimatedSprite2D = hero.sprite
+		var got := [s.self_modulate.a, s.scale, s.position]
+		var want := [1.0, Vector2.ONE * hero.SPRITE_SCALE, Vector2.ZERO]
+		var r: String = _T.assert_eq(got, want, "%s settled on a mid-swap pick" % c)
+		if r != "":
+			return r
+	return ""
+
+
 func test_stat_pips_match_config() -> String:
 	Globals.selected_character = "Cody"
 	await _mount()
@@ -660,17 +677,15 @@ func test_accept_grace_counts_game_time() -> String:
 
 
 
-## A real finger tap at `card`, as a phone sends it: the touch, plus the left-button
-## press/release the engine emulates from it, pushed straight into the viewport (the
-## headless window is 0x0, so Input.parse_input_event never reaches the GUI). Emitting
-## `pressed` directly hid a second tap that never picked.
+## A real finger tap at `card`, as a phone sends it: the left-button press/release the
+## engine emulates from the touch, then the touch itself, pushed straight into the
+## viewport (the headless window is 0x0, so Input.parse_input_event never reaches the
+## GUI). Engine order matters: Input dispatches the emulated mouse event FIRST, and its
+## hover update focuses the card before any touch arrives. Sending the touch first hid
+## a phone's first tap picking. Emitting `pressed` directly hid a second tap that never picked.
 func _tap(card: Control, hold_frames := 6) -> void:
 	var at: Vector2 = card.get_global_transform_with_canvas() * (card.size / 2.0)
 	for pressed in [true, false]:
-		var t := InputEventScreenTouch.new()
-		t.position = at
-		t.pressed = pressed
-		_tree().root.push_input(t, true)
 		var m := InputEventMouseButton.new()
 		m.button_index = MOUSE_BUTTON_LEFT
 		m.button_mask = MOUSE_BUTTON_MASK_LEFT if pressed else 0
@@ -679,6 +694,10 @@ func _tap(card: Control, hold_frames := 6) -> void:
 		m.pressed = pressed
 		m.device = InputEvent.DEVICE_ID_EMULATION
 		_tree().root.push_input(m, true)
+		var t := InputEventScreenTouch.new()
+		t.position = at
+		t.pressed = pressed
+		_tree().root.push_input(t, true)
 		await _frames(hold_frames if pressed else 2)
 
 
