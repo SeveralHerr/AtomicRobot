@@ -18,6 +18,12 @@ const ORB_BASE_SCALE := Vector2.ONE
 const ORB_BASE_MODULATE := Color.WHITE
 ## Red punch an orb flashes on the frame it loses a hit.
 const ORB_DAMAGE_TINT := Color(1.0, 0.35, 0.3, 1.0)
+## The ART logo at the top right: the orb row must end this far short of it. Each orb
+## is as tall as the "HP" label (~98 px), so a full row of Player.MAX_ORBS ran under
+## the logo; past that point the orbs shrink to fit. Null (no logo): no limit.
+const LOGO_GAP := 8.0
+@onready var _logo: Control = get_node_or_null("../../../MarginContainer/TextureRect")
+@onready var _label: Control = get_node_or_null("../Label")
 var heart_instances: Array[Node] = []
 var max_hearts: int = 0
 var previous_health: int = 0
@@ -27,6 +33,7 @@ var _orb_tweens: Dictionary = {}
 
 func _ready() -> void:
 	player.player_health_updated.connect(_update_health)
+	get_viewport().size_changed.connect(_fit_orbs)
 	# Initialize with player's starting health (no animation)
 	_update_health(player.health)
 	is_initialized = true  # Mark as initialized after first update
@@ -78,6 +85,31 @@ func _update_health(current_health: int) -> void:
 
 	# Update previous health for next comparison
 	previous_health = current_health
+	_fit_orbs()
+
+
+## Size every orb: label height, or smaller if that many would reach the logo.
+func _fit_orbs() -> void:
+	var n := 0
+	for orb in heart_instances:
+		if (orb as Control).visible:
+			n += 1
+	var side := _natural_side()
+	if _logo != null and n > 0:
+		var room := _logo.get_global_rect().position.x - LOGO_GAP - get_global_rect().position.x
+		var sep := get_theme_constant("separation")
+		side = minf(side, floorf((room - sep * (n - 1)) / n))
+	for orb in heart_instances:
+		var o := orb as TextureRect
+		o.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		o.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		o.custom_minimum_size = Vector2(side, side)
+		o.pivot_offset = Vector2(side, side) / 2.0
+
+
+## An orb's full size: as tall as the "HP" label beside it (40 px without one).
+func _natural_side() -> float:
+	return maxf(_label.get_combined_minimum_size().y if _label != null else 40.0, 40.0)
 
 func _create_heart_instance() -> void:
 	var heart_instance = HEART_SCENE.instantiate()
