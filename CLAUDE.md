@@ -281,6 +281,11 @@ New fighter from a sheet: `skills/godot-new-fighter` (frames audit, muzzle throu
 "Not fluid" ranged throw = the shot spawned while the art still held it (Cass: f3 spawn, hand empty on f5).
 Fix the hit frame, keep balance by shortening the wind-up's frame durations (`test_cass_throw.gd`).
 Python `Path.write_text` on Windows writes CRLF into LF files: edit with `read_bytes`/`write_bytes`.
+Boss room root sits at (19,-251): set a spawned node's global_position AFTER add_child (or `to_local`
+for a deferred add) - drops and Payton's burst floated 251 px up there (`test_offset_parent_spawns.gd` lints it).
+`await physics_frame` resumes BEFORE that frame's `_physics_process`: await 2 or a "moved" test can't fail
+(2 boss-clamp mutants survived that way). Balance changes: sweep base vs each variant (`autoplay_sweep.py`
+all fighters x 4 seeds) before shipping - boss phase hearts alone moved bot wins 27/28 -> 9/28.
 
 Placed pickups: judge them at the player's STANDING height — zoom 2.5 puts anything ~95px
 above the floor in the HUD band (`skills/godot-level-pickups/SKILL.md`).
