@@ -206,7 +206,7 @@
  "expect": [
   "won == 1",
   "hp >= 6",
-  "heals >= 6",
+  "heals >= 5",
   "powerups >= 2",
   "headlines == 5",
   "secret_news == 5",

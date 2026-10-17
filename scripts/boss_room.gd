@@ -8,7 +8,6 @@ extends Node2D
 const FINAL_BOSS = preload("res://scenes/final_boss.tscn")
 const THUD = preload("res://sounds/711657__discofield__stone-crash.wav")
 const BOOM = preload("res://sounds/explosion.wav")
-const HEART = preload("res://scenes/atomic_heart_pickup.tscn")
 
 ## Boss walk-in, in world X: from just off the right of the opening view to his mark.
 const BOSS_ENTER_FROM := 150.0
@@ -121,7 +120,7 @@ func spawn_boss() -> FinalBoss:
 	b.arena = _room_x_limits()
 	b.health_changed.connect(func(hp: int, _m: int) -> void: bar.set_health(hp))
 	# Deferred: hits land inside a physics callback, and both handlers add or kill
-	# bodies with Area2Ds (maids, the heart) — not allowed mid-flush.
+	# bodies with Area2Ds (maids) — not allowed mid-flush.
 	b.phase_changed.connect(_on_phase_changed, CONNECT_DEFERRED)
 	b.defeated.connect(_on_boss_defeated, CONNECT_DEFERRED)
 	return b
@@ -144,7 +143,6 @@ func _on_phase_changed(phase: int) -> void:
 	_thud(12.0)
 	BossJuice.flash(ui, Color(0.85, 0.1, 0.1, 0.45), 0.5)
 	_send_maids(p["maids"])
-	_drop_heart()
 	_drop_timer.stop()
 	if p["drop_every"] > 0.0:
 		_drop_timer.start(p["drop_every"])
@@ -190,17 +188,8 @@ func _send_maids(count: int) -> void:
 		maid.global_position = Vector2(x, player.global_position.y - 20.0)
 
 
-## Each phase change knocks an atomic heart loose: the breather that makes the next,
-## harder phase winnable for the two-orb characters.
-func _drop_heart() -> void:
-	var heart: Node2D = HEART.instantiate()
-	add_child(heart)
-	var from := boss.global_position + Vector2(0.0, -30.0)
-	var to := Vector2(boss.global_position.x + boss.facing * 70.0, _floor_y - 22.0)  # toward the player
-	heart.global_position = from
-	var tw := heart.create_tween().set_parallel(true)
-	tw.tween_property(heart, "global_position:x", to.x, 0.6)
-	tw.tween_property(heart, "global_position:y", to.y, 0.6).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+# No hearts in the boss fight (player feedback: too easy); phase changes bring
+# maids and ceiling drops, nothing that heals.
 
 
 # --- Finale ----------------------------------------------------------------------

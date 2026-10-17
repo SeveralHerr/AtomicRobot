@@ -40,6 +40,27 @@ func test_background_sprite_resolves() -> String:
 		"falling briefcases spawn across the background sprite")
 
 
+# --- no hearts in the boss fight ---------------------------------------------------
+# Player feedback: "a little too easy... No hearts should drop during the boss fight."
+# Each phase change used to knock an atomic heart loose.
+
+func _hearts() -> Array:
+	return _room.find_children("*", "", true, false).filter(func(n: Node) -> bool:
+		return n.scene_file_path == "res://scenes/atomic_heart_pickup.tscn")
+
+
+func test_boss_room_holds_no_hearts() -> String:
+	return _T.assert_eq(_hearts().size(), 0, "hearts placed in the boss room")
+
+
+func test_phase_change_drops_no_heart() -> String:
+	_room.boss = _room.spawn_boss()
+	for p in [1, 2]:
+		_room._on_phase_changed(p)
+	await (Engine.get_main_loop() as SceneTree).process_frame
+	return _T.assert_eq(_hearts().size(), 0, "hearts after both phase changes")
+
+
 ## The room hands the boss its on-screen span, so his charge can't run off camera.
 func test_spawned_boss_gets_the_rooms_arena() -> String:
 	var b: FinalBoss = _room.spawn_boss()

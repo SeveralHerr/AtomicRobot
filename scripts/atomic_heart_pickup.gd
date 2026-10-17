@@ -11,7 +11,7 @@ extends Node2D
 var heal_amount: int = 1
 var is_collected: bool = false
 
-## Every live heart, level-placed or knocked loose at runtime (door reward, boss phases).
+## Every live heart, level-placed or knocked loose at runtime (door reward, street job).
 const GROUP := "atomic_hearts"
 
 

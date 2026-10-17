@@ -4,7 +4,7 @@ extends RefCounted
 ## Kept separate from the brain so the brain stays pure and unit testable. Scene
 ## walks (hearts, boss door) are cached per scene instance: a full-tree search every
 ## physics frame is the one cost here that scales with level size. Hearts come from
-## their group instead: the door reward and boss phase hearts spawn after the walk.
+## their group instead: the door reward and street-job hearts spawn after the walk.
 
 const BOSS_ENTER_SCRIPT := "res://scripts/final_boss_enter.gd"
 ## Only enemies this close (px, horizontal) are reported; the rest are off screen.

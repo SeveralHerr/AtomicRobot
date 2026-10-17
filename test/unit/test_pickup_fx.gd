@@ -63,7 +63,7 @@ func test_every_level_heart_has_exactly_one_glow() -> String:
 
 
 func test_runtime_heart_has_a_glow() -> String:
-	# Door encounter and boss room instantiate the bare scene.
+	# Door encounters and street jobs instantiate the bare scene.
 	var heart: Node = (load(HEART) as PackedScene).instantiate()
 	var n := _glows(heart)
 	heart.free()

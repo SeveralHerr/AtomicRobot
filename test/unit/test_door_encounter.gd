@@ -372,7 +372,7 @@ func test_door_reward_heart_drops_once_on_the_clear() -> String:
 	if r != "":
 		return r
 	# Spawned at runtime, so the autoplay bot (which can't rescan the level every
-	# frame) finds it through the group, as it does the boss room's phase hearts.
+	# frame) finds it through the group, as it does the street jobs' hearts.
 	return _T.assert_eq(_tree().get_nodes_in_group("atomic_hearts").size(), 1, "the heart is in the hearts group")
 
 
